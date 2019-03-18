@@ -1,10 +1,6 @@
 # REGEX FOR HUMANS
 
-![alt text](https://github.com/OthmaneBlial/Regex-For-Humans/blob/master/regexify.png)
-
-<p align="center">
-    <img src="https://github.com/OthmaneBlial/Regex-For-Humans/blob/master/Regex-logo.png" alt="Image" width="800" height="600" />
-</p>
+![alt text](https://github.com/OthmaneBlial/Regex-For-Humans/blob/master/regexify.png){ width="800" height="600" style="display: block; margin: 0 auto" }
 
 
 REGEX SYNTAX IS VERY CHALLENGING AND UNREADABLE!!! what if you can write the requirement you are looking for and just have the
