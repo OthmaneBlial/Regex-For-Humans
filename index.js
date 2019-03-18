@@ -12,6 +12,7 @@ const nTimes = string =>
         .match(/([\d]+) times/)[1]
         .replace(/\b/, "{")
         .concat("}");
+
 const betweenTimes = string =>
     string.match(/between ([\d]+) and ([\d]+) times/) &&
     "{" +
@@ -19,6 +20,7 @@ const betweenTimes = string =>
     "," +
     +string.match(/between ([\d]+) and ([\d]+) times/g)[2] +
     "}";
+    
 const atLeastNTimes = string =>
     string.match(/at least ([\d]+) times/) &&
     string
