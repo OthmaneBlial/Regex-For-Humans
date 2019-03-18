@@ -1,6 +1,6 @@
 # REGEX FOR HUMANS
 
-![alt text](https://github.com/OthmaneBlial/Regex-For-Humans/blob/master/Regex-logo.png){ width="800" height="600" style="display: block; margin: 0 auto" }
+![alt text](https://github.com/OthmaneBlial/Regex-For-Humans/blob/master/Regex-logo.png)
 
 REGEX SYNTAX IS VERY CHALLENGING AND UNREADABLE!!! what if you can write the requirement you are looking for and just have the
 the whole regex generated for you, likewise, if you look up at you project you have just to look up at some lines in plain English instead of reading a bunch of characters and symbols that are not making any sense for many people. This why I thought about creating such a tool, which will help you learn regex and generate your own at the same time.
