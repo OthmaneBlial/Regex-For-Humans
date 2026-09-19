@@ -1,0 +1,50 @@
+name: Publish npm package
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing stable tag to publish, such as v0.1.0
+        required: true
+        type: string
+      confirm:
+        description: Type PUBLISH to pass the explicit publication gate
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Verify and publish tagged package
+    if: inputs.confirm == 'PUBLISH'
+    runs-on: ubuntu-latest
+    environment:
+      name: npm-release
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ inputs.release_tag }}
+          persist-credentials: false
+      - name: Confirm stable tag matches package version
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: node scripts/verify-release-tag.js
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - run: npm run test:package
+      - name: Publish with npm trusted publishing provenance
+        run: npm publish --provenance --access public
