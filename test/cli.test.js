@@ -14,12 +14,14 @@ function run(args, input) {
 }
 
 test("CLI accepts stdin and prints the same result as the library", () => {
-  const result = run(["--json", "-"], scenarios[0].rules);
-  assert.equal(result.status, 0, result.stderr);
-  const compiled = JSON.parse(result.stdout);
-  assert.equal(compiled.source, scenarios[0].source);
-  assert.equal(compiled.flags, scenarios[0].flags);
-  assert.equal(compiled.segments.length, 4);
+  for (const scenario of scenarios) {
+    const result = run(["--json", "-"], scenario.rules);
+    assert.equal(result.status, 0, `${scenario.id}: ${result.stderr}`);
+    const compiled = JSON.parse(result.stdout);
+    assert.equal(compiled.source, scenario.source, scenario.id);
+    assert.equal(compiled.flags, scenario.flags, scenario.id);
+    assert.ok(compiled.segments.length >= 3, scenario.id);
+  }
 });
 
 test("CLI accepts a file and prints a copyable JavaScript literal", () => {

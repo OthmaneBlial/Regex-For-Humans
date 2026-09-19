@@ -118,14 +118,15 @@ function renderTests() {
   ui.testList.replaceChildren();
   for (const sample of testCases) {
     const row = make("div", "test-row");
-    const input = make("input");
-    input.type = "text";
+    const input = make("textarea");
+    input.rows = Math.min(3, Math.max(1, sample.text.split("\n").length));
     input.value = sample.text;
     input.placeholder = "Empty string";
     input.maxLength = 2048;
     input.setAttribute("aria-label", "Example string");
     input.addEventListener("input", () => {
       sample.text = input.value;
+      input.rows = Math.min(3, Math.max(1, sample.text.split("\n").length));
       updateTestResults();
     });
 

@@ -127,7 +127,8 @@ a { color: inherit; }
 .test-row { display: grid; grid-template-columns: minmax(180px, 1fr) 155px minmax(130px, .7fr) 34px; align-items: center; gap: 8px; min-height: 53px; padding: 8px; border: 1px solid var(--line); border-left: 3px solid #b5c7ba; border-radius: 6px; background: #f9faf5; }
 .test-row[data-result="pass"] { border-left-color: var(--green); }
 .test-row[data-result="fail"] { border-left-color: var(--red); }
-.test-row input, .test-row select { min-width: 0; width: 100%; min-height: 35px; padding: 6px 9px; border: 1px solid #c1cfc6; border-radius: 4px; background: white; color: var(--ink); font: 12px var(--mono); }
+.test-row textarea, .test-row select { min-width: 0; width: 100%; min-height: 35px; padding: 7px 9px; border: 1px solid #c1cfc6; border-radius: 4px; background: white; color: var(--ink); font: 12px/1.3 var(--mono); }
+.test-row textarea { resize: vertical; }
 .test-result { color: var(--ink-soft); font: 11px/1.35 var(--mono); overflow-wrap: anywhere; }
 .test-row[data-result="pass"] .test-result { color: var(--green); }
 .test-row[data-result="fail"] .test-result { color: var(--red); }
