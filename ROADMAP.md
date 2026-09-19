@@ -14,7 +14,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [ ] 2.1 Explications traçables — implémentées et testées localement ; revue des 3 scénarios par une personne extérieure encore requise
 - [x] 2.2 Atelier web local — build statique, 3 recettes, copie réelle, diagnostics, console et requêtes locales vérifiés ; tests navigateur bureau/mobile verts
 - [x] 2.3 Tests positifs et négatifs — 16 tests navigateur verts : ancres, Unicode, saut de ligne, modes, édition et écarts ; isolation contre exécution longue suivie en 3.2
-- [ ] 2.4 Interface et accessibilité
+- [ ] 2.4 Interface et accessibilité — rendu et clavier vérifiés, 6 tests axe/Playwright verts ; lecteur d'écran réel et 3 nouvelles personnes encore requis
 - [ ] 3.1 Tests et compatibilité
 - [ ] 3.2 Bornes et sécurité de l'exécution
 - [ ] 3.3 Architecture et politique de changements

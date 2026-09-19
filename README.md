@@ -25,7 +25,7 @@ python3 -m http.server 4173 --directory dist
 
 The workshop loads the three reference recipes, compiles in the browser and checks positive and negative strings locally. The URL contains only a recipe ID, never the rules you type.
 
-For automated browser checks, run `npm ci` followed by `npm run test:browser`. The local suite uses installed Google Chrome; the CI configuration will install its own browser when added. The suite covers desktop and mobile viewports, copy, diagnostics, Unicode and multiline examples.
+For automated browser checks, run `npm ci` followed by `npm run test:browser`. The local suite uses installed Google Chrome; the CI configuration will install its own browser when added. The suite covers desktop and mobile viewports, copy, diagnostics, Unicode, multiline examples, keyboard navigation and automated accessibility checks. See the [usability study protocol](docs/USABILITY-STUDY.md) for the remaining human checks.
 
 ```text
 at the beginning of the input
