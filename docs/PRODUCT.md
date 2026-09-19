@@ -12,7 +12,7 @@ These fixtures define the product walkthrough. Their expected regex sources are 
 
 1. **Validate a prefixed identifier.** Rules: `at the beginning of the input` / `a "ABC"` / `digit character 3 times` / `end of the input`. Expected source `^ABC\d{3}$`, flags `u`. Positive: `ABC123`. Negative: `ABC12`, `ABC1234`, `abc123`.
 2. **Exclude characters.** Rules: `at the beginning of the input` / `anything except the following characters: a, b, c, d any number of times` / `end of the input`. Expected source `^[^abcd]*$`, flags `u`. Positive: `xyz`, empty string. Negative: `cab`.
-3. **Understand an existing line rule.** Rules: `at the beginning of a line, I am looking for any character, any number of times` / `I am looking for a digit character 3 times` / `end of the line`. Expected source `^.*\d{3}$`, flags `mu`. Positive: `item 123`, `note\nitem 123`. Negative: `item 12`. The explanation must state that `.*` is greedy, `m` changes the anchors, and this pattern permits many prefixes.
+3. **Understand an existing line rule.** Rules: `at the beginning of a line, I am looking for any character, any number of times` / `I am looking for a digit character 3 times` / `end of the line`. Expected source `^.*\d{3}$`, flags `mu`, search mode. Positive: `item 123`, `note\nitem 123`. Negative: `item 12`. The explanation must state that `.*` is greedy, `m` changes the anchors, and this pattern permits many prefixes.
 
 The first task demonstrates precise extraction from English. The second demonstrates class exclusion and negative examples. The third preserves the README's original style and makes its permissiveness visible rather than hiding it.
 

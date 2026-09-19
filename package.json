@@ -10,7 +10,8 @@
     "regex-for-humans": "./bin/regex-for-humans.js"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "build": "node scripts/build-web.js"
   },
   "files": [
     "index.js",

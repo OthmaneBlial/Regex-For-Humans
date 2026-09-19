@@ -5,6 +5,7 @@
     "rules": "at the beginning of the input\na \"ABC\"\ndigit character 3 times\nend of the input",
     "source": "^ABC\\d{3}$",
     "flags": "u",
+    "matchMode": "full",
     "positive": ["ABC123"],
     "negative": ["ABC12", "ABC1234", "abc123"]
   },
@@ -14,6 +15,7 @@
     "rules": "at the beginning of the input\nanything except the following characters: a, b, c, d any number of times\nend of the input",
     "source": "^[^abcd]*$",
     "flags": "u",
+    "matchMode": "full",
     "positive": ["xyz", ""],
     "negative": ["cab"]
   },
@@ -23,6 +25,7 @@
     "rules": "at the beginning of a line, I am looking for any character, any number of times\nI am looking for a digit character 3 times\nend of the line",
     "source": "^.*\\d{3}$",
     "flags": "mu",
+    "matchMode": "search",
     "positive": ["item 123", "note\nitem 123"],
     "negative": ["item 12"]
   }

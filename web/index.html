@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#163f4b">
+  <meta name="description" content="Turn controlled-English rules into an explained JavaScript regex, then check positive and negative examples locally.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'">
+  <title>Regex For Humans — Workshop</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workshop</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Workshop navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span>^</span><span>.*</span></div>
+        <div class="brand-name">regex<br><strong>for humans</strong></div>
+      </div>
+
+      <p class="sidebar-intro">Small English rules.<br>Readable regex.<br>Fewer surprises.</p>
+
+      <div class="sidebar-section-label"><span>START WITH A RECIPE</span><span>01—03</span></div>
+      <nav id="example-list" class="example-list" aria-label="Example recipes"></nav>
+
+      <div class="sidebar-bottom">
+        <div class="local-indicator"><span class="local-dot" aria-hidden="true"></span> Your rules stay in this browser</div>
+        <p>JavaScript RegExp · Controlled English · No account</p>
+      </div>
+    </aside>
+
+    <main id="main" class="main-content">
+      <header class="topbar">
+        <span>THE WORKSHOP <span class="topbar-slash">/</span> REGEX FOR HUMANS</span>
+        <span class="build-label">DEVELOPMENT BUILD</span>
+      </header>
+
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <span class="eyebrow">A CLEARER WAY TO COMPILE PATTERNS</span>
+          <h1 id="page-title">Write the rule.<br><em>Read the regex.</em></h1>
+          <p>Describe a pattern with a small, predictable English vocabulary. See exactly what JavaScript will match, and check the strings that matter.</p>
+        </div>
+        <div class="hero-symbol" aria-hidden="true">{<span>3</span>}</div>
+      </section>
+
+      <div class="workbench">
+        <section class="panel editor-panel" aria-labelledby="rules-title">
+          <div class="panel-heading"><span class="step-number">01</span><div><p class="kicker">THE INPUT</p><h2 id="rules-title">Write your rules</h2></div></div>
+          <label for="rules-input" class="field-label">One instruction per line</label>
+          <textarea id="rules-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="rules-help" placeholder="at the beginning of the input&#10;a &quot;ABC&quot;&#10;digit character 3 times&#10;end of the input"></textarea>
+          <div class="editor-footer"><p id="rules-help">A controlled language, not a free-form prompt. <a href="../docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">Read the syntax ↗</a></p><span id="rule-count">0 lines</span></div>
+          <div class="flag-controls" aria-label="Regex options">
+            <label class="flag-toggle"><input id="ignore-case" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Ignore case <code>i</code></span></label>
+            <label class="flag-toggle"><input id="dot-all" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Dot matches newlines <code>s</code></span></label>
+          </div>
+        </section>
+
+        <section class="panel result-panel" aria-labelledby="result-title">
+          <div class="panel-heading"><span class="step-number">02</span><div><p class="kicker">THE OUTPUT</p><h2 id="result-title">Understand the pattern</h2></div></div>
+          <div class="result-label-row"><span>JAVASCRIPT REGEXP</span><span id="compile-state" class="state-pill" role="status">Ready</span></div>
+          <div class="pattern-box"><code id="regex-output" aria-label="Generated regular expression">Select a recipe or write a rule</code></div>
+          <div class="result-actions"><span id="flags-summary">Unicode mode always on</span><button id="copy-button" class="copy-button" type="button" disabled>Copy regex <span aria-hidden="true">↗</span></button></div>
+          <div id="diagnostic" class="diagnostic" role="alert" hidden></div>
+          <div class="trace-heading"><h3>How it was built</h3><span>RULE → FRAGMENT</span></div>
+          <div id="trace-list" class="trace-list" aria-live="polite"><p class="empty-trace">Each rule will appear here with its generated fragment and meaning.</p></div>
+        </section>
+      </div>
+
+      <section class="panel examples-panel" aria-labelledby="examples-title">
+        <div class="examples-heading"><div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">THE PROOF</p><h2 id="examples-title">Check the edge cases</h2></div></div><div class="test-controls"><label for="match-mode">Match mode</label><select id="match-mode"><option value="full">Entire string</option><option value="search">Search anywhere</option></select><button id="add-example" class="secondary-button" type="button">+ Add example</button></div></div>
+        <p class="examples-intro">Mark what should match. The workshop shows where the pattern agrees or surprises you.</p>
+        <div id="test-summary" class="test-summary" role="status">Choose a recipe to load example strings.</div>
+        <div id="test-list" class="test-list"></div>
+      </section>
+
+      <footer class="footer"><span>Built for inspectable rules, not guesswork.</span><a href="../README.md" target="_blank" rel="noopener noreferrer">Project & documentation ↗</a></footer>
+    </main>
+  </div>
+</body>
+</html>

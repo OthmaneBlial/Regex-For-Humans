@@ -12,8 +12,8 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [x] 1.2 Parseur déterministe et diagnostics — AST, erreurs ligne/colonne, phrases inconnues rejetées ; tests parseur et CLI verts
 - [x] 1.3 Sémantique et échappement — 3 fixtures positives/négatives, régressions et caractères spéciaux vérifiés ; tarball installé proprement
 - [ ] 2.1 Explications traçables — implémentées et testées localement ; revue des 3 scénarios par une personne extérieure encore requise
-- [ ] 2.2 Atelier web local
-- [ ] 2.3 Tests positifs et négatifs
+- [ ] 2.2 Atelier web local — implémenté ; rendu et interactions vérifiés à 1280/390/320 px, automatisation navigateur encore requise
+- [ ] 2.3 Tests positifs et négatifs — ajout/édition et écarts vérifiés dans Chrome ; tests automatiques et isolation encore requis
 - [ ] 2.4 Interface et accessibilité
 - [ ] 3.1 Tests et compatibilité
 - [ ] 3.2 Bornes et sécurité de l'exécution
