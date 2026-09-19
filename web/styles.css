@@ -124,6 +124,9 @@ a {
   font: 700 10px / 1.2 var(--mono);
   letter-spacing: 0.13em;
 }
+.mobile-scroll-hint {
+  display: none;
+}
 .example-list {
   display: grid;
   gap: 8px;
@@ -768,9 +771,17 @@ a {
     font-size: 16px;
   }
   .sidebar-intro,
-  .sidebar-bottom,
-  .sidebar-section-label {
+  .sidebar-bottom {
     display: none;
+  }
+  .sidebar-section-label {
+    margin: 12px 0 0;
+  }
+  .sidebar-count {
+    display: none;
+  }
+  .mobile-scroll-hint {
+    display: inline;
   }
   .example-list {
     display: flex;
