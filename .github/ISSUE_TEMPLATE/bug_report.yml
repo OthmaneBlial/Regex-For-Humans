@@ -1,0 +1,35 @@
+name: Grammar or product bug
+description: Report a reproducible problem in the compiler, CLI or workshop
+title: "Bug: "
+body:
+  - type: markdown
+    attributes:
+      value: "For security vulnerabilities, use the private reporting link below instead. Do not post private strings or credentials."
+  - type: textarea
+    id: rules
+    attributes:
+      label: Rules or steps to reproduce
+      description: Include the smallest public example that reproduces the problem.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected source, flags and result
+      description: Include one string that should match and one that should not.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual source, flags, diagnostic or UI behavior
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Version and environment
+      description: Commit or package version, Node version, browser and OS as applicable.
+    validations:
+      required: true

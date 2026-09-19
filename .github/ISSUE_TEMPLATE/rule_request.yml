@@ -1,0 +1,31 @@
+name: Language rule request
+description: Propose one explicit new phrase for the controlled language
+title: "Rule: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Matching task
+      description: What practical JavaScript matching task is difficult with the current vocabulary?
+    validations:
+      required: true
+  - type: input
+    id: phrase
+    attributes:
+      label: Proposed exact English phrase
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected regex and examples
+      description: Include source and flags, a positive string, a negative string and a malformed phrase to reject.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and alternatives
+      description: Explain any overlap with an existing phrase and how you solve this today.
+    validations:
+      required: false

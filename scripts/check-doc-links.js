@@ -7,6 +7,9 @@ const files = [
   "README.md",
   "ROADMAP.md",
   "CONTRIBUTING.md",
+  "SECURITY.md",
+  "CHANGELOG.md",
+  ".github/pull_request_template.md",
   ...readdirSync(resolve(root, "docs"))
     .filter((name) => name.endsWith(".md"))
     .map((name) => `docs/${name}`),

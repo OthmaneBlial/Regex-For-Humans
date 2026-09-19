@@ -63,6 +63,8 @@ The workshop has been checked in local Chrome at desktop and mobile viewports. A
 
 Read the [full language contract](docs/LANGUAGE.md) for exact phrases, flags, escaping, examples and limits. Version 1 targets JavaScript `RegExp` only. It does not offer groups, alternation, lookaround, arbitrary raw regex or reverse regex translation. Unknown or malformed instructions return a line/column diagnostic rather than a partial expression. Test a copied regex in its target runtime, especially if it will process long or untrusted text.
 
+This project is for people who prefer an explicit rule specification and a visible rule-to-fragment explanation. [regex101](https://regex101.com/) and [RegExr](https://regexr.com/) are established interactive regex editors; [JSVerbalExpressions](https://verbalexpressions.github.io/JSVerbalExpressions/) offers a JavaScript builder API, while [grex](https://github.com/pemistahl/grex) starts from examples. These are different workflows. No comparative speed or usability advantage is claimed here.
+
 ## Develop and contribute
 
 ```sh
@@ -76,4 +78,4 @@ npm run test:browser
 
 `npm run check` covers format, lint, strict type checking of the compiler/CLI and local documentation links. The current suite has 41 Node tests and 26 browser tests; [testing and compatibility](docs/TESTING.md) records the versions and evidence boundaries. To report a missing phrase or change the grammar, follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [architecture policy](docs/ARCHITECTURE.md). The [product scenarios](docs/PRODUCT.md) define the three reference tasks.
 
-Licensed under [MIT](LICENSE). The [roadmap](ROADMAP.md) tracks publication gates and the final real-product demonstration video.
+Report suspected vulnerabilities through the private channel in [SECURITY.md](SECURITY.md). Licensed under [MIT](LICENSE). The [changelog](CHANGELOG.md) records repository changes; the [roadmap](ROADMAP.md) tracks publication gates and the final real-product demonstration video.
