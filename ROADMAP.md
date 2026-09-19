@@ -19,7 +19,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [x] 3.2 Bornes et sécurité de l'exécution — limites documentées, worker interrompable, timeout/récupération et entrée HTML testés ; 32 tests navigateur verts, `npm audit` sans vulnérabilité signalée
 - [ ] 3.3 Architecture et politique de changements — guide, liens et exercice interne vérifiés (`docs/CONTRIBUTION-EXERCISE.md`) ; revue par un contributeur extérieur encore requise
 - [ ] 4.1 README et premier succès — commandes CLI, bibliothèque, build et atelier vérifiées depuis un clone vierge ; rendu GitHub et liens vérifiés ; relecture par un novice encore requise
-- [ ] 4.2 Captures réelles
+- [ ] 4.2 Captures réelles — captures bureau/mobile du build local `0.1.0-dev` ajoutées au README avec provenance et SHA-256 ; captures de la version publiée à refaire après 2.4
 - [ ] 4.3 Contribution et présentation GitHub — politiques sécurité/changelog, modèles d'issues/PR et métadonnées préparés ; formulaires d'issue et signalement privé visibles sur GitHub ; lien public de démo encore absent
 - [x] 5.1 CI vérifiée — run normal `35444220569` (`dfeffb8`) vert sur Linux Node 22/24, macOS et Windows Node 24, et Chromium Linux ; artefact `npm-package-tested` téléchargé (SHA-256 `2baec9a40e41bffa3fb6d0081539784edf352bd1e4648725970c84400ce5aa38`) ; PR brouillon [#1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) volontairement cassée, run `35444252927` échoué dans les quatre jobs `npm run check`, puis fermée sans fusion
 - [ ] 5.2 Package publié et atelier déployé — tarball local testé, workflow Pages manuel depuis un tag stable préparé et contrôlé par `actionlint` ; npm et Pages publics encore absents

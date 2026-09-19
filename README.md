@@ -50,6 +50,21 @@ Open **http://127.0.0.1:4174/**. Pick one of three reference recipes, edit a rul
 
 The workshop has been checked in local Chrome at desktop and mobile viewports. Automated tests cover keyboard navigation, common WCAG A/AA issues, editing, copying, Unicode, multiline cases and worker timeout. Real screen-reader and new-user checks remain open in the [roadmap](ROADMAP.md).
 
+### Real workshop preview
+
+This is the local `0.1.0-dev` build running the prefixed-identifier recipe. The visible rules compile to `/^ABC\d{3}$/u`; one string matches and three are rejected. These screenshots will be refreshed after the remaining user reviews and before a release.
+
+![Desktop workshop showing the source rules, explained regex and four passing positive or negative checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png)
+
+<details>
+<summary>View the real mobile workshop capture</summary>
+
+![Mobile workshop showing the same rule, generated regex, explanations and example results](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-mobile-dev.png)
+
+</details>
+
+[Capture provenance and source files](media/screenshots/README.md).
+
 ## What the language covers
 
 | Rule type | Example | JavaScript source |
