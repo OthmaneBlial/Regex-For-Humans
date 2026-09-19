@@ -1,0 +1,23 @@
+{
+  "name": "regex-for-humans",
+  "version": "0.1.0-dev",
+  "description": "A small controlled-English language for JavaScript regular expressions",
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "bin": {
+    "regex-for-humans": "./bin/regex-for-humans.js"
+  },
+  "files": [
+    "index.js",
+    "rules.js",
+    "bin/",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT"
+}

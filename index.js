@@ -4,7 +4,7 @@ import {
     positionMatching,
     characterMatching,
     repetitionFactors
-} from "./rules";
+} from "./rules.js";
 
 const nTimes = string =>
     string.match(/([\d]+) times/) &&
@@ -89,11 +89,21 @@ const buildingTheRegexMatcher = str => {
     return matchingArray.join("");
 };
 
-const regexMatchingThroughLines = lines => {
-    regexResultList = [];
+export const regexMatchingThroughLines = lines => {
+    if (typeof lines !== "string") {
+        throw new TypeError("Rules must be a string");
+    }
+    const regexResultList = [];
     lines
         .split("\n")
         .filter(Boolean)
-        .map(el => regexResultList.push(buildingTheRegexMatcher(el)));
+        .forEach(el => regexResultList.push(buildingTheRegexMatcher(el)));
     return regexResultList.join("");
 };
+
+export const compile = source => ({
+    source: regexMatchingThroughLines(source),
+    flags: ""
+});
+
+export const toRegExp = result => new RegExp(result.source, result.flags);
