@@ -1,6 +1,6 @@
 # The Regex For Humans language
 
-This document defines the implemented **version 1 core language**. Its browser workshop and distribution are still in progress; use the tests and release notes to check the status of each surface.
+This document defines the implemented **version 1 core language**. The browser workshop runs locally from this clone. npm publication and a GitHub release have not yet been verified; use the repository status and release notes to check each distribution surface.
 
 Regex For Humans translates a deliberately small English vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Every nonblank line is one instruction. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces around instructions are ignored.
 

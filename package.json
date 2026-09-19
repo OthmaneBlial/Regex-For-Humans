@@ -14,7 +14,8 @@
     "format:check": "biome format .",
     "lint": "biome lint .",
     "typecheck": "tsc --noEmit",
-    "check": "biome check . && npm run typecheck",
+    "docs:check": "node scripts/check-doc-links.js",
+    "check": "biome check . && npm run typecheck && npm run docs:check",
     "build": "node scripts/build-web.js",
     "serve": "node scripts/serve-dist.js",
     "test:browser": "playwright test"

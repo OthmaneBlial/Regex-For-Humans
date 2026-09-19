@@ -8,7 +8,7 @@ Success target for usability testing: a first-time user should load an example, 
 
 ## Three reference tasks
 
-These fixtures define the product walkthrough. Their expected regex sources are checked against JavaScript `RegExp` now; they become library, CLI and browser regression tests as those surfaces are implemented.
+These fixtures define the product walkthrough. Their expected regex sources and positive/negative strings are checked against JavaScript `RegExp` through the library, CLI and local browser regression suites.
 
 1. **Validate a prefixed identifier.** Rules: `at the beginning of the input` / `a "ABC"` / `digit character 3 times` / `end of the input`. Expected source `^ABC\d{3}$`, flags `u`. Positive: `ABC123`. Negative: `ABC12`, `ABC1234`, `abc123`.
 2. **Exclude characters.** Rules: `at the beginning of the input` / `anything except the following characters: a, b, c, d any number of times` / `end of the input`. Expected source `^[^abcd]*$`, flags `u`. Positive: `xyz`, empty string. Negative: `cab`.
@@ -18,7 +18,7 @@ The first task demonstrates precise extraction from English. The second demonstr
 
 ## Evidence plan
 
-- Run these exact fixtures through `new RegExp(source, flags)` before implementation and through the public API, CLI and browser after each surface exists.
+- Continue running these exact fixtures through the public API, CLI and browser after every change to the language or UI.
 - During usability review, record date, tester context, task completion, time, errors and feedback without personal data in the repository. Recruit at least three people new to the project before claiming the phase 2.4 human criterion is met.
 - Record failures and corrections. Do not turn local automated tests into adoption or satisfaction claims.
 
