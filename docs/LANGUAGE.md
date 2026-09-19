@@ -25,7 +25,7 @@ Regex For Humans translates a deliberately small English vocabulary into a JavaS
 
 The words `alphanumeric` and `digit` follow JavaScript's `\w` and `\d`, which are ASCII-oriented even with the Unicode flag (the combination of `i` and `u` has a few Unicode case-folding exceptions for `\w`). A literal is a JSON-style double-quoted string: `"` and `\\` can be written inside it. Literal regex metacharacters are escaped by the compiler. A character-list item is exactly one Unicode code point; write ordinary items as `a, b`, and quote punctuation, commas, spaces or backslashes as `"]", "-", ",", "\\"`. The generated class escapes each item in class context. Empty lists and empty literals are errors.
 
-`I am looking for ` may prefix an atom without changing it. For compatibility with the original example, an opening anchor may prefix an atom on the same line, separated by a comma: `at the beginning of a line, I am looking for any character, any number of times`. The unprefixed version is preferred for new documents.
+`I am looking for ` may prefix an atom without changing it. The article `a` or `an` is optional before a named character class, so the original `I am looking for a digit character` is accepted. For compatibility with the original example, an opening anchor may prefix an atom on the same line, separated by a comma: `at the beginning of a line, I am looking for any character, any number of times`. The unprefixed version is preferred for new documents.
 
 ## Repetition
 
