@@ -46,7 +46,7 @@ npm run build
 npm run serve
 ```
 
-Open **http://127.0.0.1:4174/**. Pick one of three reference recipes, edit a rule, inspect the generated pattern and its explanation, then add positive and negative examples. The browser compiles locally and runs example matching in a worker with a timeout. Typed rules and examples are not sent to an application backend; the [security model](docs/SECURITY_MODEL.md) describes the limits and ordinary static-host access logs.
+Open **http://127.0.0.1:4174/**. Pick one of three reference recipes, edit a rule, inspect the generated pattern and its explanation, then add positive and negative examples. “Read the syntax” opens a local HTML quick reference. The browser compiles locally and runs example matching in a worker with a timeout. Typed rules and examples are not sent to an application backend; the [security model](docs/SECURITY_MODEL.md) describes the limits and ordinary static-host access logs.
 
 The workshop has been checked in local Chrome at desktop and mobile viewports. Automated tests cover keyboard navigation, common WCAG A/AA issues, editing, copying, Unicode, multiline cases and worker timeout. Real screen-reader and new-user checks remain open in the [roadmap](ROADMAP.md).
 
@@ -77,6 +77,6 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-`npm run check` covers format, lint, strict type checking of the compiler/CLI and local documentation links. The current suite has 41 Node tests and 26 browser tests; [testing and compatibility](docs/TESTING.md) records the versions and evidence boundaries. To report a missing phrase or change the grammar, follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [architecture policy](docs/ARCHITECTURE.md). The [product scenarios](docs/PRODUCT.md) define the three reference tasks.
+`npm run check` covers format, lint, strict type checking of the compiler/CLI and local documentation links. The current suite has 41 Node tests and 32 browser tests; [testing and compatibility](docs/TESTING.md) records the versions and evidence boundaries. To report a missing phrase or change the grammar, follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [architecture policy](docs/ARCHITECTURE.md). The [product scenarios](docs/PRODUCT.md) define the three reference tasks.
 
 Report suspected vulnerabilities through the private channel in [SECURITY.md](SECURITY.md). Licensed under [MIT](LICENSE). The [changelog](CHANGELOG.md) records repository changes; the [roadmap](ROADMAP.md) tracks publication gates and the final real-product demonstration video.

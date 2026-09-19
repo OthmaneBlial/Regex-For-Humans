@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#163f4b">
+  <meta name="description" content="A quick reference for the controlled-English rules supported by Regex For Humans.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'">
+  <title>Language guide — Regex For Humans</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./language.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to syntax</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Language guide navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span>^</span><span>.*</span></div>
+        <div class="brand-name">regex<br><strong>for humans</strong></div>
+      </div>
+      <p class="sidebar-intro">Small vocabulary.<br>Exact meaning.<br>Useful defaults.</p>
+      <div class="sidebar-section-label"><span>ON THIS PAGE</span><span>01—04</span></div>
+      <nav class="docs-nav" aria-label="Syntax sections">
+        <a href="#start">Start</a>
+        <a href="#atoms">Atoms</a>
+        <a href="#repetition">Repetition</a>
+        <a href="#flags">Flags &amp; limits</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a class="sidebar-back" href="../">← Back to the workshop</a>
+        <p>JavaScript RegExp · Language version 1</p>
+      </div>
+    </aside>
+
+    <main id="main" class="main-content">
+      <header class="topbar"><span>THE WORKSHOP <span class="topbar-slash">/</span> LANGUAGE GUIDE</span><span class="build-label">DEVELOPMENT BUILD</span></header>
+      <section class="hero guide-hero" aria-labelledby="page-title">
+        <div class="hero-copy"><span class="eyebrow">A FINITE, REVIEWABLE VOCABULARY</span><h1 id="page-title">Say only<br><em>what it can mean.</em></h1><p>Write one instruction per line. The compiler accepts the phrases below and rejects unknown wording with a line and column. Quoted text stays literal.</p></div>
+        <div class="hero-symbol" aria-hidden="true">[<span>a</span>]</div>
+      </section>
+
+      <section id="start" class="panel guide-panel" aria-labelledby="start-title">
+        <div class="panel-heading"><span class="step-number">01</span><div><p class="kicker">START HERE</p><h2 id="start-title">A complete rule</h2></div></div>
+        <div class="guide-example"><pre><code>at the beginning of the input
+a "ABC"
+digit character 3 times
+end of the input</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>Matches</strong> ABC123<br><strong>Rejects</strong> ABC12, ABC1234</p></div></div>
+        <p>Use <code>at the beginning of a line</code> and <code>end of the line</code> for line-based matching. A line anchor adds JavaScript's <code>m</code> flag. Input and line anchors cannot be mixed in one set of rules.</p>
+      </section>
+
+      <section id="atoms" class="panel guide-panel" aria-labelledby="atoms-title">
+        <div class="panel-heading"><span class="step-number">02</span><div><p class="kicker">BUILDING BLOCKS</p><h2 id="atoms-title">Match one thing</h2></div></div>
+        <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Instruction</th><th scope="col">Source</th><th scope="col">Meaning</th></tr></thead><tbody>
+          <tr><td><code>any character</code></td><td><code>.</code></td><td>One character, except a line break unless <code>s</code> is on</td></tr>
+          <tr><td><code>alphanumeric character</code></td><td><code>\w</code></td><td>JavaScript word class: mainly ASCII letters, digits and underscore</td></tr>
+          <tr><td><code>non-alphanumeric character</code></td><td><code>\W</code></td><td>Outside that word class</td></tr>
+          <tr><td><code>digit character</code> / <code>non-digit character</code></td><td><code>\d</code> / <code>\D</code></td><td>ASCII digit / anything else</td></tr>
+          <tr><td><code>any whitespace</code> / <code>non-whitespace character</code></td><td><code>\s</code> / <code>\S</code></td><td>JavaScript whitespace / anything else</td></tr>
+          <tr><td><code>a "ABC"</code></td><td><code>ABC</code></td><td>Exact quoted text; regex punctuation is escaped</td></tr>
+          <tr><td><code>any of the following characters: a, b</code></td><td><code>[ab]</code></td><td>One listed character</td></tr>
+          <tr><td><code>anything except the following characters: a, b</code></td><td><code>[^ab]</code></td><td>One character outside the list</td></tr>
+        </tbody></table></div>
+        <p>For character lists, quote punctuation and spaces, for example <code>any of the following characters: "]", "-", " "</code>. Each item must be one Unicode code point. A literal can contain multiple characters.</p>
+      </section>
+
+      <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">
+        <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one atom</h2></div></div>
+        <p>Put one repetition after an atom. For example, <code>digit character 3 times</code> generates <code>\d{3}</code>. A repeated multi-character literal stays grouped.</p>
+        <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Phrase after an atom</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
+          <tr><td><code>any number of times</code></td><td><code>*</code></td><td>Zero or more</td></tr>
+          <tr><td><code>at least one time</code></td><td><code>+</code></td><td>One or more</td></tr>
+          <tr><td><code>at most one time</code></td><td><code>?</code></td><td>Zero or one</td></tr>
+          <tr><td><code>3 times</code></td><td><code>{3}</code></td><td>Exactly three</td></tr>
+          <tr><td><code>between 2 and 4 times</code></td><td><code>{2,4}</code></td><td>Two to four</td></tr>
+          <tr><td><code>at least 3 times</code></td><td><code>{3,}</code></td><td>Three or more</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="flags" class="panel guide-panel" aria-labelledby="flags-title">
+        <div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">BOUNDARIES</p><h2 id="flags-title">Flags and limits</h2></div></div>
+        <div class="guide-facts"><div><strong><code>u</code> always</strong><p>Unicode regex mode is always enabled.</p></div><div><strong><code>i</code> and <code>s</code> optional</strong><p>Choose ignore case or dot matches newlines in the workshop or CLI.</p></div><div><strong><code>m</code> from line anchors</strong><p>Line anchors enable multiline behavior automatically.</p></div></div>
+        <p>Rules are limited to 16,384 UTF-16 code units, 200 lines and numeric repetition counts up to 1,000. The workshop limits example strings and runs matching in a time-limited worker. These limits do not guarantee that a copied regex is fast in another program.</p>
+        <p>Groups, alternation, lookaround, raw regex injection and other regex engines are outside this language version. Read the <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">full language contract ↗</a>, or the <a href="../docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">local Markdown source ↗</a> when offline.</p>
+      </section>
+
+      <footer class="footer"><span>Every supported phrase has tests and an explanation.</span><a href="../">← Back to the workshop</a></footer>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+.docs-nav {
+  display: grid;
+  gap: 7px;
+}
+.docs-nav a,
+.sidebar-back {
+  display: block;
+  padding: 10px 13px;
+  border: 1px solid #ffffff33;
+  border-radius: 8px;
+  color: #f5f0df;
+  font-size: 13px;
+  text-decoration: none;
+}
+.docs-nav a:hover,
+.sidebar-back:hover {
+  background: #ffffff15;
+  border-color: #ffffff88;
+}
+.sidebar-back {
+  margin-bottom: 16px;
+  color: var(--gold);
+}
+.guide-hero {
+  min-height: 220px;
+}
+.guide-panel {
+  margin-bottom: 17px;
+  padding: 25px 28px;
+  scroll-margin-top: 24px;
+}
+.guide-panel > p {
+  max-width: 78ch;
+  margin: 16px 0 0;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.guide-panel a {
+  color: var(--orange);
+  font-weight: 700;
+}
+.guide-panel code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+.guide-example {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(230px, 0.8fr);
+  gap: 16px;
+}
+.guide-example pre,
+.guide-example > div {
+  min-width: 0;
+  margin: 0;
+  padding: 20px;
+  border-radius: 10px;
+}
+.guide-example pre {
+  overflow-x: auto;
+  background: var(--ink-deep);
+  color: #fff8e5;
+  font: 14px / 1.8 var(--mono);
+}
+.guide-example > div {
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+.guide-example > div > span {
+  display: block;
+  margin-bottom: 15px;
+  color: var(--orange);
+  font: 700 10px var(--mono);
+  letter-spacing: 0.12em;
+}
+.guide-example > div > code {
+  display: block;
+  overflow-x: auto;
+  font-size: 18px;
+  font-weight: 700;
+}
+.guide-example > div > p {
+  margin: 17px 0 0;
+  line-height: 1.6;
+}
+.guide-table-wrap {
+  overflow-x: auto;
+}
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  line-height: 1.5;
+}
+.guide-table th {
+  padding: 10px 12px;
+  color: var(--ink-soft);
+  font: 700 11px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.guide-table td {
+  padding: 13px 12px;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+.guide-table td:nth-child(2) {
+  white-space: nowrap;
+  font-weight: 700;
+}
+.guide-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.guide-facts > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--paper);
+}
+.guide-facts strong {
+  color: var(--ink);
+}
+.guide-facts > div > p {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.5;
+}
+@media (max-width: 920px) {
+  .guide-example,
+  .guide-facts {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 760px) {
+  .docs-nav {
+    display: flex;
+    overflow-x: auto;
+    margin-top: 13px;
+  }
+  .docs-nav a {
+    flex: none;
+  }
+  .guide-panel {
+    padding: 18px;
+  }
+}

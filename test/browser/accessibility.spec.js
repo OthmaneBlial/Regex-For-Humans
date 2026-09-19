@@ -1,7 +1,12 @@
+import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
+const { version } = JSON.parse(
+  readFileSync(new URL("../../package.json", import.meta.url), "utf8"),
+);
+const versionLabel = version.includes("-") ? `DEV · ${version}` : `v${version}`;
 
 for (const state of ["ready", "error"]) {
   test(`${state} workshop has no automatically detectable WCAG A/AA violation`, async ({
@@ -44,4 +49,35 @@ test("keyboard can reach the editor, options, copy and test controls", async ({ 
   await expect(page.locator("#copy-button")).toContainText("Copied");
   await page.locator("#match-mode").focus();
   await expect(page.locator("#match-mode")).toBeFocused();
+});
+
+test("syntax guide is readable without horizontal overflow or detectable WCAG A/AA issues", async ({
+  page,
+}) => {
+  const failedResponses = [];
+  page.on("response", (response) => {
+    if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.url()}`);
+  });
+  await page.goto("/web/language.html");
+  await expect(page.getByRole("heading", { name: /Say only/ })).toBeVisible();
+  await expect(page.getByRole("table")).toHaveCount(2);
+  await expect(page.getByRole("link", { name: /Back to the workshop/ }).last()).toHaveAttribute(
+    "href",
+    "../",
+  );
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
+  const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
+  expect(results.violations.map((violation) => violation.id)).toEqual([]);
+  expect(failedResponses).toEqual([]);
+});
+
+test("the tested build version is visible in the workshop and guide", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".build-label")).toBeVisible();
+  await expect(page.locator(".build-label")).toHaveText(versionLabel);
+  await page.goto("/web/language.html");
+  await expect(page.locator(".build-label")).toBeVisible();
+  await expect(page.locator(".build-label")).toHaveText(versionLabel);
 });

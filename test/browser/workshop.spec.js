@@ -104,3 +104,15 @@ test("copy button places the real generated regex on the clipboard", async ({ pa
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied).toBe("/^ABC\\d{3}$/u");
 });
+
+test("syntax link opens the local rendered guide", async ({ page, context }) => {
+  await page.goto("/");
+  const [guide] = await Promise.all([
+    context.waitForEvent("page"),
+    page.getByRole("link", { name: /Read the syntax/ }).click(),
+  ]);
+  await guide.waitForLoadState();
+  await expect(guide).toHaveURL(/\/web\/language\.html$/u);
+  await expect(guide.getByRole("heading", { name: "Match one thing" })).toBeVisible();
+  await guide.close();
+});

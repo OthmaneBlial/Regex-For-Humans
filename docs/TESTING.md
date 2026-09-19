@@ -8,7 +8,7 @@ The package declares Node.js `>=22`. The following versions passed all 41 Node t
 | 24.21.0 | `npx -y node@24 --test test/*.test.js` |
 | 25.9.0 | `npm test` after `npm ci` |
 
-These results verify the three versions shown, not every possible Node release accepted by the package's engine range. Browser E2E was run in local Chrome at desktop and mobile viewports; CI Chromium coverage is tracked separately in the roadmap. The automated accessibility tests do not replace a real screen reader session.
+These results verify the three versions shown, not every possible Node release accepted by the package's engine range. Browser E2E was run in local Chrome at desktop and mobile viewports. GitHub Actions run `35443621357` passed the core and package gates on Linux Node 22/24, macOS Node 24 and Windows Node 24, plus Chromium on Linux. Later commits still require their own CI result. The automated accessibility tests do not replace a real screen reader session.
 
 ## Reproduce locally
 
@@ -30,4 +30,4 @@ npm pack --dry-run --json
 
 `npm run test:package` packs the current checkout, installs that exact tarball into a new temporary consumer, then checks package import, matching, trace, diagnostics, the installed CLI link, version and JSON output. It removes the temporary consumer afterward. CI can set `PACK_OUTPUT_DIR=artifacts` to retain the exact tested tarball as a downloadable workflow artifact. This workflow artifact is not an npm publication or GitHub Release.
 
-Node tests cover the public API, parser diagnostics, every instruction and repetition form listed in [LANGUAGE.md](LANGUAGE.md), literal/character-set escaping with deterministic Unicode samples, CLI use from files/stdin, and the isolated worker runner. Browser tests cover the three reference recipes, editing and recovery, examples, clipboard, keyboard flow, automated WCAG A/AA checks, oversized and HTML-like input, and worker timeout/recovery.
+Node tests cover the public API, parser diagnostics, every instruction and repetition form listed in [LANGUAGE.md](LANGUAGE.md), literal/character-set escaping with deterministic Unicode samples, CLI use from files/stdin, and the isolated worker runner. Browser tests cover the three reference recipes, editing and recovery, examples, clipboard, keyboard flow, the local syntax guide and visible build version, automated WCAG A/AA checks, oversized and HTML-like input, and worker timeout/recovery.

@@ -16,7 +16,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-The local Playwright configuration uses installed Chrome; CI will use Playwright Chromium when its workflow is added. If Chrome is unavailable locally, set `CI=1` after installing Chromium to run that channel. See [testing and compatibility](docs/TESTING.md) for the exact scope of each check. Include the command and result when reporting a failure.
+The local Playwright configuration uses installed Chrome; CI uses Playwright Chromium. If Chrome is unavailable locally, set `CI=1` after installing Chromium to run that channel. See [testing and compatibility](docs/TESTING.md) for the exact scope of each check. Include the command and result when reporting a failure.
 
 ## Adding or changing a language rule
 
