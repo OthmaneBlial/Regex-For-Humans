@@ -1,7 +1,22 @@
 {
   "name": "regex-for-humans",
   "version": "0.1.0-dev",
-  "description": "A small controlled-English language for JavaScript regular expressions",
+  "description": "Compile controlled English rules into explained JavaScript regular expressions",
+  "keywords": [
+    "regex",
+    "regular-expressions",
+    "developer-tools",
+    "cli",
+    "controlled-language"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OthmaneBlial/Regex-For-Humans.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OthmaneBlial/Regex-For-Humans/issues"
+  },
+  "homepage": "https://github.com/OthmaneBlial/Regex-For-Humans#readme",
   "type": "module",
   "exports": {
     ".": "./index.js"
