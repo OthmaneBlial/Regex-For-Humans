@@ -1,4 +1,4 @@
-import { compile, CompileError } from "../index.js";
+import { CompileError, compile } from "../index.js";
 import { TestRunner } from "./test-runner.js";
 
 const ui = {
@@ -16,7 +16,7 @@ const ui = {
   matchMode: document.querySelector("#match-mode"),
   addExample: document.querySelector("#add-example"),
   testSummary: document.querySelector("#test-summary"),
-  testList: document.querySelector("#test-list")
+  testList: document.querySelector("#test-list"),
 };
 
 let scenarios = [];
@@ -24,7 +24,9 @@ let activeScenario = null;
 let testCases = [];
 let nextTestId = 1;
 let compiled = null;
-const testRunner = new TestRunner(() => new Worker(new URL("./match-worker.js", import.meta.url), { type: "module" }));
+const testRunner = new TestRunner(
+  () => new Worker(new URL("./match-worker.js", import.meta.url), { type: "module" }),
+);
 
 function make(tag, className, text) {
   const node = document.createElement(tag);
@@ -53,13 +55,22 @@ function selectLine(number) {
 function renderTrace(segments) {
   ui.trace.replaceChildren();
   if (!segments?.length) {
-    ui.trace.append(make("p", "empty-trace", "Each rule will appear here with its generated fragment and meaning."));
+    ui.trace.append(
+      make(
+        "p",
+        "empty-trace",
+        "Each rule will appear here with its generated fragment and meaning.",
+      ),
+    );
     return;
   }
   for (const segment of segments) {
     const button = make("button", "trace-item");
     button.type = "button";
-    button.setAttribute("aria-label", `Rule on line ${segment.line}: ${segment.explanation}. Select source line.`);
+    button.setAttribute(
+      "aria-label",
+      `Rule on line ${segment.line}: ${segment.explanation}. Select source line.`,
+    );
     button.append(make("code", "trace-fragment", segment.source));
     const detail = make("span");
     detail.append(make("span", "trace-text", `${segment.line}:${segment.column} ${segment.text}`));
@@ -82,16 +93,20 @@ async function updateTestResults() {
   const rows = ui.testList.querySelectorAll(".test-row");
   if (!compiled || testCases.length === 0) {
     testRunner.cancel();
-    rows.forEach(row => {
+    rows.forEach((row) => {
       row.dataset.result = "pending";
-      row.querySelector(".test-result").textContent = compiled ? "Add an example to check the pattern" : "Fix the rules to run this example";
+      row.querySelector(".test-result").textContent = compiled
+        ? "Add an example to check the pattern"
+        : "Fix the rules to run this example";
     });
-    ui.testSummary.textContent = compiled ? "Add a positive or negative example to check the pattern." : "Fix the rules to run the examples.";
+    ui.testSummary.textContent = compiled
+      ? "Add a positive or negative example to check the pattern."
+      : "Fix the rules to run the examples.";
     ui.testSummary.dataset.state = compiled ? "neutral" : "error";
     return;
   }
 
-  rows.forEach(row => {
+  rows.forEach((row) => {
     row.dataset.result = "pending";
     row.querySelector(".test-result").textContent = "Checking…";
   });
@@ -102,21 +117,22 @@ async function updateTestResults() {
       source: compiled.source,
       flags: compiled.flags,
       mode: ui.matchMode.value,
-      cases: testCases.map(({ id, text, expected }) => ({ id, text, expected }))
+      cases: testCases.map(({ id, text, expected }) => ({ id, text, expected })),
     });
-    const byId = new Map(results.map(result => [result.id, result]));
+    const byId = new Map(results.map((result) => [result.id, result]));
     let passed = 0;
     rows.forEach((row, index) => {
       const evaluation = byId.get(testCases[index].id);
       if (evaluation.pass) passed += 1;
       row.dataset.result = evaluation.pass ? "pass" : "fail";
-      row.querySelector(".test-result").textContent = `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`;
+      row.querySelector(".test-result").textContent =
+        `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`;
     });
     ui.testSummary.textContent = `${passed} of ${testCases.length} examples behave as expected`;
     ui.testSummary.dataset.state = passed === testCases.length ? "success" : "error";
   } catch (error) {
     if (error.code === "CANCELLED") return;
-    rows.forEach(row => {
+    rows.forEach((row) => {
       row.dataset.result = "pending";
       row.querySelector(".test-result").textContent = "Testing stopped";
     });
@@ -144,7 +160,10 @@ function renderTests() {
 
     const expected = make("select");
     expected.setAttribute("aria-label", "Expected match result");
-    for (const [value, label] of [["true", "Should match"], ["false", "Should not match"]]) {
+    for (const [value, label] of [
+      ["true", "Should match"],
+      ["false", "Should not match"],
+    ]) {
       const option = make("option", "", label);
       option.value = value;
       expected.append(option);
@@ -160,7 +179,7 @@ function renderTests() {
     remove.type = "button";
     remove.setAttribute("aria-label", "Remove example");
     remove.addEventListener("click", () => {
-      testCases = testCases.filter(item => item.id !== sample.id);
+      testCases = testCases.filter((item) => item.id !== sample.id);
       renderTests();
     });
     row.append(input, expected, result, remove);
@@ -170,7 +189,7 @@ function renderTests() {
 }
 
 function compileRules() {
-  const lines = ui.rules.value.split("\n").filter(line => line.trim()).length;
+  const lines = ui.rules.value.split("\n").filter((line) => line.trim()).length;
   ui.ruleCount.textContent = `${lines} ${lines === 1 ? "line" : "lines"}`;
   if (!ui.rules.value.trim()) {
     compiled = null;
@@ -198,9 +217,11 @@ function compileRules() {
     ui.flagsSummary.textContent = "Fix the instruction shown below";
     ui.copy.disabled = true;
     setCompileState("Needs a fix", "error");
-    setDiagnostic(error instanceof CompileError
-      ? `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}`
-      : `Unexpected compiler error: ${error.message}`);
+    setDiagnostic(
+      error instanceof CompileError
+        ? `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}`
+        : `Unexpected compiler error: ${error.message}`,
+    );
     renderTrace(null);
   }
   updateTestResults();
@@ -213,8 +234,8 @@ function useScenario(scenario) {
   ui.dotAll.checked = false;
   ui.matchMode.value = scenario.matchMode;
   testCases = [
-    ...scenario.positive.map(text => ({ id: nextTestId++, text, expected: true })),
-    ...scenario.negative.map(text => ({ id: nextTestId++, text, expected: false }))
+    ...scenario.positive.map((text) => ({ id: nextTestId++, text, expected: true })),
+    ...scenario.negative.map((text) => ({ id: nextTestId++, text, expected: false })),
   ];
   for (const button of ui.examples.querySelectorAll("button")) {
     button.setAttribute("aria-current", String(button.dataset.scenario === activeScenario));
@@ -257,7 +278,9 @@ ui.copy.addEventListener("click", async () => {
     if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable");
     await Promise.race([
       navigator.clipboard.writeText(text),
-      new Promise((_, reject) => window.setTimeout(() => reject(new Error("Clipboard request timed out")), 1000))
+      new Promise((_, reject) =>
+        window.setTimeout(() => reject(new Error("Clipboard request timed out")), 1000),
+      ),
     ]);
   } catch {
     const helper = make("textarea");
@@ -268,7 +291,11 @@ ui.copy.addEventListener("click", async () => {
     document.body.append(helper);
     helper.select();
     let copied = false;
-    try { copied = document.execCommand("copy"); } catch { /* select for manual copy below */ }
+    try {
+      copied = document.execCommand("copy");
+    } catch {
+      /* select for manual copy below */
+    }
     helper.remove();
     if (!copied) {
       const selection = window.getSelection();
@@ -276,13 +303,17 @@ ui.copy.addEventListener("click", async () => {
       range.selectNodeContents(ui.output);
       selection.removeAllRanges();
       selection.addRange(range);
-      setDiagnostic("Clipboard access was blocked. The pattern is selected; press your keyboard copy shortcut.");
+      setDiagnostic(
+        "Clipboard access was blocked. The pattern is selected; press your keyboard copy shortcut.",
+      );
       return;
     }
   }
   setDiagnostic("");
   ui.copy.textContent = "Copied ✓";
-  window.setTimeout(() => { ui.copy.textContent = "Copy regex ↗"; }, 1800);
+  window.setTimeout(() => {
+    ui.copy.textContent = "Copy regex ↗";
+  }, 1800);
 });
 
 try {
@@ -291,8 +322,10 @@ try {
   scenarios = await response.json();
   renderScenarioButtons();
   const requested = new URLSearchParams(window.location.search).get("example");
-  useScenario(scenarios.find(item => item.id === requested) ?? scenarios[0]);
+  useScenario(scenarios.find((item) => item.id === requested) ?? scenarios[0]);
 } catch (error) {
-  setDiagnostic(`Example recipes could not load (${error.message}). You can still write rules manually.`);
+  setDiagnostic(
+    `Example recipes could not load (${error.message}). You can still write rules manually.`,
+  );
   setCompileState("Examples unavailable", "error");
 }

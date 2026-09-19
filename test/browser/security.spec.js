@@ -1,23 +1,33 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test("a pathological regex times out in a worker and normal tests still run", async ({ page }) => {
   await page.goto("/");
   const outcome = await page.evaluate(async () => {
     const { TestRunner } = await import("/web/test-runner.js");
-    const makeRunner = timeout => new TestRunner(() => new Worker("/web/match-worker.js", { type: "module" }), timeout);
+    const makeRunner = (timeout) =>
+      new TestRunner(() => new Worker("/web/match-worker.js", { type: "module" }), timeout);
     const normal = await makeRunner(1000).run({
-      source: "^a+$", flags: "u", mode: "full", cases: [{ id: 1, text: "aaa", expected: true }]
+      source: "^a+$",
+      flags: "u",
+      mode: "full",
+      cases: [{ id: 1, text: "aaa", expected: true }],
     });
     let timedOut = false;
     try {
       await makeRunner(150).run({
-        source: "^(a+)+$", flags: "u", mode: "full", cases: [{ id: 2, text: `${"a".repeat(2047)}!`, expected: false }]
+        source: "^(a+)+$",
+        flags: "u",
+        mode: "full",
+        cases: [{ id: 2, text: `${"a".repeat(2047)}!`, expected: false }],
       });
     } catch (error) {
       timedOut = error.code === "TIMEOUT";
     }
     const recovered = await makeRunner(1000).run({
-      source: "^b+$", flags: "u", mode: "full", cases: [{ id: 3, text: "bbb", expected: true }]
+      source: "^b+$",
+      flags: "u",
+      mode: "full",
+      cases: [{ id: 3, text: "bbb", expected: true }],
     });
     return { normal, timedOut, recovered };
   });

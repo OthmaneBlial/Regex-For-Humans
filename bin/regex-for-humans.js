@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { readFile, readFileSync } from "node:fs";
-import { stdin, stdout, stderr, exit } from "node:process";
+import { exit, stderr, stdin, stdout } from "node:process";
 import { fileURLToPath } from "node:url";
-import { compile, CompileError } from "../index.js";
+import { CompileError, compile } from "../index.js";
 
 const usage = `Usage: regex-for-humans [--json] [file|-]
 
@@ -23,6 +23,7 @@ const args = process.argv.slice(2);
 let json = false;
 let explain = false;
 let flags = "";
+/** @type {string|undefined} */
 let file;
 
 for (const arg of args) {
@@ -69,18 +70,22 @@ if (file === undefined && stdin.isTTY) {
 
 function readStdin() {
   return new Promise((resolve, reject) => {
+    /** @type {string[]} */
     const chunks = [];
     stdin.setEncoding("utf8");
-    stdin.on("data", chunk => chunks.push(chunk));
+    stdin.on("data", (chunk) => chunks.push(String(chunk)));
     stdin.on("end", () => resolve(chunks.join("")));
     stdin.on("error", reject);
   });
 }
 
 try {
-  const input = file === undefined || file === "-"
-    ? await readStdin()
-    : await new Promise((resolve, reject) => readFile(file, "utf8", (error, data) => error ? reject(error) : resolve(data)));
+  const input =
+    file === undefined || file === "-"
+      ? await readStdin()
+      : await new Promise((resolve, reject) =>
+          readFile(file, "utf8", (error, data) => (error ? reject(error) : resolve(data))),
+        );
   const result = compile(input, { flags });
   if (json) {
     stdout.write(`${JSON.stringify(result)}\n`);
@@ -88,17 +93,21 @@ try {
     stdout.write(`/${result.source}/${result.flags}\n`);
     if (explain) {
       for (const segment of result.segments) {
-        stdout.write(`${segment.line}:${segment.column}  ${segment.source}  ${segment.explanation}\n`);
+        stdout.write(
+          `${segment.line}:${segment.column}  ${segment.source}  ${segment.explanation}\n`,
+        );
       }
     }
   }
 } catch (error) {
   if (error instanceof CompileError) {
-    stderr.write(json
-      ? `${JSON.stringify({ error: error.toJSON() })}\n`
-      : `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}\n`);
+    stderr.write(
+      json
+        ? `${JSON.stringify({ error: error.toJSON() })}\n`
+        : `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}\n`,
+    );
   } else {
-    stderr.write(`${error.message}\n`);
+    stderr.write(`${String(error)}\n`);
   }
   exit(1);
 }

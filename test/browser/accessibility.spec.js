@@ -1,10 +1,12 @@
-import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
 
 const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
 
 for (const state of ["ready", "error"]) {
-  test(`${state} workshop has no automatically detectable WCAG A/AA violation`, async ({ page }) => {
+  test(`${state} workshop has no automatically detectable WCAG A/AA violation`, async ({
+    page,
+  }) => {
     await page.goto("/");
     await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
     if (state === "error") {
@@ -12,11 +14,16 @@ for (const state of ["ready", "error"]) {
       await expect(page.locator("#diagnostic")).toBeVisible();
     }
     const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
-    expect(results.violations.map(violation => ({
-      id: violation.id,
-      impact: violation.impact,
-      nodes: violation.nodes.map(node => ({ target: node.target, summary: node.failureSummary }))
-    }))).toEqual([]);
+    expect(
+      results.violations.map((violation) => ({
+        id: violation.id,
+        impact: violation.impact,
+        nodes: violation.nodes.map((node) => ({
+          target: node.target,
+          summary: node.failureSummary,
+        })),
+      })),
+    ).toEqual([]);
   });
 }
 

@@ -1,29 +1,39 @@
-import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
+import { expect, test } from "@playwright/test";
 
-const scenarios = JSON.parse(readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"));
+const scenarios = JSON.parse(
+  readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),
+);
 
 for (const scenario of scenarios) {
   test(`${scenario.id} loads the same pattern and preserves every sample`, async ({ page }) => {
     const browserErrors = [];
     const remoteRequests = [];
     const failedResponses = [];
-    page.on("pageerror", error => browserErrors.push(error.message));
-    page.on("console", message => { if (message.type() === "error") browserErrors.push(message.text()); });
-    page.on("request", request => {
+    page.on("pageerror", (error) => browserErrors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error") browserErrors.push(message.text());
+    });
+    page.on("request", (request) => {
       if (!request.url().startsWith("http://127.0.0.1:4174/")) remoteRequests.push(request.url());
     });
-    page.on("response", response => {
+    page.on("response", (response) => {
       if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.url()}`);
     });
 
     await page.goto(`/?example=${scenario.id}`);
     await expect(page.locator("#regex-output")).toHaveText(`/${scenario.source}/${scenario.flags}`);
-    await expect(page.locator("#test-summary")).toHaveText(`${scenario.positive.length + scenario.negative.length} of ${scenario.positive.length + scenario.negative.length} examples behave as expected`);
+    await expect(page.locator("#test-summary")).toHaveText(
+      `${scenario.positive.length + scenario.negative.length} of ${scenario.positive.length + scenario.negative.length} examples behave as expected`,
+    );
     await expect(page.locator("#match-mode")).toHaveValue(scenario.matchMode);
-    const visibleSamples = await page.locator("#test-list textarea").evaluateAll(elements => elements.map(element => element.value));
+    const visibleSamples = await page
+      .locator("#test-list textarea")
+      .evaluateAll((elements) => elements.map((element) => element.value));
     expect(visibleSamples).toEqual([...scenario.positive, ...scenario.negative]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
     expect(browserErrors).toEqual([]);
     expect(failedResponses).toEqual([]);
     expect(remoteRequests).toEqual([]);
@@ -37,7 +47,9 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#diagnostic")).toContainText("Line 2, column 3");
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
   await expect(page.getByRole("button", { name: /Copy regex/ })).toBeDisabled();
-  await editor.fill("at the beginning of the input\na \"ABC\"\ndigit character 3 times\nend of the input");
+  await editor.fill(
+    'at the beginning of the input\na "ABC"\ndigit character 3 times\nend of the input',
+  );
   await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
   await expect(page.locator("#diagnostic")).toBeHidden();
   await page.locator("#ignore-case").check();
@@ -83,7 +95,9 @@ test("Unicode literals and dot-all behavior are visible in example results", asy
 });
 
 test("copy button places the real generated regex on the clipboard", async ({ page, context }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://127.0.0.1:4174" });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: "http://127.0.0.1:4174",
+  });
   await page.goto("/");
   await page.getByRole("button", { name: /Copy regex/ }).click();
   await expect(page.locator("#copy-button")).toContainText("Copied");

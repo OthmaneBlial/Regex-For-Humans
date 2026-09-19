@@ -11,6 +11,10 @@
   },
   "scripts": {
     "test": "node --test test/*.test.js",
+    "format:check": "biome format .",
+    "lint": "biome lint .",
+    "typecheck": "tsc --noEmit",
+    "check": "biome check . && npm run typecheck",
     "build": "node scripts/build-web.js",
     "serve": "node scripts/serve-dist.js",
     "test:browser": "playwright test"
@@ -29,6 +33,9 @@
   "license": "MIT",
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
-    "@playwright/test": "1.63.0"
+    "@biomejs/biome": "2.5.14",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.4",
+    "typescript": "7.0.2"
   }
 }

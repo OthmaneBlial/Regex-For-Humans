@@ -52,16 +52,16 @@
           <label for="rules-input" class="field-label">One instruction per line</label>
           <textarea id="rules-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="rules-help" placeholder="at the beginning of the input&#10;a &quot;ABC&quot;&#10;digit character 3 times&#10;end of the input"></textarea>
           <div class="editor-footer"><p id="rules-help">A controlled language, not a free-form prompt. <a href="../docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">Read the syntax ↗</a></p><span id="rule-count">0 lines</span></div>
-          <div class="flag-controls" aria-label="Regex options">
+          <fieldset class="flag-controls" aria-label="Regex options">
             <label class="flag-toggle"><input id="ignore-case" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Ignore case <code>i</code></span></label>
             <label class="flag-toggle"><input id="dot-all" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Dot matches newlines <code>s</code></span></label>
-          </div>
+          </fieldset>
         </section>
 
         <section class="panel result-panel" aria-labelledby="result-title">
           <div class="panel-heading"><span class="step-number">02</span><div><p class="kicker">THE OUTPUT</p><h2 id="result-title">Understand the pattern</h2></div></div>
           <div class="result-label-row"><span>JAVASCRIPT REGEXP</span><span id="compile-state" class="state-pill" role="status">Ready</span></div>
-          <div class="pattern-box"><code id="regex-output" aria-label="Generated regular expression">Select a recipe or write a rule</code></div>
+          <div class="pattern-box"><code id="regex-output">Select a recipe or write a rule</code></div>
           <div class="result-actions"><span id="flags-summary">Unicode mode always on</span><button id="copy-button" class="copy-button" type="button" disabled>Copy regex <span aria-hidden="true">↗</span></button></div>
           <div id="diagnostic" class="diagnostic" role="alert" hidden></div>
           <div class="trace-heading"><h3>How it was built</h3><span>RULE → FRAGMENT</span></div>

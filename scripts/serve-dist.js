@@ -1,6 +1,6 @@
-import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { resolve, sep, extname } from "node:path";
+import { createServer } from "node:http";
+import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("../dist/", import.meta.url)));
@@ -12,7 +12,7 @@ const mimeTypes = {
   ".json": "application/json; charset=utf-8",
   ".md": "text/markdown; charset=utf-8",
   ".png": "image/png",
-  ".svg": "image/svg+xml"
+  ".svg": "image/svg+xml",
 };
 
 createServer(async (request, response) => {
@@ -24,7 +24,12 @@ createServer(async (request, response) => {
       return;
     }
     const data = await readFile(path);
-    response.writeHead(200, { "content-type": mimeTypes[extname(path)] ?? "application/octet-stream", "x-content-type-options": "nosniff" }).end(data);
+    response
+      .writeHead(200, {
+        "content-type": mimeTypes[extname(path)] ?? "application/octet-stream",
+        "x-content-type-options": "nosniff",
+      })
+      .end(data);
   } catch (error) {
     response.writeHead(error.code === "ENOENT" ? 404 : 400).end();
   }

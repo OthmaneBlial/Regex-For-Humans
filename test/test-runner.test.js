@@ -1,5 +1,5 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
 import { TestRunner } from "../web/test-runner.js";
 
 class FakeWorker {
@@ -10,7 +10,10 @@ class FakeWorker {
 
   postMessage(request) {
     this.request = request;
-    if (this.reply) queueMicrotask(() => this.onmessage({ data: { id: request.id, results: [{ id: 1, pass: true }] } }));
+    if (this.reply)
+      queueMicrotask(() =>
+        this.onmessage({ data: { id: request.id, results: [{ id: 1, pass: true }] } }),
+      );
   }
 
   terminate() {

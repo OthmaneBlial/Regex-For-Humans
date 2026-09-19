@@ -13,16 +13,19 @@ export default defineConfig({
     browserName: "chromium",
     channel,
     screenshot: "only-on-failure",
-    trace: "on-first-retry"
+    trace: "on-first-retry",
   },
   projects: [
     { name: "desktop", use: { viewport: { width: 1280, height: 800 } } },
-    { name: "mobile", use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } }
+    {
+      name: "mobile",
+      use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
+    },
   ],
   webServer: {
     command: "npm run build && node scripts/serve-dist.js 4174",
     url: baseURL,
     reuseExistingServer: !process.env.CI,
-    timeout: 30_000
-  }
+    timeout: 30_000,
+  },
 });

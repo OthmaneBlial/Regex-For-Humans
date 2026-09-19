@@ -36,14 +36,17 @@ export class TestRunner {
         if (error) reject(error);
         else resolve(result);
       };
-      const timer = setTimeout(() => finish(new TestRunError("TIMEOUT", "Example testing took too long and was stopped.")), this.timeoutMs);
+      const timer = setTimeout(
+        () => finish(new TestRunError("TIMEOUT", "Example testing took too long and was stopped.")),
+        this.timeoutMs,
+      );
       this.active = { id, worker, timer, reject };
-      worker.onmessage = event => {
+      worker.onmessage = (event) => {
         if (event.data.id !== id) return;
         if (event.data.error) finish(new TestRunError("WORKER_ERROR", event.data.error));
         else finish(null, event.data.results);
       };
-      worker.onerror = event => {
+      worker.onerror = (event) => {
         event.preventDefault?.();
         finish(new TestRunError("WORKER_ERROR", "Example testing failed in its isolated worker."));
       };

@@ -1,9 +1,11 @@
-import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { compile, toRegExp, regexMatchingThroughLines, CompileError } from "../index.js";
+import test from "node:test";
+import { CompileError, compile, regexMatchingThroughLines, toRegExp } from "../index.js";
 
-const scenarios = JSON.parse(readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"));
+const scenarios = JSON.parse(
+  readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
+);
 
 test("reference scenarios compile to exact source and flags and match both ways", () => {
   for (const scenario of scenarios) {
@@ -11,8 +13,10 @@ test("reference scenarios compile to exact source and flags and match both ways"
     assert.equal(result.source, scenario.source, scenario.id);
     assert.equal(result.flags, scenario.flags, scenario.id);
     const regex = toRegExp(result);
-    for (const sample of scenario.positive) assert.equal(regex.test(sample), true, `${scenario.id}: ${JSON.stringify(sample)}`);
-    for (const sample of scenario.negative) assert.equal(regex.test(sample), false, `${scenario.id}: ${JSON.stringify(sample)}`);
+    for (const sample of scenario.positive)
+      assert.equal(regex.test(sample), true, `${scenario.id}: ${JSON.stringify(sample)}`);
+    for (const sample of scenario.negative)
+      assert.equal(regex.test(sample), false, `${scenario.id}: ${JSON.stringify(sample)}`);
     assert.equal(regexMatchingThroughLines(scenario.rules), scenario.source, scenario.id);
   }
 });
@@ -30,20 +34,23 @@ test("negative classes and all repetition forms are semantically distinct", () =
 
 test("literal and character-class metacharacters are escaped in their contexts", () => {
   const literal = compile('at the beginning of the input\na "a.b/c[1]"\nend of the input');
-  assert.equal(literal.source, '^a\\.b\\/c\\[1\\]$');
+  assert.equal(literal.source, "^a\\.b\\/c\\[1\\]$");
   assert.equal(toRegExp(literal).test("a.b/c[1]"), true);
   assert.equal(toRegExp(literal).test("axb/c[1]"), false);
 
   const list = compile('any of the following characters: "]", "-", "^", "\\\\", ",", "😀"');
   const regex = toRegExp(list);
-  for (const character of ["]", "-", "^", "\\", ",", "😀"]) assert.equal(regex.test(character), true, character);
+  for (const character of ["]", "-", "^", "\\", ",", "😀"])
+    assert.equal(regex.test(character), true, character);
   assert.equal(regex.test("z"), false);
-  assert.equal(compile('a "AB" 2 times').source, '(?:AB){2}');
+  assert.equal(compile('a "AB" 2 times').source, "(?:AB){2}");
   assert.equal(compile('a "\\n"').source, "\\u{a}");
 });
 
 test("flags and segment positions describe the emitted expression", () => {
-  const result = compile('at the beginning of a line\nany character\nend of the line', { flags: "is" });
+  const result = compile("at the beginning of a line\nany character\nend of the line", {
+    flags: "is",
+  });
   assert.equal(result.flags, "imsu");
   assert.equal(result.source, "^.$");
   assert.equal(result.segments.length, 3);
@@ -61,13 +68,21 @@ test("explanations reflect JavaScript flags, greedy matching and shorthand limit
   assert.match(lineRule.segments[1].explanation, /line break/u);
   assert.match(lineRule.segments[1].explanation, /greedily/u);
   assert.match(lineRule.segments[2].explanation, /ASCII digit/u);
-  assert.match(compile("any character", { flags: "s" }).segments[0].explanation, /including a line break/u);
+  assert.match(
+    compile("any character", { flags: "s" }).segments[0].explanation,
+    /including a line break/u,
+  );
   assert.match(compile('a "ABC"', { flags: "i" }).segments[0].explanation, /ignoring case/u);
   assert.match(compile("alphanumeric character").segments[0].explanation, /underscore/u);
 });
 
 test("invalid input fails explicitly rather than returning partial output", () => {
-  for (const source of ["unknown phrase", "digit character\nsurprise", "digit character between 9 and 2 times", "any of the following characters:"]) {
+  for (const source of [
+    "unknown phrase",
+    "digit character\nsurprise",
+    "digit character between 9 and 2 times",
+    "any of the following characters:",
+  ]) {
     assert.throws(() => compile(source), CompileError, source);
   }
   assert.throws(() => compile("digit character", { flags: "g" }), { code: "UNSUPPORTED_FLAGS" });

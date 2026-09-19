@@ -1,13 +1,15 @@
-import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFileSync, writeFileSync, mkdtempSync, unlinkSync, rmdirSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 const cli = fileURLToPath(new URL("../bin/regex-for-humans.js", import.meta.url));
-const scenarios = JSON.parse(readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"));
+const scenarios = JSON.parse(
+  readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
+);
 
 function run(args, input) {
   return spawnSync(process.execPath, [cli, ...args], { input, encoding: "utf8" });
@@ -46,7 +48,7 @@ test("CLI exposes flags, help and version", () => {
   assert.match(run(["--version"]).stdout, /^0\.1\.0-dev\n$/u);
   const explained = run(["--explain", "-"], "digit character");
   assert.equal(explained.status, 0, explained.stderr);
-  assert.match(explained.stdout, /1:1  \\d  One ASCII digit/u);
+  assert.match(explained.stdout, /1:1 {2}\\d {2}One ASCII digit/u);
 });
 
 test("CLI reports an unknown rule with position and nonzero status", () => {
