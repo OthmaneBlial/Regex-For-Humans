@@ -4,7 +4,7 @@
 
 Regex For Humans aims to turn a small, explicit set of English instructions into a JavaScript regular expression that a developer can inspect and test. It is a controlled language, not a free-form English or AI generator.
 
-**Current status:** development build. The controlled-English compiler, library, CLI and local browser workshop run from this clone. Browser test isolation, wider automated QA, CI and release are still in progress. Nothing has been published to npm or released on GitHub yet.
+**Current status:** development build. The controlled-English compiler, library, CLI and local browser workshop run from this clone. Compatibility checks, CI and release are still in progress. Nothing has been published to npm or released on GitHub yet.
 
 With Node.js 22 or newer:
 
@@ -24,6 +24,8 @@ python3 -m http.server 4173 --directory dist
 ```
 
 The workshop loads the three reference recipes, compiles in the browser and checks positive and negative strings locally. The URL contains only a recipe ID, never the rules you type.
+
+Example matching runs in a worker with a timeout, so a slow test cannot hold the interface indefinitely. The [security model](docs/SECURITY_MODEL.md) lists the input limits and boundaries.
 
 For automated browser checks, run `npm ci` followed by `npm run test:browser`. The local suite uses installed Google Chrome; the CI configuration will install its own browser when added. The suite covers desktop and mobile viewports, copy, diagnostics, Unicode, multiline examples, keyboard navigation and automated accessibility checks. See the [usability study protocol](docs/USABILITY-STUDY.md) for the remaining human checks.
 

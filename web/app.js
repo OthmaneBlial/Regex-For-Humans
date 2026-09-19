@@ -1,4 +1,5 @@
 import { compile, CompileError } from "../index.js";
+import { TestRunner } from "./test-runner.js";
 
 const ui = {
   examples: document.querySelector("#example-list"),
@@ -23,6 +24,7 @@ let activeScenario = null;
 let testCases = [];
 let nextTestId = 1;
 let compiled = null;
+const testRunner = new TestRunner(() => new Worker(new URL("./match-worker.js", import.meta.url), { type: "module" }));
 
 function make(tag, className, text) {
   const node = document.createElement(tag);
@@ -76,46 +78,56 @@ function flagsDescription(flags) {
   return parts.join(" · ");
 }
 
-function evaluateCase(sample) {
-  const expression = new RegExp(compiled.source, compiled.flags);
-  const match = expression.exec(sample.text);
-  const actual = ui.matchMode.value === "search"
-    ? match !== null
-    : match !== null && match.index === 0 && match[0].length === sample.text.length;
-  let detail = match ? `Matched ${JSON.stringify(match[0])} at ${match.index}` : "No match";
-  if (match && !actual) detail = `Found ${JSON.stringify(match[0])}, not the entire string`;
-  return { actual, pass: actual === sample.expected, detail };
-}
-
-function updateTestResults() {
+async function updateTestResults() {
   const rows = ui.testList.querySelectorAll(".test-row");
-  let passed = 0;
-  rows.forEach((row, index) => {
-    const result = row.querySelector(".test-result");
-    if (!compiled) {
+  if (!compiled || testCases.length === 0) {
+    testRunner.cancel();
+    rows.forEach(row => {
       row.dataset.result = "pending";
-      result.textContent = "Fix the rules to run this example";
-      return;
-    }
-    const evaluation = evaluateCase(testCases[index]);
-    if (evaluation.pass) passed += 1;
-    row.dataset.result = evaluation.pass ? "pass" : "fail";
-    result.textContent = `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`;
+      row.querySelector(".test-result").textContent = compiled ? "Add an example to check the pattern" : "Fix the rules to run this example";
+    });
+    ui.testSummary.textContent = compiled ? "Add a positive or negative example to check the pattern." : "Fix the rules to run the examples.";
+    ui.testSummary.dataset.state = compiled ? "neutral" : "error";
+    return;
+  }
+
+  rows.forEach(row => {
+    row.dataset.result = "pending";
+    row.querySelector(".test-result").textContent = "Checking…";
   });
-  if (!compiled) {
-    ui.testSummary.textContent = "Fix the rules to run the examples.";
-    ui.testSummary.dataset.state = "error";
-  } else if (testCases.length === 0) {
-    ui.testSummary.textContent = "Add a positive or negative example to check the pattern.";
-    ui.testSummary.dataset.state = "neutral";
-  } else {
+  ui.testSummary.textContent = "Checking examples…";
+  ui.testSummary.dataset.state = "neutral";
+  try {
+    const results = await testRunner.run({
+      source: compiled.source,
+      flags: compiled.flags,
+      mode: ui.matchMode.value,
+      cases: testCases.map(({ id, text, expected }) => ({ id, text, expected }))
+    });
+    const byId = new Map(results.map(result => [result.id, result]));
+    let passed = 0;
+    rows.forEach((row, index) => {
+      const evaluation = byId.get(testCases[index].id);
+      if (evaluation.pass) passed += 1;
+      row.dataset.result = evaluation.pass ? "pass" : "fail";
+      row.querySelector(".test-result").textContent = `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`;
+    });
     ui.testSummary.textContent = `${passed} of ${testCases.length} examples behave as expected`;
     ui.testSummary.dataset.state = passed === testCases.length ? "success" : "error";
+  } catch (error) {
+    if (error.code === "CANCELLED") return;
+    rows.forEach(row => {
+      row.dataset.result = "pending";
+      row.querySelector(".test-result").textContent = "Testing stopped";
+    });
+    ui.testSummary.textContent = error.message;
+    ui.testSummary.dataset.state = "error";
   }
 }
 
 function renderTests() {
   ui.testList.replaceChildren();
+  ui.addExample.disabled = testCases.length >= 100;
   for (const sample of testCases) {
     const row = make("div", "test-row");
     const input = make("textarea");
@@ -236,7 +248,7 @@ ui.matchMode.addEventListener("change", updateTestResults);
 ui.addExample.addEventListener("click", () => {
   testCases.push({ id: nextTestId++, text: "", expected: true });
   renderTests();
-  ui.testList.lastElementChild?.querySelector("input")?.focus();
+  ui.testList.lastElementChild?.querySelector("textarea")?.focus();
 });
 ui.copy.addEventListener("click", async () => {
   if (!compiled) return;

@@ -16,7 +16,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [x] 2.3 Tests positifs et négatifs — 16 tests navigateur verts : ancres, Unicode, saut de ligne, modes, édition et écarts ; isolation contre exécution longue suivie en 3.2
 - [ ] 2.4 Interface et accessibilité — rendu et clavier vérifiés, 6 tests axe/Playwright verts ; lecteur d'écran réel et 3 nouvelles personnes encore requis
 - [ ] 3.1 Tests et compatibilité
-- [ ] 3.2 Bornes et sécurité de l'exécution
+- [x] 3.2 Bornes et sécurité de l'exécution — limites documentées, worker interrompable, timeout/récupération et entrée HTML testés ; 26 tests navigateur verts, `npm audit` sans vulnérabilité signalée
 - [ ] 3.3 Architecture et politique de changements
 - [ ] 4.1 README et premier succès
 - [ ] 4.2 Captures réelles
