@@ -22,7 +22,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [ ] 4.2 Captures réelles
 - [ ] 4.3 Contribution et présentation GitHub — politiques sécurité/changelog, modèles d'issues/PR et métadonnées préparés ; formulaires d'issue et signalement privé visibles sur GitHub ; lien public de démo encore absent
 - [ ] 5.1 CI vérifiée — run `35443998779` (`e4ffc27`) vert sur Linux Node 22/24, macOS et Windows Node 24, et Chromium Linux ; tarball testé conservé ; PR volontairement cassée encore à contrôler
-- [ ] 5.2 Package publié et atelier déployé
+- [ ] 5.2 Package publié et atelier déployé — tarball local testé, workflow Pages manuel depuis un tag stable préparé et contrôlé par `actionlint` ; npm et Pages publics encore absents
 - [ ] 5.3 Décision et validation des binaires — voie npm/Node retenue provisoirement dans `docs/DISTRIBUTION.md` ; besoin de binaire à mesurer dans les séances utilisateurs avant décision finale
 - [ ] 5.4 Release publiée et vérifiée
 - [ ] 6.1 Capture et montage réel
