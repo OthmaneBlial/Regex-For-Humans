@@ -21,7 +21,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [ ] 4.1 README et premier succès — commandes CLI, bibliothèque, build et atelier vérifiées depuis un clone vierge ; rendu GitHub et liens vérifiés ; relecture par un novice encore requise
 - [ ] 4.2 Captures réelles
 - [ ] 4.3 Contribution et présentation GitHub — politiques sécurité/changelog, modèles d'issues/PR et métadonnées préparés ; formulaires d'issue et signalement privé visibles sur GitHub ; lien public de démo encore absent
-- [ ] 5.1 CI vérifiée — run `35443998779` (`e4ffc27`) vert sur Linux Node 22/24, macOS et Windows Node 24, et Chromium Linux ; tarball testé conservé ; PR volontairement cassée encore à contrôler
+- [x] 5.1 CI vérifiée — run normal `35444220569` (`dfeffb8`) vert sur Linux Node 22/24, macOS et Windows Node 24, et Chromium Linux ; artefact `npm-package-tested` téléchargé (SHA-256 `2baec9a40e41bffa3fb6d0081539784edf352bd1e4648725970c84400ce5aa38`) ; PR brouillon [#1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) volontairement cassée, run `35444252927` échoué dans les quatre jobs `npm run check`, puis fermée sans fusion
 - [ ] 5.2 Package publié et atelier déployé — tarball local testé, workflow Pages manuel depuis un tag stable préparé et contrôlé par `actionlint` ; npm et Pages publics encore absents
 - [ ] 5.3 Décision et validation des binaires — voie npm/Node retenue provisoirement dans `docs/DISTRIBUTION.md` ; besoin de binaire à mesurer dans les séances utilisateurs avant décision finale
 - [ ] 5.4 Release publiée et vérifiée

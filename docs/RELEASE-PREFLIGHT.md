@@ -6,7 +6,7 @@ This is a runbook for a future release, not a record of publication. As of 19 Se
 
 1. Complete the open human reviews in [USABILITY-STUDY.md](USABILITY-STUDY.md): explanation accuracy, three first-use sessions, a real screen reader session, a novice README review, and an external contribution review. Record observed problems and fixes; keep the corresponding [roadmap](../ROADMAP.md) tasks open until verified.
 2. Capture final desktop and mobile screenshots from the tested build after UX changes are settled. Verify their visible examples against the compiler and inspect the rendered README.
-3. Run an intentionally broken disposable pull request through the real `pull_request` workflow and confirm a failed check. Close the test PR. The current successful push runs alone do not prove this gate.
+3. The CI rejection gate was verified on 19 September 2026: disposable draft [PR #1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) failed `npm run check` in all four core jobs of run `35444252927`, then was closed without merging and its temporary branch was removed. Recheck the gate if the CI workflow changes materially.
 4. Decide whether the observed users need standalone executables. Record the evidence in [DISTRIBUTION.md](DISTRIBUTION.md). The default remains npm/Node plus the browser workshop unless the sessions show a concrete need.
 5. Recheck npm name availability and account access at release time. A `404` from `npm view regex-for-humans` on 19 September 2026 was only a point-in-time absence of a public version; it did not reserve the name.
 
