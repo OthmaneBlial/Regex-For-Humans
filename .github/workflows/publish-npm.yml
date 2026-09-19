@@ -23,11 +23,18 @@ concurrency:
 jobs:
   publish:
     name: Verify and publish tagged package
-    if: inputs.confirm == 'PUBLISH'
     runs-on: ubuntu-latest
     environment:
       name: npm-release
     steps:
+      - name: Enforce explicit publication gate
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          if [ "$CONFIRM" != "PUBLISH" ]; then
+            echo "The workflow requires the exact confirmation word PUBLISH." >&2
+            exit 1
+          fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/tags/${{ inputs.release_tag }}
