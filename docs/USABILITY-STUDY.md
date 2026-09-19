@@ -12,6 +12,8 @@ Invite at least three people who have not seen the project. Use the tested relea
 
 Record whether the person completed each task without help, time to first valid copy, incorrect assumptions, confusing labels, navigation difficulty, and suggested changes. Ask permission before recording a screen or voice. Keep only anonymized observations in the repository. Do not report a success rate until real sessions are complete.
 
+After the tasks, ask whether installing Node/npm is a barrier to using the CLI, whether the browser workshop is enough, and which operating system/architecture they would need for an executable without Node. Record the concrete reason; this informs the [distribution decision](DISTRIBUTION.md) rather than assuming demand for binaries.
+
 | Session | Version and environment | Tasks completed without help | Time to first copy | Main difficulty | Follow-up change |
 | --- | --- | --- | --- | --- | --- |
 | Participant A | Pending | Pending | Pending | Pending | Pending |
@@ -25,4 +27,4 @@ Record whether the person completed each task without help, time to first valid 
 - Screen reader: on at least one actual screen reader/browser pair, read the page headings and landmarks, interact with the editor and recipe controls, trigger an invalid rule and a failed example, then confirm the changed status and diagnostic are announced usefully. Record system, browser, reader, findings and fixes here.
 - Mobile: check 320 px and 390 px widths for horizontal overflow and readable control labels; inspect the real rendered page, not only viewport metrics.
 
-**Current local evidence (19 September 2026):** 6 accessibility browser tests pass after a contrast correction. The workshop was visually inspected at 1280, 390 and 320 px, and automated checks cover desktop/mobile overflow. Screen reader and participant sessions remain unverified.
+**Current local evidence (19 September 2026):** 10 accessibility browser tests pass after a contrast correction, including the local syntax guide and visible build version. The workshop was visually inspected at 1280, 390 and 320 px; the guide was inspected at 1280 and 390 px. Automated checks cover desktop/mobile overflow. Screen reader and participant sessions remain unverified.
