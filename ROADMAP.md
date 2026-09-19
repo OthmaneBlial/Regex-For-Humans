@@ -2,6 +2,32 @@
 
 > État de référence : dépôt local `f39788b` (`master`), inspecté le 19 septembre 2026. Ce document est un plan, pas une liste de fonctionnalités livrées. Une tâche ne peut être déclarée terminée qu'avec la preuve indiquée dans ses critères d'acceptation. Les informations du dépôt GitHub distant sont un instantané à revérifier au moment de la publication.
 
+## Suivi d'exécution
+
+Cocher une tâche uniquement après vérification de tous ses critères. Les dépendances externes restent ouvertes tant que leurs preuves manquent.
+
+- [x] 0.1 Contrat du langage et vocabulaire — `docs/LANGUAGE.md`, 3 scénarios vérifiés avec `RegExp` sous Node 25.9.0
+- [ ] 0.2 Scénarios d'adoption et mesures
+- [ ] 1.1 Installation, API et CLI
+- [ ] 1.2 Parseur déterministe et diagnostics
+- [ ] 1.3 Sémantique et échappement
+- [ ] 2.1 Explications traçables
+- [ ] 2.2 Atelier web local
+- [ ] 2.3 Tests positifs et négatifs
+- [ ] 2.4 Interface et accessibilité
+- [ ] 3.1 Tests et compatibilité
+- [ ] 3.2 Bornes et sécurité de l'exécution
+- [ ] 3.3 Architecture et politique de changements
+- [ ] 4.1 README et premier succès
+- [ ] 4.2 Captures réelles
+- [ ] 4.3 Contribution et présentation GitHub
+- [ ] 5.1 CI vérifiée
+- [ ] 5.2 Package publié et atelier déployé
+- [ ] 5.3 Décision et validation des binaires
+- [ ] 5.4 Release publiée et vérifiée
+- [ ] 6.1 Capture et montage réel
+- [ ] 6.2 Exports vidéo vérifiés
+
 ## 1. Diagnostic vérifié
 
 | Axe | Constat et preuve dans l'état actuel | Conséquence |
