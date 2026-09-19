@@ -20,8 +20,8 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [ ] 3.3 Architecture et politique de changements — guide, liens et exercice interne vérifiés (`docs/CONTRIBUTION-EXERCISE.md`) ; revue par un contributeur extérieur encore requise
 - [ ] 4.1 README et premier succès — commandes CLI, bibliothèque, build et atelier vérifiées depuis un clone vierge ; rendu GitHub et liens vérifiés ; relecture par un novice encore requise
 - [ ] 4.2 Captures réelles
-- [ ] 4.3 Contribution et présentation GitHub — politiques sécurité/changelog, modèles d'issues/PR et métadonnées préparés ; formulaire GitHub et lien public de démo encore à vérifier
-- [ ] 5.1 CI vérifiée — run `2ee35c9` vert sur Linux Node 22/24, macOS et Windows Node 24, et Chromium Linux ; tarball testé conservé ; PR volontairement cassée encore à contrôler
+- [ ] 4.3 Contribution et présentation GitHub — politiques sécurité/changelog, modèles d'issues/PR et métadonnées préparés ; formulaires d'issue et signalement privé visibles sur GitHub ; lien public de démo encore absent
+- [ ] 5.1 CI vérifiée — run `35443998779` (`e4ffc27`) vert sur Linux Node 22/24, macOS et Windows Node 24, et Chromium Linux ; tarball testé conservé ; PR volontairement cassée encore à contrôler
 - [ ] 5.2 Package publié et atelier déployé
 - [ ] 5.3 Décision et validation des binaires — voie npm/Node retenue provisoirement dans `docs/DISTRIBUTION.md` ; besoin de binaire à mesurer dans les séances utilisateurs avant décision finale
 - [ ] 5.4 Release publiée et vérifiée
