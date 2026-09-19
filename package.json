@@ -10,7 +10,8 @@
     "regex-for-humans": "./bin/regex-for-humans.js"
   },
   "scripts": {
-    "test": "node --test test/*.test.js",
+    "test": "node scripts/run-node-tests.js",
+    "test:package": "node scripts/verify-package.js",
     "format:check": "biome format .",
     "lint": "biome lint .",
     "typecheck": "tsc --noEmit",
@@ -25,6 +26,8 @@
     "src/",
     "bin/",
     "docs/",
+    "SECURITY.md",
+    "CHANGELOG.md",
     "LICENSE",
     "README.md"
   ],

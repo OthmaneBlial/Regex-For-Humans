@@ -11,6 +11,7 @@ npm ci
 npm run check
 npm test
 npm run build
+npm run test:package
 npx playwright install chromium
 npm run test:browser
 ```
