@@ -30,3 +30,5 @@ These are ordered checks for an authorized release. Stop if a gate fails; do not
 If the registry or hosted site needs correction after publication, prepare a new version and redeploy from a new tag. Do not silently move the existing tag. npm unpublication has restrictions; use a clear deprecation or patch release when appropriate.
 
 The final demonstration video begins only after this entire preflight and all roadmap phases 0–5 are verified.
+
+**Local path preflight (19 September 2026):** the development `dist` build was copied beneath `/Regex-For-Humans/` on a temporary HTTP server. Chrome loaded the recipe, `/^ABC\d{3}$/u`, all four sample results and the local syntax guide. Every requested asset returned 200 or 304; the browser error log was empty. This checks relative paths only and does not prove a public Pages deployment.
