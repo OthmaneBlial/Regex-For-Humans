@@ -1,45 +1,79 @@
 # Regex For Humans
 
-![Regex For Humans logo](regexify.png)
+Write a small JavaScript regex as explicit English rules. See how each rule becomes a regex fragment, then check examples locally before copying the result.
 
-Regex For Humans aims to turn a small, explicit set of English instructions into a JavaScript regular expression that a developer can inspect and test. It is a controlled language, not a free-form English or AI generator.
+Regex For Humans has a deliberately limited vocabulary. It does not guess from arbitrary English or examples. The same compiler powers a JavaScript library, a CLI and a static browser workshop.
 
-**Current status:** development build. The controlled-English compiler, library, CLI and local browser workshop run from this clone. Compatibility checks, CI and release are still in progress. Nothing has been published to npm or released on GitHub yet.
+**Status:** development build. These surfaces run from this repository. The package is not published to npm, the workshop is not publicly deployed, and there is no GitHub Release or standalone binary yet.
+
+## A first regex from a clone
 
 With Node.js 22 or newer:
 
-```bash
-printf 'I am looking for a digit character 3 times\n' | node bin/regex-for-humans.js
-# /\d{3}/u
+```sh
+git clone https://github.com/OthmaneBlial/Regex-For-Humans.git
+cd Regex-For-Humans
+printf 'at the beginning of the input\na "ABC"\ndigit character 3 times\nend of the input\n' | node bin/regex-for-humans.js
+# /^ABC\d{3}$/u
 ```
 
-The CLI also accepts a file path, `-` for standard input, `--ignore-case`, `--dot-all`, `--explain`, `--help` and `--version`. `--json` returns source, flags and a map from output fragments to input rules, including their explanations. A library import from a local package works as `import { compile, toRegExp } from "regex-for-humans"`. Run the current test suite with `npm test`.
+`ABC123` matches; `ABC12`, `ABC1234` and `abc123` do not. The `u` flag is always present, so matching follows JavaScript's Unicode regex mode. Add `--explain` to see the fragment and explanation for every instruction, or `--json` for structured source, flags and source locations.
 
-To try the browser workshop locally, build and serve the static site:
+The library uses the same compiler:
 
-```bash
-npm run build
-python3 -m http.server 4173 --directory dist
-# Open http://localhost:4173/
-```
-
-The workshop loads the three reference recipes, compiles in the browser and checks positive and negative strings locally. The URL contains only a recipe ID, never the rules you type.
-
-Example matching runs in a worker with a timeout, so a slow test cannot hold the interface indefinitely. The [security model](docs/SECURITY_MODEL.md) lists the input limits and boundaries.
-
-For automated browser checks, run `npm ci` followed by `npm run test:browser`. The local suite uses installed Google Chrome; the CI configuration will install its own browser when added. The suite covers desktop and mobile viewports, copy, diagnostics, Unicode, multiline examples, keyboard navigation and automated accessibility checks. See the [usability study protocol](docs/USABILITY-STUDY.md) for the remaining human checks.
-
-```text
-at the beginning of the input
+```sh
+node --input-type=module <<'JS'
+import { compile, toRegExp } from './index.js';
+const rules = `at the beginning of the input
 a "ABC"
 digit character 3 times
-end of the input
+end of the input`;
+const result = compile(rules);
+console.log(`/${result.source}/${result.flags}`);
+console.log(toRegExp(result).test('ABC123'));
+JS
+# /^ABC\d{3}$/u
+# true
 ```
 
-Output: `^ABC\d{3}$` with the JavaScript `u` flag. It matches `ABC123` and rejects `ABC12` and `ABC1234` in the reference tests.
+Until an npm release exists, use the CLI from this clone or import `./index.js` from a local checkout. There is no downloadable executable to install without Node.
 
-- [Language contract](docs/LANGUAGE.md): supported phrases, semantics, flags and limits for the current compiler.
-- [Product scenarios](docs/PRODUCT.md): three exact tasks used to evaluate the library, CLI and future browser workshop.
-- [Roadmap](ROADMAP.md): implementation and verification gates through a real final demo video.
+## Try the browser workshop
 
-The project is available under the [MIT License](LICENSE).
+```sh
+npm ci
+npm run build
+npm run serve
+```
+
+Open **http://127.0.0.1:4174/**. Pick one of three reference recipes, edit a rule, inspect the generated pattern and its explanation, then add positive and negative examples. The browser compiles locally and runs example matching in a worker with a timeout. Typed rules and examples are not sent to an application backend; the [security model](docs/SECURITY_MODEL.md) describes the limits and ordinary static-host access logs.
+
+The workshop has been checked in local Chrome at desktop and mobile viewports. Automated tests cover keyboard navigation, common WCAG A/AA issues, editing, copying, Unicode, multiline cases and worker timeout. Real screen-reader and new-user checks remain open in the [roadmap](ROADMAP.md).
+
+## What the language covers
+
+| Rule type | Example | JavaScript source |
+| --- | --- | --- |
+| Input or line boundary | `at the beginning of the input` | `^` |
+| Character class | `digit character` | `\d` |
+| Negative class | `non-digit character` | `\D` |
+| Literal text | `a "ABC"` | `ABC` |
+| Character set | `anything except the following characters: a, b` | `[^ab]` |
+| Repetition | `digit character 3 times` | `\d{3}` |
+
+Read the [full language contract](docs/LANGUAGE.md) for exact phrases, flags, escaping, examples and limits. Version 1 targets JavaScript `RegExp` only. It does not offer groups, alternation, lookaround, arbitrary raw regex or reverse regex translation. Unknown or malformed instructions return a line/column diagnostic rather than a partial expression. Test a copied regex in its target runtime, especially if it will process long or untrusted text.
+
+## Develop and contribute
+
+```sh
+npm ci
+npm run check
+npm test
+npm run build
+npx playwright install chromium
+npm run test:browser
+```
+
+`npm run check` covers format, lint, strict type checking of the compiler/CLI and local documentation links. The current suite has 41 Node tests and 26 browser tests; [testing and compatibility](docs/TESTING.md) records the versions and evidence boundaries. To report a missing phrase or change the grammar, follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [architecture policy](docs/ARCHITECTURE.md). The [product scenarios](docs/PRODUCT.md) define the three reference tasks.
+
+Licensed under [MIT](LICENSE). The [roadmap](ROADMAP.md) tracks publication gates and the final real-product demonstration video.

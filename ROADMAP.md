@@ -18,7 +18,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [x] 3.1 Tests et compatibilité — 41 tests Node sur 22.23.2, 24.21.0 et 25.9.0 ; 26 tests navigateur Chrome bureau/mobile ; format/lint/typage strict du noyau et de la CLI, build et `npm ci` vérifiés ; limites de portée dans `docs/TESTING.md`
 - [x] 3.2 Bornes et sécurité de l'exécution — limites documentées, worker interrompable, timeout/récupération et entrée HTML testés ; 26 tests navigateur verts, `npm audit` sans vulnérabilité signalée
 - [ ] 3.3 Architecture et politique de changements — guide, liens et exercice interne vérifiés (`docs/CONTRIBUTION-EXERCISE.md`) ; revue par un contributeur extérieur encore requise
-- [ ] 4.1 README et premier succès
+- [ ] 4.1 README et premier succès — parcours CLI/bibliothèque/atelier réécrit ; test depuis un clone vierge, rendu GitHub et relecture novice encore requis
 - [ ] 4.2 Captures réelles
 - [ ] 4.3 Contribution et présentation GitHub
 - [ ] 5.1 CI vérifiée
