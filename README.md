@@ -1,5 +1,7 @@
 # Regex For Humans
 
+[![CI](https://github.com/OthmaneBlial/Regex-For-Humans/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/OthmaneBlial/Regex-For-Humans/actions/workflows/ci.yml)
+
 Write a small JavaScript regex as explicit English rules. See how each rule becomes a regex fragment, then check examples locally before copying the result.
 
 Regex For Humans has a deliberately limited vocabulary. It does not guess from arbitrary English or examples. The same compiler powers a JavaScript library, a CLI and a static browser workshop.

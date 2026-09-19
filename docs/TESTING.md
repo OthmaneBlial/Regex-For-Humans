@@ -8,7 +8,7 @@ The package declares Node.js `>=22`. The following versions passed all 41 Node t
 | 24.21.0 | `npx -y node@24 --test test/*.test.js` |
 | 25.9.0 | `npm test` after `npm ci` |
 
-These results verify the three versions shown, not every possible Node release accepted by the package's engine range. Browser E2E was run in local Chrome at desktop and mobile viewports. GitHub Actions run `35443621357` passed the core and package gates on Linux Node 22/24, macOS Node 24 and Windows Node 24, plus Chromium on Linux. Later commits still require their own CI result. The automated accessibility tests do not replace a real screen reader session.
+These results verify the three versions shown, not every possible Node release accepted by the package's engine range. The 32 browser tests were run in local Chrome at desktop and mobile viewports. GitHub Actions [run `35444713414`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/35444713414) passed on commit `db428f8` with Linux Node 22/24, macOS Node 24, Windows Node 24 and Chromium on Linux. Its `npm-package-tested` tarball was downloaded and SHA-256 checked (`ee371f42ff2a33c760ee018567e514e3ea0ec7ba3804e61ee8ddc469696adc85`). Disposable draft [PR #1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) confirmed that invalid syntax fails `npm run check` on a real pull-request run, then was closed without merging. The automated accessibility tests do not replace a real screen reader session.
 
 ## Reproduce locally
 
