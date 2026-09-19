@@ -21,7 +21,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [ ] 4.1 README et premier succès — commandes CLI, bibliothèque, build et atelier vérifiées depuis un clone vierge ; rendu GitHub et liens vérifiés ; relecture par un novice encore requise
 - [ ] 4.2 Captures réelles
 - [ ] 4.3 Contribution et présentation GitHub — politiques sécurité/changelog, modèles d'issues/PR et métadonnées préparés ; formulaire GitHub et lien public de démo encore à vérifier
-- [ ] 5.1 CI vérifiée — workflow Linux/macOS/Windows et Node 22/24 ajouté, tarball testé en consommateur vierge et conservé en artefact ; exécutions GitHub et PR volontairement cassée encore à contrôler
+- [ ] 5.1 CI vérifiée — premier run `838479b` : Linux Node 22/24, macOS Node 24 et Chromium verts ; Windows échoue sur les fins de ligne converties en CRLF avant les tests ; correction `.gitattributes` à revalider, puis PR volontairement cassée
 - [ ] 5.2 Package publié et atelier déployé
 - [ ] 5.3 Décision et validation des binaires
 - [ ] 5.4 Release publiée et vérifiée
