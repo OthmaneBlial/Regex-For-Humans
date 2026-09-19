@@ -1,6 +1,6 @@
 # The Regex For Humans language
 
-This document defines the intended **version 1** language. Until the compiler tests pass, it is a specification, not a claim that the current prototype implements every rule.
+This document defines the implemented **version 1 core language**. Its browser workshop and distribution are still in progress; use the tests and release notes to check the status of each surface.
 
 Regex For Humans translates a deliberately small English vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Every nonblank line is one instruction. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces around instructions are ignored.
 
@@ -40,7 +40,7 @@ A repetition modifies exactly one atom. For a multi-character literal, the compi
 | `between 2 and 4 times` | `A{2,4}` | `AA`, `AAAA` | `A`, `AAAAA` |
 | `at least 3 times` | `A{3,}` | `AAA`, `AAAA` | `AA` |
 
-The phrase `any number of times for anything except the following characters: a, b` therefore produces `[^ab]*`. Numeric counts are nonnegative integers within the documented compiler limit. The compiler rejects a quantifier attached to an anchor.
+The phrase `any number of times for anything except the following characters: a, b` therefore produces `[^ab]*`. Numeric counts are nonnegative integers no greater than 1,000. The compiler rejects a quantifier attached to an anchor.
 
 ## Anchors and flags
 
@@ -50,4 +50,4 @@ JavaScript `$` may also match before a final newline. Do not use it as a promise
 
 ## Errors and future syntax
 
-Unknown phrases, ambiguous phrases, invalid quoted strings, duplicate or misplaced anchors, unsupported flags, excessive input and invalid repetition bounds must return a diagnostic with a line and column. The compiler must not silently emit a partial success. Groups, lookaround, alternation, backreferences, arbitrary raw regex and reverse regex-to-English translation are outside version 1. Any future syntax needs examples, counterexamples and compatibility tests before it enters this contract.
+Unknown phrases, ambiguous phrases, invalid quoted strings, duplicate or misplaced anchors, unsupported flags, excessive input and invalid repetition bounds return a diagnostic with a line and column. Inputs are limited to 16,384 characters and 200 lines. The compiler does not silently emit a partial success. Groups, lookaround, alternation, backreferences, arbitrary raw regex and reverse regex-to-English translation are outside version 1. Any future syntax needs examples, counterexamples and compatibility tests before it enters this contract.

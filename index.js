@@ -1,109 +1,22 @@
-// Created by Othmane Blial
+import { parse } from "./src/parser.js";
+import { compileAst } from "./src/compiler.js";
 
-import {
-    positionMatching,
-    characterMatching,
-    repetitionFactors
-} from "./rules.js";
+/** Compile controlled-English rules into JavaScript regex source, flags and source mapping. */
+export function compile(source, options = {}) {
+  return compileAst(parse(source), options);
+}
 
-const nTimes = string =>
-    string.match(/([\d]+) times/) &&
-    string
-        .match(/([\d]+) times/)[1]
-        .replace(/\b/, "{")
-        .concat("}");
+/** Preserve the original function name for callers who only need the source. */
+export function regexMatchingThroughLines(lines) {
+  return compile(lines).source;
+}
 
-const betweenTimes = string =>
-    string.match(/between ([\d]+) and ([\d]+) times/) &&
-    "{" +
-    string.match(/between ([\d]+) and ([\d]+) times/g)[1] +
-    "," +
-    +string.match(/between ([\d]+) and ([\d]+) times/g)[2] +
-    "}";
-    
-const atLeastNTimes = string =>
-    string.match(/at least ([\d]+) times/) &&
-    string
-        .match(/at least ([\d]+) times/)[1]
-        .replace(/\b/, "{")
-        .concat(",}");
+/** Create a native RegExp from a successful compile result. */
+export function toRegExp(result) {
+  if (!result || typeof result.source !== "string" || typeof result.flags !== "string") {
+    throw new TypeError("Expected a compile result with source and flags.");
+  }
+  return new RegExp(result.source, result.flags);
+}
 
-const Times = string =>
-    nTimes(string) || betweenTimes(string) || atLeastNTimes(string);
-
-const followingCharacters = string =>
-    string.match(/any of the following characters: (.*)/) &&
-    string
-        .match(/any of the following characters: (.*)/)[1]
-        .replace(/ /g, "")
-        .split(",")
-        .join("")
-        .replace(/\b/, "[")
-        .concat("]");
-
-const notFollowingCharacters = string =>
-    string.match(/anything except the following characters: (.*)/) &&
-    string
-        .match(/anything except the following characters: (.*)/)[1]
-        .replace(/ /g, "")
-        .split(",")
-        .join("")
-        .replace(/\b/, "[^")
-        .concat("]");
-
-const lookingForASomething = string =>
-    string.match(/an? \"(.+)"/) && string.match(/an? \"(.+)"/)[1];
-
-const bracketsMatcher = string =>
-    followingCharacters(string) || notFollowingCharacters(string);
-
-const findingMatchingRegex = (rules, string) => {
-    return Object.values(rules).filter(
-        value =>
-            value === rules[Object.keys(rules).find(key => string.includes(key))]
-    )[0];
-};
-
-const buildingTheRegexMatcher = str => {
-    const matchingArray = [];
-    const string = str.replace(/\s{2,}/g, " ");
-
-    //positionMatcher
-    const positionMatcher = findingMatchingRegex(positionMatching, string);
-    if (positionMatcher) matchingArray.push(positionMatcher);
-
-    //characterMatcher
-    const characterMatcher = findingMatchingRegex(characterMatching, string);
-    if (characterMatcher) matchingArray.push(characterMatcher);
-
-    if (bracketsMatcher(string)) matchingArray.push(bracketsMatcher(string));
-    if (lookingForASomething(string))
-        matchingArray.push(lookingForASomething(string));
-
-    //repetitionFactor
-    if (Times(string)) matchingArray.push(Times(string));
-
-    const repetitionFactor = findingMatchingRegex(repetitionFactors, string);
-    if (repetitionFactor) matchingArray.push(repetitionFactor);
-
-    return matchingArray.join("");
-};
-
-export const regexMatchingThroughLines = lines => {
-    if (typeof lines !== "string") {
-        throw new TypeError("Rules must be a string");
-    }
-    const regexResultList = [];
-    lines
-        .split("\n")
-        .filter(Boolean)
-        .forEach(el => regexResultList.push(buildingTheRegexMatcher(el)));
-    return regexResultList.join("");
-};
-
-export const compile = source => ({
-    source: regexMatchingThroughLines(source),
-    flags: ""
-});
-
-export const toRegExp = result => new RegExp(result.source, result.flags);
+export { CompileError } from "./src/diagnostics.js";

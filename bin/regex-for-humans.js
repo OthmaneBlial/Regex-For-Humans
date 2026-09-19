@@ -3,7 +3,7 @@
 import { readFile, readFileSync } from "node:fs";
 import { stdin, stdout, stderr, exit } from "node:process";
 import { fileURLToPath } from "node:url";
-import { compile } from "../index.js";
+import { compile, CompileError } from "../index.js";
 
 const usage = `Usage: regex-for-humans [--json] [file|-]
 
@@ -12,12 +12,15 @@ Use - to read standard input explicitly.
 
 Options:
   --json      Print source and flags as JSON
+  --ignore-case  Add the JavaScript i flag
+  --dot-all      Add the JavaScript s flag
   --help      Show this help
   --version   Show the package version
 `;
 
 const args = process.argv.slice(2);
 let json = false;
+let flags = "";
 let file;
 
 for (const arg of args) {
@@ -32,6 +35,14 @@ for (const arg of args) {
   }
   if (arg === "--json") {
     json = true;
+    continue;
+  }
+  if (arg === "--ignore-case") {
+    if (!flags.includes("i")) flags += "i";
+    continue;
+  }
+  if (arg === "--dot-all") {
+    if (!flags.includes("s")) flags += "s";
     continue;
   }
   if (arg.startsWith("-") && arg !== "-") {
@@ -64,11 +75,17 @@ try {
   const input = file === undefined || file === "-"
     ? await readStdin()
     : await new Promise((resolve, reject) => readFile(file, "utf8", (error, data) => error ? reject(error) : resolve(data)));
-  const result = compile(input);
+  const result = compile(input, { flags });
   stdout.write(json
     ? `${JSON.stringify(result)}\n`
-    : `/${result.source.replaceAll("/", "\\/")}/${result.flags}\n`);
+    : `/${result.source}/${result.flags}\n`);
 } catch (error) {
-  stderr.write(`${error.message}\n`);
+  if (error instanceof CompileError) {
+    stderr.write(json
+      ? `${JSON.stringify({ error: error.toJSON() })}\n`
+      : `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}\n`);
+  } else {
+    stderr.write(`${error.message}\n`);
+  }
   exit(1);
 }

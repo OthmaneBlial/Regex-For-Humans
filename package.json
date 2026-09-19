@@ -9,10 +9,14 @@
   "bin": {
     "regex-for-humans": "./bin/regex-for-humans.js"
   },
+  "scripts": {
+    "test": "node --test"
+  },
   "files": [
     "index.js",
-    "rules.js",
+    "src/",
     "bin/",
+    "docs/",
     "LICENSE",
     "README.md"
   ],
