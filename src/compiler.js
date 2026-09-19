@@ -1,4 +1,5 @@
 import { fail } from "./diagnostics.js";
+import { explainNode } from "./explain.js";
 
 const locationOfOptions = { line: 1, column: 1 };
 
@@ -78,6 +79,7 @@ export function compileAst(parsed, options = {}) {
       sourceEnd: source.length,
       source: fragment,
       text: node.text,
+      explanation: explainNode(node, flags),
       line: node.location.line,
       column: node.location.column,
       kind: node.kind,

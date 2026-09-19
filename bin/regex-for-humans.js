@@ -12,6 +12,7 @@ Use - to read standard input explicitly.
 
 Options:
   --json      Print source and flags as JSON
+  --explain   Print each generated fragment and its meaning
   --ignore-case  Add the JavaScript i flag
   --dot-all      Add the JavaScript s flag
   --help      Show this help
@@ -20,6 +21,7 @@ Options:
 
 const args = process.argv.slice(2);
 let json = false;
+let explain = false;
 let flags = "";
 let file;
 
@@ -35,6 +37,10 @@ for (const arg of args) {
   }
   if (arg === "--json") {
     json = true;
+    continue;
+  }
+  if (arg === "--explain") {
+    explain = true;
     continue;
   }
   if (arg === "--ignore-case") {
@@ -76,9 +82,16 @@ try {
     ? await readStdin()
     : await new Promise((resolve, reject) => readFile(file, "utf8", (error, data) => error ? reject(error) : resolve(data)));
   const result = compile(input, { flags });
-  stdout.write(json
-    ? `${JSON.stringify(result)}\n`
-    : `/${result.source}/${result.flags}\n`);
+  if (json) {
+    stdout.write(`${JSON.stringify(result)}\n`);
+  } else {
+    stdout.write(`/${result.source}/${result.flags}\n`);
+    if (explain) {
+      for (const segment of result.segments) {
+        stdout.write(`${segment.line}:${segment.column}  ${segment.source}  ${segment.explanation}\n`);
+      }
+    }
+  }
 } catch (error) {
   if (error instanceof CompileError) {
     stderr.write(json

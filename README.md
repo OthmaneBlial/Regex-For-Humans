@@ -13,7 +13,7 @@ printf 'I am looking for a digit character 3 times\n' | node bin/regex-for-human
 # /\d{3}/u
 ```
 
-The CLI also accepts a file path, `-` for standard input, `--ignore-case`, `--dot-all`, `--help` and `--version`. `--json` returns source, flags and a map from output fragments to input rules. A library import from a local package works as `import { compile, toRegExp } from "regex-for-humans"`. Run the current test suite with `npm test`.
+The CLI also accepts a file path, `-` for standard input, `--ignore-case`, `--dot-all`, `--explain`, `--help` and `--version`. `--json` returns source, flags and a map from output fragments to input rules, including their explanations. A library import from a local package works as `import { compile, toRegExp } from "regex-for-humans"`. Run the current test suite with `npm test`.
 
 ```text
 at the beginning of the input

@@ -42,6 +42,9 @@ test("CLI exposes flags, help and version", () => {
   assert.equal(result.stdout, "/./isu\n");
   assert.match(run(["--help"]).stdout, /Usage: regex-for-humans/u);
   assert.match(run(["--version"]).stdout, /^0\.1\.0-dev\n$/u);
+  const explained = run(["--explain", "-"], "digit character");
+  assert.equal(explained.status, 0, explained.stderr);
+  assert.match(explained.stdout, /1:1  \\d  One ASCII digit/u);
 });
 
 test("CLI reports an unknown rule with position and nonzero status", () => {
