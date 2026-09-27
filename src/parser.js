@@ -7,7 +7,13 @@ import { fail } from "./diagnostics.js";
 /** @typedef {import('./ast.js').RuleNode} RuleNode */
 /** @typedef {import('./ast.js').ParsedRules} ParsedRules */
 
-export const LIMITS = Object.freeze({ sourceLength: 16_384, lines: 200, repetition: 1_000 });
+const MAX_SOURCE_LENGTH = 16_384;
+export const LIMITS = Object.freeze({
+  sourceLength: MAX_SOURCE_LENGTH,
+  regexSourceLength: MAX_SOURCE_LENGTH * 8, // U+2028 and U+2029 each escape to eight code units.
+  lines: 200,
+  repetition: 1_000,
+});
 
 /** @param {string} source @returns {string[]} */
 export function splitLines(source) {

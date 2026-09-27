@@ -4,7 +4,7 @@
 
 The version 1 parser accepts only the phrases in [LANGUAGE.md](LANGUAGE.md). It rejects unknown lines instead of returning a partial regex. Literal text and character-list items are escaped for their distinct regex contexts, and the compiler validates emitted source with JavaScript `RegExp` before returning it. Input rules are limited to 16,384 UTF-16 code units and 200 lines; numeric repetitions are limited to 1,000.
 
-The browser adds user-controlled example strings, each limited to 2,048 UTF-16 code units, with no more than 100 examples per run. Its test worker rejects oversized or malformed requests. These limits are product constraints, not a guarantee that every generated expression is fast in every other runtime or on every input size. Users should test the expression in the runtime where they intend to use it.
+The browser allows compiled regex sources up to 131,072 UTF-16 code units. This covers the largest escaping expansion from the 16,384-code-unit rule limit: a literal U+2028 or U+2029 becomes an eight-code-unit Unicode escape. Each example is limited to 2,048 UTF-16 code units, with no more than 100 examples per run. The worker rejects larger or malformed requests. These limits are product constraints, not a guarantee that every generated expression is fast in every other runtime or on every input size. Users should test the expression in the runtime where they intend to use it.
 
 ## Browser execution
 

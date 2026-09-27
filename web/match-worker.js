@@ -1,10 +1,16 @@
+import { LIMITS } from "../src/parser.js";
+
 const MAX_CASES = 100;
 const MAX_TEXT_LENGTH = 2048;
 
 self.onmessage = (event) => {
   const { id, source, flags, mode, cases } = event.data;
   try {
-    if (typeof source !== "string" || source.length > 16_384 || !/^[ims]*u$/u.test(flags)) {
+    if (
+      typeof source !== "string" ||
+      source.length > LIMITS.regexSourceLength ||
+      !/^[ims]*u$/u.test(flags)
+    ) {
       throw new Error("Invalid regex test request.");
     }
     if (!Array.isArray(cases) || cases.length > MAX_CASES || !["full", "search"].includes(mode)) {

@@ -27,5 +27,6 @@
 - Added a public project site with the hosted interactive workshop.
 - Added an ESM library API, a file/stdin CLI and a local static browser workshop with positive and negative examples.
 - Added worker-isolated browser matching with timeout, parser limits, security notes and automated Node/browser coverage.
+- Fixed worker rejection of valid patterns whose Unicode escapes expand the compiled source.
 
 These are features in the repository's development build. No npm version or GitHub Release has been published. Release notes and compatibility changes will be recorded here when a release is verified.
