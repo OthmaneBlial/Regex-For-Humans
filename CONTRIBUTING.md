@@ -36,4 +36,4 @@ The module flow, public API and compatibility rules are explained in [ARCHITECTU
 - Update documentation and record any compatibility or security effect.
 - For UI work, include a real screenshot and keyboard/accessibility findings.
 
-Do not include personal data, access tokens or private example strings in tests, screenshots or issues. Security-sensitive reports should follow the repository's security reporting guidance once `SECURITY.md` is published; until then, avoid posting an exploit with sensitive data in a public issue.
+Do not include personal data, access tokens or private example strings in tests, screenshots or issues. Report vulnerabilities through the [private form](https://github.com/OthmaneBlial/Regex-For-Humans/security/advisories/new) in [SECURITY.md](SECURITY.md); do not post exploitable details in a public issue.
