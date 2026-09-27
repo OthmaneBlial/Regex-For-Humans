@@ -54,6 +54,14 @@ test("misleading alphanumeric labels are rejected", () => {
   }
 });
 
+test("articles only prefix quoted literals", () => {
+  assert.equal(compile('a "A"').source, "A");
+  assert.equal(compile('an "A"').source, "A");
+  for (const phrase of ["a digit", "an digit"]) {
+    assert.throws(() => compile(phrase), { code: "UNKNOWN_RULE" }, phrase);
+  }
+});
+
 test("compact phrases compile precisely and retain useful source locations", () => {
   const examples = [
     ["start 3 digits\nend", "^\\d{3}$", "123", "12"],

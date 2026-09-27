@@ -28,6 +28,8 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
 | `none of: a, b, c` | `[^abc]` | `d` | `b` |
 | `text without: a, b, c` | `[^abc]*` | zero or more characters outside the list | `cab` with `start` and `end` |
 
+Articles (`a`, `an`) only prefix quoted literals.
+
 `word`/`not word` use JavaScript's `\w`/`\W`; `digit`/`not digit` use `\d`/`\D`. These classes are ASCII-oriented with `u`; `i` plus `u` adds a few Unicode case-folding matches to `\w`. `\w` includes `_` but excludes `é`. The misleading `alphanumeric character` aliases are rejected.
 
 A literal is a JSON-style double-quoted string. Escape `"` and `\\`; the compiler escapes regex metacharacters. Character-list items must each be one Unicode code point. Quote punctuation, commas, spaces and backslashes, as in `"]", "-", ",", "\\"`. Empty literals and lists are errors.

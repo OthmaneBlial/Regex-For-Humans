@@ -237,11 +237,6 @@ function parseAtom(text, location, originalText) {
     remaining = remaining.slice(0, suffix.index).trimEnd();
   }
 
-  const article = /^(?:a|an)\s+/i.exec(remaining);
-  if (article && remaining[article[0].length] !== '"') {
-    remaining = remaining.slice(article[0].length);
-  }
-
   const textWithout = /^text without:\s*/i.exec(remaining);
   if (textWithout || /^any text$/i.test(remaining)) {
     if (repetition) {

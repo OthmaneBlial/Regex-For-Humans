@@ -66,6 +66,9 @@ test("editing rules reports errors without stale output and recovers", async ({ 
     'Unsupported instruction: "alphanumeric character".',
   );
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
+  await editor.fill("a digit");
+  await expect(page.locator("#diagnostic")).toContainText('Unsupported instruction: "a digit".');
+  await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
   await editor.fill("digit\n  unsupported words");
   await expect(editor).toHaveAttribute("aria-invalid", "true");
   await expect(editor).toHaveAttribute("aria-describedby", "rules-help diagnostic");
