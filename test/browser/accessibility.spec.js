@@ -15,7 +15,10 @@ for (const state of ["ready", "error"]) {
     await page.goto("/");
     await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
     if (state === "error") {
-      await page.getByRole("textbox", { name: "Write your rules" }).fill("unknown rule");
+      const editor = page.getByRole("textbox", { name: "Write your rules" });
+      await editor.fill("unknown rule");
+      await expect(editor).toHaveAttribute("aria-invalid", "true");
+      await expect(editor).toHaveAttribute("aria-describedby", "rules-help diagnostic");
       await expect(page.locator("#diagnostic")).toBeVisible();
     }
     const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();

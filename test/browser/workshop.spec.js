@@ -62,6 +62,8 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await page.goto("/");
   const editor = page.getByRole("textbox", { name: "Write your rules" });
   await editor.fill("digit\n  unsupported words");
+  await expect(editor).toHaveAttribute("aria-invalid", "true");
+  await expect(editor).toHaveAttribute("aria-describedby", "rules-help diagnostic");
   await expect(page.locator("#diagnostic")).toContainText("Line 2, column 3");
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
   await expect(page.getByRole("button", { name: /Copy regex/ })).toBeDisabled();
@@ -82,6 +84,7 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await editor.fill(String.raw`a "bad\q"`);
   await expect(page.locator("#diagnostic")).toContainText("Line 1, column 7: Invalid JSON escape.");
   await editor.fill('start "ABC"\n3 digits\nend');
+  await expect(editor).toHaveAttribute("aria-invalid", "false");
   await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
   await expect(page.locator("#diagnostic")).toBeHidden();
   await page.locator("#ignore-case").check();

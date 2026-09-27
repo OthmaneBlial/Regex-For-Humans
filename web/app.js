@@ -40,9 +40,10 @@ function setCompileState(label, state) {
   ui.compileState.dataset.state = state;
 }
 
-function setDiagnostic(message) {
+function setDiagnostic(message, invalidRules = false) {
   ui.diagnostic.hidden = !message;
   ui.diagnostic.textContent = message || "";
+  ui.rules.setAttribute("aria-invalid", String(invalidRules));
 }
 
 function selectLine(number) {
@@ -217,6 +218,7 @@ function compileRules() {
         error instanceof CompileError
           ? `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}`
           : `Unexpected compiler error: ${error.message}`,
+        true,
       );
     }
     renderTrace(null);

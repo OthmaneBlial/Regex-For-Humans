@@ -6,6 +6,7 @@
 - Added compact rules such as `start`, `3 digits`, `any text`, and `text without:`.
 - Shortened explanations for wildcard text and repeated character sets.
 - Character-set explanations now describe case-insensitive matching.
+- Linked invalid rule feedback to the editor for screen readers.
 - Versioned workshop assets per build so browsers load updated recipes and explanations.
 - Clarified local rule handling without implying the workshop saves edits.
 - Fixed keyboard skip navigation so it focuses the workshop without resetting edited rules.
