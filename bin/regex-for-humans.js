@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { CompileError, compile } from "../index.js";
 import { LIMITS, validateSourceLength } from "../src/parser.js";
 
-const usage = `Usage: regex-for-humans [--json] [file|-]
+const usage = `Usage: regex-for-humans [options] [--] [file|-]
 
 Compile controlled-English rules from a file or standard input.
 Use - to read standard input explicitly.
@@ -16,6 +16,7 @@ Options:
   --explain   Print each generated fragment and its meaning
   --ignore-case  Add the JavaScript i flag
   --dot-all      Add the JavaScript s flag
+  --          Treat the following argument as the input path
   --help      Show this help
   --version   Show the package version
 `;
@@ -24,36 +25,41 @@ const args = process.argv.slice(2);
 let json = false;
 let explain = false;
 let flags = "";
+let optionsEnded = false;
 /** @type {string|undefined} */
 let file;
 
 for (const arg of args) {
-  if (arg === "--help" || arg === "-h") {
+  if (!optionsEnded && arg === "--") {
+    optionsEnded = true;
+    continue;
+  }
+  if (!optionsEnded && (arg === "--help" || arg === "-h")) {
     stdout.write(usage);
     exit(0);
   }
-  if (arg === "--version") {
+  if (!optionsEnded && arg === "--version") {
     const packagePath = fileURLToPath(new URL("../package.json", import.meta.url));
     stdout.write(`${JSON.parse(readFileSync(packagePath, "utf8")).version}\n`);
     exit(0);
   }
-  if (arg === "--json") {
+  if (!optionsEnded && arg === "--json") {
     json = true;
     continue;
   }
-  if (arg === "--explain") {
+  if (!optionsEnded && arg === "--explain") {
     explain = true;
     continue;
   }
-  if (arg === "--ignore-case") {
+  if (!optionsEnded && arg === "--ignore-case") {
     if (!flags.includes("i")) flags += "i";
     continue;
   }
-  if (arg === "--dot-all") {
+  if (!optionsEnded && arg === "--dot-all") {
     if (!flags.includes("s")) flags += "s";
     continue;
   }
-  if (arg.startsWith("-") && arg !== "-") {
+  if (!optionsEnded && arg.startsWith("-") && arg !== "-") {
     stderr.write(`Unknown option: ${arg}\n${usage}`);
     exit(2);
   }

@@ -74,7 +74,7 @@ Import `./index.js` from the repository checkout.
 
 ## CLI options
 
-Read rules from a file or standard input. Use `--explain` for rule-by-rule output, `--json` for structured results and diagnostics, `--ignore-case` for the `i` flag, or `--dot-all` for `s`. Run `node bin/regex-for-humans.js --help` for usage.
+Read rules from a file or standard input. Use `--` before a filename beginning with `-`. `--explain` prints each rule's output, `--json` emits structured results and diagnostics, `--ignore-case` adds `i`, and `--dot-all` adds `s`. Run `node bin/regex-for-humans.js --help` for usage.
 
 ## Scope
 

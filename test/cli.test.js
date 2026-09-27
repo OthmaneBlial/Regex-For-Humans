@@ -41,11 +41,28 @@ test("CLI accepts a file and prints a copyable JavaScript literal", () => {
   }
 });
 
+test("CLI accepts a leading-dash filename after --", () => {
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  try {
+    writeFileSync(join(directory, "-rules.txt"), scenarios[0].rules);
+    const result = spawnSync(process.execPath, [cli, "--", "-rules.txt"], {
+      cwd: directory,
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout, "/^ABC\\d{3}$/u\n");
+  } finally {
+    unlinkSync(join(directory, "-rules.txt"));
+    rmdirSync(directory);
+  }
+});
+
 test("CLI exposes flags, help and version", () => {
   const result = run(["--ignore-case", "--dot-all", "-"], "any character");
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stdout, "/./isu\n");
   assert.match(run(["--help"]).stdout, /Usage: regex-for-humans/u);
+  assert.match(run(["--help"]).stdout, /--\s+Treat the following argument as the input path/u);
   assert.match(run(["--version"]).stdout, /^0\.1\.0-dev\n$/u);
   const explained = run(["--explain", "-"], "digit character");
   assert.equal(explained.status, 0, explained.stderr);
