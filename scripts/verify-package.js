@@ -56,7 +56,7 @@ try {
   );
   if (!existsSync(binLink)) throw new Error("npm install did not create the CLI binary link.");
 
-  const rules = 'at the beginning of the input\na "ABC"\ndigit character 3 times\nend of the input';
+  const rules = 'start "ABC"\n3 digits\nend';
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
@@ -65,6 +65,8 @@ const result = compile(${JSON.stringify(rules)});
 if (result.source !== "^ABC\\\\d{3}$" || result.flags !== "u") throw new Error("Wrong source or flags");
 if (!toRegExp(result).test("ABC123") || toRegExp(result).test("ABC12")) throw new Error("Wrong matching behavior");
 if (result.segments.length !== 4 || !result.segments[2].explanation) throw new Error("Missing trace");
+const excluded = compile("start\\ntext without: a, b\\nend");
+if (excluded.source !== "^[^ab]*$" || !toRegExp(excluded).test("xyz") || toRegExp(excluded).test("cab")) throw new Error("Wrong text-exclusion behavior");
 try { compile("unsupported words"); throw new Error("Unknown rule accepted"); }
 catch (error) { if (!(error instanceof CompileError)) throw error; }
 `,

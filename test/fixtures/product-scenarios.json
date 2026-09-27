@@ -12,7 +12,7 @@
   {
     "id": "excluded-characters",
     "title": "Exclude characters",
-    "rules": "start\nnone of: a, b, c, d any number of times\nend",
+    "rules": "start\ntext without: a, b, c, d\nend",
     "source": "^[^abcd]*$",
     "flags": "u",
     "matchMode": "full",
@@ -22,7 +22,7 @@
   {
     "id": "line-rule",
     "title": "Read a line rule",
-    "rules": "line start\nany character any number of times\n3 digits\nline end",
+    "rules": "line start\nany text\n3 digits\nline end",
     "source": "^.*\\d{3}$",
     "flags": "mu",
     "matchMode": "search",

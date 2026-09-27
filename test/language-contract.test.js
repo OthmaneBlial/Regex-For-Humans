@@ -83,6 +83,22 @@ test("compact phrases compile precisely and retain useful source locations", () 
   assert.throws(() => compile("start 3 digits extra"), CompileError);
 });
 
+test("short text rules replace verbose wildcard and character exclusions", () => {
+  const anyText = compile("any text");
+  assert.equal(anyText.source, ".*");
+  assert.equal(toRegExp(anyText).exec("hello")?.[0], "hello");
+  assert.equal(toRegExp(anyText).exec("")?.[0], "");
+
+  const without = compile("start\ntext without: a, b\nend");
+  assert.equal(without.source, "^[^ab]*$");
+  const regex = toRegExp(without);
+  assert.equal(regex.test("xyz"), true);
+  assert.equal(regex.test(""), true);
+  assert.equal(regex.test("cab"), false);
+  assert.throws(() => compile("any text 3 times"), { code: "DUPLICATE_REPETITION" });
+  assert.throws(() => compile("text without: a, b 3 times"), { code: "DUPLICATE_REPETITION" });
+});
+
 const repetitions = [
   ["any number of times", "", "AAA", "B", "any numbers of times"],
   ["at least one time", "A", "AAA", "", "at least one times"],

@@ -52,6 +52,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
         <div class="panel-heading"><span class="step-number">02</span><div><p class="kicker">BUILDING BLOCKS</p><h2 id="atoms-title">Match one thing</h2></div></div>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Instruction</th><th scope="col">Source</th><th scope="col">Meaning</th></tr></thead><tbody>
           <tr><td><code>any character</code></td><td><code>.</code></td><td>One character, except a line break unless <code>s</code> is on</td></tr>
+          <tr><td><code>any text</code></td><td><code>.*</code></td><td>Any sequence without line breaks unless <code>s</code> is on</td></tr>
           <tr><td><code>word</code> / <code>not word</code></td><td><code>\w</code> / <code>\W</code></td><td>JavaScript word class / anything else</td></tr>
           <tr><td><code>digit</code> / <code>not digit</code></td><td><code>\d</code> / <code>\D</code></td><td>ASCII digit / anything else</td></tr>
           <tr><td><code>space</code> / <code>not space</code></td><td><code>\s</code> / <code>\S</code></td><td>JavaScript whitespace / anything else</td></tr>
@@ -60,7 +61,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
           <tr><td><code>one of: a, b</code></td><td><code>[ab]</code></td><td>One listed character</td></tr>
           <tr><td><code>none of: a, b</code></td><td><code>[^ab]</code></td><td>One character outside the list</td></tr>
         </tbody></table></div>
-        <p>Quote punctuation and spaces in lists, for example <code>one of: "]", "-", " "</code>. Each item must be one Unicode code point. A literal can contain multiple characters. Longer phrases remain valid.</p>
+        <p><code>text without: a, b</code> matches zero or more characters outside that list. Add <code>start</code> and <code>end</code> to check the whole string. Quote punctuation and spaces in lists, for example <code>one of: "]", "-", " "</code>. Each item must be one Unicode code point. A literal can contain multiple characters. Short forms are preferred; older phrases remain accepted.</p>
       </section>
 
       <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">

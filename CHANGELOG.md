@@ -3,7 +3,7 @@
 ## Unreleased
 
 - Added a deterministic, documented controlled-English compiler for JavaScript regular expressions with explicit diagnostics, source spans and explanations.
-- Added short aliases such as `start`, `3 digits`, and `one of:` while retaining the longer phrases.
+- Added compact rules such as `start`, `3 digits`, `any text`, and `text without:`.
 - Duplicate repetition modifiers now point to the second modifier in diagnostics.
 - Multi-character list items now point to the invalid item in diagnostics.
 - Invalid repetition ranges now point to the upper bound that needs correction.
