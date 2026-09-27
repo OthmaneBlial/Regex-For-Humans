@@ -36,44 +36,43 @@
     <main id="main" class="main-content">
       <header class="topbar"><span>THE WORKSHOP <span class="topbar-slash">/</span> LANGUAGE GUIDE</span><span class="build-label">DEVELOPMENT BUILD</span></header>
       <section class="hero guide-hero" aria-labelledby="page-title">
-        <div class="hero-copy"><span class="eyebrow">A FINITE, REVIEWABLE VOCABULARY</span><h1 id="page-title">Say only<br><em>what it can mean.</em></h1><p>Write one instruction per line. The compiler accepts the phrases below and rejects unknown wording with a line and column. Quoted text stays literal.</p></div>
+        <div class="hero-copy"><span class="eyebrow">A FINITE, REVIEWABLE VOCABULARY</span><h1 id="page-title">Say only<br><em>what it can mean.</em></h1><p>Write one atom per line; <code>start</code> can prefix the first. Unknown wording gets a line and column. Quoted text stays literal.</p></div>
         <div class="hero-symbol" aria-hidden="true">[<span>a</span>]</div>
       </section>
 
       <section id="start" class="panel guide-panel" aria-labelledby="start-title">
         <div class="panel-heading"><span class="step-number">01</span><div><p class="kicker">START HERE</p><h2 id="start-title">A complete rule</h2></div></div>
-        <div class="guide-example"><pre><code>at the beginning of the input
-a "ABC"
-digit character 3 times
-end of the input</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>Matches</strong> ABC123<br><strong>Rejects</strong> ABC12, ABC1234</p></div></div>
-        <p>Use <code>at the beginning of a line</code> and <code>end of the line</code> for line-based matching. A line anchor adds JavaScript's <code>m</code> flag. Input and line anchors cannot be mixed in one set of rules.</p>
+        <div class="guide-example"><pre><code>start "ABC"
+3 digits
+end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>Matches</strong> ABC123<br><strong>Rejects</strong> ABC12, ABC1234</p></div></div>
+        <p>Use <code>line start</code> and <code>line end</code> for line-based matching. Line anchors add JavaScript's <code>m</code> flag. Input and line anchors cannot be mixed.</p>
       </section>
 
       <section id="atoms" class="panel guide-panel" aria-labelledby="atoms-title">
         <div class="panel-heading"><span class="step-number">02</span><div><p class="kicker">BUILDING BLOCKS</p><h2 id="atoms-title">Match one thing</h2></div></div>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Instruction</th><th scope="col">Source</th><th scope="col">Meaning</th></tr></thead><tbody>
           <tr><td><code>any character</code></td><td><code>.</code></td><td>One character, except a line break unless <code>s</code> is on</td></tr>
-          <tr><td><code>alphanumeric character</code></td><td><code>\w</code></td><td>JavaScript word class: mainly ASCII letters, digits and underscore</td></tr>
-          <tr><td><code>non-alphanumeric character</code></td><td><code>\W</code></td><td>Outside that word class</td></tr>
-          <tr><td><code>digit character</code> / <code>non-digit character</code></td><td><code>\d</code> / <code>\D</code></td><td>ASCII digit / anything else</td></tr>
-          <tr><td><code>any whitespace</code> / <code>non-whitespace character</code></td><td><code>\s</code> / <code>\S</code></td><td>JavaScript whitespace / anything else</td></tr>
-          <tr><td><code>a "ABC"</code></td><td><code>ABC</code></td><td>Exact quoted text; regex punctuation is escaped</td></tr>
-          <tr><td><code>any of the following characters: a, b</code></td><td><code>[ab]</code></td><td>One listed character</td></tr>
-          <tr><td><code>anything except the following characters: a, b</code></td><td><code>[^ab]</code></td><td>One character outside the list</td></tr>
+          <tr><td><code>word</code> / <code>not word</code></td><td><code>\w</code> / <code>\W</code></td><td>JavaScript word class / anything else</td></tr>
+          <tr><td><code>digit</code> / <code>not digit</code></td><td><code>\d</code> / <code>\D</code></td><td>ASCII digit / anything else</td></tr>
+          <tr><td><code>space</code> / <code>not space</code></td><td><code>\s</code> / <code>\S</code></td><td>JavaScript whitespace / anything else</td></tr>
+          <tr><td><code>digits</code></td><td><code>\d+</code></td><td>One or more digits</td></tr>
+          <tr><td><code>"ABC"</code></td><td><code>ABC</code></td><td>Exact quoted text; regex punctuation is escaped</td></tr>
+          <tr><td><code>one of: a, b</code></td><td><code>[ab]</code></td><td>One listed character</td></tr>
+          <tr><td><code>none of: a, b</code></td><td><code>[^ab]</code></td><td>One character outside the list</td></tr>
         </tbody></table></div>
-        <p>For character lists, quote punctuation and spaces, for example <code>any of the following characters: "]", "-", " "</code>. Each item must be one Unicode code point. A literal can contain multiple characters.</p>
+        <p>Quote punctuation and spaces in lists, for example <code>one of: "]", "-", " "</code>. Each item must be one Unicode code point. A literal can contain multiple characters. Longer phrases remain valid.</p>
       </section>
 
       <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">
         <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one atom</h2></div></div>
-        <p>Put one repetition after an atom. For example, <code>digit character 3 times</code> generates <code>\d{3}</code>. A repeated multi-character literal stays grouped.</p>
-        <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Phrase after an atom</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
-          <tr><td><code>any number of times</code></td><td><code>*</code></td><td>Zero or more</td></tr>
-          <tr><td><code>at least one time</code></td><td><code>+</code></td><td>One or more</td></tr>
-          <tr><td><code>at most one time</code></td><td><code>?</code></td><td>Zero or one</td></tr>
-          <tr><td><code>3 times</code></td><td><code>{3}</code></td><td>Exactly three</td></tr>
-          <tr><td><code>between 2 and 4 times</code></td><td><code>{2,4}</code></td><td>Two to four</td></tr>
-          <tr><td><code>at least 3 times</code></td><td><code>{3,}</code></td><td>Three or more</td></tr>
+        <p>Put an exact count before an atom: <code>3 digits</code> generates <code>\d{3}</code>. Longer repetition phrases remain valid. A repeated multi-character literal stays grouped.</p>
+        <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Form</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
+          <tr><td><code>&lt;atom&gt; any number of times</code></td><td><code>*</code></td><td>Zero or more</td></tr>
+          <tr><td><code>&lt;atom&gt; at least one time</code></td><td><code>+</code></td><td>One or more</td></tr>
+          <tr><td><code>&lt;atom&gt; at most one time</code></td><td><code>?</code></td><td>Zero or one</td></tr>
+          <tr><td><code>3 &lt;atom&gt;</code> (for example, <code>3 digits</code>)</td><td><code>{3}</code></td><td>Exactly three</td></tr>
+          <tr><td><code>&lt;atom&gt; between 2 and 4 times</code></td><td><code>{2,4}</code></td><td>Two to four</td></tr>
+          <tr><td><code>&lt;atom&gt; at least 3 times</code></td><td><code>{3,}</code></td><td>Three or more</td></tr>
         </tbody></table></div>
       </section>
 

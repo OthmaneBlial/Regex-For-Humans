@@ -2,43 +2,45 @@
 
 This document defines the implemented **version 1 core language**. The browser workshop runs locally from this clone. npm publication and a GitHub release have not yet been verified; use the repository status and release notes to check each distribution surface.
 
-Regex For Humans translates a deliberately small English vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Every nonblank line is one instruction. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces around instructions are ignored.
+Regex For Humans translates a small, fixed vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Put one atom or ending anchor on each nonblank line; `start` or `line start` may share a line with the first atom. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces are ignored.
 
 ## Instructions
 
 | Instruction | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |
-| `at the beginning of the input` | `^` | `^A` matches `A` | `^A` does not match `BA` |
-| `end of the input` | `$` | `A$` matches `A` | `A$` does not match `AB` |
-| `at the beginning of a line` | `^` with `m` | `^A` matches `B\nA` | `^A` does not match `BA` |
-| `end of the line` | `$` with `m` | `A$` matches `A\nB` | `A$` does not match `AB` |
+| `start` (`at the beginning of the input`) | `^` | `^A` matches `A` | `^A` does not match `BA` |
+| `end` (`end of the input`) | `$` | `A$` matches `A` | `A$` does not match `AB` |
+| `line start` (`at the beginning of a line`) | `^` with `m` | `^A` matches `B\nA` | `^A` does not match `BA` |
+| `line end` (`end of the line`) | `$` with `m` | `A$` matches `A\nB` | `A$` does not match `AB` |
 | `any character` | `.` | `A` | a newline unless `s` is enabled |
-| `alphanumeric character` | `\w` | `A`, `_`, `3` | `-`, `é` |
-| `non-alphanumeric character` | `\W` | `-`, `é` | `A`, `_` |
-| `digit character` | `\d` | `3` | `A`, `٣` |
-| `non-digit character` | `\D` | `A`, `٣` | `3` |
-| `any whitespace` | `\s` | a space, tab or newline | `A` |
-| `non-whitespace character` | `\S` | `A` | a space |
-| `a "ABC"` or `an "ABC"` | `ABC` | `ABC` | `ABX` |
-| `any of the following characters: a, b, c` | `[abc]` | `b` | `d` |
-| `anything except the following characters: a, b, c` | `[^abc]` | `d` | `b` |
+| `word` (`alphanumeric character`) | `\w` | `A`, `_`, `3` | `-`, `é` |
+| `not word` (`non-alphanumeric character`) | `\W` | `-`, `é` | `A`, `_` |
+| `digit` (`digit character`) | `\d` | `3` | `A`, `٣` |
+| `not digit` (`non-digit character`) | `\D` | `A`, `٣` | `3` |
+| `space` (`any whitespace`) | `\s` | a space, tab or newline | `A` |
+| `not space` (`non-whitespace character`) | `\S` | `A` | a space |
+| `digits` | `\d+` | `3`, `123` | `A` |
+| `"ABC"` (also `a "ABC"` or `an "ABC"`) | `ABC` | `ABC` | `ABX` |
+| `one of: a, b, c` | `[abc]` | `b` | `d` |
+| `none of: a, b, c` | `[^abc]` | `d` | `b` |
 
-The words `alphanumeric` and `digit` follow JavaScript's `\w` and `\d`, which are ASCII-oriented even with the Unicode flag (the combination of `i` and `u` has a few Unicode case-folding exceptions for `\w`). A literal is a JSON-style double-quoted string: `"` and `\\` can be written inside it. Literal regex metacharacters are escaped by the compiler. A character-list item is exactly one Unicode code point; write ordinary items as `a, b`, and quote punctuation, commas, spaces or backslashes as `"]", "-", ",", "\\"`. The generated class escapes each item in class context. Empty lists and empty literals are errors.
+`word` and `digit` follow JavaScript's `\w` and `\d`, which are ASCII-oriented even with the Unicode flag (the combination of `i` and `u` has a few Unicode case-folding exceptions for `\w`). A literal is a JSON-style double-quoted string: `"` and `\\` can be written inside it. Literal regex metacharacters are escaped by the compiler. A character-list item is exactly one Unicode code point; write ordinary items as `a, b`, and quote punctuation, commas, spaces or backslashes as `"]", "-", ",", "\\"`. The generated class escapes each item in class context. Empty lists and empty literals are errors.
 
-`I am looking for ` may prefix an atom without changing it. The article `a` or `an` is optional before a named character class, so the original `I am looking for a digit character` is accepted. For compatibility with the original example, an opening anchor may prefix an atom on the same line, separated by a comma: `at the beginning of a line, I am looking for any character, any number of times`. The unprefixed version is preferred for new documents.
+`start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`. `I am looking for ` may prefix an atom without changing it. The article `a` or `an` is optional before a named character class. Longer anchor and character-class phrases remain valid aliases.
 
 ## Repetition
 
-A repetition modifies exactly one atom. For a multi-character literal, the compiler groups the whole literal before applying the repetition. A repetition can follow the atom, separated by a space or comma. The legacy spelling `<repetition> for <atom>` is also accepted. Two repetitions on one atom, a repetition without an atom, negative counts and ranges with a lower bound above the upper bound are errors.
+A repetition modifies exactly one atom. Write an exact count before it (`3 digits`) or after it (`digit 3 times`). For a multi-character literal, the compiler groups the whole literal before applying the repetition. The legacy spelling `<repetition> for <atom>` is also accepted. Two repetitions on one atom, a repetition without an atom, negative counts and ranges with a lower bound above the upper bound are errors.
 
-| Suffix | Source after an atom `A` | Matches | Does not match |
+| Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |
-| `any number of times` | `A*` | empty, `AAA` | `B` as a whole-string match |
-| `at least one time` | `A+` | `A`, `AAA` | empty |
-| `at most one time` | `A?` | empty, `A` | `AA` as a whole-string match |
-| `3 times` | `A{3}` | `AAA` | `AA` |
-| `between 2 and 4 times` | `A{2,4}` | `AA`, `AAAA` | `A`, `AAAAA` |
-| `at least 3 times` | `A{3,}` | `AAA`, `AAAA` | `AA` |
+| `3 <atom>` (for example, `3 digits`) | `A{3}` | `AAA` | `AA` |
+| `<atom> 3 times` | `A{3}` | `AAA` | `AA` |
+| `<atom> any number of times` | `A*` | empty, `AAA` | `B` as a whole-string match |
+| `<atom> at least one time` | `A+` | `A`, `AAA` | empty |
+| `<atom> at most one time` | `A?` | empty, `A` | `AA` as a whole-string match |
+| `<atom> between 2 and 4 times` | `A{2,4}` | `AA`, `AAAA` | `A`, `AAAAA` |
+| `<atom> at least 3 times` | `A{3,}` | `AAA`, `AAAA` | `AA` |
 
 The phrase `any number of times for anything except the following characters: a, b` therefore produces `[^ab]*`. Numeric counts are nonnegative integers no greater than 1,000. The compiler rejects a quantifier attached to an anchor.
 

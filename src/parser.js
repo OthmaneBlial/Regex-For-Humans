@@ -20,12 +20,19 @@ export function validateSourceLength(length) {
 }
 
 const SHORTHANDS = new Map([
+  ["word", "\\w"],
+  ["not word", "\\W"],
   ["non-alphanumeric character", "\\W"],
   ["alphanumeric character", "\\w"],
+  ["not digit", "\\D"],
+  ["digit", "\\d"],
   ["non-digit character", "\\D"],
   ["digit character", "\\d"],
+  ["not space", "\\S"],
+  ["space", "\\s"],
   ["non-whitespace character", "\\S"],
   ["any whitespace", "\\s"],
+  ["digits", "\\d"],
 ]);
 
 const REPETITION =
@@ -138,6 +145,13 @@ function parseAtom(text, location, originalText) {
     remaining = remaining.slice(prefix[0].length);
   }
 
+  const count = /^([0-9]+)\s+/u.exec(remaining);
+  if (count) {
+    if (repetition) fail("DUPLICATE_REPETITION", "Use only one repetition per atom.", location);
+    repetition = parseRepetition(`${count[1]} times`, location);
+    remaining = remaining.slice(count[0].length);
+  }
+
   const suffix = SUFFIX_REPETITION.exec(remaining);
   if (suffix) {
     if (repetition) fail("DUPLICATE_REPETITION", "Use only one repetition per atom.", location);
@@ -156,17 +170,27 @@ function parseAtom(text, location, originalText) {
   if (/^any character$/i.test(remaining))
     return atom("wildcard", ".", repetition, location, originalText);
   for (const [phrase, token] of SHORTHANDS) {
-    if (remaining.toLowerCase() === phrase)
+    if (remaining.toLowerCase() === phrase) {
+      if (phrase === "digits" && !repetition)
+        repetition = parseRepetition("at least one time", location);
       return atom("shorthand", token, repetition, location, originalText);
+    }
   }
 
   const literalPrefix = /^(?:a|an)\s+/i.exec(remaining);
-  if (literalPrefix && remaining[literalPrefix[0].length] === '"') {
-    const quoted = readQuoted(remaining.slice(literalPrefix[0].length), {
+  const literal =
+    literalPrefix && remaining[literalPrefix[0].length] === '"'
+      ? remaining.slice(literalPrefix[0].length)
+      : remaining.startsWith('"')
+        ? remaining
+        : null;
+  if (literal !== null) {
+    const offset = remaining.length - literal.length;
+    const quoted = readQuoted(literal, {
       line: location.line,
-      column: location.column + literalPrefix[0].length,
+      column: location.column + offset,
     });
-    if (literalPrefix[0].length + quoted.length !== remaining.length) {
+    if (offset + quoted.length !== remaining.length) {
       fail("TRAILING_TEXT", "Unexpected text after the quoted literal.", location);
     }
     if (!quoted.value) fail("EMPTY_LITERAL", "A literal cannot be empty.", location);
@@ -174,7 +198,7 @@ function parseAtom(text, location, originalText) {
   }
 
   const classPrefix =
-    /^(any of the following characters:|anything except the following characters:)\s*/i.exec(
+    /^(one of:|none of:|any of the following characters:|anything except the following characters:)\s*/i.exec(
       remaining,
     );
   if (classPrefix) {
@@ -188,7 +212,7 @@ function parseAtom(text, location, originalText) {
       repetition,
       location,
       originalText,
-      classPrefix[1].toLowerCase().startsWith("anything except"),
+      /^(?:none of:|anything except)/iu.test(classPrefix[1].toLowerCase()),
     );
   }
 
@@ -225,21 +249,24 @@ export function parse(source) {
     let column = raw.indexOf(line) + 1;
     const location = () => ({ line: index + 1, column });
 
-    const start = /^at the beginning of (the input|a line)(?:,\s*|$)/i.exec(text);
+    const start = /^(at the beginning of (the input|a line)|line start|start)(?:,\s*|\s+|$)/i.exec(
+      text,
+    );
     if (start) {
-      const mode = start[1].toLowerCase() === "a line" ? "line" : "input";
+      const phrase = start[1];
+      const mode = /(?:a line|line start)$/iu.test(phrase.toLowerCase()) ? "line" : "input";
       if (nodes.length !== 0)
         fail("MISPLACED_ANCHOR", "A beginning anchor must be the first instruction.", location());
       anchorMode = mode;
-      nodes.push(anchor("start", mode, location(), start[0].replace(/,\s*$/u, "")));
+      nodes.push(anchor("start", mode, location(), phrase));
       text = text.slice(start[0].length);
       column += start[0].length;
       if (!text) continue;
     }
 
-    const end = /^(end of the input|end of the line)$/i.exec(text);
+    const end = /^(end of the input|end of the line|line end|end)$/i.exec(text);
     if (end) {
-      const mode = end[1].toLowerCase().endsWith("line") ? "line" : "input";
+      const mode = /(?:end of the line|line end)$/iu.test(end[1].toLowerCase()) ? "line" : "input";
       if (sawEnd) fail("DUPLICATE_ANCHOR", "Only one ending anchor is allowed.", location());
       if (anchorMode && anchorMode !== mode) {
         fail("MIXED_ANCHORS", "Input and line anchors cannot be mixed.", location());
@@ -256,7 +283,7 @@ export function parse(source) {
       text = text.slice(looking[0].length);
       column += looking[0].length;
     }
-    nodes.push(parseAtom(text, location(), line));
+    nodes.push(parseAtom(text, location(), text));
   }
 
   if (nodes.length === 0)

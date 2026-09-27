@@ -42,7 +42,7 @@ for (const scenario of scenarios) {
 
 test("editing rules reports errors without stale output and recovers", async ({ page }) => {
   await page.goto("/");
-  const editor = page.getByRole("textbox", { name: "One instruction per line" });
+  const editor = page.getByRole("textbox", { name: "Write your rules" });
   await editor.fill("digit character\n  unsupported words");
   await expect(page.locator("#diagnostic")).toContainText("Line 2, column 3");
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
@@ -89,7 +89,7 @@ test("line-mode sample keeps its newline and changes under full-match mode", asy
 
 test("Unicode literals and dot-all behavior are visible in example results", async ({ page }) => {
   await page.goto("/");
-  const editor = page.getByRole("textbox", { name: "One instruction per line" });
+  const editor = page.getByRole("textbox", { name: "Write your rules" });
   const firstSample = page.getByRole("textbox", { name: /^Example \d+ string$/u }).first();
   await editor.fill("any character");
   await page.locator("#match-mode").selectOption("search");

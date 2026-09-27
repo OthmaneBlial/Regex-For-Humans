@@ -48,6 +48,41 @@ for (const [name, rules, yes, no, malformed] of constructions) {
   });
 }
 
+test("compact phrases compile precisely and retain useful source locations", () => {
+  const examples = [
+    ["start 3 digits\nend", "^\\d{3}$", "123", "12"],
+    ['start "ABC"\n3 digits\nend', "^ABC\\d{3}$", "ABC123", "ABC12"],
+    ['line start\n3 "AB"\nline end', "^(?:AB){3}$", "ABABAB", "ABAB"],
+    ['"ABC"', "ABC", "ABC", "ABX"],
+    ["digits", "\\d+", "123", "abc"],
+    ["word", "\\w", "_", "-"],
+    ["not word", "\\W", "-", "A"],
+    ["digit", "\\d", "3", "A"],
+    ["not digit", "\\D", "A", "3"],
+    ["space", "\\s", " ", "A"],
+    ["not space", "\\S", "A", " "],
+    ["one of: a, b", "[ab]", "b", "c"],
+    ["none of: a, b", "[^ab]", "c", "b"],
+  ];
+
+  for (const [rules, source, yes, no] of examples) {
+    const result = compile(rules);
+    assert.equal(result.source, source, rules);
+    assert.equal(toRegExp(result).test(yes), true, rules);
+    assert.equal(toRegExp(result).test(no), false, rules);
+  }
+
+  const result = compile("start 3 digits\nend");
+  assert.deepEqual(
+    result.segments.slice(0, 2).map(({ text, line, column }) => ({ text, line, column })),
+    [
+      { text: "start", line: 1, column: 1 },
+      { text: "3 digits", line: 1, column: 7 },
+    ],
+  );
+  assert.throws(() => compile("start 3 digits extra"), CompileError);
+});
+
 const repetitions = [
   ["any number of times", "", "AAA", "B", "any numbers of times"],
   ["at least one time", "A", "AAA", "", "at least one times"],

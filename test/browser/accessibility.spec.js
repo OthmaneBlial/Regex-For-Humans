@@ -15,7 +15,7 @@ for (const state of ["ready", "error"]) {
     await page.goto("/");
     await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
     if (state === "error") {
-      await page.getByRole("textbox", { name: "One instruction per line" }).fill("unknown rule");
+      await page.getByRole("textbox", { name: "Write your rules" }).fill("unknown rule");
       await expect(page.locator("#diagnostic")).toBeVisible();
     }
     const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
@@ -36,8 +36,8 @@ test("keyboard can reach the editor, options, copy and test controls", async ({ 
   await page.goto("/");
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Skip to workshop" })).toBeFocused();
-  await page.getByRole("textbox", { name: "One instruction per line" }).focus();
-  await expect(page.getByRole("textbox", { name: "One instruction per line" })).toBeFocused();
+  await page.getByRole("textbox", { name: "Write your rules" }).focus();
+  await expect(page.getByRole("textbox", { name: "Write your rules" })).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: /Read the syntax/ })).toBeFocused();
   await page.keyboard.press("Tab");

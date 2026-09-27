@@ -39,7 +39,7 @@ test("a pathological regex times out in a worker and normal tests still run", as
 
 test("oversized and HTML-like rules are rejected or rendered as text", async ({ page }) => {
   await page.goto("/");
-  const editor = page.getByRole("textbox", { name: "One instruction per line" });
+  const editor = page.getByRole("textbox", { name: "Write your rules" });
   await editor.fill(`a "${"x".repeat(16_385)}"`);
   await expect(page.locator("#diagnostic")).toContainText(
     "Rules cannot exceed 16384 UTF-16 code units",

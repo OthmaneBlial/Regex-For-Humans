@@ -1,6 +1,6 @@
 # Testing and compatibility
 
-The package declares Node.js `>=22`. The following versions passed all 43 Node tests on 27 September 2026:
+The package declares Node.js `>=22`. The following versions passed all 44 Node tests on 27 September 2026:
 
 | Node version | Verification |
 | --- | --- |
