@@ -27,9 +27,7 @@ export function explainNode(node, flags) {
         ? "Start of a line. The m flag makes ^ work after line breaks."
         : "End of a line. The m flag lets $ match before a line break.";
     }
-    return node.edge === "start"
-      ? "Start of the input."
-      : "End of the input, or just before a final line break in JavaScript.";
+    return node.edge === "start" ? "Start of the input." : "End of the input.";
   }
 
   if (node.repetition?.kind === "zeroOrMore") {

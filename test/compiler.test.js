@@ -36,6 +36,17 @@ test("JavaScript line terminators separate rules and match line anchors", () => 
   }
 });
 
+test("input end anchor rejects a final JavaScript line terminator", () => {
+  const result = compile('start "A"\nend');
+  assert.equal(result.source, "^A$");
+  assert.equal(result.flags, "u");
+  assert.equal(result.segments.at(-1).explanation, "End of the input.");
+  const regex = toRegExp(result);
+  assert.equal(regex.test("A"), true);
+  for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"])
+    assert.equal(regex.test(`A${separator}`), false, JSON.stringify(separator));
+});
+
 test("negative classes and all repetition forms are semantically distinct", () => {
   assert.equal(compile("non-alphanumeric character").source, "\\W");
   assert.equal(compile("non-digit character").source, "\\D");

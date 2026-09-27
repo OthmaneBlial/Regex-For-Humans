@@ -52,7 +52,7 @@ Use `text without: a, b` to match any sequence that excludes those characters. N
 
 The compiler emits `u` by default for Unicode code-point behavior. It adds `m` when a line anchor is used. It allows `i` (ignore case) and `s` (dot matches newline) as explicit options. It rejects a mix of input anchors and line anchors in one document because JavaScript's `m` flag would change the meaning of `^` and `$` for both. Global and sticky flags (`g`, `y`) are outside version 1 because repeated `.test()` calls with them are stateful.
 
-JavaScript `$` may also match before a final newline. Do not use it as a promise of byte-for-byte end-of-input validation. Test intended positive and negative cases in the target runtime. The output is a JavaScript regex source and flags; other regex engines may interpret it differently.
+Without `m`, JavaScript `^` and `$` match only the true start and end of input. For example, `start "A"` / `end` rejects `A` followed by a line break. With `m`, line anchors match line boundaries. Other regex engines may behave differently.
 
 ## Errors and future syntax
 

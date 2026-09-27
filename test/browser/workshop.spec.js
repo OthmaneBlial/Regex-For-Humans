@@ -165,5 +165,6 @@ test("syntax link opens the local rendered guide", async ({ page, context }) => 
   await guide.waitForLoadState();
   await expect(guide).toHaveURL(/\/web\/language\.html\?v=[\da-f]{12}$/u);
   await expect(guide.getByRole("heading", { name: "Match one thing" })).toBeVisible();
+  await expect(guide.getByText(/They reject a final line break/u)).toBeVisible();
   await guide.close();
 });

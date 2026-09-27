@@ -46,6 +46,7 @@
 3 digits
 end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>Matches</strong> ABC123<br><strong>Rejects</strong> ABC12, ABC1234</p></div></div>
         <p>Use <code>line start</code> and <code>line end</code> for line-based matching. Line anchors add JavaScript's <code>m</code> flag. Input and line anchors cannot be mixed.</p>
+        <p>Without <code>m</code>, <code>start</code> and <code>end</code> match only the true input edges. They reject a final line break; <code>m</code> makes line anchors match each line.</p>
       </section>
 
       <section id="atoms" class="panel guide-panel" aria-labelledby="atoms-title">
