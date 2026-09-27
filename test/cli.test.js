@@ -60,14 +60,22 @@ test("CLI accepts a leading-dash filename after --", () => {
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
   try {
     writeFileSync(join(directory, "-rules.txt"), scenarios[0].rules);
+    writeFileSync(join(directory, "--json"), scenarios[0].rules);
     const result = spawnSync(process.execPath, [cli, "--", "-rules.txt"], {
       cwd: directory,
       encoding: "utf8",
     });
     assert.equal(result.status, 0, result.stderr);
     assert.equal(result.stdout, "/^ABC\\d{3}$/u\n");
+    const jsonNamedFile = spawnSync(process.execPath, [cli, "--", "--json"], {
+      cwd: directory,
+      encoding: "utf8",
+    });
+    assert.equal(jsonNamedFile.status, 0, jsonNamedFile.stderr);
+    assert.equal(jsonNamedFile.stdout, "/^ABC\\d{3}$/u\n");
   } finally {
     unlinkSync(join(directory, "-rules.txt"));
+    unlinkSync(join(directory, "--json"));
     rmdirSync(directory);
   }
 });
@@ -113,6 +121,26 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   const trailingLiteral = run(["--json", "-"], '  start, a "A"  extra');
   assert.equal(JSON.parse(trailingLiteral.stderr).error.column, 17);
   assert.equal(run(["--bogus"]).status, 2);
+});
+
+test("CLI reports usage errors as JSON when requested in any option position", () => {
+  for (const args of [
+    ["--json", "--bogus"],
+    ["--bogus", "--json"],
+    ["--json", "first.txt", "second.txt"],
+  ]) {
+    const result = run(args, "");
+    assert.equal(result.status, 2, args.join(" "));
+    assert.equal(result.stdout, "", args.join(" "));
+    assert.deepEqual(JSON.parse(result.stderr), {
+      error: {
+        code: "CLI_USAGE",
+        message: args.includes("--bogus")
+          ? "Unknown option: --bogus"
+          : "Only one input file is allowed.",
+      },
+    });
+  }
 });
 
 test("CLI enforces the source limit while reading stdin and files", () => {

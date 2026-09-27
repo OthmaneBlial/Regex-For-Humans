@@ -23,11 +23,25 @@ Options:
 
 const args = process.argv.slice(2);
 let json = false;
+for (const arg of args) {
+  if (arg === "--") break;
+  if (arg === "--json") {
+    json = true;
+    break;
+  }
+}
 let explain = false;
 let flags = "";
 let optionsEnded = false;
 /** @type {string|undefined} */
 let file;
+
+/** @param {string} message */
+function usageError(message) {
+  if (json) stderr.write(`${JSON.stringify({ error: { code: "CLI_USAGE", message } })}\n`);
+  else stderr.write(`${message}\n${usage}`);
+  exit(2);
+}
 
 for (const arg of args) {
   if (!optionsEnded && arg === "--") {
@@ -60,19 +74,16 @@ for (const arg of args) {
     continue;
   }
   if (!optionsEnded && arg.startsWith("-") && arg !== "-") {
-    stderr.write(`Unknown option: ${arg}\n${usage}`);
-    exit(2);
+    usageError(`Unknown option: ${arg}`);
   }
   if (file !== undefined) {
-    stderr.write(`Only one input file is allowed.\n${usage}`);
-    exit(2);
+    usageError("Only one input file is allowed.");
   }
   file = arg;
 }
 
 if (file === undefined && stdin.isTTY) {
-  stderr.write(usage);
-  exit(2);
+  usageError("Pass an input file or pipe rules to standard input.");
 }
 
 /** @param {import("node:stream").Readable} stream */

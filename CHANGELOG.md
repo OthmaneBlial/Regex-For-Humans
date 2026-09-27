@@ -6,6 +6,7 @@
 - Added compact rules such as `start`, `3 digits`, `any text`, and `text without:`.
 - Rejected misleading `alphanumeric character` aliases; use `word` and `not word` for JavaScript's `\w` and `\W` classes.
 - Limited `a` and `an` to quoted literals; other rules use their exact forms.
+- Made CLI argument errors structured in `--json` mode with the `CLI_USAGE` code.
 - Shortened explanations for wildcard text and repeated character sets.
 - Character-set explanations now describe case-insensitive matching.
 - Linked invalid rule feedback to the editor for screen readers.

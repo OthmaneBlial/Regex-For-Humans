@@ -21,7 +21,7 @@ The browser imports the same `index.js` from the static build. `web/app.js` hand
 
 ## Diagnostics and changes to the language
 
-`CompileError` carries a stable machine-readable `code`, a human message and one-based `line`/`column`; columns count UTF-16 code units, matching JavaScript string indices. An optional `hint` gives recovery advice. Invalid input must fail before returning a compile result. CLI JSON errors use `error.toJSON()`. New errors need a distinct code, a location test and readable wording. When a line contains a prefix or comma-separated anchor, verify that the reported column points to the relevant remaining instruction.
+`CompileError` carries a stable machine-readable `code`, a human message and one-based `line`/`column`; columns count UTF-16 code units, matching JavaScript string indices. An optional `hint` gives recovery advice. Invalid input must fail before returning a compile result. CLI JSON rule errors use `error.toJSON()`; invalid arguments use `CLI_USAGE`, and file/runtime errors use `CLI_ERROR`. New rule errors need a distinct code, a location test and readable wording. When a line contains a prefix or comma-separated anchor, verify that the reported column points to the relevant remaining instruction.
 
 The documentation calls the implemented grammar **language version 1**. That is a grammar label, not a claim that npm package version 1.0 exists. The package remains at `0.1.0-dev` until a verified release. No published npm version is implied by the repository.
 
