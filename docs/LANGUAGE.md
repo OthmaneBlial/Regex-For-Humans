@@ -4,6 +4,8 @@ This document defines the implemented **version 1 core language**. The browser w
 
 Regex For Humans translates a small, fixed vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Use the short forms below for new rules; older wording remains accepted. Put one atom or ending anchor on each nonblank line; `start` or `line start` may share a line with the first atom. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces are ignored.
 
+Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
+
 ## Instructions
 
 | Instruction | Generated source | Matches | Does not match |

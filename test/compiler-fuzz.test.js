@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { CompileError, compile } from "../index.js";
+import { splitLines } from "../src/parser.js";
 
 test("seeded arbitrary rules compile deterministically or fail with a valid location", () => {
   let state = 0x51a7_2026;
@@ -45,7 +46,7 @@ test("seeded arbitrary rules compile deterministically or fail with a valid loca
       result = compile(source);
     } catch (error) {
       assert.ok(error instanceof CompileError, `unexpected error for ${JSON.stringify(source)}`);
-      const lines = source.split(/\r?\n/u);
+      const lines = splitLines(source);
       assert.ok(error.line >= 1 && error.line <= lines.length, JSON.stringify(source));
       assert.ok(error.column >= 1 && error.column <= lines[error.line - 1].length + 1);
       continue;

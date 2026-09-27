@@ -228,20 +228,40 @@ test("source-length errors point to the first code unit beyond the limit", () =>
     (error) =>
       error.code === "SOURCE_LIMIT" && error.line === 1 && error.column === LIMITS.sourceLength,
   );
-});
 
-test("line limit accepts a final newline and rejects the 201st input line", () => {
-  const atLimit = Array.from({ length: LIMITS.lines }, () => "digit").join("\n");
-  assert.equal(parse(`${atLimit}\n`).nodes.length, LIMITS.lines);
-
-  for (const source of [`${atLimit}\ndigit\n`, `${atLimit}\n\n`, "\n".repeat(LIMITS.lines + 1)]) {
+  for (const separator of ["\n", "\r\n", "\r", "\u2028", "\u2029"]) {
+    const prefix = `digit${separator}a`;
+    const source = `${prefix}${"x".repeat(LIMITS.sourceLength - prefix.length)}Y`;
     assert.throws(
       () => parse(source),
       (error) =>
-        error.code === "LINE_LIMIT" &&
-        error.message === `Input cannot exceed ${LIMITS.lines} lines.` &&
-        error.line === LIMITS.lines + 1,
+        error.code === "SOURCE_LIMIT" &&
+        error.line === 2 &&
+        error.column === LIMITS.sourceLength - prefix.length + 2,
+      separator,
     );
+  }
+});
+
+test("line limit accepts a final newline and rejects the 201st input line", () => {
+  for (const separator of ["\n", "\r\n", "\r", "\u2028", "\u2029"]) {
+    const atLimit = Array.from({ length: LIMITS.lines }, () => "digit").join(separator);
+    assert.equal(parse(`${atLimit}${separator}`).nodes.length, LIMITS.lines);
+
+    for (const source of [
+      `${atLimit}${separator}digit${separator}`,
+      `${atLimit}${separator}${separator}`,
+      separator.repeat(LIMITS.lines + 1),
+    ]) {
+      assert.throws(
+        () => parse(source),
+        (error) =>
+          error.code === "LINE_LIMIT" &&
+          error.message === `Input cannot exceed ${LIMITS.lines} lines.` &&
+          error.line === LIMITS.lines + 1,
+        separator,
+      );
+    }
   }
 });
 

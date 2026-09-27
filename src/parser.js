@@ -9,13 +9,45 @@ import { fail } from "./diagnostics.js";
 
 export const LIMITS = Object.freeze({ sourceLength: 16_384, lines: 200, repetition: 1_000 });
 
+/** @param {string} source @returns {string[]} */
+export function splitLines(source) {
+  const lines = [];
+  let start = 0;
+  let quoted = false;
+  let escaped = false;
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (quoted) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') quoted = false;
+      continue;
+    }
+    if (character === '"') {
+      quoted = true;
+      continue;
+    }
+    if (character === "\r" && source[index + 1] === "\n") {
+      lines.push(source.slice(start, index));
+      index += 1;
+      start = index + 1;
+    } else if ("\n\r\u2028\u2029".includes(character)) {
+      lines.push(source.slice(start, index));
+      start = index + 1;
+    }
+  }
+  lines.push(source.slice(start));
+  return lines;
+}
+
 /** @param {string} source */
 export function validateSourceLength(source) {
   if (source.length > LIMITS.sourceLength) {
     const prefix = source.slice(0, LIMITS.sourceLength);
-    const locationSource =
-      prefix.endsWith("\r") && source[LIMITS.sourceLength] === "\n" ? prefix.slice(0, -1) : prefix;
-    const lines = locationSource.split(/\r?\n/u);
+    let lines = splitLines(prefix);
+    if (prefix.endsWith("\r") && source[LIMITS.sourceLength] === "\n" && lines.at(-1) === "") {
+      lines = splitLines(prefix.slice(0, -1));
+    }
     fail("SOURCE_LIMIT", `Rules cannot exceed ${LIMITS.sourceLength} UTF-16 code units.`, {
       line: lines.length,
       column: lines[lines.length - 1].length + 1,
@@ -287,8 +319,8 @@ function parseAtom(text, location, originalText) {
 export function parse(source) {
   if (typeof source !== "string") throw new TypeError("Rules must be a string.");
   validateSourceLength(source);
-  const lines = source.split(/\r?\n/u);
-  if (lines.length - Number(source.endsWith("\n")) > LIMITS.lines) {
+  const lines = splitLines(source);
+  if (lines.length - Number(lines.at(-1) === "") > LIMITS.lines) {
     fail("LINE_LIMIT", `Input cannot exceed ${LIMITS.lines} lines.`, {
       line: LIMITS.lines + 1,
       column: 1,

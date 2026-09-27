@@ -21,6 +21,21 @@ test("reference scenarios compile to exact source and flags and match both ways"
   }
 });
 
+test("JavaScript line terminators separate rules and match line anchors", () => {
+  for (const separator of ["\n", "\r\n", "\r", "\u2028", "\u2029"]) {
+    const result = compile(`line start${separator}3 digits${separator}line end`);
+    assert.equal(result.source, "^\\d{3}$");
+    assert.equal(result.flags, "mu");
+    assert.deepEqual(
+      result.segments.map(({ line }) => line),
+      [1, 2, 3],
+    );
+    const regex = toRegExp(result);
+    assert.equal(regex.test(`${separator}123${separator}`), true, JSON.stringify(separator));
+    assert.equal(regex.test(`${separator}12${separator}`), false, JSON.stringify(separator));
+  }
+});
+
 test("negative classes and all repetition forms are semantically distinct", () => {
   assert.equal(compile("non-alphanumeric character").source, "\\W");
   assert.equal(compile("non-digit character").source, "\\D");
