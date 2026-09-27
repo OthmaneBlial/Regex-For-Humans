@@ -58,7 +58,7 @@ Put one rule on each line. `start` can prefix the first rule. Quote exact text; 
 | Exact text | `"ABC"` | `ABC` |
 | Character set | `one of: a, b` | `[ab]` |
 
-Long forms remain valid. Unknown rules and duplicate repetition modifiers show where to fix the input. The [language guide](docs/LANGUAGE.md) covers syntax, escaping, flags, and limits.
+Long forms remain valid. Rule errors include line and column. The [language guide](docs/LANGUAGE.md) covers syntax, flags, and limits.
 
 ## Use it from JavaScript
 
