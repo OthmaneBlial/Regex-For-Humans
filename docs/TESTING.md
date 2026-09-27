@@ -4,11 +4,11 @@ The package declares Node.js `>=22`. These results passed on 28 September 2026:
 
 | Node version | Verification |
 | --- | --- |
-| 22.x | GitHub Actions run `36359367488` |
-| 24.x | GitHub Actions run `36359367488` |
+| 22.x | GitHub Actions run `36360100581` |
+| 24.x | GitHub Actions run `36360100581` |
 | 25.9.0 | `npm run check`, `npm test` — 59 tests, `npm run test:package`, and `npm run test:browser` — 44 tests |
 
-These results verify the three versions shown, not every possible Node release accepted by the package's engine range. GitHub Actions [run `36359367488`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36359367488) passed on commit `405ed23`: 59 Node tests across Linux Node 22/24, macOS and Windows Node 24, 44 browser tests on Linux Chromium, and `npm audit --audit-level=moderate` on Linux Node 24. Its tested `npm-package-tested` artifact was downloaded; the tarball SHA-256 is `7326d573b780b1647d66db1c310a805f789c2b74a197497a1855f5cf8266f088`. Earlier [run `36358574720`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36358574720) also passed. Disposable draft [PR #1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) confirmed that invalid syntax fails `npm run check` on a real pull-request run, then was closed without merging. The automated accessibility tests do not replace a real screen reader session.
+These results verify the three versions shown, not every possible Node release accepted by the package's engine range. GitHub Actions [run `36360100581`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36360100581) passed on commit `3d43554`: 59 Node tests across Linux Node 22/24, macOS and Windows Node 24, 44 browser tests on Linux Chromium, and `npm audit --audit-level=moderate` on Linux Node 24. Its tested `npm-package-tested` artifact was downloaded; the tarball SHA-256 is `4fdbca4188570b1925d971878be0ab89b87ddcd005da11eb9bf9fff131f2bc2f`. Earlier [run `36359367488`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36359367488) also passed. Disposable draft [PR #1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) confirmed that invalid syntax fails `npm run check` on a real pull-request run, then was closed without merging. The automated accessibility tests do not replace a real screen reader session.
 
 ## Reproduce locally
 
