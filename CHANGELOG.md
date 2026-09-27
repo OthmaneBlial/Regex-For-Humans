@@ -6,6 +6,8 @@
 - Added compact rules such as `start`, `3 digits`, `any text`, and `text without:`.
 - Shortened explanations for wildcard text and repeated character sets.
 - Versioned workshop assets per build so browsers load updated recipes and explanations.
+- Clarified local rule handling without implying the workshop saves edits.
+- Fixed keyboard skip navigation so it focuses the workshop without resetting edited rules.
 - Duplicate beginning anchors now report the second anchor directly.
 - Rule lines and line limits now recognize all JavaScript line terminators.
 - Added a compact date-shape recipe with explicit calendar-validation limits.
