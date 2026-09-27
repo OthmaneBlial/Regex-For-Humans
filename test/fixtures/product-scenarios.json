@@ -12,7 +12,7 @@
   {
     "id": "excluded-characters",
     "title": "Exclude characters",
-    "rules": "at the beginning of the input\nanything except the following characters: a, b, c, d any number of times\nend of the input",
+    "rules": "start\nnone of: a, b, c, d any number of times\nend",
     "source": "^[^abcd]*$",
     "flags": "u",
     "matchMode": "full",
@@ -21,8 +21,8 @@
   },
   {
     "id": "line-rule",
-    "title": "Understand an existing line rule",
-    "rules": "at the beginning of a line, I am looking for any character, any number of times\nI am looking for a digit character 3 times\nend of the line",
+    "title": "Read a line rule",
+    "rules": "line start\nany character any number of times\n3 digits\nline end",
     "source": "^.*\\d{3}$",
     "flags": "mu",
     "matchMode": "search",
