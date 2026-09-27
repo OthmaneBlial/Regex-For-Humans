@@ -61,6 +61,17 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
 });
 
+test("rule counter counts instructions and ignores blank lines", async ({ page }) => {
+  await page.goto("/");
+  const counter = page.locator("#rule-count");
+  const editor = page.locator("#rules-input");
+  await expect(counter).toHaveText("3 rules");
+  await editor.fill("digit\n\nend");
+  await expect(counter).toHaveText("2 rules");
+  await editor.fill("digit");
+  await expect(counter).toHaveText("1 rule");
+});
+
 test("positive and negative examples expose a changed outcome", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");

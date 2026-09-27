@@ -190,8 +190,8 @@ function renderTests() {
 }
 
 function compileRules() {
-  const lines = ui.rules.value.split("\n").filter((line) => line.trim()).length;
-  ui.ruleCount.textContent = `${lines} ${lines === 1 ? "line" : "lines"}`;
+  const ruleCount = ui.rules.value.split("\n").filter((line) => line.trim()).length;
+  ui.ruleCount.textContent = `${ruleCount} ${ruleCount === 1 ? "rule" : "rules"}`;
   if (!ui.rules.value.trim()) {
     compiled = null;
     ui.output.textContent = "Select a recipe or write a rule";
