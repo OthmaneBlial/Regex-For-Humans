@@ -83,6 +83,19 @@ test("unknown and misplaced instructions report a useful location", () => {
   assert.throws(() => parse(" "), { code: "EMPTY_SOURCE" });
 });
 
+test("diagnostic columns count UTF-16 code units", () => {
+  assert.throws(
+    () => parse(`a "😀" ${LIMITS.repetition + 1} times`),
+    (error) => {
+      assert.ok(error instanceof CompileError);
+      assert.equal(error.code, "REPETITION_LIMIT");
+      assert.equal(error.line, 1);
+      assert.equal(error.column, 7);
+      return true;
+    },
+  );
+});
+
 test("keywords ignore case and blank lines while retaining literal case", () => {
   const result = parse(
     '  AT THE BEGINNING OF THE INPUT\r\n\r\n I AM LOOKING FOR A "AbC"  \r\nend of the input',
