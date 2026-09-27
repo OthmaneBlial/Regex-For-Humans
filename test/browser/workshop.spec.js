@@ -10,12 +10,17 @@ for (const scenario of scenarios) {
     const browserErrors = [];
     const remoteRequests = [];
     const failedResponses = [];
+    const unversionedAssets = [];
     page.on("pageerror", (error) => browserErrors.push(error.message));
     page.on("console", (message) => {
       if (message.type() === "error") browserErrors.push(message.text());
     });
     page.on("request", (request) => {
       if (!request.url().startsWith("http://127.0.0.1:4175/")) remoteRequests.push(request.url());
+      const url = new URL(request.url());
+      if (/\.(?:css|html|js|json|svg)$/u.test(url.pathname) && !url.searchParams.has("v")) {
+        unversionedAssets.push(url.pathname);
+      }
     });
     page.on("response", (response) => {
       if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.url()}`);
@@ -48,6 +53,7 @@ for (const scenario of scenarios) {
     expect(browserErrors).toEqual([]);
     expect(failedResponses).toEqual([]);
     expect(remoteRequests).toEqual([]);
+    expect(unversionedAssets).toEqual([]);
   });
 }
 
@@ -153,7 +159,7 @@ test("syntax link opens the local rendered guide", async ({ page, context }) => 
     page.getByRole("link", { name: /Read the syntax/ }).click(),
   ]);
   await guide.waitForLoadState();
-  await expect(guide).toHaveURL(/\/web\/language\.html$/u);
+  await expect(guide).toHaveURL(/\/web\/language\.html\?v=[\da-f]{12}$/u);
   await expect(guide.getByRole("heading", { name: "Match one thing" })).toBeVisible();
   await guide.close();
 });
