@@ -22,6 +22,7 @@ for (const scenario of scenarios) {
     });
 
     await page.goto(`/?example=${scenario.id}`);
+    await expect(page.locator("#rules-input")).toHaveValue(scenario.rules);
     await expect(page.locator("#regex-output")).toHaveText(`/${scenario.source}/${scenario.flags}`);
     await expect(page.locator("#test-summary")).toHaveText(
       `${scenario.positive.length + scenario.negative.length} of ${scenario.positive.length + scenario.negative.length} examples behave as expected`,
