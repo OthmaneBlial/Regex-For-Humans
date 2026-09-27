@@ -199,6 +199,18 @@ test("source-length errors point to the first code unit beyond the limit", () =>
   );
 });
 
+test("line limit accepts a final newline and still rejects a 201st line", () => {
+  const atLimit = Array.from({ length: LIMITS.lines }, () => "digit").join("\n");
+  assert.equal(parse(`${atLimit}\n`).nodes.length, LIMITS.lines);
+
+  for (const source of [`${atLimit}\ndigit\n`, `${atLimit}\n\n`]) {
+    assert.throws(
+      () => parse(source),
+      (error) => error.code === "LINE_LIMIT" && error.line === LIMITS.lines + 1,
+    );
+  }
+});
+
 test("diagnostic columns count UTF-16 code units", () => {
   assert.throws(
     () => parse(`a "😀" ${LIMITS.repetition + 1} times`),

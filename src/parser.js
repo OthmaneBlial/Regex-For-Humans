@@ -266,7 +266,7 @@ export function parse(source) {
   if (typeof source !== "string") throw new TypeError("Rules must be a string.");
   validateSourceLength(source);
   const lines = source.split(/\r?\n/u);
-  if (lines.length > LIMITS.lines) {
+  if (lines.length - Number(source.endsWith("\n")) > LIMITS.lines) {
     fail("LINE_LIMIT", `Rules cannot exceed ${LIMITS.lines} lines.`, {
       line: LIMITS.lines + 1,
       column: 1,
