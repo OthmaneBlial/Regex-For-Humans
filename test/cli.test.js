@@ -63,14 +63,14 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
 });
 
 test("CLI enforces the source limit while reading stdin and files", () => {
-  const withinLimit = `a "${"x".repeat(LIMITS.sourceLength - 4)}"`;
+  const withinLimit = `a "${"😀".repeat((LIMITS.sourceLength - 4) / 2)}"`;
   assert.equal(withinLimit.length, LIMITS.sourceLength);
   assert.equal(run(["-"], withinLimit).status, 0);
 
   const input = `${withinLimit}x`;
   const stdinResult = run(["-"], input);
   assert.equal(stdinResult.status, 1);
-  assert.match(stdinResult.stderr, /Rules cannot exceed 16384 characters/u);
+  assert.match(stdinResult.stderr, /Rules cannot exceed 16384 UTF-16 code units/u);
 
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
   const path = join(directory, "rules.txt");
@@ -78,7 +78,7 @@ test("CLI enforces the source limit while reading stdin and files", () => {
     writeFileSync(path, input);
     const fileResult = run([path]);
     assert.equal(fileResult.status, 1);
-    assert.match(fileResult.stderr, /Rules cannot exceed 16384 characters/u);
+    assert.match(fileResult.stderr, /Rules cannot exceed 16384 UTF-16 code units/u);
   } finally {
     unlinkSync(path);
     rmdirSync(directory);

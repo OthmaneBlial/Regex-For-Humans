@@ -12,7 +12,7 @@ export const LIMITS = Object.freeze({ sourceLength: 16_384, lines: 200, repetiti
 /** @param {number} length */
 export function validateSourceLength(length) {
   if (length > LIMITS.sourceLength) {
-    fail("SOURCE_LIMIT", `Rules cannot exceed ${LIMITS.sourceLength} characters.`, {
+    fail("SOURCE_LIMIT", `Rules cannot exceed ${LIMITS.sourceLength} UTF-16 code units.`, {
       line: 1,
       column: 1,
     });

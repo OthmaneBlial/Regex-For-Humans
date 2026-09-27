@@ -41,7 +41,9 @@ test("oversized and HTML-like rules are rejected or rendered as text", async ({ 
   await page.goto("/");
   const editor = page.getByRole("textbox", { name: "One instruction per line" });
   await editor.fill(`a "${"x".repeat(16_385)}"`);
-  await expect(page.locator("#diagnostic")).toContainText("Rules cannot exceed 16384 characters");
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Rules cannot exceed 16384 UTF-16 code units",
+  );
   await editor.fill('a "<img src=x onerror=alert(1)>"');
   await expect(page.locator("#regex-output")).toContainText("<img src=x onerror=alert");
   await expect(page.locator("img")).toHaveCount(0);
