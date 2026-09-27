@@ -99,6 +99,8 @@ end</code></pre>
         <div class="syntax-row"><span class="syntax-type">REPETITION</span><code>3 digits</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">\d{3}</code></div>
         <div class="syntax-row"><span class="syntax-type">LITERAL</span><code>"ABC"</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">ABC</code></div>
         <div class="syntax-row"><span class="syntax-type">CHARACTER SET</span><code>one of: a, b</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">[ab]</code></div>
+        <div class="syntax-row"><span class="syntax-type">ANY TEXT</span><code>any text</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">.*</code></div>
+        <div class="syntax-row"><span class="syntax-type">EXCLUSION</span><code>text without: a, b</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">[^ab]*</code></div>
       </div>
       <p class="language-footnote">Built for JavaScript <code>RegExp</code>. Arbitrary English, groups, alternation, lookaround, and raw regex are outside the current language.</p>
     </section>
