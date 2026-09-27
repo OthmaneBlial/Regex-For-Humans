@@ -109,6 +109,38 @@ test("quoted literal and character-list items keep punctuation as data", () => {
   });
 });
 
+test("quoted-string errors point to the invalid escape or missing quote", () => {
+  const cases = [
+    [String.raw`a "bad\q"`, "\\q", /Invalid JSON escape/u],
+    [String.raw`one of: "a", "bad\q"`, "\\q", /Invalid JSON escape/u],
+    [String.raw`a "bad\u12x4"`, "\\u", /four hexadecimal digits/u],
+    ['a "bad\t"', "\t", /Escape control characters/u],
+    ['a "ABC', null, /Missing closing double quote/u],
+    [`a "ABC${"\\"}`, "\\", /Incomplete JSON escape/u],
+  ];
+  for (const [rules, marker, message] of cases) {
+    const badIndex = marker === null ? rules.length : rules.indexOf(marker);
+    assert.throws(
+      () => parse(rules),
+      (error) => {
+        assert.ok(error instanceof CompileError);
+        assert.equal(error.code, "INVALID_QUOTE");
+        assert.equal(error.column, badIndex + 1);
+        assert.match(error.message, message);
+        return true;
+      },
+      rules,
+    );
+  }
+
+  const list = String.raw`start
+one of: "a", "bad\q"`;
+  assert.throws(
+    () => parse(list),
+    (error) => error.code === "INVALID_QUOTE" && error.line === 2 && error.column === 18,
+  );
+});
+
 test("multi-code-point character-list errors point to the offending item", () => {
   for (const items of ["a, bc", 'a, "bc"']) {
     assert.throws(

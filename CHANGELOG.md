@@ -9,6 +9,7 @@
 - Invalid repetition ranges now point to the upper bound that needs correction.
 - Oversized repetition counts now point to the invalid number.
 - Overlength rule input now points to where the limit is exceeded.
+- Malformed quoted values now point to invalid escapes, raw control characters or missing quotes.
 - CLI filenames beginning with `-` can follow the standard `--` option terminator.
 - Added a public project site with the hosted interactive workshop.
 - Added an ESM library API, a file/stdin CLI and a local static browser workshop with positive and negative examples.

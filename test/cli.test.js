@@ -84,6 +84,11 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   const structured = run(["--json", "-"], "unexpected words");
   assert.equal(structured.status, 1);
   assert.equal(JSON.parse(structured.stderr).error.code, "UNKNOWN_RULE");
+  const malformedQuote = run(["-"], String.raw`a "bad\q"`);
+  assert.equal(malformedQuote.status, 1);
+  assert.match(malformedQuote.stderr, /Line 1, column 7: Invalid JSON escape/u);
+  const malformedQuoteJson = run(["--json", "-"], String.raw`a "bad\q"`);
+  assert.equal(JSON.parse(malformedQuoteJson.stderr).error.column, 7);
   assert.equal(run(["--bogus"]).status, 2);
 });
 

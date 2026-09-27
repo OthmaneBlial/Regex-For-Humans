@@ -78,22 +78,36 @@ function parseRepetition(text, location) {
 /** @param {string} text @param {Location} location @returns {{value: string, length: number}} */
 function readQuoted(text, location) {
   if (!text.startsWith('"')) fail("INVALID_QUOTE", "Expected a double-quoted value.", location);
-  let escaped = false;
+  /** @param {string} message @param {number} index @returns {never} */
+  const failAt = (message, index) =>
+    fail("INVALID_QUOTE", message, { line: location.line, column: location.column + index });
+  let escapeStart = -1;
   for (let index = 1; index < text.length; index += 1) {
     const character = text[index];
-    if (escaped) {
-      escaped = false;
+    if (escapeStart >= 0) {
+      if (character === "u") {
+        if (!/^[0-9a-f]{4}$/iu.test(text.slice(index + 1, index + 5))) {
+          failAt("Use four hexadecimal digits after \\u.", escapeStart);
+        }
+        index += 4;
+      } else if (!'"\\/bfnrt'.includes(character)) {
+        failAt("Invalid JSON escape.", escapeStart);
+      }
+      escapeStart = -1;
     } else if (character === "\\") {
-      escaped = true;
+      escapeStart = index;
     } else if (character === '"') {
       try {
         return { value: JSON.parse(text.slice(0, index + 1)), length: index + 1 };
       } catch {
-        fail("INVALID_QUOTE", "Use JSON-style escapes inside quoted values.", location);
+        failAt("Invalid quoted value.", index);
       }
+    } else if (character.charCodeAt(0) < 0x20) {
+      failAt("Escape control characters inside quoted values.", index);
     }
   }
-  fail("INVALID_QUOTE", "Missing closing double quote.", location);
+  if (escapeStart >= 0) failAt("Incomplete JSON escape.", escapeStart);
+  return failAt("Missing closing double quote.", text.length);
 }
 
 /** @param {string} text @param {Location} location @returns {string[]} */

@@ -47,6 +47,8 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#diagnostic")).toContainText("Line 2, column 3");
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
   await expect(page.getByRole("button", { name: /Copy regex/ })).toBeDisabled();
+  await editor.fill(String.raw`a "bad\q"`);
+  await expect(page.locator("#diagnostic")).toContainText("Line 1, column 7: Invalid JSON escape.");
   await editor.fill(
     'at the beginning of the input\na "ABC"\ndigit character 3 times\nend of the input',
   );
