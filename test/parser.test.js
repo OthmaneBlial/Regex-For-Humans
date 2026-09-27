@@ -190,6 +190,26 @@ test("unknown and misplaced instructions report a useful location", () => {
   assert.throws(() => parse(" "), { code: "EMPTY_SOURCE" });
 });
 
+test("duplicate anchors point to the second anchor", () => {
+  for (const [rules, line, column, message] of [
+    ["start\nstart\n3 digits", 2, 1, "Only one beginning anchor is allowed."],
+    ["start, start 3 digits", 1, 8, "Only one beginning anchor is allowed."],
+    ["digit\nend\nend", 3, 1, "Only one ending anchor is allowed."],
+  ]) {
+    assert.throws(
+      () => parse(rules),
+      (error) => {
+        assert.ok(error instanceof CompileError);
+        assert.equal(error.code, "DUPLICATE_ANCHOR");
+        assert.equal(error.message, message);
+        assert.equal(error.line, line);
+        assert.equal(error.column, column);
+        return true;
+      },
+    );
+  }
+});
+
 test("source-length errors point to the first code unit beyond the limit", () => {
   const source = `${"x".repeat(LIMITS.sourceLength - 5)}\nabcdef`;
   assert.throws(

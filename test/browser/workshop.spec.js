@@ -64,6 +64,10 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#diagnostic")).toContainText("Line 2, column 3");
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
   await expect(page.getByRole("button", { name: /Copy regex/ })).toBeDisabled();
+  await editor.fill("start\nstart\n3 digits");
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Line 2, column 1: Only one beginning anchor is allowed.",
+  );
   await editor.fill('start "A" extra');
   await expect(page.locator("#diagnostic")).toContainText("Line 1, column 11");
   await editor.fill("\n".repeat(201));

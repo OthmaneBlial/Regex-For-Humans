@@ -6,6 +6,7 @@
 - Added compact rules such as `start`, `3 digits`, `any text`, and `text without:`.
 - Shortened explanations for wildcard text and repeated character sets.
 - Versioned workshop assets per build so browsers load updated recipes and explanations.
+- Duplicate beginning anchors now report the second anchor directly.
 - Duplicate repetition modifiers now point to the second modifier in diagnostics.
 - Multi-character list items now point to the invalid item in diagnostics.
 - Invalid repetition ranges now point to the upper bound that needs correction.

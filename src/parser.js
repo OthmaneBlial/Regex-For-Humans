@@ -39,6 +39,8 @@ const SHORTHANDS = new Map([
   ["digits", "\\d"],
 ]);
 
+const START_ANCHOR = /^(at the beginning of (the input|a line)|line start|start)(?:,\s*|\s+|$)/i;
+const DUPLICATE_START_ANCHOR_MESSAGE = "Only one beginning anchor is allowed.";
 const REPETITION =
   "between [0-9]+ and [0-9]+ times|at least [0-9]+ times|[0-9]+ times|any number of times|at least one time|at most one time";
 const PREFIX_REPETITION = new RegExp(`^(${REPETITION}) for\\s+`, "i");
@@ -306,18 +308,23 @@ export function parse(source) {
     let column = raw.indexOf(line) + 1;
     const location = () => ({ line: index + 1, column });
 
-    const start = /^(at the beginning of (the input|a line)|line start|start)(?:,\s*|\s+|$)/i.exec(
-      text,
-    );
+    const start = START_ANCHOR.exec(text);
     if (start) {
       const phrase = start[1];
       const mode = /(?:a line|line start)$/iu.test(phrase.toLowerCase()) ? "line" : "input";
-      if (nodes.length !== 0)
+      if (nodes.some((node) => node.kind === "anchor" && node.edge === "start")) {
+        fail("DUPLICATE_ANCHOR", DUPLICATE_START_ANCHOR_MESSAGE, location());
+      }
+      if (nodes.length !== 0) {
         fail("MISPLACED_ANCHOR", "A beginning anchor must be the first instruction.", location());
+      }
       anchorMode = mode;
       nodes.push(anchor("start", mode, location(), phrase));
       text = text.slice(start[0].length);
       column += start[0].length;
+      if (START_ANCHOR.test(text)) {
+        fail("DUPLICATE_ANCHOR", DUPLICATE_START_ANCHOR_MESSAGE, location());
+      }
       if (!text) continue;
     }
 
