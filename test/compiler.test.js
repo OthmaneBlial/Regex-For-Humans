@@ -88,24 +88,22 @@ test("flags and segment positions describe the emitted expression", () => {
 
 test("explanations reflect JavaScript flags, greedy matching and shorthand limits", () => {
   const lineRule = compile(scenarios[2].rules);
-  assert.equal(lineRule.segments[0].explanation, "Line start; m lets ^ match after line breaks.");
+  assert.equal(lineRule.segments[0].explanation, "Start of each line (m).");
   assert.equal(
     lineRule.segments[1].explanation,
-    "Any text up to the next rule, greedily; line breaks stop it.",
+    "Longest text up to the next rule, excluding line breaks.",
   );
   const excludedRule = compile(scenarios[1].rules);
-  assert.equal(
-    excludedRule.segments[1].explanation,
-    'Any text without "a", "b", "c", "d" (greedy).',
-  );
-  assert.equal(lineRule.segments[2].explanation, "Exactly 3 ASCII digits (0–9).");
-  assert.equal(lineRule.segments[3].explanation, "Line end; m lets $ match before line breaks.");
-  assert.equal(compile("digits").segments[0].explanation, "One or more ASCII digits (0–9).");
-  assert.equal(compile("1 digit").segments[0].explanation, "Exactly 1 ASCII digit (0–9).");
-  assert.equal(compile("3 digits").segments[0].explanation, "Exactly 3 ASCII digits (0–9).");
+  assert.equal(excludedRule.segments[1].explanation, 'Longest text without "a", "b", "c", "d".');
+  assert.equal(lineRule.segments[2].explanation, "Exactly 3 digits (0–9).");
+  assert.equal(lineRule.segments[3].explanation, "End of each line (m).");
+  assert.equal(compile("digit").segments[0].explanation, "One digit (0–9).");
+  assert.equal(compile("digits").segments[0].explanation, "One or more digits (0–9).");
+  assert.equal(compile("1 digit").segments[0].explanation, "Exactly 1 digit (0–9).");
+  assert.equal(compile("3 digits").segments[0].explanation, "Exactly 3 digits (0–9).");
   assert.equal(
     compile("any text", { flags: "s" }).segments[0].explanation,
-    "Any text, greedily; line breaks included.",
+    "Longest text, including line breaks.",
   );
   assert.equal(
     compile('"ABC"', { flags: "i" }).segments[0].explanation,

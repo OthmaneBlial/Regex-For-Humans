@@ -31,14 +31,14 @@ for (const scenario of scenarios) {
     await expect(page.locator("#rules-input")).toHaveValue(scenario.rules);
     if (scenario.id === "excluded-characters") {
       await expect(page.locator("#trace-list")).toContainText(
-        'Any text without "a", "b", "c", "d" (greedy).',
+        'Longest text without "a", "b", "c", "d".',
       );
     }
     if (scenario.id === "line-rule") {
       await expect(page.locator("#trace-list")).toContainText(
-        "Any text up to the next rule, greedily; line breaks stop it.",
+        "Longest text up to the next rule, excluding line breaks.",
       );
-      await expect(page.locator("#trace-list")).toContainText("Exactly 3 ASCII digits (0–9).");
+      await expect(page.locator("#trace-list")).toContainText("Exactly 3 digits (0–9).");
     }
     await expect(page.locator("#regex-output")).toHaveText(`/${scenario.source}/${scenario.flags}`);
     await expect(page.locator("#test-summary")).toHaveText(
