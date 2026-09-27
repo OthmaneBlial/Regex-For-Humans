@@ -19,8 +19,8 @@ function repetitionText(repetition) {
   }
 }
 
-/** @param {import('./ast.js').RuleNode} node @param {string} flags */
-export function explainNode(node, flags) {
+/** @param {import('./ast.js').RuleNode} node @param {string} flags @param {boolean} [hasFollowingRule] */
+export function explainNode(node, flags, hasFollowingRule = false) {
   if (node.kind === "anchor") {
     if (node.mode === "line") {
       return node.edge === "start"
@@ -36,9 +36,10 @@ export function explainNode(node, flags) {
 
   if (node.repetition?.kind === "zeroOrMore") {
     if (node.atomType === "wildcard") {
+      const context = hasFollowingRule ? " before the next rule" : "";
       return flags.includes("s")
-        ? "Any text, line breaks included (greedy)."
-        : "Any text without line breaks (greedy).";
+        ? `Greedily matches any text${context}, including line breaks.`
+        : `Greedily matches any text${context}; stops at line breaks.`;
     }
     if (node.atomType === "charSet") {
       const characters = node.value.map((value) => JSON.stringify(value)).join(", ");

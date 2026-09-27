@@ -97,7 +97,7 @@ export function compileAst(parsed, options = {}) {
   let source = "";
   const segments = [];
 
-  for (const node of parsed.nodes) {
+  for (const [index, node] of parsed.nodes.entries()) {
     const fragment =
       node.kind === "anchor" ? (node.edge === "start" ? "^" : "$") : atomSource(node);
     const sourceStart = source.length;
@@ -107,7 +107,7 @@ export function compileAst(parsed, options = {}) {
       sourceEnd: source.length,
       source: fragment,
       text: node.text,
-      explanation: explainNode(node, flags),
+      explanation: explainNode(node, flags, index + 1 < parsed.nodes.length),
       line: node.location.line,
       column: node.location.column,
       kind: node.kind,

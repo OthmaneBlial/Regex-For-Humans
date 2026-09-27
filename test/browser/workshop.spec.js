@@ -36,7 +36,7 @@ for (const scenario of scenarios) {
     }
     if (scenario.id === "line-rule") {
       await expect(page.locator("#trace-list")).toContainText(
-        "Any text without line breaks (greedy).",
+        "Greedily matches any text before the next rule; stops at line breaks.",
       );
     }
     await expect(page.locator("#regex-output")).toHaveText(`/${scenario.source}/${scenario.flags}`);

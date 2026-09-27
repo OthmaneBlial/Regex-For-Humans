@@ -91,7 +91,10 @@ test("flags and segment positions describe the emitted expression", () => {
 test("explanations reflect JavaScript flags, greedy matching and shorthand limits", () => {
   const lineRule = compile(scenarios[2].rules);
   assert.match(lineRule.segments[0].explanation, /m flag/u);
-  assert.equal(lineRule.segments[1].explanation, "Any text without line breaks (greedy).");
+  assert.equal(
+    lineRule.segments[1].explanation,
+    "Greedily matches any text before the next rule; stops at line breaks.",
+  );
   const excludedRule = compile(scenarios[1].rules);
   assert.equal(
     excludedRule.segments[1].explanation,
@@ -100,7 +103,7 @@ test("explanations reflect JavaScript flags, greedy matching and shorthand limit
   assert.match(lineRule.segments[2].explanation, /ASCII digit/u);
   assert.equal(
     compile("any text", { flags: "s" }).segments[0].explanation,
-    "Any text, line breaks included (greedy).",
+    "Greedily matches any text, including line breaks.",
   );
   assert.match(compile('a "ABC"', { flags: "i" }).segments[0].explanation, /ignoring case/u);
   assert.match(compile("word").segments[0].explanation, /underscore/u);

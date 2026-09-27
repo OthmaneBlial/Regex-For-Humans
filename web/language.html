@@ -53,7 +53,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
         <div class="panel-heading"><span class="step-number">02</span><div><p class="kicker">BUILDING BLOCKS</p><h2 id="atoms-title">Match one thing</h2></div></div>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Instruction</th><th scope="col">Source</th><th scope="col">Meaning</th></tr></thead><tbody>
           <tr><td><code>any character</code></td><td><code>.</code></td><td>One character, except a line break unless <code>s</code> is on</td></tr>
-          <tr><td><code>any text</code></td><td><code>.*</code></td><td>Any sequence without line breaks unless <code>s</code> is on</td></tr>
+          <tr><td><code>any text</code></td><td><code>.*</code></td><td>Greedy text before the next rule; line breaks stop it unless <code>s</code> is on</td></tr>
           <tr><td><code>word</code> / <code>not word</code></td><td><code>\w</code> / <code>\W</code></td><td>ASCII letters, digits, underscore / everything else</td></tr>
           <tr><td><code>digit</code> / <code>not digit</code></td><td><code>\d</code> / <code>\D</code></td><td>ASCII digit / anything else</td></tr>
           <tr><td><code>space</code> / <code>not space</code></td><td><code>\s</code> / <code>\S</code></td><td>JavaScript whitespace / anything else</td></tr>
