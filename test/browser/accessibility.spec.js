@@ -51,14 +51,16 @@ test("keyboard can reach the editor, options, copy and test controls", async ({ 
   await expect(page.locator("#match-mode")).toBeFocused();
 });
 
-test("skip link focuses the workshop content", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("link", { name: "Skip to workshop" }).focus();
-  await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/(?:\?[^#]*)?#main$/u);
+test("skip link focuses the workshop without resetting edited rules", async ({ page }) => {
+  await page.goto("/?example=line-rule");
+  const editor = page.getByRole("textbox", { name: "Write your rules" });
+  await editor.fill('start "XYZ"\nend');
+  await page.getByRole("link", { name: "Skip to workshop" }).press("Enter");
+  await expect(page).toHaveURL(/\/\?example=line-rule#main$/u);
   await expect(page.locator("#main")).toBeFocused();
+  await expect(editor).toHaveValue('start "XYZ"\nend');
   await page.keyboard.press("Tab");
-  await expect(page.locator("#rules-input")).toBeFocused();
+  await expect(editor).toBeFocused();
 });
 
 test("example controls have distinct numbered accessible names", async ({ page }) => {

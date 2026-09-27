@@ -61,10 +61,8 @@ for (const name of ["index.html", "language.html"]) {
   );
   writeFileSync(join(output, "web", name), html);
   if (name === "index.html") {
-    writeFileSync(
-      join(output, "index.html"),
-      html.replace("<head>", '<head>\n  <base href="./web/">'),
-    );
+    const rootHtml = html.replace(/((?:href|src)=")\.\//gu, "$1./web/");
+    writeFileSync(join(output, "index.html"), rootHtml);
   }
 }
 process.stdout.write(`Built static workshop in ${output}\n`);
