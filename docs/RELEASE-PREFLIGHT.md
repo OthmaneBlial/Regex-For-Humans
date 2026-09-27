@@ -1,6 +1,6 @@
 # First release preflight
 
-This is a runbook for a future stable release, not a record of publication. As of 27 September 2026, `package.json` is `0.1.0-dev`; no npm package, stable tag, or GitHub Release exists. A development preview and workshop are hosted at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/). That preview is separate from publishing a stable release.
+This is a runbook for a future stable release, not a record of publication. As of 28 September 2026, `package.json` is `0.1.0-dev`; the npm registry returns 404 for `regex-for-humans`, and no stable tag or GitHub Release exists. A development preview and workshop are hosted at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/). That preview is separate from publishing a stable release.
 
 ## Gates before a version bump
 
