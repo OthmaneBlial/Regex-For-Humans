@@ -7,7 +7,7 @@
 - Shortened explanations for wildcard text and repeated character sets.
 - Character-set explanations now describe case-insensitive matching.
 - Linked invalid rule feedback to the editor for screen readers.
-- Added strict types for isolated browser worker messages and kept non-Error failures readable.
+- Added a shared worker message contract and strict type checks; non-Error failures stay readable.
 - Versioned workshop assets per build so browsers load updated recipes and explanations.
 - Clarified local rule handling without implying the workshop saves edits.
 - Fixed keyboard skip navigation so it focuses the workshop without resetting edited rules.

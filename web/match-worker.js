@@ -1,9 +1,7 @@
 import { LIMITS } from "../src/parser.js";
 
-/** @typedef {{ id: number, text: string, expected: boolean }} ExampleCase */
-/** @typedef {{ id: number, source: string, flags: string, mode: "full" | "search", cases: ExampleCase[] }} TestRequest */
-/** @typedef {{ id: number, actual: boolean, pass: boolean, detail: string }} TestResult */
-/** @typedef {{ id: number, results: TestResult[] } | { id: number, error: string }} TestReply */
+/** @typedef {import("./worker-protocol.d.ts").TestRequest} TestRequest */
+/** @typedef {import("./worker-protocol.d.ts").WorkerReply} WorkerReply */
 
 const MAX_CASES = 100;
 const MAX_TEXT_LENGTH = 2048;
@@ -40,8 +38,12 @@ self.onmessage = (event) => {
       if (match && !actual) detail = `Found ${JSON.stringify(match[0])}, not the entire string`;
       return { id: sample.id, actual, pass: actual === sample.expected, detail };
     });
-    self.postMessage({ id, results });
+    /** @type {WorkerReply} */
+    const reply = { id, results };
+    self.postMessage(reply);
   } catch (error) {
-    self.postMessage({ id, error: error instanceof Error ? error.message : String(error) });
+    /** @type {WorkerReply} */
+    const reply = { id, error: error instanceof Error ? error.message : String(error) };
+    self.postMessage(reply);
   }
 };

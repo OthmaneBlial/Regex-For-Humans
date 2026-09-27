@@ -1,7 +1,7 @@
-/** @typedef {{ id: number, text: string, expected: boolean }} TestCase */
-/** @typedef {{ source: string, flags: string, mode: "full" | "search", cases: TestCase[] }} TestPayload */
-/** @typedef {{ id: number, actual: boolean, pass: boolean, detail: string }} TestResult */
-/** @typedef {{ id: number, results: TestResult[] } | { id: number, error: string }} WorkerReply */
+/** @typedef {import("./worker-protocol.d.ts").TestPayload} TestPayload */
+/** @typedef {import("./worker-protocol.d.ts").TestRequest} TestRequest */
+/** @typedef {import("./worker-protocol.d.ts").TestResult} TestResult */
+/** @typedef {import("./worker-protocol.d.ts").WorkerReply} WorkerReply */
 /** @typedef {"CANCELLED" | "TIMEOUT" | "WORKER_ERROR"} TestRunErrorCode */
 
 export class TestRunError extends Error {
@@ -62,7 +62,9 @@ export class TestRunner {
         finish(new TestRunError("WORKER_ERROR", "Example testing failed in its isolated worker."));
       };
       try {
-        worker.postMessage({ id, ...payload });
+        /** @type {TestRequest} */
+        const request = { id, ...payload };
+        worker.postMessage(request);
       } catch (error) {
         finish(
           new TestRunError("WORKER_ERROR", error instanceof Error ? error.message : String(error)),

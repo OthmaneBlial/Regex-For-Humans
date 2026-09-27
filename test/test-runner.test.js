@@ -12,7 +12,12 @@ class FakeWorker {
     this.request = request;
     if (this.reply)
       queueMicrotask(() =>
-        this.onmessage({ data: { id: request.id, results: [{ id: 1, pass: true }] } }),
+        this.onmessage({
+          data: {
+            id: request.id,
+            results: [{ id: 1, actual: true, pass: true, detail: 'Matched "a" at 0' }],
+          },
+        }),
       );
   }
 
@@ -25,7 +30,7 @@ test("isolated runner returns the current worker result and terminates it", asyn
   const worker = new FakeWorker();
   const runner = new TestRunner(() => worker, 100);
   const result = await runner.run({ source: "a", flags: "u", mode: "search", cases: [] });
-  assert.deepEqual(result, [{ id: 1, pass: true }]);
+  assert.deepEqual(result, [{ id: 1, actual: true, pass: true, detail: 'Matched "a" at 0' }]);
   assert.equal(worker.terminated, true);
   assert.equal(worker.request.source, "a");
 });
@@ -58,7 +63,7 @@ test("a new run cancels the old one without showing its stale result", async () 
   const first = runner.run({ source: "old" });
   const second = runner.run({ source: "new" });
   await assert.rejects(first, { code: "CANCELLED" });
-  assert.deepEqual(await second, [{ id: 1, pass: true }]);
+  assert.deepEqual(await second, [{ id: 1, actual: true, pass: true, detail: 'Matched "a" at 0' }]);
   assert.equal(oldWorker.terminated, true);
   assert.equal(newWorker.terminated, true);
 });
