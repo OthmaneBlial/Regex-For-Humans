@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f0e6">
+  <meta name="description" content="Write clear English rules. See the JavaScript regex they produce, inspect each part, and test real examples.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
+  <title>Regex For Humans — Write the rule. Read the regex.</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Regex For Humans home">
+      <span class="brand-mark" aria-hidden="true">^<small>.*</small></span>
+      <span class="brand-name">regex <strong>for humans</strong></span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="#how">How it works</a>
+      <a href="#language">Language</a>
+      <a class="nav-action" href="./workshop/">Open workshop <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> CONTROLLED ENGLISH / JAVASCRIPT REGEXP</p>
+        <h1 id="page-title">Write the rule.<br><em>Read the regex.</em></h1>
+        <p class="hero-summary">Describe a pattern with clear rules. See what each one means, then test the examples that matter.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="./workshop/">Try the workshop <span aria-hidden="true">↗</span></a>
+          <a class="text-link" href="#language">Explore the syntax <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="hero-note"><span>EXPLICIT RULES</span><i>·</i><span>LOCAL COMPILATION</span><i>·</i><span>JAVASCRIPT ONLY</span></p>
+      </div>
+
+      <section class="sample-card" aria-labelledby="sample-title">
+        <div class="sample-card-head">
+          <span class="sample-icon" aria-hidden="true">{3}</span>
+          <div><span class="mini-label">ONE RULE AT A TIME</span><h2 id="sample-title">From words to pattern</h2></div>
+          <span class="sample-status"><b></b> COMPILED</span>
+        </div>
+        <div class="sample-block rules-block">
+          <div class="sample-label"><span>YOUR RULES</span><button class="copy-button" type="button" data-copy="rules-code">Copy rules</button></div>
+          <pre><code id="rules-code">start "ABC"
+3 digits
+end</code></pre>
+        </div>
+        <div class="compile-arrow" aria-hidden="true"><span></span> COMPILE <span></span></div>
+        <div class="sample-block output-block">
+          <div class="sample-label"><span>JAVASCRIPT REGEXP</span><button class="copy-button" type="button" data-copy="regex-code">Copy regex</button></div>
+          <pre><code id="regex-code">/^ABC\d{3}$/u</code></pre>
+        </div>
+        <div class="match-row"><span class="match-yes">✓</span><code>ABC123</code><span>matches</span><span class="match-no">×</span><code>ABC12</code><span>does not</span></div>
+      </section>
+    </section>
+
+    <section class="how-section" id="how" aria-labelledby="how-title">
+      <div class="section-heading">
+        <p class="eyebrow">A SIMPLE, CHECKABLE FLOW</p>
+        <h2 id="how-title">Build it in three steps.</h2>
+      </div>
+      <div class="steps-grid">
+        <article class="step"><span class="step-number">01</span><h3>Write a rule</h3><p>Use one clear instruction per line: <code>3 digits</code>, <code>start</code>, or <code>"ABC"</code>.</p></article>
+        <article class="step"><span class="step-number">02</span><h3>Inspect the output</h3><p>See the regex and the fragment produced by each rule.</p></article>
+        <article class="step"><span class="step-number">03</span><h3>Test your examples</h3><p>Check strings that should match and strings that should fail.</p></article>
+      </div>
+    </section>
+
+    <section class="workshop-section" aria-labelledby="workshop-title">
+      <div class="workshop-copy">
+        <p class="eyebrow">THE INTERACTIVE WORKSHOP</p>
+        <h2 id="workshop-title">Try your own rules.</h2>
+        <p>Edit a recipe, change the examples, and see the result update. Your rules stay in the browser.</p>
+        <a class="text-link" href="./workshop/">Open the workshop <span aria-hidden="true">↗</span></a>
+      </div>
+      <a class="workshop-preview" href="./workshop/" aria-label="Open the interactive Regex For Humans workshop">
+        <img src="./assets/workshop-preview.png" alt="The workshop compiling start ABC, 3 digits, end into a regex, with four passing example checks" loading="lazy" width="1280" height="1561">
+        <span class="preview-tag">LIVE WORKSHOP <b aria-hidden="true">↗</b></span>
+      </a>
+      <p class="workshop-caption"><span class="online-dot" aria-hidden="true"></span> Rules and examples are compiled and tested in your browser. No account required.</p>
+    </section>
+
+    <section class="language-section" id="language" aria-labelledby="language-title">
+      <div class="language-intro">
+        <p class="eyebrow">SMALL VOCABULARY. CLEAR MEANING.</p>
+        <h2 id="language-title">Learn a few rules.<br><em>See what they mean.</em></h2>
+        <p>The compiler recognizes a fixed set of instructions. Unknown rules produce a line and column so you can fix them.</p>
+        <a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">Read the full language guide <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="syntax-list">
+        <div class="syntax-row"><span class="syntax-type">ANCHORS</span><code>start</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">^</code></div>
+        <div class="syntax-row"><span class="syntax-type">CHARACTER</span><code>digit</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">\d</code></div>
+        <div class="syntax-row"><span class="syntax-type">REPETITION</span><code>3 digits</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">\d{3}</code></div>
+        <div class="syntax-row"><span class="syntax-type">LITERAL</span><code>"ABC"</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">ABC</code></div>
+        <div class="syntax-row"><span class="syntax-type">CHARACTER SET</span><code>one of: a, b</code><span class="syntax-arrow" aria-hidden="true">→</span><code class="syntax-result">[ab]</code></div>
+      </div>
+      <p class="language-footnote">Built for JavaScript <code>RegExp</code>. Arbitrary English, groups, alternation, lookaround, and raw regex are outside the current language.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true">^<small>.*</small></span><span class="brand-name">regex <strong>for humans</strong></span></a>
+    <p>Clear rules. Inspectable regex.</p>
+    <div class="footer-links">
+      <a href="./workshop/">Workshop</a>
+      <a href="https://github.com/OthmaneBlial/Regex-For-Humans" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT license</a>
+    </div>
+  </footer>
+  <p class="copy-status" id="copy-status" aria-live="polite"></p>
+</body>
+</html>

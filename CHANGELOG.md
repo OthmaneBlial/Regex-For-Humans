@@ -4,6 +4,8 @@
 
 - Added a deterministic, documented controlled-English compiler for JavaScript regular expressions with explicit diagnostics, source spans and explanations.
 - Added short aliases such as `start`, `3 digits`, and `one of:` while retaining the longer phrases.
+- Duplicate repetition modifiers now point to the second modifier in diagnostics.
+- Added a public project site with the hosted interactive workshop.
 - Added an ESM library API, a file/stdin CLI and a local static browser workshop with positive and negative examples.
 - Added worker-isolated browser matching with timeout, parser limits, security notes and automated Node/browser coverage.
 

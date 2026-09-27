@@ -1,4 +1,5 @@
 dist/
+/site/workshop/
 artifacts/
 node_modules/
 playwright-report/

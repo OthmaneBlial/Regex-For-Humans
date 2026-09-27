@@ -2,15 +2,13 @@
 
 [![CI](https://github.com/OthmaneBlial/Regex-For-Humans/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/OthmaneBlial/Regex-For-Humans/actions/workflows/ci.yml)
 
-**Write a short rule. Get a JavaScript regex you can inspect and test.**
+**Write clear rules. Get a JavaScript regex you can inspect and test.**
 
-Regex For Humans uses a small, explicit English vocabulary. It does not guess what arbitrary text means. The same compiler powers a JavaScript library, a CLI, and a local browser workshop.
+Regex For Humans turns a small, explicit English vocabulary into JavaScript `RegExp`. The same compiler powers a CLI, a library, and a browser workshop. Each rule has a defined meaning and predictable output.
 
-> **Status:** Development build. Not on npm; the workshop is not hosted; no GitHub release or standalone binary.
+> **Development preview:** [Project site](https://othmaneblial.github.io/Regex-For-Humans/) · [Open the workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/). Local use requires Node.js 22+; the package is not yet on npm.
 
-## Try it
-
-Requires Node.js 22 or newer.
+## See it work
 
 ```sh
 git clone https://github.com/OthmaneBlial/Regex-For-Humans.git
@@ -22,11 +20,11 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 /^ABC\d{3}$/u
 ```
 
-`ABC123` matches. `ABC12`, `ABC1234`, and `abc123` do not. Add `--explain` to see each rule's regex fragment, or `--json` for structured output and source locations. Run `node bin/regex-for-humans.js --help` for all options.
+This matches `ABC123`; it rejects `ABC12`, `ABC1234`, and `abc123`.
 
-## Open the workshop
+## Run the workshop locally
 
-From the repository:
+The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) is ready to use. To run it from a checkout:
 
 ```sh
 npm ci
@@ -34,20 +32,35 @@ npm run build
 npm run serve
 ```
 
-Open **http://127.0.0.1:4174/**. Choose a recipe, edit its rules, then check positive and negative examples. The compiler runs in the browser; entered rules and examples are not sent to an application backend. Matching runs in a worker with a timeout. See the [security model](docs/SECURITY_MODEL.md).
+Open **http://127.0.0.1:4174/**. Pick a recipe, edit the rules, and test examples. Compilation runs in your browser; rules and examples are not sent to an application backend.
 
-![Desktop workshop showing the rules start "ABC", 3 digits, end; the generated regex and all four passing examples](media/screenshots/workshop-desktop-dev.png)
+![Regex For Humans workshop showing the rules start "ABC", 3 digits, end and their passing examples](media/screenshots/workshop-desktop-dev.png)
 
 <details>
-<summary>Mobile workshop</summary>
+<summary>Mobile screenshot</summary>
 
 ![Mobile view of the Regex For Humans workshop](media/screenshots/workshop-mobile-dev.png)
 
 </details>
 
-These are unedited captures of the local development build. [Capture details and checksums](media/screenshots/README.md).
+[Screenshot source and checksums](media/screenshots/README.md).
 
-## Use the library
+## Write a rule
+
+Put one rule on each line. `start` can prefix the first rule. Quote exact text; use `start` and `end` to anchor the match.
+
+| Meaning | Rule | Regex source |
+| --- | --- | --- |
+| Input bounds | `start` · `end` | `^` · `$` |
+| Line bounds | `line start` · `line end` | `^` · `$` with `m` |
+| Character | `digit` · `not digit` | `\d` · `\D` |
+| Repeated digits | `3 digits` · `digits` | `\d{3}` · `\d+` |
+| Exact text | `"ABC"` | `ABC` |
+| Character set | `one of: a, b` | `[ab]` |
+
+Long forms remain valid. Unknown rules and duplicate repetition modifiers show where to fix the input. The [language guide](docs/LANGUAGE.md) covers syntax, escaping, flags, and limits.
+
+## Use it from JavaScript
 
 ```js
 import { compile, toRegExp } from './index.js';
@@ -57,21 +70,15 @@ console.log(result.source); // ^\d{3}$
 console.log(toRegExp(result).test('123')); // true
 ```
 
-Import `./index.js` from a checkout. The package is not yet available from npm.
+Import `./index.js` from the repository checkout.
 
-## Syntax at a glance
+## CLI options
 
-| Rule | Example | JavaScript source |
-| --- | --- | --- |
-| Input bounds | `start` · `end` | `^` · `$` |
-| Line bounds | `line start` · `line end` | `^` · `$` with `m` |
-| Character | `digit` · `not digit` | `\d` · `\D` |
-| Repeated digits | `3 digits` | `\d{3}` |
-| One or more digits | `digits` | `\d+` |
-| Literal text | `"ABC"` | `ABC` |
-| Character set | `one of: a, b` | `[ab]` |
+Read rules from a file or standard input. Use `--explain` for rule-by-rule output, `--json` for structured results and diagnostics, `--ignore-case` for the `i` flag, or `--dot-all` for `s`. Run `node bin/regex-for-humans.js --help` for usage.
 
-Longer phrases remain supported. Unknown rules and duplicate counts report their location. The [language guide](docs/LANGUAGE.md) defines the exact syntax, escaping, flags, limits, and examples. Output targets JavaScript `RegExp`; groups, alternation, lookaround, backreferences, and arbitrary raw regex are outside version 1.
+## Scope
+
+Output targets JavaScript `RegExp`. The fixed grammar includes anchors, character classes, literals, sets, and repetition. Free-form English, groups, alternation, lookaround, backreferences, and raw regex are not supported. See the [security model](docs/SECURITY_MODEL.md) for workshop execution limits.
 
 ## Develop
 
@@ -79,12 +86,8 @@ Longer phrases remain supported. Unknown rules and duplicate counts report their
 npm ci
 npm run check
 npm test
-npm run build
+npm run build:pages
 npm run test:package
-npx playwright install chromium
-npm run test:browser
 ```
 
-The current suites contain 45 Node tests and 34 browser tests. [Testing and compatibility](docs/TESTING.md) records versions and evidence limits. See [contribution guide](CONTRIBUTING.md), [architecture](docs/ARCHITECTURE.md), [roadmap](ROADMAP.md), and [MIT license](LICENSE).
-
-Report security issues through the private process in [SECURITY.md](SECURITY.md). The [changelog](CHANGELOG.md) records project changes.
+To run browser tests: `npx playwright install chromium` then `npm run test:browser`. See [testing and compatibility](docs/TESTING.md), [contributing](CONTRIBUTING.md), [changelog](CHANGELOG.md), and [MIT license](LICENSE). Report security issues through the private process in [SECURITY.md](SECURITY.md).

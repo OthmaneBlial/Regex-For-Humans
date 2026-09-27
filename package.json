@@ -33,6 +33,7 @@
     "docs:check": "node scripts/check-doc-links.js",
     "check": "biome check . && npm run typecheck && npm run docs:check",
     "build": "node scripts/build-web.js",
+    "build:pages": "npm run build && node scripts/build-pages-workshop.js",
     "serve": "node scripts/serve-dist.js",
     "test:browser": "playwright test"
   },
