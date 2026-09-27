@@ -10,6 +10,7 @@
 - Rule lines and line limits now recognize all JavaScript line terminators.
 - Added a compact date-shape recipe with explicit calendar-validation limits.
 - Corrected the `end` explanation and docs: JavaScript `$` rejects a final line break without `m`.
+- Put compact repetition forms first in the syntax guide.
 - Duplicate repetition modifiers now point to the second modifier in diagnostics.
 - Multi-character list items now point to the invalid item in diagnostics.
 - Invalid repetition ranges now point to the upper bound that needs correction.

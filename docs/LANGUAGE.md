@@ -34,17 +34,17 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
 
 ## Repetition
 
-A repetition modifies exactly one atom. Write an exact count before it (`3 digits`). For a multi-character literal, the compiler groups the whole literal before applying the repetition. Older repetition forms remain accepted. Two repetitions on one atom, a repetition without an atom, negative counts and invalid ranges are errors.
+A count applies to one item. Put exact counts first (`3 digits`). The compiler keeps a multi-character literal together. Other count forms follow; older suffix wording is listed last. Duplicate counts, counts without an item, negative counts and invalid ranges are errors.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |
-| `3 <atom>` (for example, `3 digits`) | `A{3}` | `AAA` | `AA` |
-| `<atom> 3 times` | `A{3}` | `AAA` | `AA` |
-| `<atom> any number of times` | `A*` | empty, `AAA` | `B` as a whole-string match |
-| `<atom> at least one time` | `A+` | `A`, `AAA` | empty |
-| `<atom> at most one time` | `A?` | empty, `A` | `AA` as a whole-string match |
-| `<atom> between 2 and 4 times` | `A{2,4}` | `AA`, `AAAA` | `A`, `AAAAA` |
-| `<atom> at least 3 times` | `A{3,}` | `AAA`, `AAAA` | `AA` |
+| `3 <item>` (for example, `3 digits`) | `A{3}` | `AAA` | `AA` |
+| `<item> between 2 and 4 times` | `A{2,4}` | `AA`, `AAAA` | `A`, `AAAAA` |
+| `<item> at least 3 times` | `A{3,}` | `AAA`, `AAAA` | `AA` |
+| `<item> 3 times` | `A{3}` | `AAA` | `AA` |
+| `<item> any number of times` | `A*` | empty, `AAA` | `B` as a whole-string match |
+| `<item> at least one time` | `A+` | `A`, `AAA` | empty |
+| `<item> at most one time` | `A?` | empty, `A` | `AA` as a whole-string match |
 
 Use `text without: a, b` to match any sequence that excludes those characters. Numeric counts are nonnegative integers no greater than 1,000. The compiler rejects a quantifier attached to an anchor.
 

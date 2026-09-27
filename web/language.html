@@ -66,15 +66,16 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
       </section>
 
       <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">
-        <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one atom</h2></div></div>
-        <p>Put an exact count before an atom: <code>3 digits</code> generates <code>\d{3}</code>. Longer repetition phrases remain valid. A repeated multi-character literal stays grouped.</p>
+        <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one thing</h2></div></div>
+        <p>Put exact counts first: <code>3 digits</code> generates <code>\d{3}</code>. Other count forms follow; older suffix wording is last. A multi-character literal stays together.</p>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Form</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
-          <tr><td><code>&lt;atom&gt; any number of times</code></td><td><code>*</code></td><td>Zero or more</td></tr>
-          <tr><td><code>&lt;atom&gt; at least one time</code></td><td><code>+</code></td><td>One or more</td></tr>
-          <tr><td><code>&lt;atom&gt; at most one time</code></td><td><code>?</code></td><td>Zero or one</td></tr>
-          <tr><td><code>3 &lt;atom&gt;</code> (for example, <code>3 digits</code>)</td><td><code>{3}</code></td><td>Exactly three</td></tr>
-          <tr><td><code>&lt;atom&gt; between 2 and 4 times</code></td><td><code>{2,4}</code></td><td>Two to four</td></tr>
-          <tr><td><code>&lt;atom&gt; at least 3 times</code></td><td><code>{3,}</code></td><td>Three or more</td></tr>
+          <tr><td><code>3 &lt;item&gt;</code> (for example, <code>3 digits</code>)</td><td><code>{3}</code></td><td>Exactly three</td></tr>
+          <tr><td><code>&lt;item&gt; between 2 and 4 times</code></td><td><code>{2,4}</code></td><td>Two to four</td></tr>
+          <tr><td><code>&lt;item&gt; at least 3 times</code></td><td><code>{3,}</code></td><td>Three or more</td></tr>
+          <tr><td><code>&lt;item&gt; 3 times</code></td><td><code>{3}</code></td><td>Exactly three</td></tr>
+          <tr><td><code>&lt;item&gt; any number of times</code></td><td><code>*</code></td><td>Zero or more</td></tr>
+          <tr><td><code>&lt;item&gt; at least one time</code></td><td><code>+</code></td><td>One or more</td></tr>
+          <tr><td><code>&lt;item&gt; at most one time</code></td><td><code>?</code></td><td>Zero or one</td></tr>
         </tbody></table></div>
       </section>
 
