@@ -96,6 +96,10 @@ test("CLI enforces the source limit while reading stdin and files", () => {
   const stdinResult = run(["-"], input);
   assert.equal(stdinResult.status, 1);
   assert.match(stdinResult.stderr, /Rules cannot exceed 16384 UTF-16 code units/u);
+  const multilineOverflow = `${"x".repeat(LIMITS.sourceLength - 5)}\nabcdef`;
+  const located = run(["-"], multilineOverflow);
+  assert.equal(located.status, 1);
+  assert.match(located.stderr, /Line 2, column 5: Rules cannot exceed/u);
 
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
   const path = join(directory, "rules.txt");

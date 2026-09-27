@@ -147,6 +147,26 @@ test("unknown and misplaced instructions report a useful location", () => {
   assert.throws(() => parse(" "), { code: "EMPTY_SOURCE" });
 });
 
+test("source-length errors point to the first code unit beyond the limit", () => {
+  const source = `${"x".repeat(LIMITS.sourceLength - 5)}\nabcdef`;
+  assert.throws(
+    () => parse(source),
+    (error) => {
+      assert.ok(error instanceof CompileError);
+      assert.equal(error.code, "SOURCE_LIMIT");
+      assert.equal(error.line, 2);
+      assert.equal(error.column, 5);
+      return true;
+    },
+  );
+
+  assert.throws(
+    () => parse(`${"x".repeat(LIMITS.sourceLength - 1)}\r\n`),
+    (error) =>
+      error.code === "SOURCE_LIMIT" && error.line === 1 && error.column === LIMITS.sourceLength,
+  );
+});
+
 test("diagnostic columns count UTF-16 code units", () => {
   assert.throws(
     () => parse(`a "😀" ${LIMITS.repetition + 1} times`),

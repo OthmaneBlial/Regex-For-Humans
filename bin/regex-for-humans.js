@@ -86,7 +86,7 @@ async function readInput(stream) {
     length += text.length;
     if (length > LIMITS.sourceLength) {
       stream.destroy();
-      validateSourceLength(length);
+      validateSourceLength(chunks.join("") + text);
     }
     chunks.push(text);
   }

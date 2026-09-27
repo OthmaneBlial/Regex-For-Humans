@@ -9,12 +9,16 @@ import { fail } from "./diagnostics.js";
 
 export const LIMITS = Object.freeze({ sourceLength: 16_384, lines: 200, repetition: 1_000 });
 
-/** @param {number} length */
-export function validateSourceLength(length) {
-  if (length > LIMITS.sourceLength) {
+/** @param {string} source */
+export function validateSourceLength(source) {
+  if (source.length > LIMITS.sourceLength) {
+    const prefix = source.slice(0, LIMITS.sourceLength);
+    const locationSource =
+      prefix.endsWith("\r") && source[LIMITS.sourceLength] === "\n" ? prefix.slice(0, -1) : prefix;
+    const lines = locationSource.split(/\r?\n/u);
     fail("SOURCE_LIMIT", `Rules cannot exceed ${LIMITS.sourceLength} UTF-16 code units.`, {
-      line: 1,
-      column: 1,
+      line: lines.length,
+      column: lines[lines.length - 1].length + 1,
     });
   }
 }
@@ -246,7 +250,7 @@ function parseAtom(text, location, originalText) {
 /** @param {string} source @returns {ParsedRules} */
 export function parse(source) {
   if (typeof source !== "string") throw new TypeError("Rules must be a string.");
-  validateSourceLength(source.length);
+  validateSourceLength(source);
   const lines = source.split(/\r?\n/u);
   if (lines.length > LIMITS.lines) {
     fail("LINE_LIMIT", `Rules cannot exceed ${LIMITS.lines} lines.`, {
