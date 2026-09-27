@@ -52,6 +52,15 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm run build
-      - run: npm run test:package
-      - name: Publish with npm trusted publishing provenance
-        run: npm publish --provenance --access public
+      - name: Test the exact package tarball
+        run: npm run test:package
+        env:
+          PACK_OUTPUT_DIR: artifacts
+      - name: Publish the tested tarball with npm provenance
+        run: |
+          set -euo pipefail
+          set -- artifacts/*.tgz
+          test "$#" -eq 1
+          test -f "$1"
+          sha256sum "$1"
+          npm publish "$1" --provenance --access public
