@@ -2,7 +2,7 @@
 
 This document defines the implemented **version 1 core language**. The browser workshop runs locally from this clone. npm publication and a GitHub release have not yet been verified; use the repository status and release notes to check each distribution surface.
 
-Regex For Humans translates a small, fixed vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Use the short forms below for new rules; older wording remains accepted. Put one atom or ending anchor on each nonblank line; `start` or `line start` may share a line with the first atom. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces are ignored.
+Regex For Humans translates a small, fixed vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Use the short forms below for new rules; older wording remains accepted. Write one instruction per nonblank line. `start` or `line start` may share a line with the first instruction. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces are ignored.
 
 Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
 
