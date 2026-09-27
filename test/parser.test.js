@@ -44,6 +44,20 @@ test("repetition forms are distinct and validate their bounds", () => {
   assert.throws(() => parse("3 times"), { code: "UNKNOWN_RULE" });
 });
 
+test("an excessive repetition count points to the count", () => {
+  const count = String(LIMITS.repetition + 1);
+  const rules = `digit character at least ${count} times`;
+  assert.throws(
+    () => parse(rules),
+    (error) => {
+      assert.ok(error instanceof CompileError);
+      assert.equal(error.code, "REPETITION_LIMIT");
+      assert.equal(error.column, rules.indexOf(count) + 1);
+      return true;
+    },
+  );
+});
+
 test("an invalid repetition range points to its upper bound", () => {
   const rules = "digit character between 4 and 2 times";
   assert.throws(

@@ -48,8 +48,15 @@ function parseRepetition(text, location) {
   if (normalized === "at most one time") return { kind: "optional" };
   const numberMatches = [...normalized.matchAll(/[0-9]+/g)];
   const numbers = numberMatches.map((match) => Number(match[0]));
-  if (numbers.some((number) => !Number.isSafeInteger(number) || number > LIMITS.repetition)) {
-    fail("REPETITION_LIMIT", `Repetition counts must be at most ${LIMITS.repetition}.`, location);
+  const invalidCount = numberMatches.find((match) => {
+    const number = Number(match[0]);
+    return !Number.isSafeInteger(number) || number > LIMITS.repetition;
+  });
+  if (invalidCount) {
+    fail("REPETITION_LIMIT", `Repetition counts must be at most ${LIMITS.repetition}.`, {
+      line: location.line,
+      column: location.column + (invalidCount.index ?? 0),
+    });
   }
   if (normalized.startsWith("between ")) {
     if (numbers[0] > numbers[1]) {
