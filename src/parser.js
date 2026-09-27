@@ -92,6 +92,7 @@ function readCharacterList(text, location) {
   while (index < text.length) {
     while (/\s/u.test(text[index] ?? "")) index += 1;
     if (index >= text.length) break;
+    const itemStart = index;
     let value;
     if (text[index] === '"') {
       const quoted = readQuoted(text.slice(index), {
@@ -109,7 +110,7 @@ function readCharacterList(text, location) {
     if ([...value].length !== 1) {
       fail("INVALID_CHARACTER", "Each character-list item must be one Unicode code point.", {
         line: location.line,
-        column: location.column + index,
+        column: location.column + itemStart,
       });
     }
     items.push(value);

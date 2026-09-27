@@ -82,6 +82,22 @@ test("quoted literal and character-list items keep punctuation as data", () => {
   });
 });
 
+test("multi-code-point character-list errors point to the offending item", () => {
+  for (const items of ["a, bc", 'a, "bc"']) {
+    assert.throws(
+      () => parse(`start\none of: ${items}`),
+      (error) => {
+        assert.ok(error instanceof CompileError);
+        assert.equal(error.code, "INVALID_CHARACTER");
+        assert.equal(error.line, 2);
+        assert.equal(error.column, 12);
+        return true;
+      },
+      items,
+    );
+  }
+});
+
 test("unknown and misplaced instructions report a useful location", () => {
   assert.throws(
     () => parse("digit character\n  surprise phrase"),
