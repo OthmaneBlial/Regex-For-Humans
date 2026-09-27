@@ -71,7 +71,7 @@ Import `./index.js` from a checkout. The package is not yet available from npm.
 | Literal text | `"ABC"` | `ABC` |
 | Character set | `one of: a, b` | `[ab]` |
 
-Longer phrases remain supported. The [language guide](docs/LANGUAGE.md) defines the exact syntax, escaping, flags, limits, and examples. Output targets JavaScript `RegExp`; groups, alternation, lookaround, backreferences, and arbitrary raw regex are outside version 1.
+Longer phrases remain supported. Unknown rules and duplicate counts report their location. The [language guide](docs/LANGUAGE.md) defines the exact syntax, escaping, flags, limits, and examples. Output targets JavaScript `RegExp`; groups, alternation, lookaround, backreferences, and arbitrary raw regex are outside version 1.
 
 ## Develop
 
@@ -85,6 +85,6 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-The current suites contain 44 Node tests and 34 browser tests. [Testing and compatibility](docs/TESTING.md) records versions and evidence limits. See [contribution guide](CONTRIBUTING.md), [architecture](docs/ARCHITECTURE.md), [roadmap](ROADMAP.md), and [MIT license](LICENSE).
+The current suites contain 45 Node tests and 34 browser tests. [Testing and compatibility](docs/TESTING.md) records versions and evidence limits. See [contribution guide](CONTRIBUTING.md), [architecture](docs/ARCHITECTURE.md), [roadmap](ROADMAP.md), and [MIT license](LICENSE).
 
 Report security issues through the private process in [SECURITY.md](SECURITY.md). The [changelog](CHANGELOG.md) records project changes.

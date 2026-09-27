@@ -44,6 +44,26 @@ test("repetition forms are distinct and validate their bounds", () => {
   assert.throws(() => parse("3 times"), { code: "UNKNOWN_RULE" });
 });
 
+test("duplicate repetitions report the second modifier's location", () => {
+  for (const [rules, column] of [
+    ["digit character 2 times 3 times", 25],
+    ["3 digits 4 times", 10],
+    ["at least 2 times for digit character 3 times", 38],
+  ]) {
+    assert.throws(
+      () => parse(rules),
+      (error) => {
+        assert.ok(error instanceof CompileError);
+        assert.equal(error.code, "DUPLICATE_REPETITION");
+        assert.equal(error.line, 1);
+        assert.equal(error.column, column);
+        return true;
+      },
+      rules,
+    );
+  }
+});
+
 test("quoted literal and character-list items keep punctuation as data", () => {
   assert.equal(parse('a "a.b"').nodes[0].value, "a.b");
   assert.deepEqual(parse('any of the following characters: "]", "-", ",", "\\\\"').nodes[0].value, [
@@ -90,7 +110,7 @@ test("diagnostic columns count UTF-16 code units", () => {
       assert.ok(error instanceof CompileError);
       assert.equal(error.code, "REPETITION_LIMIT");
       assert.equal(error.line, 1);
-      assert.equal(error.column, 7);
+      assert.equal(error.column, 8);
       return true;
     },
   );

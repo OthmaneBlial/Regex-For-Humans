@@ -139,10 +139,12 @@ function readCharacterList(text, location) {
 function parseAtom(text, location, originalText) {
   let remaining = text;
   let repetition = null;
+  let offset = 0;
   const prefix = PREFIX_REPETITION.exec(remaining);
   if (prefix) {
     repetition = parseRepetition(prefix[1], location);
     remaining = remaining.slice(prefix[0].length);
+    offset += prefix[0].length;
   }
 
   const count = /^([0-9]+)\s+/u.exec(remaining);
@@ -150,15 +152,19 @@ function parseAtom(text, location, originalText) {
     if (repetition) fail("DUPLICATE_REPETITION", "Use only one repetition per atom.", location);
     repetition = parseRepetition(`${count[1]} times`, location);
     remaining = remaining.slice(count[0].length);
+    offset += count[0].length;
   }
 
   const suffix = SUFFIX_REPETITION.exec(remaining);
   if (suffix) {
-    if (repetition) fail("DUPLICATE_REPETITION", "Use only one repetition per atom.", location);
-    repetition = parseRepetition(suffix[1], {
+    const suffixLocation = {
       line: location.line,
-      column: location.column + suffix.index,
-    });
+      column: location.column + offset + suffix.index + suffix[0].length - suffix[1].length,
+    };
+    if (repetition || SUFFIX_REPETITION.test(remaining.slice(0, suffix.index).trimEnd())) {
+      fail("DUPLICATE_REPETITION", "Use only one repetition per atom.", suffixLocation);
+    }
+    repetition = parseRepetition(suffix[1], suffixLocation);
     remaining = remaining.slice(0, suffix.index).trimEnd();
   }
 
