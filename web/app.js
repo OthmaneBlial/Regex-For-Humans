@@ -1,51 +1,81 @@
 import { CompileError, compile } from "../index.js";
-import { TestRunner } from "./test-runner.js";
+import { TestRunError, TestRunner } from "./test-runner.js";
+
+/** @typedef {import("./worker-protocol.d.ts").TestCase} TestCase */
+/** @typedef {{id: string, title: string, rules: string, source: string, flags: string, matchMode: "full" | "search", positive: string[], negative: string[]}} ProductScenario */
+/** @typedef {"success" | "neutral" | "error"} CompileState */
+
+/**
+ * @template {HTMLElement} E
+ * @param {string} id
+ * @param {new () => E} type
+ * @returns {E}
+ */
+function requiredElement(id, type) {
+  const element = document.getElementById(id);
+  if (!(element instanceof type)) throw new Error(`Required workshop element #${id} is missing.`);
+  return element;
+}
 
 const ui = {
-  examples: document.querySelector("#example-list"),
-  rules: document.querySelector("#rules-input"),
-  ruleCount: document.querySelector("#rule-count"),
-  ignoreCase: document.querySelector("#ignore-case"),
-  dotAll: document.querySelector("#dot-all"),
-  output: document.querySelector("#regex-output"),
-  compileState: document.querySelector("#compile-state"),
-  flagsSummary: document.querySelector("#flags-summary"),
-  copy: document.querySelector("#copy-button"),
-  diagnostic: document.querySelector("#diagnostic"),
-  trace: document.querySelector("#trace-list"),
-  matchMode: document.querySelector("#match-mode"),
-  addExample: document.querySelector("#add-example"),
-  testSummary: document.querySelector("#test-summary"),
-  testList: document.querySelector("#test-list"),
+  examples: requiredElement("example-list", HTMLElement),
+  rules: requiredElement("rules-input", HTMLTextAreaElement),
+  ruleCount: requiredElement("rule-count", HTMLSpanElement),
+  ignoreCase: requiredElement("ignore-case", HTMLInputElement),
+  dotAll: requiredElement("dot-all", HTMLInputElement),
+  output: requiredElement("regex-output", HTMLElement),
+  compileState: requiredElement("compile-state", HTMLSpanElement),
+  flagsSummary: requiredElement("flags-summary", HTMLSpanElement),
+  copy: requiredElement("copy-button", HTMLButtonElement),
+  diagnostic: requiredElement("diagnostic", HTMLDivElement),
+  trace: requiredElement("trace-list", HTMLDivElement),
+  matchMode: requiredElement("match-mode", HTMLSelectElement),
+  addExample: requiredElement("add-example", HTMLButtonElement),
+  testSummary: requiredElement("test-summary", HTMLDivElement),
+  testList: requiredElement("test-list", HTMLDivElement),
 };
 
+/** @type {ProductScenario[]} */
 let scenarios = [];
+/** @type {string | null} */
 let activeScenario = null;
+/** @type {TestCase[]} */
 let testCases = [];
 let nextTestId = 1;
+/** @type {ReturnType<typeof compile> | null} */
 let compiled = null;
 const testRunner = new TestRunner(
   () => new Worker(new URL("./match-worker.js", import.meta.url), { type: "module" }),
 );
 
-function make(tag, className, text) {
+/**
+ * @template {keyof HTMLElementTagNameMap} K
+ * @param {K} tag
+ * @param {string} [className=""]
+ * @param {string} [text]
+ * @returns {HTMLElementTagNameMap[K]}
+ */
+function make(tag, className = "", text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
   return node;
 }
 
+/** @param {string} label @param {CompileState} state */
 function setCompileState(label, state) {
   ui.compileState.textContent = label;
   ui.compileState.dataset.state = state;
 }
 
+/** @param {string} message @param {boolean} [invalidRules=false] */
 function setDiagnostic(message, invalidRules = false) {
   ui.diagnostic.hidden = !message;
   ui.diagnostic.textContent = message || "";
   ui.rules.setAttribute("aria-invalid", String(invalidRules));
 }
 
+/** @param {number} number */
 function selectLine(number) {
   const lines = ui.rules.value.split("\n");
   const start = lines.slice(0, number - 1).reduce((sum, line) => sum + line.length + 1, 0);
@@ -53,6 +83,7 @@ function selectLine(number) {
   ui.rules.setSelectionRange(start, start + (lines[number - 1]?.length ?? 0));
 }
 
+/** @param {ReturnType<typeof compile>["segments"] | null} segments */
 function renderTrace(segments) {
   ui.trace.replaceChildren();
   if (!segments?.length) {
@@ -82,6 +113,7 @@ function renderTrace(segments) {
   }
 }
 
+/** @param {string} flags */
 function flagsDescription(flags) {
   const parts = ["u Unicode"];
   if (flags.includes("m")) parts.push("m Line anchors");
@@ -90,15 +122,30 @@ function flagsDescription(flags) {
   return parts.join(" · ");
 }
 
+/** @param {HTMLDivElement} row @param {string} text */
+function setTestResult(row, text) {
+  const result = row.querySelector(".test-result");
+  if (result) result.textContent = text;
+}
+
+function selectedMatchMode() {
+  if (ui.matchMode.value === "full") return "full";
+  if (ui.matchMode.value === "search") return "search";
+  throw new Error(`Unknown match mode: ${ui.matchMode.value}`);
+}
+
 async function updateTestResults() {
-  const rows = ui.testList.querySelectorAll(".test-row");
+  const rows = [...ui.testList.querySelectorAll(".test-row")].filter(
+    (row) => row instanceof HTMLDivElement,
+  );
   if (!compiled || testCases.length === 0) {
     testRunner.cancel();
     rows.forEach((row) => {
       row.dataset.result = "pending";
-      row.querySelector(".test-result").textContent = compiled
-        ? "Add an example to check the pattern"
-        : "Fix the rules to run this example";
+      setTestResult(
+        row,
+        compiled ? "Add an example to check the pattern" : "Fix the rules to run this example",
+      );
     });
     ui.testSummary.textContent = compiled
       ? "Add a positive or negative example to check the pattern."
@@ -109,7 +156,7 @@ async function updateTestResults() {
 
   rows.forEach((row) => {
     row.dataset.result = "pending";
-    row.querySelector(".test-result").textContent = "Checking…";
+    setTestResult(row, "Checking…");
   });
   ui.testSummary.textContent = "Checking examples…";
   ui.testSummary.dataset.state = "neutral";
@@ -117,27 +164,27 @@ async function updateTestResults() {
     const results = await testRunner.run({
       source: compiled.source,
       flags: compiled.flags,
-      mode: ui.matchMode.value,
+      mode: selectedMatchMode(),
       cases: testCases.map(({ id, text, expected }) => ({ id, text, expected })),
     });
     const byId = new Map(results.map((result) => [result.id, result]));
     let passed = 0;
     rows.forEach((row, index) => {
       const evaluation = byId.get(testCases[index].id);
+      if (!evaluation) throw new Error(`No result was returned for example ${index + 1}.`);
       if (evaluation.pass) passed += 1;
       row.dataset.result = evaluation.pass ? "pass" : "fail";
-      row.querySelector(".test-result").textContent =
-        `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`;
+      setTestResult(row, `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`);
     });
     ui.testSummary.textContent = `${passed} of ${testCases.length} examples behave as expected`;
     ui.testSummary.dataset.state = passed === testCases.length ? "success" : "error";
   } catch (error) {
-    if (error.code === "CANCELLED") return;
+    if (error instanceof TestRunError && error.code === "CANCELLED") return;
     rows.forEach((row) => {
       row.dataset.result = "pending";
-      row.querySelector(".test-result").textContent = "Testing stopped";
+      setTestResult(row, "Testing stopped");
     });
-    ui.testSummary.textContent = error.message;
+    ui.testSummary.textContent = error instanceof Error ? error.message : String(error);
     ui.testSummary.dataset.state = "error";
   }
 }
@@ -217,7 +264,7 @@ function compileRules() {
       setDiagnostic(
         error instanceof CompileError
           ? `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}`
-          : `Unexpected compiler error: ${error.message}`,
+          : `Unexpected compiler error: ${error instanceof Error ? error.message : String(error)}`,
         true,
       );
     }
@@ -226,6 +273,7 @@ function compileRules() {
   updateTestResults();
 }
 
+/** @param {ProductScenario} scenario */
 function useScenario(scenario) {
   activeScenario = scenario.id;
   ui.rules.value = scenario.rules;
@@ -298,13 +346,19 @@ ui.copy.addEventListener("click", async () => {
     helper.remove();
     if (!copied) {
       const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(ui.output);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      setDiagnostic(
-        "Clipboard access was blocked. The pattern is selected; press your keyboard copy shortcut.",
-      );
+      if (selection) {
+        const range = document.createRange();
+        range.selectNodeContents(ui.output);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        setDiagnostic(
+          "Clipboard access was blocked. The pattern is selected; press your keyboard copy shortcut.",
+        );
+      } else {
+        setDiagnostic(
+          "Clipboard access was blocked. Select the pattern and press your copy shortcut.",
+        );
+      }
       return;
     }
   }
@@ -321,10 +375,12 @@ try {
   scenarios = await response.json();
   renderScenarioButtons();
   const requested = new URLSearchParams(window.location.search).get("example");
-  useScenario(scenarios.find((item) => item.id === requested) ?? scenarios[0]);
+  const scenario = scenarios.find((item) => item.id === requested) ?? scenarios[0];
+  if (!scenario) throw new Error("No example recipes are available.");
+  useScenario(scenario);
 } catch (error) {
   setDiagnostic(
-    `Example recipes could not load (${error.message}). You can still write rules manually.`,
+    `Example recipes could not load (${error instanceof Error ? error.message : String(error)}). You can still write rules manually.`,
   );
   setCompileState("Examples unavailable", "error");
 }
