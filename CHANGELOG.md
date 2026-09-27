@@ -9,6 +9,7 @@
 - Made CLI argument errors structured in `--json` mode with the `CLI_USAGE` code.
 - Explained greedy text relative to the next rule in the workshop trace.
 - Shortened trace copy while keeping flag and repetition details.
+- Shortened the homepage and workshop introductions.
 - Shortened explanations for wildcard text and repeated character sets.
 - Character-set explanations now describe case-insensitive matching.
 - Linked invalid rule feedback to the editor for screen readers.
