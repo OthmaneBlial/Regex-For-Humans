@@ -12,7 +12,7 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 
 1. **Validate a prefixed identifier.** Rules: `start "ABC"` / `3 digits` / `end`. Expected source `^ABC\d{3}$`, flags `u`. Positive: `ABC123`. Negative: `ABC12`, `ABC1234`, `abc123`.
 2. **Exclude characters.** Rules: `start` / `text without: a, b, c, d` / `end`. Expected source `^[^abcd]*$`, flags `u`. Positive: `xyz`, empty string. Negative: `cab`.
-3. **Read a line rule.** Rules: `line start` / `any text` / `3 digits` / `line end`. Expected source `^.*\d{3}$`, flags `mu`, search mode. Positive: `item 123`, `note\nitem 123`. Negative: `item 12`. The explanation must state that `.*` is greedy, `m` changes the anchors, and this pattern permits many prefixes.
+3. **Read a line rule.** Rules: `line start` / `any text` / `3 digits` / `line end`. Expected source `^.*\d{3}$`, flags `mu`, search mode. Positive: `item 123`, `note\nitem 123`. Negative: `item 12`. The trace must state that `.*` greedily matches text up to the next rule, `m` enables line anchors, and the prefix can have any length.
 
 4. **Match a date shape.** Rules: `start` / `4 digits` / `"-"` / `2 digits` / `"-"` / `2 digits` / `end`. Expected source `^\d{4}-\d{2}-\d{2}$`, flags `u`. Positive: `2026-09-27`, `2000-01-01`, `2026-02-31` (the impossible day still matches). Negative: `2026-9-27`, `27-09-2026`, `2026/09/27`. This checks the `YYYY-MM-DD` shape.
 

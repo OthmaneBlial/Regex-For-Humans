@@ -40,7 +40,7 @@ test("input end anchor rejects a final JavaScript line terminator", () => {
   const result = compile('start "A"\nend');
   assert.equal(result.source, "^A$");
   assert.equal(result.flags, "u");
-  assert.equal(result.segments.at(-1).explanation, "End of the input.");
+  assert.equal(result.segments.at(-1).explanation, "Input end.");
   const regex = toRegExp(result);
   assert.equal(regex.test("A"), true);
   for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"])
@@ -90,22 +90,26 @@ test("flags and segment positions describe the emitted expression", () => {
 
 test("explanations reflect JavaScript flags, greedy matching and shorthand limits", () => {
   const lineRule = compile(scenarios[2].rules);
-  assert.match(lineRule.segments[0].explanation, /m flag/u);
+  assert.equal(lineRule.segments[0].explanation, "Line start; m lets ^ match after line breaks.");
   assert.equal(
     lineRule.segments[1].explanation,
-    "Greedily matches any text before the next rule; stops at line breaks.",
+    "Any text up to the next rule, greedily; line breaks stop it.",
   );
   const excludedRule = compile(scenarios[1].rules);
   assert.equal(
     excludedRule.segments[1].explanation,
     'Any text without "a", "b", "c", "d" (greedy).',
   );
-  assert.match(lineRule.segments[2].explanation, /ASCII digit/u);
+  assert.equal(lineRule.segments[2].explanation, "One ASCII digit (0–9). Exactly 3 times.");
+  assert.equal(lineRule.segments[3].explanation, "Line end; m lets $ match before line breaks.");
   assert.equal(
     compile("any text", { flags: "s" }).segments[0].explanation,
-    "Greedily matches any text, including line breaks.",
+    "Any text, greedily; line breaks included.",
   );
-  assert.match(compile('a "ABC"', { flags: "i" }).segments[0].explanation, /ignoring case/u);
+  assert.equal(
+    compile('a "ABC"', { flags: "i" }).segments[0].explanation,
+    'Literal text "ABC", ignoring case according to JavaScript\'s Unicode rules.',
+  );
   assert.match(compile("word").segments[0].explanation, /underscore/u);
 });
 

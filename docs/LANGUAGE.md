@@ -15,7 +15,7 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
 | `line start` | `^` with `m` | `^A` matches `B\nA` | `^A` does not match `BA` |
 | `line end` | `$` with `m` | `A$` matches `A\nB` | `A$` does not match `AB` |
 | `any character` | `.` | `A` | a newline unless `s` is enabled |
-| `any text` | `.*` | greedy text before the next rule; stops at line breaks unless `s` is enabled | a line break |
+| `any text` | `.*` | any text up to the next rule, greedily; line breaks stop it unless `s` is enabled | a line break |
 | `word` | `\w` | `A`, `_`, `3` | `-`, `é` |
 | `not word` | `\W` | `-`, `é` | `A`, `_` |
 | `digit` | `\d` | `3` | `A`, `٣` |

@@ -3,17 +3,17 @@ function repetitionText(repetition) {
   if (!repetition) return "";
   switch (repetition.kind) {
     case "zeroOrMore":
-      return " Repeated zero or more times, greedily.";
+      return " Any number of times, greedily.";
     case "oneOrMore":
-      return " Repeated one or more times, greedily.";
+      return " At least once, greedily.";
     case "optional":
-      return " Optional: zero or one occurrence.";
+      return " Optional (zero or one).";
     case "exact":
-      return ` Repeated exactly ${repetition.min} times.`;
+      return ` Exactly ${repetition.min} times.`;
     case "range":
-      return ` Repeated between ${repetition.min} and ${repetition.max} times, greedily.`;
+      return ` Between ${repetition.min} and ${repetition.max} times, greedily.`;
     case "minimum":
-      return ` Repeated at least ${repetition.min} times, greedily.`;
+      return ` At least ${repetition.min} times, greedily.`;
     default:
       throw new TypeError(`Unknown repetition kind: ${repetition.kind}`);
   }
@@ -24,10 +24,10 @@ export function explainNode(node, flags, hasFollowingRule = false) {
   if (node.kind === "anchor") {
     if (node.mode === "line") {
       return node.edge === "start"
-        ? "Start of a line. The m flag makes ^ work after line breaks."
-        : "End of a line. The m flag lets $ match before a line break.";
+        ? "Line start; m lets ^ match after line breaks."
+        : "Line end; m lets $ match before line breaks.";
     }
-    return node.edge === "start" ? "Start of the input." : "End of the input.";
+    return node.edge === "start" ? "Input start." : "Input end.";
   }
 
   const caseNote = flags.includes("i")
@@ -36,10 +36,10 @@ export function explainNode(node, flags, hasFollowingRule = false) {
 
   if (node.repetition?.kind === "zeroOrMore") {
     if (node.atomType === "wildcard") {
-      const context = hasFollowingRule ? " before the next rule" : "";
+      const context = hasFollowingRule ? " up to the next rule" : "";
       return flags.includes("s")
-        ? `Greedily matches any text${context}, including line breaks.`
-        : `Greedily matches any text${context}; stops at line breaks.`;
+        ? `Any text${context}, greedily; line breaks included.`
+        : `Any text${context}, greedily; line breaks stop it.`;
     }
     if (node.atomType === "charSet") {
       const characters = node.value.map((value) => JSON.stringify(value)).join(", ");
@@ -73,7 +73,7 @@ export function explainNode(node, flags, hasFollowingRule = false) {
       break;
     }
     case "literal":
-      meaning = `The literal text ${JSON.stringify(node.value)}${caseNote}.`;
+      meaning = `Literal text ${JSON.stringify(node.value)}${caseNote}.`;
       break;
     case "charSet":
       meaning = node.negative
