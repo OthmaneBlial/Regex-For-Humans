@@ -84,8 +84,13 @@ test("CLI exposes flags, help and version", () => {
   const result = run(["--ignore-case", "--dot-all", "-"], "any character");
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stdout, "/./isu\n");
-  assert.match(run(["--help"]).stdout, /Usage: regex-for-humans/u);
-  assert.match(run(["--help"]).stdout, /--\s+Treat the following argument as the input path/u);
+  const help = run(["--help"]).stdout;
+  assert.match(help, /Usage: regex-for-humans/u);
+  assert.match(
+    help,
+    /Compile controlled English into a JavaScript regex\.\nRead a file or stdin; use - for stdin\./u,
+  );
+  assert.match(help, /--\s+Treat the next argument as the input path/u);
   assert.match(run(["--version"]).stdout, /^0\.1\.0-dev\n$/u);
   const explained = run(["--explain", "-"], "digit");
   assert.equal(explained.status, 0, explained.stderr);

@@ -8,17 +8,17 @@ import { LIMITS, validateSourceLength } from "../src/parser.js";
 
 const usage = `Usage: regex-for-humans [options] [--] [file|-]
 
-Compile controlled-English rules from a file or standard input.
-Use - to read standard input explicitly.
+Compile controlled English into a JavaScript regex.
+Read a file or stdin; use - for stdin.
 
 Options:
-  --json      Print a result or error as JSON
-  --explain   Print each generated fragment and its meaning
+  --json         Print a result or error as JSON
+  --explain      Explain each generated fragment
   --ignore-case  Add the JavaScript i flag
   --dot-all      Add the JavaScript s flag
-  --          Treat the following argument as the input path
-  --help      Show this help
-  --version   Show the package version
+  --             Treat the next argument as the input path
+  --help         Show this help
+  --version      Show the package version
 `;
 
 const args = process.argv.slice(2);
