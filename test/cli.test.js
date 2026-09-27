@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { LIMITS } from "../src/parser.js";
 
 const cli = fileURLToPath(new URL("../bin/regex-for-humans.js", import.meta.url));
 const scenarios = JSON.parse(
@@ -59,4 +60,27 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   assert.equal(structured.status, 1);
   assert.equal(JSON.parse(structured.stderr).error.code, "UNKNOWN_RULE");
   assert.equal(run(["--bogus"]).status, 2);
+});
+
+test("CLI enforces the source limit while reading stdin and files", () => {
+  const withinLimit = `a "${"x".repeat(LIMITS.sourceLength - 4)}"`;
+  assert.equal(withinLimit.length, LIMITS.sourceLength);
+  assert.equal(run(["-"], withinLimit).status, 0);
+
+  const input = `${withinLimit}x`;
+  const stdinResult = run(["-"], input);
+  assert.equal(stdinResult.status, 1);
+  assert.match(stdinResult.stderr, /Rules cannot exceed 16384 characters/u);
+
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  const path = join(directory, "rules.txt");
+  try {
+    writeFileSync(path, input);
+    const fileResult = run([path]);
+    assert.equal(fileResult.status, 1);
+    assert.match(fileResult.stderr, /Rules cannot exceed 16384 characters/u);
+  } finally {
+    unlinkSync(path);
+    rmdirSync(directory);
+  }
 });

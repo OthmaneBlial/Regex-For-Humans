@@ -9,6 +9,16 @@ import { fail } from "./diagnostics.js";
 
 export const LIMITS = Object.freeze({ sourceLength: 16_384, lines: 200, repetition: 1_000 });
 
+/** @param {number} length */
+export function validateSourceLength(length) {
+  if (length > LIMITS.sourceLength) {
+    fail("SOURCE_LIMIT", `Rules cannot exceed ${LIMITS.sourceLength} characters.`, {
+      line: 1,
+      column: 1,
+    });
+  }
+}
+
 const SHORTHANDS = new Map([
   ["non-alphanumeric character", "\\W"],
   ["alphanumeric character", "\\w"],
@@ -193,12 +203,7 @@ function parseAtom(text, location, originalText) {
 /** @param {string} source @returns {ParsedRules} */
 export function parse(source) {
   if (typeof source !== "string") throw new TypeError("Rules must be a string.");
-  if (source.length > LIMITS.sourceLength) {
-    fail("SOURCE_LIMIT", `Rules cannot exceed ${LIMITS.sourceLength} characters.`, {
-      line: 1,
-      column: 1,
-    });
-  }
+  validateSourceLength(source.length);
   const lines = source.split(/\r?\n/u);
   if (lines.length > LIMITS.lines) {
     fail("LINE_LIMIT", `Rules cannot exceed ${LIMITS.lines} lines.`, {

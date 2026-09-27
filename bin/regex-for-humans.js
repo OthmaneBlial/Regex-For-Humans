@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-import { readFile, readFileSync } from "node:fs";
+import { createReadStream, readFileSync } from "node:fs";
 import { exit, stderr, stdin, stdout } from "node:process";
 import { fileURLToPath } from "node:url";
 import { CompileError, compile } from "../index.js";
+import { LIMITS, validateSourceLength } from "../src/parser.js";
 
 const usage = `Usage: regex-for-humans [--json] [file|-]
 
@@ -68,24 +69,28 @@ if (file === undefined && stdin.isTTY) {
   exit(2);
 }
 
-function readStdin() {
-  return new Promise((resolve, reject) => {
-    /** @type {string[]} */
-    const chunks = [];
-    stdin.setEncoding("utf8");
-    stdin.on("data", (chunk) => chunks.push(String(chunk)));
-    stdin.on("end", () => resolve(chunks.join("")));
-    stdin.on("error", reject);
-  });
+/** @param {import("node:stream").Readable} stream */
+async function readInput(stream) {
+  /** @type {string[]} */
+  const chunks = [];
+  let length = 0;
+  stream.setEncoding("utf8");
+  for await (const chunk of stream) {
+    const text = String(chunk);
+    length += text.length;
+    if (length > LIMITS.sourceLength) {
+      stream.destroy();
+      validateSourceLength(length);
+    }
+    chunks.push(text);
+  }
+  return chunks.join("");
 }
 
 try {
-  const input =
-    file === undefined || file === "-"
-      ? await readStdin()
-      : await new Promise((resolve, reject) =>
-          readFile(file, "utf8", (error, data) => (error ? reject(error) : resolve(data))),
-        );
+  const input = await readInput(
+    file === undefined || file === "-" ? stdin : createReadStream(file),
+  );
   const result = compile(input, { flags });
   if (json) {
     stdout.write(`${JSON.stringify(result)}\n`);
