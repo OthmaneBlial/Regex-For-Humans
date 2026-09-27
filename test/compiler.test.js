@@ -106,6 +106,43 @@ test("explanations reflect JavaScript flags, greedy matching and shorthand limit
   assert.match(compile("alphanumeric character").segments[0].explanation, /underscore/u);
 });
 
+test("case-insensitive class explanations include JavaScript Unicode folding", () => {
+  const positive = compile("one of: K", { flags: "i" });
+  assert.equal(
+    positive.segments[0].explanation,
+    'One of "K", ignoring case according to JavaScript\'s Unicode rules.',
+  );
+  assert.equal(toRegExp(positive).test("K"), true);
+
+  const repeatedPositive = compile("one of: K any number of times", { flags: "i" });
+  assert.equal(
+    repeatedPositive.segments[0].explanation,
+    'Any sequence of "K", ignoring case according to JavaScript\'s Unicode rules (greedy).',
+  );
+  assert.equal(toRegExp(repeatedPositive).test("KKk"), true);
+
+  const negative = compile("none of: K", { flags: "i" });
+  assert.equal(
+    negative.segments[0].explanation,
+    'One Unicode code point except "K", ignoring case according to JavaScript\'s Unicode rules.',
+  );
+  assert.equal(toRegExp(negative).test("K"), false);
+
+  const excludedText = compile("start\ntext without: K\nend", { flags: "i" });
+  assert.match(
+    excludedText.segments[1].explanation,
+    /ignoring case according to JavaScript's Unicode rules/u,
+  );
+  assert.equal(toRegExp(excludedText).test("k"), false);
+
+  const notWord = compile("not word", { flags: "i" });
+  assert.match(
+    notWord.segments[0].explanation,
+    /case-folding equivalents count as word characters/u,
+  );
+  assert.equal(toRegExp(notWord).test("K"), false);
+});
+
 test("invalid input fails explicitly rather than returning partial output", () => {
   for (const source of [
     "unknown phrase",

@@ -5,6 +5,7 @@
 - Added a deterministic, documented controlled-English compiler for JavaScript regular expressions with explicit diagnostics, source spans and explanations.
 - Added compact rules such as `start`, `3 digits`, `any text`, and `text without:`.
 - Shortened explanations for wildcard text and repeated character sets.
+- Character-set explanations now describe case-insensitive matching.
 - Versioned workshop assets per build so browsers load updated recipes and explanations.
 - Clarified local rule handling without implying the workshop saves edits.
 - Fixed keyboard skip navigation so it focuses the workshop without resetting edited rules.

@@ -30,6 +30,10 @@ export function explainNode(node, flags) {
     return node.edge === "start" ? "Start of the input." : "End of the input.";
   }
 
+  const caseNote = flags.includes("i")
+    ? ", ignoring case according to JavaScript's Unicode rules"
+    : "";
+
   if (node.repetition?.kind === "zeroOrMore") {
     if (node.atomType === "wildcard") {
       return flags.includes("s")
@@ -39,8 +43,8 @@ export function explainNode(node, flags) {
     if (node.atomType === "charSet") {
       const characters = node.value.map((value) => JSON.stringify(value)).join(", ");
       return node.negative
-        ? `Any text without ${characters} (greedy).`
-        : `Any sequence of ${characters} (greedy).`;
+        ? `Any text without ${characters}${caseNote} (greedy).`
+        : `Any sequence of ${characters}${caseNote} (greedy).`;
     }
   }
 
@@ -56,7 +60,9 @@ export function explainNode(node, flags) {
       const shorthandMeanings = {
         "\\w":
           "One JavaScript word character: ASCII letter, digit or underscore. With i and u, a few Unicode case-folding equivalents also match.",
-        "\\W": "One character outside JavaScript's word class.",
+        "\\W": flags.includes("i")
+          ? "One character outside JavaScript's word class. With i and u, a few Unicode case-folding equivalents count as word characters."
+          : "One character outside JavaScript's word class.",
         "\\d": "One ASCII digit (0–9).",
         "\\D": "One character other than an ASCII digit.",
         "\\s": "One JavaScript whitespace character, including line breaks.",
@@ -66,12 +72,12 @@ export function explainNode(node, flags) {
       break;
     }
     case "literal":
-      meaning = `The literal text ${JSON.stringify(node.value)}${flags.includes("i") ? ", ignoring case according to JavaScript's Unicode rules" : ""}.`;
+      meaning = `The literal text ${JSON.stringify(node.value)}${caseNote}.`;
       break;
     case "charSet":
       meaning = node.negative
-        ? `One Unicode code point except ${node.value.map((value) => JSON.stringify(value)).join(", ")}.`
-        : `One of ${node.value.map((value) => JSON.stringify(value)).join(", ")}.`;
+        ? `One Unicode code point except ${node.value.map((value) => JSON.stringify(value)).join(", ")}${caseNote}.`
+        : `One of ${node.value.map((value) => JSON.stringify(value)).join(", ")}${caseNote}.`;
       break;
     default:
       throw new TypeError("Unknown atom type.");
