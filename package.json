@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/OthmaneBlial/Regex-For-Humans/issues"
   },
-  "homepage": "https://github.com/OthmaneBlial/Regex-For-Humans#readme",
+  "homepage": "https://othmaneblial.github.io/Regex-For-Humans/",
   "type": "module",
   "exports": {
     ".": "./index.js"
