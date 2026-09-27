@@ -28,3 +28,5 @@ After the tasks, ask whether installing Node/npm is a barrier to using the CLI, 
 - Mobile: check 320 px and 390 px widths for horizontal overflow and readable control labels; inspect the real rendered page, not only viewport metrics.
 
 **Current local evidence (19 September 2026):** 10 accessibility browser tests pass after a contrast correction, including the local syntax guide and visible build version. The workshop was visually inspected at 1280, 390 and 320 px; the guide was inspected at 1280 and 390 px. Automated checks cover desktop/mobile overflow. Screen reader and participant sessions remain unverified.
+
+**Additional accessibility regression (27 September 2026):** Example text fields, expected-result selectors and remove buttons now have distinct numbered accessible names. All 12 accessibility browser tests pass in desktop and mobile Chrome. This does not replace a real screen reader session.

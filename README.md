@@ -94,6 +94,6 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-`npm run check` covers format, lint, strict type checking of the compiler/CLI and local documentation links. The current suite has 42 Node tests and 32 browser tests; [testing and compatibility](docs/TESTING.md) records the versions and evidence boundaries. To report a missing phrase or change the grammar, follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [architecture policy](docs/ARCHITECTURE.md). The [product scenarios](docs/PRODUCT.md) define the three reference tasks.
+`npm run check` covers format, lint, strict type checking of the compiler/CLI and local documentation links. The current suite has 42 Node tests and 34 browser tests; [testing and compatibility](docs/TESTING.md) records the versions and evidence boundaries. To report a missing phrase or change the grammar, follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [architecture policy](docs/ARCHITECTURE.md). The [product scenarios](docs/PRODUCT.md) define the three reference tasks.
 
 Report suspected vulnerabilities through the private channel in [SECURITY.md](SECURITY.md). Licensed under [MIT](LICENSE). The [changelog](CHANGELOG.md) records repository changes; the [roadmap](ROADMAP.md) tracks publication gates and the final real-product demonstration video. The [release preflight](docs/RELEASE-PREFLIGHT.md) describes how the eventual npm package, Pages deployment and GitHub Release will be verified.

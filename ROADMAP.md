@@ -14,9 +14,9 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [ ] 2.1 Explications traçables — implémentées et testées localement ; revue des 3 scénarios par une personne extérieure encore requise
 - [x] 2.2 Atelier web local — build statique, 3 recettes, copie réelle, diagnostics, console et requêtes locales vérifiés ; tests navigateur bureau/mobile verts
 - [x] 2.3 Tests positifs et négatifs — 16 tests navigateur verts : ancres, Unicode, saut de ligne, modes, édition et écarts ; isolation contre exécution longue suivie en 3.2
-- [ ] 2.4 Interface et accessibilité — rendu et clavier vérifiés, 10 tests axe/Playwright verts ; lecteur d'écran réel et 3 nouvelles personnes encore requis
-- [x] 3.1 Tests et compatibilité — 42 tests Node revérifiés localement le 27 septembre 2026 (22.23.3, 24.21.0 et 25.9.0) ; 32 tests navigateur Chrome bureau/mobile et CI multi-plateforme vérifiés le 19 septembre ; format/lint/typage strict du noyau et de la CLI, build et `npm ci` vérifiés ; limites de portée dans `docs/TESTING.md`
-- [x] 3.2 Bornes et sécurité de l'exécution — limites documentées, worker interrompable, timeout/récupération et entrée HTML testés ; 32 tests navigateur verts, `npm audit` sans vulnérabilité signalée
+- [ ] 2.4 Interface et accessibilité — rendu et clavier vérifiés, 12 tests axe/Playwright verts localement le 27 septembre ; lecteur d'écran réel et 3 nouvelles personnes encore requis
+- [x] 3.1 Tests et compatibilité — 42 tests Node revérifiés localement le 27 septembre 2026 (22.23.3, 24.21.0 et 25.9.0) ; 34 tests navigateur Chrome bureau/mobile passés localement le 27 septembre ; CI multi-plateforme vérifiée le 19 septembre ; format/lint/typage strict du noyau et de la CLI, build et `npm ci` vérifiés ; limites de portée dans `docs/TESTING.md`
+- [x] 3.2 Bornes et sécurité de l'exécution — limites documentées, worker interrompable, timeout/récupération et entrée HTML testés ; 34 tests navigateur verts le 27 septembre, `npm audit` sans vulnérabilité signalée
 - [ ] 3.3 Architecture et politique de changements — guide, liens et exercice interne vérifiés (`docs/CONTRIBUTION-EXERCISE.md`) ; revue par un contributeur extérieur encore requise
 - [ ] 4.1 README et premier succès — commandes CLI, bibliothèque, build et atelier vérifiées depuis un clone vierge ; rendu GitHub et liens vérifiés ; relecture par un novice encore requise
 - [ ] 4.2 Captures réelles — captures bureau/mobile du build local `0.1.0-dev` ajoutées au README avec provenance et SHA-256 ; captures de la version publiée à refaire après 2.4

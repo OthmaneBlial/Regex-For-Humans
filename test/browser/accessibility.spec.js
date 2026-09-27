@@ -51,6 +51,26 @@ test("keyboard can reach the editor, options, copy and test controls", async ({ 
   await expect(page.locator("#match-mode")).toBeFocused();
 });
 
+test("example controls have distinct numbered accessible names", async ({ page }) => {
+  await page.goto("/");
+  const names = await page
+    .locator("#test-list .test-row")
+    .evaluateAll((rows) =>
+      rows.map((row) => [
+        row.querySelector("textarea").getAttribute("aria-label"),
+        row.querySelector("select").getAttribute("aria-label"),
+        row.querySelector("button").getAttribute("aria-label"),
+      ]),
+    );
+  expect(names).toEqual(
+    [1, 2, 3, 4].map((number) => [
+      `Example ${number} string`,
+      `Expected match result for example ${number}`,
+      `Remove example ${number}`,
+    ]),
+  );
+});
+
 test("syntax guide is readable without horizontal overflow or detectable WCAG A/AA issues", async ({
   page,
 }) => {

@@ -60,12 +60,21 @@ test("editing rules reports errors without stale output and recovers", async ({ 
 test("positive and negative examples expose a changed outcome", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
-  await page.getByRole("textbox", { name: "Example string" }).first().fill("ABC12");
+  await page
+    .getByRole("textbox", { name: /^Example \d+ string$/u })
+    .first()
+    .fill("ABC12");
   await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
   await page.getByRole("button", { name: "+ Add example" }).click();
-  await page.getByRole("textbox", { name: "Example string" }).last().fill("ABC999");
+  await page
+    .getByRole("textbox", { name: /^Example \d+ string$/u })
+    .last()
+    .fill("ABC999");
   await expect(page.locator("#test-summary")).toHaveText("4 of 5 examples behave as expected");
-  await page.getByRole("button", { name: "Remove example" }).last().click();
+  await page
+    .getByRole("button", { name: /^Remove example \d+$/u })
+    .last()
+    .click();
   await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
 });
 
@@ -81,7 +90,7 @@ test("line-mode sample keeps its newline and changes under full-match mode", asy
 test("Unicode literals and dot-all behavior are visible in example results", async ({ page }) => {
   await page.goto("/");
   const editor = page.getByRole("textbox", { name: "One instruction per line" });
-  const firstSample = page.getByRole("textbox", { name: "Example string" }).first();
+  const firstSample = page.getByRole("textbox", { name: /^Example \d+ string$/u }).first();
   await editor.fill("any character");
   await page.locator("#match-mode").selectOption("search");
   await firstSample.fill("\n");

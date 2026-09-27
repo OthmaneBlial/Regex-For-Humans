@@ -144,14 +144,15 @@ async function updateTestResults() {
 function renderTests() {
   ui.testList.replaceChildren();
   ui.addExample.disabled = testCases.length >= 100;
-  for (const sample of testCases) {
+  for (const [index, sample] of testCases.entries()) {
+    const number = index + 1;
     const row = make("div", "test-row");
     const input = make("textarea");
     input.rows = Math.min(3, Math.max(1, sample.text.split("\n").length));
     input.value = sample.text;
     input.placeholder = "Empty string";
     input.maxLength = 2048;
-    input.setAttribute("aria-label", "Example string");
+    input.setAttribute("aria-label", `Example ${number} string`);
     input.addEventListener("input", () => {
       sample.text = input.value;
       input.rows = Math.min(3, Math.max(1, sample.text.split("\n").length));
@@ -159,7 +160,7 @@ function renderTests() {
     });
 
     const expected = make("select");
-    expected.setAttribute("aria-label", "Expected match result");
+    expected.setAttribute("aria-label", `Expected match result for example ${number}`);
     for (const [value, label] of [
       ["true", "Should match"],
       ["false", "Should not match"],
@@ -177,7 +178,7 @@ function renderTests() {
     const result = make("span", "test-result");
     const remove = make("button", "remove-example", "×");
     remove.type = "button";
-    remove.setAttribute("aria-label", "Remove example");
+    remove.setAttribute("aria-label", `Remove example ${number}`);
     remove.addEventListener("click", () => {
       testCases = testCases.filter((item) => item.id !== sample.id);
       renderTests();
