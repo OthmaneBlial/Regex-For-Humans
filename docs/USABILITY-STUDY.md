@@ -27,6 +27,8 @@ After the tasks, ask whether installing Node/npm is a barrier to using the CLI, 
 - Screen reader: on at least one actual screen reader/browser pair, read the page headings and landmarks, interact with the editor and recipe controls, trigger an invalid rule and a failed example, then confirm the changed status and diagnostic are announced usefully. Record system, browser, reader, findings and fixes here.
 - Mobile: check 320 px and 390 px widths for horizontal overflow and readable control labels; inspect the real rendered page, not only viewport metrics.
 
-**Current local evidence (19 September 2026):** 10 accessibility browser tests pass after a contrast correction, including the local syntax guide and visible build version. The workshop was visually inspected at 1280, 390 and 320 px; the guide was inspected at 1280 and 390 px. Automated checks cover desktop/mobile overflow. Screen reader and participant sessions remain unverified.
+**Historical local evidence (19 September 2026):** 10 accessibility browser tests passed. Manual inspection covered the workshop at 1280, 390 and 320 px and the guide at 1280 and 390 px.
 
-**Additional accessibility regression (27 September 2026):** Example text fields, expected-result selectors and remove buttons now have distinct numbered accessible names. All 12 accessibility browser tests pass in desktop and mobile Chrome. This does not replace a real screen reader session.
+**Accessibility regression (27 September 2026):** Example text fields, expected-result selectors and remove buttons have distinct numbered accessible names.
+
+**Current automated evidence (27 September 2026):** All 36 browser tests pass in Chrome at 1280×800 desktop and 390×844 mobile viewports, including 12 accessibility tests. Keyboard tests cover the skip link, syntax link, regex options, copy button and match mode. Real screen-reader and participant sessions remain unverified.
