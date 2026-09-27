@@ -19,34 +19,24 @@ test("all reference scenarios parse into ordered instructions", () => {
 
 test("negative shorthands use their exact names", () => {
   assert.equal(parse("not word").nodes[0].value, "\\W");
-  assert.equal(parse("non-digit character").nodes[0].value, "\\D");
-  assert.equal(parse("non-whitespace character").nodes[0].value, "\\S");
+  assert.equal(parse("not digit").nodes[0].value, "\\D");
+  assert.equal(parse("not space").nodes[0].value, "\\S");
 });
 
-test("repetition forms are distinct and validate their bounds", () => {
-  assert.deepEqual(parse("digit character 3 times").nodes[0].repetition, { kind: "exact", min: 3 });
-  assert.deepEqual(parse("digit character between 2 and 4 times").nodes[0].repetition, {
-    kind: "range",
-    min: 2,
-    max: 4,
-  });
-  assert.deepEqual(parse("digit character at least 3 times").nodes[0].repetition, {
-    kind: "minimum",
-    min: 3,
-  });
-  assert.deepEqual(parse("any number of times for digit character").nodes[0].repetition, {
-    kind: "zeroOrMore",
-  });
-  assert.throws(() => parse("digit character between 4 and 2 times"), { code: "INVALID_RANGE" });
-  assert.throws(() => parse(`digit character ${LIMITS.repetition + 1} times`), {
+test("exact counts stay before one rule and validate their limit", () => {
+  assert.deepEqual(parse("3 digit").nodes[0].repetition, { kind: "exact", min: 3 });
+  assert.deepEqual(parse("digits").nodes[0].repetition, { kind: "oneOrMore" });
+  assert.deepEqual(parse("any text").nodes[0].repetition, { kind: "zeroOrMore" });
+  assert.throws(() => parse(`3 4 digits`), { code: "DUPLICATE_REPETITION" });
+  assert.throws(() => parse(`3 times`), { code: "UNKNOWN_RULE" });
+  assert.throws(() => parse(`${LIMITS.repetition + 1} digit`), {
     code: "REPETITION_LIMIT",
   });
-  assert.throws(() => parse("3 times"), { code: "UNKNOWN_RULE" });
 });
 
 test("an excessive repetition count points to the count", () => {
   const count = String(LIMITS.repetition + 1);
-  const rules = `digit character at least ${count} times`;
+  const rules = `${count} digit`;
   assert.throws(
     () => parse(rules),
     (error) => {
@@ -58,65 +48,38 @@ test("an excessive repetition count points to the count", () => {
   );
 });
 
-test("an invalid repetition range points to its upper bound", () => {
-  const rules = "digit character between 4 and 2 times";
+test("a second count points to its own column", () => {
+  const rules = "3 4 digits";
   assert.throws(
     () => parse(rules),
-    (error) => {
-      assert.ok(error instanceof CompileError);
-      assert.equal(error.code, "INVALID_RANGE");
-      assert.equal(error.column, rules.indexOf("2") + 1);
-      return true;
-    },
+    (error) =>
+      error instanceof CompileError &&
+      error.code === "DUPLICATE_REPETITION" &&
+      error.line === 1 &&
+      error.column === 3,
   );
 });
 
-test("duplicate repetitions report the second modifier's location", () => {
-  for (const [rules, column] of [
-    ["digit character 2 times 3 times", 25],
-    ["3 digits 4 times", 10],
-    ["2 times for 3 digits", 13],
-    ["at least 2 times for digit character 3 times", 38],
-  ]) {
-    assert.throws(
-      () => parse(rules),
-      (error) => {
-        assert.ok(error instanceof CompileError);
-        assert.equal(error.code, "DUPLICATE_REPETITION");
-        assert.equal(error.line, 1);
-        assert.equal(error.column, column);
-        return true;
-      },
-      rules,
-    );
-  }
-});
-
 test("quoted literal and character-list items keep punctuation as data", () => {
-  assert.equal(parse('a "a.b"').nodes[0].value, "a.b");
-  assert.deepEqual(parse('any of the following characters: "]", "-", ",", "\\\\"').nodes[0].value, [
-    "]",
-    "-",
-    ",",
-    "\\",
-  ]);
-  assert.throws(() => parse('a "bad\\q"'), { code: "INVALID_QUOTE" });
-  assert.throws(() => parse('a ""'), { code: "EMPTY_LITERAL" });
-  assert.throws(() => parse("any of the following characters:"), { code: "EMPTY_CHARACTER_LIST" });
-  assert.throws(() => parse("any of the following characters: ab"), { code: "INVALID_CHARACTER" });
-  assert.throws(() => parse("any of the following characters: a,   "), {
+  assert.equal(parse('"a.b"').nodes[0].value, "a.b");
+  assert.deepEqual(parse('one of: "]", "-", ",", "\\\\"').nodes[0].value, ["]", "-", ",", "\\"]);
+  assert.throws(() => parse('"bad\\q"'), { code: "INVALID_QUOTE" });
+  assert.throws(() => parse('""'), { code: "EMPTY_LITERAL" });
+  assert.throws(() => parse("one of:"), { code: "EMPTY_CHARACTER_LIST" });
+  assert.throws(() => parse("one of: ab"), { code: "INVALID_CHARACTER" });
+  assert.throws(() => parse("one of: a,   "), {
     code: "INVALID_CHARACTER_LIST",
   });
 });
 
 test("quoted-string errors point to the invalid escape or missing quote", () => {
   const cases = [
-    [String.raw`a "bad\q"`, "\\q", /Invalid JSON escape/u],
+    [String.raw`"bad\q"`, "\\q", /Invalid JSON escape/u],
     [String.raw`one of: "a", "bad\q"`, "\\q", /Invalid JSON escape/u],
-    [String.raw`a "bad\u12x4"`, "\\u", /four hexadecimal digits/u],
-    ['a "bad\t"', "\t", /Escape control characters/u],
-    ['a "ABC', null, /Missing closing double quote/u],
-    [`a "ABC${"\\"}`, "\\", /Incomplete JSON escape/u],
+    [String.raw`"bad\u12x4"`, "\\u", /four hexadecimal digits/u],
+    ['"bad\t"', "\t", /Escape control characters/u],
+    ['"ABC', null, /Missing closing double quote/u],
+    [`"ABC${"\\"}`, "\\", /Incomplete JSON escape/u],
   ];
   for (const [rules, marker, message] of cases) {
     const badIndex = marker === null ? rules.length : rules.indexOf(marker);
@@ -142,7 +105,7 @@ one of: "a", "bad\q"`;
 });
 
 test("trailing literal text points to its first unexpected character", () => {
-  const rules = '  start, a "A"  extra';
+  const rules = '  start, "A"  extra';
   assert.throws(
     () => parse(rules),
     (error) =>
@@ -170,23 +133,27 @@ test("multi-code-point character-list errors point to the offending item", () =>
 
 test("unknown and misplaced instructions report a useful location", () => {
   assert.throws(
-    () => parse("digit character\n  surprise phrase"),
+    () => parse("digit\n  surprise phrase"),
     (error) => {
       assert.ok(error instanceof CompileError);
       assert.equal(error.code, "UNKNOWN_RULE");
       assert.equal(error.line, 2);
       assert.equal(error.column, 3);
-      assert.match(error.hint, /LANGUAGE/);
+      assert.match(error.hint, /line start/u);
       return true;
     },
   );
-  assert.throws(() => parse("digit character\nat the beginning of the input"), {
-    code: "MISPLACED_ANCHOR",
-  });
-  assert.throws(() => parse("end of the input\ndigit character"), { code: "MISPLACED_ANCHOR" });
-  assert.throws(() => parse("at the beginning of the input\nend of the line"), {
-    code: "MIXED_ANCHORS",
-  });
+  for (const legacyRule of [
+    "at the beginning of a line",
+    "end of the line",
+    "I am looking for any character, any number of times",
+    "I am looking for a digit character 3 times",
+    "digit character",
+    "anything except the following characters: a, b",
+  ]) {
+    assert.throws(() => parse(legacyRule), { code: "UNKNOWN_RULE" }, legacyRule);
+  }
+  assert.throws(() => parse("digit\nline start"), { code: "MISPLACED_ANCHOR" });
   assert.throws(() => parse(" "), { code: "EMPTY_SOURCE" });
 });
 
@@ -266,22 +233,21 @@ test("line limit accepts a final newline and rejects the 201st input line", () =
 });
 
 test("diagnostic columns count UTF-16 code units", () => {
+  const rules = String.raw`"😀\q"`;
   assert.throws(
-    () => parse(`a "😀" ${LIMITS.repetition + 1} times`),
+    () => parse(rules),
     (error) => {
       assert.ok(error instanceof CompileError);
-      assert.equal(error.code, "REPETITION_LIMIT");
+      assert.equal(error.code, "INVALID_QUOTE");
       assert.equal(error.line, 1);
-      assert.equal(error.column, 8);
+      assert.equal(error.column, rules.indexOf("\\q") + 1);
       return true;
     },
   );
 });
 
 test("keywords ignore case and blank lines while retaining literal case", () => {
-  const result = parse(
-    '  AT THE BEGINNING OF THE INPUT\r\n\r\n I AM LOOKING FOR A "AbC"  \r\nend of the input',
-  );
+  const result = parse('  START\r\n\r\n "AbC"  \r\nEND');
   assert.equal(result.nodes.length, 3);
   assert.equal(result.nodes[1].value, "AbC");
   assert.equal(result.nodes[1].location.line, 3);

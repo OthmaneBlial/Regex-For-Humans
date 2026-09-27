@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Simplified the pre-release grammar to short anchors, rule names, quoted literals and count-first repetition; verbose aliases and suffix counts are rejected.
 - Added a deterministic, documented controlled-English compiler for JavaScript regular expressions with explicit diagnostics, source spans and explanations.
 - Added compact rules such as `start`, `3 digits`, `any text`, and `text without:`.
 - Rejected misleading `alphanumeric character` aliases; use `word` and `not word` for JavaScript's `\w` and `\W` classes.
@@ -21,7 +22,6 @@
 - Rule lines and line limits now recognize all JavaScript line terminators.
 - Added a compact date-shape recipe with explicit calendar-validation limits.
 - Corrected the `end` explanation and docs: JavaScript `$` rejects a final line break without `m`.
-- Put compact repetition forms first in the syntax guide.
 - Replaced parser jargon in the syntax guide intro with plain rule wording.
 - Duplicate repetition modifiers now point to the second modifier in diagnostics.
 - Multi-character list items now point to the invalid item in diagnostics.

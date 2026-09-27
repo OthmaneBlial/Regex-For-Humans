@@ -87,23 +87,20 @@ test("CLI exposes flags, help and version", () => {
   assert.match(run(["--help"]).stdout, /Usage: regex-for-humans/u);
   assert.match(run(["--help"]).stdout, /--\s+Treat the following argument as the input path/u);
   assert.match(run(["--version"]).stdout, /^0\.1\.0-dev\n$/u);
-  const explained = run(["--explain", "-"], "digit character");
+  const explained = run(["--explain", "-"], "digit");
   assert.equal(explained.status, 0, explained.stderr);
   assert.match(explained.stdout, /1:1 {2}\\d {2}One ASCII digit/u);
 });
 
 test("CLI reports an unknown rule with position and nonzero status", () => {
-  const result = run(["-"], "digit character\n  unexpected words");
+  const result = run(["-"], "digit\n  unexpected words");
   assert.equal(result.status, 1);
   assert.match(result.stderr, /Line 2, column 3/u);
-  const duplicate = run(["-"], "digit character 2 times 3 times");
+  const duplicate = run(["-"], "3 4 digits");
   assert.equal(duplicate.status, 1);
-  assert.match(duplicate.stderr, /Line 1, column 25: Use only one repetition/u);
-  const prefixedDuplicate = run(["-"], "2 times for 3 digits");
-  assert.equal(prefixedDuplicate.status, 1);
-  assert.match(prefixedDuplicate.stderr, /Line 1, column 13: Use only one repetition/u);
-  const duplicateJson = run(["--json", "-"], "3 digits 4 times");
-  assert.equal(JSON.parse(duplicateJson.stderr).error.column, 10);
+  assert.match(duplicate.stderr, /Line 1, column 3: Put one exact count/u);
+  const duplicateJson = run(["--json", "-"], "3 4 digits");
+  assert.equal(JSON.parse(duplicateJson.stderr).error.column, 3);
   const structured = run(["--json", "-"], "unexpected words");
   assert.equal(structured.status, 1);
   assert.equal(JSON.parse(structured.stderr).error.code, "UNKNOWN_RULE");
@@ -113,13 +110,14 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   const article = run(["-"], "a digit");
   assert.equal(article.status, 1);
   assert.match(article.stderr, /Unsupported instruction: "a digit"/u);
-  const malformedQuote = run(["-"], String.raw`a "bad\q"`);
+  const malformedQuote = run(["-"], String.raw`"bad\q"`);
   assert.equal(malformedQuote.status, 1);
-  assert.match(malformedQuote.stderr, /Line 1, column 7: Invalid JSON escape/u);
-  const malformedQuoteJson = run(["--json", "-"], String.raw`a "bad\q"`);
-  assert.equal(JSON.parse(malformedQuoteJson.stderr).error.column, 7);
-  const trailingLiteral = run(["--json", "-"], '  start, a "A"  extra');
-  assert.equal(JSON.parse(trailingLiteral.stderr).error.column, 17);
+  assert.match(malformedQuote.stderr, /Line 1, column 5: Invalid JSON escape/u);
+  const malformedQuoteJson = run(["--json", "-"], String.raw`"bad\q"`);
+  assert.equal(JSON.parse(malformedQuoteJson.stderr).error.column, 5);
+  const trailingInput = '  start, "A"  extra';
+  const trailingLiteral = run(["--json", "-"], trailingInput);
+  assert.equal(JSON.parse(trailingLiteral.stderr).error.column, trailingInput.indexOf("extra") + 1);
   assert.equal(run(["--bogus"]).status, 2);
 });
 
@@ -148,7 +146,7 @@ test("CLI enforces the source limit while reading stdin and files", () => {
   assert.equal(lineLimit.status, 1);
   assert.match(lineLimit.stderr, /Line 201, column 1: Input cannot exceed 200 lines\./u);
 
-  const withinLimit = `a "${"😀".repeat((LIMITS.sourceLength - 4) / 2)}"`;
+  const withinLimit = `"${"😀".repeat((LIMITS.sourceLength - 2) / 2)}"`;
   assert.equal(withinLimit.length, LIMITS.sourceLength);
   assert.equal(run(["-"], withinLimit).status, 0);
 

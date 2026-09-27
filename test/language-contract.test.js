@@ -2,67 +2,68 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { CompileError, compile, toRegExp } from "../index.js";
 
-// Each documented instruction has a matching example, a counterexample and
-// a nearby malformed spelling that must fail instead of partially compiling.
 const constructions = [
-  [
-    "input start",
-    'at the beginning of the input\na "A"',
-    "A",
-    "BA",
-    "at the beginning of the input extra",
-  ],
-  ["input end", 'a "A"\nend of the input', "A", "AB", "end of the input extra"],
-  [
-    "line start",
-    'at the beginning of a line\na "A"',
-    "B\nA",
-    "BA",
-    "at the beginning of a line extra",
-  ],
-  ["line end", 'a "A"\nend of the line', "A\nB", "AB", "end of the line extra"],
+  ["input start", 'start\n"A"', "A", "BA", "start extra"],
+  ["input end", '"A"\nend', "A", "AB", "end extra"],
+  ["line start", 'line start\n"A"', "B\nA", "BA", "line start extra"],
+  ["line end", '"A"\nline end', "A\nB", "AB", "line end extra"],
   ["wildcard", "any character", "A", "\n", "any characters"],
-  ["word", "word", "_", "-", "alphanumeric characters"],
-  ["not word", "not word", "é", "A", "non-alphanumeric characters"],
-  ["digit", "digit character", "3", "A", "digit characters"],
-  ["not digit", "non-digit character", "A", "3", "non-digit characters"],
-  ["space", "any whitespace", "\n", "A", "some whitespace"],
-  ["not space", "non-whitespace character", "A", " ", "non-whitespace characters"],
-  ["literal", 'a "ABC"', "ABC", "ABX", 'a "ABC" extra'],
-  ["set", "any of the following characters: a, b, c", "b", "d", "any of the following characters:"],
-  [
-    "not set",
-    "anything except the following characters: a, b, c",
-    "d",
-    "b",
-    "anything except the following characters:",
-  ],
+  ["word", "word", "_", "-", "alphanumeric character"],
+  ["not word", "not word", "é", "A", "non-alphanumeric character"],
+  ["digit", "digit", "3", "A", "digit character"],
+  ["not digit", "not digit", "A", "3", "non-digit character"],
+  ["space", "space", "\n", "A", "any whitespace"],
+  ["not space", "not space", "A", " ", "non-whitespace character"],
+  ["literal", '"ABC"', "ABC", "ABX", 'a "ABC"'],
+  ["set", "one of: a, b, c", "b", "d", "any of the following characters: a, b, c"],
+  ["not set", "none of: a, b, c", "d", "b", "anything except the following characters: a, b, c"],
+  ["unlimited digits", "digits", "123", "abc", "digit any number of times"],
+  ["any text", "any text", "hello", "", "any character any number of times"],
+  ["exact count", '3 "AB"', "ABABAB", "ABAB", 'three "AB"'],
 ];
 
-for (const [name, rules, yes, no, malformed] of constructions) {
+for (const [name, rules, yes, no, legacy] of constructions) {
   test(`language contract: ${name}`, () => {
     const regex = toRegExp(compile(rules));
     assert.equal(regex.test(yes), true, name);
-    assert.equal(regex.test(no), false, name);
-    assert.throws(() => compile(malformed), CompileError, name);
+    if (no) assert.equal(regex.test(no), false, name);
+    assert.throws(() => compile(legacy), { code: "UNKNOWN_RULE" }, legacy);
   });
 }
 
-test("misleading alphanumeric labels are rejected", () => {
-  for (const phrase of ["alphanumeric character", "non-alphanumeric character"]) {
-    assert.throws(() => compile(phrase), { code: "UNKNOWN_RULE" }, phrase);
+test("the old verbose screenshot rules are rejected", () => {
+  const oldExamples = [
+    [
+      "at the beginning of the input",
+      "anything except the following characters: a, b, c, d any number of times",
+      "end of the input",
+    ].join("\n"),
+    [
+      "at the beginning of a line, I am looking for any character, any number of times",
+      "I am looking for a digit character 3 times",
+      "end of the line",
+    ].join("\n"),
+  ];
+  for (const rules of oldExamples) assert.throws(() => compile(rules), CompileError);
+});
+
+test("counts are exact and must come before one atom", () => {
+  assert.equal(compile("3 digits").source, "\\d{3}");
+  assert.equal(compile("digits").source, "\\d+");
+  assert.equal(compile("any text").source, ".*");
+  assert.equal(compile("text without: a, b").source, "[^ab]*");
+  for (const rules of [
+    "digit 3 times",
+    "digit between 2 and 4 times",
+    "at least 3 times for digit",
+    "digit any number of times",
+    "3 4 digits",
+  ]) {
+    assert.throws(() => compile(rules), CompileError, rules);
   }
 });
 
-test("articles only prefix quoted literals", () => {
-  assert.equal(compile('a "A"').source, "A");
-  assert.equal(compile('an "A"').source, "A");
-  for (const phrase of ["a digit", "an digit"]) {
-    assert.throws(() => compile(phrase), { code: "UNKNOWN_RULE" }, phrase);
-  }
-});
-
-test("compact phrases compile precisely and retain useful source locations", () => {
+test("compact rules compile precisely and retain useful source locations", () => {
   const examples = [
     ["start 3 digits\nend", "^\\d{3}$", "123", "12"],
     ['start "ABC"\n3 digits\nend', "^ABC\\d{3}$", "ABC123", "ABC12"],
@@ -97,42 +98,6 @@ test("compact phrases compile precisely and retain useful source locations", () 
   assert.throws(() => compile("start 3 digits extra"), CompileError);
 });
 
-test("short text rules replace verbose wildcard and character exclusions", () => {
-  const anyText = compile("any text");
-  assert.equal(anyText.source, ".*");
-  assert.equal(toRegExp(anyText).exec("hello")?.[0], "hello");
-  assert.equal(toRegExp(anyText).exec("")?.[0], "");
-
-  const without = compile("start\ntext without: a, b\nend");
-  assert.equal(without.source, "^[^ab]*$");
-  const regex = toRegExp(without);
-  assert.equal(regex.test("xyz"), true);
-  assert.equal(regex.test(""), true);
-  assert.equal(regex.test("cab"), false);
-  assert.throws(() => compile("any text 3 times"), { code: "DUPLICATE_REPETITION" });
-  assert.throws(() => compile("text without: a, b 3 times"), { code: "DUPLICATE_REPETITION" });
-});
-
-const repetitions = [
-  ["any number of times", "", "AAA", "B", "any numbers of times"],
-  ["at least one time", "A", "AAA", "", "at least one times"],
-  ["at most one time", "", "A", "AA", "at most one times"],
-  ["3 times", "AAA", "AAA", "AA", "-3 times"],
-  ["between 2 and 4 times", "AA", "AAAA", "A", "between 4 and 2 times"],
-  ["at least 3 times", "AAA", "AAAA", "AA", "at least -3 times"],
-];
-
-for (const [phrase, first, second, no, malformed] of repetitions) {
-  test(`repetition contract: ${phrase}`, () => {
-    const rules = `at the beginning of the input\na "A" ${phrase}\nend of the input`;
-    const regex = toRegExp(compile(rules));
-    assert.equal(regex.test(first), true, phrase);
-    assert.equal(regex.test(second), true, phrase);
-    assert.equal(regex.test(no), false, phrase);
-    assert.throws(() => compile(`a "A" ${malformed}`), CompileError, phrase);
-  });
-}
-
 test("literal and set escaping preserve arbitrary Unicode scalars", () => {
   let state = 0x12_34_56_78;
   for (let count = 0; count < 300; count += 1) {
@@ -141,12 +106,10 @@ test("literal and set escaping preserve arbitrary Unicode scalars", () => {
     if (point >= 0xd800 && point <= 0xdfff) continue;
     const character = String.fromCodePoint(point);
     const quoted = JSON.stringify(character);
-    const literal = toRegExp(
-      compile(`at the beginning of the input\na ${quoted}\nend of the input`),
-    );
+    const literal = toRegExp(compile(`start\n${quoted}\nend`));
     assert.equal(literal.test(character), true, `literal U+${point.toString(16)}`);
     assert.equal(literal.test(`${character}x`), false, `literal suffix U+${point.toString(16)}`);
-    const set = toRegExp(compile(`any of the following characters: ${quoted}`));
+    const set = toRegExp(compile(`one of: ${quoted}`));
     assert.equal(set.test(character), true, `set U+${point.toString(16)}`);
   }
 });
@@ -175,13 +138,11 @@ test("metacharacters and controls remain data in literals and sets", () => {
     "😀",
   ]) {
     const quoted = JSON.stringify(character);
-    const literal = toRegExp(
-      compile(`at the beginning of the input\na ${quoted}\nend of the input`),
-    );
+    const literal = toRegExp(compile(`start\n${quoted}\nend`));
     assert.equal(literal.test(character), true, `literal ${quoted}`);
-    const set = toRegExp(compile(`any of the following characters: ${quoted}`));
+    const set = toRegExp(compile(`one of: ${quoted}`));
     assert.equal(set.test(character), true, `set ${quoted}`);
-    const negativeSet = toRegExp(compile(`anything except the following characters: ${quoted}`));
+    const negativeSet = toRegExp(compile(`none of: ${quoted}`));
     assert.equal(negativeSet.test(character), false, `negative set ${quoted}`);
   }
 });

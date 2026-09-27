@@ -47,34 +47,32 @@ test("input end anchor rejects a final JavaScript line terminator", () => {
     assert.equal(regex.test(`A${separator}`), false, JSON.stringify(separator));
 });
 
-test("negative classes and all repetition forms are semantically distinct", () => {
+test("negative classes and concise repetition forms compile exactly", () => {
   assert.equal(compile("not word").source, "\\W");
-  assert.equal(compile("non-digit character").source, "\\D");
-  assert.equal(compile("digit character between 2 and 4 times").source, "\\d{2,4}");
-  assert.equal(compile("digit character at least 3 times").source, "\\d{3,}");
-  assert.equal(compile("digit character 3 times").source, "\\d{3}");
-  assert.equal(compile("digit character at least one time").source, "\\d+");
-  assert.equal(compile("digit character at most one time").source, "\\d?");
-  assert.equal(compile("digit character any number of times").source, "\\d*");
+  assert.equal(compile("not digit").source, "\\D");
+  assert.equal(compile("3 digit").source, "\\d{3}");
+  assert.equal(compile("digits").source, "\\d+");
+  assert.equal(compile("any text").source, ".*");
+  assert.equal(compile("text without: a, b").source, "[^ab]*");
 });
 
 test("literal and character-class metacharacters are escaped in their contexts", () => {
-  const literal = compile('at the beginning of the input\na "a.b/c[1]"\nend of the input');
+  const literal = compile('start\n"a.b/c[1]"\nend');
   assert.equal(literal.source, "^a\\.b\\/c\\[1\\]$");
   assert.equal(toRegExp(literal).test("a.b/c[1]"), true);
   assert.equal(toRegExp(literal).test("axb/c[1]"), false);
 
-  const list = compile('any of the following characters: "]", "-", "^", "\\\\", ",", "😀"');
+  const list = compile('one of: "]", "-", "^", "\\\\", ",", "😀"');
   const regex = toRegExp(list);
   for (const character of ["]", "-", "^", "\\", ",", "😀"])
     assert.equal(regex.test(character), true, character);
   assert.equal(regex.test("z"), false);
-  assert.equal(compile('a "AB" 2 times').source, "(?:AB){2}");
-  assert.equal(compile('a "\\n"').source, "\\u{a}");
+  assert.equal(compile('2 "AB"').source, "(?:AB){2}");
+  assert.equal(compile('"\\n"').source, "\\u{a}");
 });
 
 test("flags and segment positions describe the emitted expression", () => {
-  const result = compile("at the beginning of a line\nany character\nend of the line", {
+  const result = compile("line start\nany character\nline end", {
     flags: "is",
   });
   assert.equal(result.flags, "imsu");
@@ -102,12 +100,13 @@ test("explanations reflect JavaScript flags, greedy matching and shorthand limit
   );
   assert.equal(lineRule.segments[2].explanation, "One ASCII digit (0–9). Exactly 3 times.");
   assert.equal(lineRule.segments[3].explanation, "Line end; m lets $ match before line breaks.");
+  assert.equal(compile("digits").segments[0].explanation, "One or more ASCII digits (0–9).");
   assert.equal(
     compile("any text", { flags: "s" }).segments[0].explanation,
     "Any text, greedily; line breaks included.",
   );
   assert.equal(
-    compile('a "ABC"', { flags: "i" }).segments[0].explanation,
+    compile('"ABC"', { flags: "i" }).segments[0].explanation,
     'Literal text "ABC", ignoring case according to JavaScript\'s Unicode rules.',
   );
   assert.match(compile("word").segments[0].explanation, /underscore/u);
@@ -121,10 +120,10 @@ test("case-insensitive class explanations include JavaScript Unicode folding", (
   );
   assert.equal(toRegExp(positive).test("K"), true);
 
-  const repeatedPositive = compile("one of: K any number of times", { flags: "i" });
+  const repeatedPositive = compile("3 one of: K", { flags: "i" });
   assert.equal(
     repeatedPositive.segments[0].explanation,
-    'Any sequence of "K", ignoring case according to JavaScript\'s Unicode rules (greedy).',
+    'One of "K", ignoring case according to JavaScript\'s Unicode rules. Exactly 3 times.',
   );
   assert.equal(toRegExp(repeatedPositive).test("KKk"), true);
 
@@ -153,13 +152,13 @@ test("case-insensitive class explanations include JavaScript Unicode folding", (
 test("invalid input fails explicitly rather than returning partial output", () => {
   for (const source of [
     "unknown phrase",
-    "digit character\nsurprise",
-    "digit character between 9 and 2 times",
-    "any of the following characters:",
+    "digit\nsurprise",
+    "digit between 9 and 2 times",
+    "one of:",
   ]) {
     assert.throws(() => compile(source), CompileError, source);
   }
-  assert.throws(() => compile("digit character", { flags: "g" }), { code: "UNSUPPORTED_FLAGS" });
-  assert.throws(() => compile("digit character", { flags: "ii" }), { code: "UNSUPPORTED_FLAGS" });
+  assert.throws(() => compile("digit", { flags: "g" }), { code: "UNSUPPORTED_FLAGS" });
+  assert.throws(() => compile("digit", { flags: "ii" }), { code: "UNSUPPORTED_FLAGS" });
   assert.throws(() => toRegExp({ source: 1, flags: "u" }), TypeError);
 });

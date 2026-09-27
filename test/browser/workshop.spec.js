@@ -89,8 +89,8 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#diagnostic")).toContainText(
     "Line 1, column 16385: Rules cannot exceed 16384 UTF-16 code units.",
   );
-  await editor.fill(String.raw`a "bad\q"`);
-  await expect(page.locator("#diagnostic")).toContainText("Line 1, column 7: Invalid JSON escape.");
+  await editor.fill(String.raw`"bad\q"`);
+  await expect(page.locator("#diagnostic")).toContainText("Line 1, column 5: Invalid JSON escape.");
   await editor.fill('start "ABC"\n3 digits\nend');
   await expect(editor).toHaveAttribute("aria-invalid", "false");
   await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
@@ -151,7 +151,7 @@ test("Unicode literals and dot-all behavior are visible in example results", asy
   await expect(page.locator(".test-row").first()).toHaveAttribute("data-result", "fail");
   await page.locator("#dot-all").check();
   await expect(page.locator(".test-row").first()).toHaveAttribute("data-result", "pass");
-  await editor.fill('a "😀"');
+  await editor.fill('"😀"');
   await firstSample.fill("😀");
   await expect(page.locator("#regex-output")).toHaveText("/😀/su");
   await expect(page.locator(".test-row").first()).toHaveAttribute("data-result", "pass");
@@ -186,7 +186,7 @@ test("syntax link opens the local rendered guide", async ({ page, context }) => 
   await guide.waitForLoadState();
   await expect(guide).toHaveURL(/\/web\/language\.html\?v=[\da-f]{12}$/u);
   await expect(guide.getByRole("heading", { name: "Match one thing" })).toBeVisible();
-  await expect(guide.locator(".guide-hero .hero-copy")).toContainText("Write one rule per line.");
+  await expect(guide.locator(".guide-hero .hero-copy")).toContainText("Use short rules.");
   await expect(guide.getByText(/They reject a final line break/u)).toBeVisible();
   await expect(guide.locator("#repetition tbody tr").first()).toContainText("3 <item>");
   await guide.close();

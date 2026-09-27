@@ -2,7 +2,7 @@
 
 This document defines the implemented **version 1 core language**. The browser workshop runs locally from this clone. npm publication and a GitHub release have not yet been verified; use the repository status and release notes to check each distribution surface.
 
-Regex For Humans translates a small, fixed vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Use the short forms below for new rules; older wording remains accepted. Write one instruction per nonblank line. `start` or `line start` may share a line with the first instruction. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces are ignored.
+Regex For Humans translates a small, fixed vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Only the short forms below are supported. Write one instruction per nonblank line. `start` or `line start` may share a line with the first instruction. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces are ignored.
 
 Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
 
@@ -23,34 +23,26 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
 | `space` | `\s` | a space, tab or newline | `A` |
 | `not space` | `\S` | `A` | a space |
 | `digits` | `\d+` | `3`, `123` | `A` |
-| `"ABC"` (also `a "ABC"` or `an "ABC"`) | `ABC` | `ABC` | `ABX` |
+| `"ABC"` | `ABC` | `ABC` | `ABX` |
 | `one of: a, b, c` | `[abc]` | `b` | `d` |
 | `none of: a, b, c` | `[^abc]` | `d` | `b` |
 | `text without: a, b, c` | `[^abc]*` | zero or more characters outside the list | `cab` with `start` and `end` |
-
-Articles (`a`, `an`) only prefix quoted literals.
 
 `word`/`not word` use JavaScript's `\w`/`\W`; `digit`/`not digit` use `\d`/`\D`. These classes are ASCII-oriented with `u`; `i` plus `u` adds a few Unicode case-folding matches to `\w`. `\w` includes `_` but excludes `é`. The misleading `alphanumeric character` aliases are rejected.
 
 A literal is a JSON-style double-quoted string. Escape `"` and `\\`; the compiler escapes regex metacharacters. Character-list items must each be one Unicode code point. Quote punctuation, commas, spaces and backslashes, as in `"]", "-", ",", "\\"`. Empty literals and lists are errors.
 
-`start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`. Use short forms shown above for new rules. Older forms remain accepted for existing rules.
+`start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`.
 
 ## Repetition
 
-A count applies to one item. Put exact counts first (`3 digits`). The compiler keeps a multi-character literal together. Other count forms follow; older suffix wording is listed last. Duplicate counts, counts without an item, negative counts and invalid ranges are errors.
+A count applies to the next item. Put it first (`3 digits`). The compiler keeps a multi-character literal together. `digits` means one or more digits; `any text` and `text without` already match sequences. Other repetition wording is not supported.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |
 | `3 <item>` (for example, `3 digits`) | `A{3}` | `AAA` | `AA` |
-| `<item> between 2 and 4 times` | `A{2,4}` | `AA`, `AAAA` | `A`, `AAAAA` |
-| `<item> at least 3 times` | `A{3,}` | `AAA`, `AAAA` | `AA` |
-| `<item> 3 times` | `A{3}` | `AAA` | `AA` |
-| `<item> any number of times` | `A*` | empty, `AAA` | `B` as a whole-string match |
-| `<item> at least one time` | `A+` | `A`, `AAA` | empty |
-| `<item> at most one time` | `A?` | empty, `A` | `AA` as a whole-string match |
 
-Use `text without: a, b` to match any sequence that excludes those characters. Numeric counts are nonnegative integers no greater than 1,000. The compiler rejects a quantifier attached to an anchor.
+Numeric counts are nonnegative integers no greater than 1,000. The compiler rejects a count attached to an anchor.
 
 ## Anchors and flags
 
@@ -60,4 +52,4 @@ Without `m`, JavaScript `^` and `$` match only the true start and end of input. 
 
 ## Errors and future syntax
 
-Unknown phrases, ambiguous phrases, invalid quoted strings, duplicate or misplaced anchors, unsupported flags, excessive input and invalid repetition bounds return a diagnostic with a line and column. Quoted-string errors point to invalid escapes or control characters; missing quotes point to line end. Duplicate repetition errors point to the second modifier. Overlength input points just after the 16,384-code-unit limit. Lines and columns are one-based; columns count UTF-16 code units, like JavaScript string indices. Inputs are limited to 16,384 UTF-16 code units and 200 input lines, including blank lines; a final newline does not count as another line. The compiler does not silently emit a partial success. Groups, lookaround, alternation, backreferences, arbitrary raw regex and reverse regex-to-English translation are outside version 1. Any future syntax needs examples, counterexamples and compatibility tests before it enters this contract.
+Unknown phrases, unsupported repetition forms, invalid quoted strings, duplicate or misplaced anchors, unsupported flags, excessive input and counts above 1,000 return a diagnostic with a line and column. Quoted-string errors point to invalid escapes or control characters; missing quotes point to line end. Duplicate count errors point to the second count. Overlength input points just after the 16,384-code-unit limit. Lines and columns are one-based; columns count UTF-16 code units, like JavaScript string indices. Inputs are limited to 16,384 UTF-16 code units and 200 input lines, including blank lines; a final newline does not count as another line. The compiler does not silently emit a partial success. Groups, lookaround, alternation, backreferences, arbitrary raw regex and reverse regex-to-English translation are outside version 1. Any future syntax needs examples, counterexamples and compatibility tests before it enters this contract.

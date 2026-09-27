@@ -2,18 +2,8 @@
 function repetitionText(repetition) {
   if (!repetition) return "";
   switch (repetition.kind) {
-    case "zeroOrMore":
-      return " Any number of times, greedily.";
-    case "oneOrMore":
-      return " At least once, greedily.";
-    case "optional":
-      return " Optional (zero or one).";
     case "exact":
       return ` Exactly ${repetition.min} times.`;
-    case "range":
-      return ` Between ${repetition.min} and ${repetition.max} times, greedily.`;
-    case "minimum":
-      return ` At least ${repetition.min} times, greedily.`;
     default:
       throw new TypeError(`Unknown repetition kind: ${repetition.kind}`);
   }
@@ -43,10 +33,12 @@ export function explainNode(node, flags, hasFollowingRule = false) {
     }
     if (node.atomType === "charSet") {
       const characters = node.value.map((value) => JSON.stringify(value)).join(", ");
-      return node.negative
-        ? `Any text without ${characters}${caseNote} (greedy).`
-        : `Any sequence of ${characters}${caseNote} (greedy).`;
+      return `Any text without ${characters}${caseNote} (greedy).`;
     }
+  }
+
+  if (node.value === "\\d" && node.repetition?.kind === "oneOrMore") {
+    return "One or more ASCII digits (0–9).";
   }
 
   let meaning;

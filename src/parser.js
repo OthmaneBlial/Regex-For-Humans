@@ -66,51 +66,21 @@ const SHORTHANDS = new Map([
   ["not word", "\\W"],
   ["not digit", "\\D"],
   ["digit", "\\d"],
-  ["non-digit character", "\\D"],
-  ["digit character", "\\d"],
   ["not space", "\\S"],
   ["space", "\\s"],
-  ["non-whitespace character", "\\S"],
-  ["any whitespace", "\\s"],
   ["digits", "\\d"],
 ]);
 
-const START_ANCHOR = /^(at the beginning of (the input|a line)|line start|start)(?:,\s*|\s+|$)/i;
+const START_ANCHOR = /^(line start|start)(?:,\s*|\s+|$)/i;
 const DUPLICATE_START_ANCHOR_MESSAGE = "Only one beginning anchor is allowed.";
-const REPETITION =
-  "between [0-9]+ and [0-9]+ times|at least [0-9]+ times|[0-9]+ times|any number of times|at least one time|at most one time";
-const PREFIX_REPETITION = new RegExp(`^(${REPETITION}) for\\s+`, "i");
-const SUFFIX_REPETITION = new RegExp(`(?:,\\s*|\\s+)(${REPETITION})$`, "i");
 
-/** @param {string} text @param {Location} location @returns {Repetition} */
-function parseRepetition(text, location) {
-  const normalized = text.toLowerCase();
-  if (normalized === "any number of times") return { kind: "zeroOrMore" };
-  if (normalized === "at least one time") return { kind: "oneOrMore" };
-  if (normalized === "at most one time") return { kind: "optional" };
-  const numberMatches = [...normalized.matchAll(/[0-9]+/g)];
-  const numbers = numberMatches.map((match) => Number(match[0]));
-  const invalidCount = numberMatches.find((match) => {
-    const number = Number(match[0]);
-    return !Number.isSafeInteger(number) || number > LIMITS.repetition;
-  });
-  if (invalidCount) {
-    fail("REPETITION_LIMIT", `Repetition counts must be at most ${LIMITS.repetition}.`, {
-      line: location.line,
-      column: location.column + (invalidCount.index ?? 0),
-    });
+/** @param {string} count @param {Location} location @returns {Repetition} */
+function parseRepetition(count, location) {
+  const number = Number(count);
+  if (!Number.isSafeInteger(number) || number > LIMITS.repetition) {
+    fail("REPETITION_LIMIT", `Repetition counts must be at most ${LIMITS.repetition}.`, location);
   }
-  if (normalized.startsWith("between ")) {
-    if (numbers[0] > numbers[1]) {
-      fail("INVALID_RANGE", "The lower repetition bound must not exceed the upper bound.", {
-        line: location.line,
-        column: location.column + (numberMatches[1]?.index ?? 0),
-      });
-    }
-    return { kind: "range", min: numbers[0], max: numbers[1] };
-  }
-  if (normalized.startsWith("at least ")) return { kind: "minimum", min: numbers[0] };
-  return { kind: "exact", min: numbers[0] };
+  return { kind: "exact", min: number };
 }
 
 /** @param {string} text @param {Location} location @returns {{value: string, length: number}} */
@@ -202,45 +172,32 @@ function readCharacterList(text, location) {
 /** @param {string} text @param {Location} location @param {string} originalText @returns {AtomNode} */
 function parseAtom(text, location, originalText) {
   let remaining = text;
+  /** @type {Repetition|null} */
   let repetition = null;
   let offset = 0;
-  const prefix = PREFIX_REPETITION.exec(remaining);
-  if (prefix) {
-    repetition = parseRepetition(prefix[1], location);
-    remaining = remaining.slice(prefix[0].length);
-    offset += prefix[0].length;
-  }
-
   const count = /^([0-9]+)\s+/u.exec(remaining);
   if (count) {
-    if (repetition) {
-      fail("DUPLICATE_REPETITION", "Use only one repetition per atom.", {
-        line: location.line,
-        column: location.column + offset,
-      });
-    }
-    repetition = parseRepetition(`${count[1]} times`, location);
+    repetition = parseRepetition(count[1], {
+      line: location.line,
+      column: location.column + offset,
+    });
     remaining = remaining.slice(count[0].length);
     offset += count[0].length;
   }
-
-  const suffix = SUFFIX_REPETITION.exec(remaining);
-  if (suffix) {
-    const suffixLocation = {
+  if (/^[0-9]+\s+/u.test(remaining)) {
+    fail("DUPLICATE_REPETITION", "Put one exact count before the instruction.", {
       line: location.line,
-      column: location.column + offset + suffix.index + suffix[0].length - suffix[1].length,
-    };
-    if (repetition || SUFFIX_REPETITION.test(remaining.slice(0, suffix.index).trimEnd())) {
-      fail("DUPLICATE_REPETITION", "Use only one repetition per atom.", suffixLocation);
-    }
-    repetition = parseRepetition(suffix[1], suffixLocation);
-    remaining = remaining.slice(0, suffix.index).trimEnd();
+      column: location.column + offset,
+    });
   }
 
   const textWithout = /^text without:\s*/i.exec(remaining);
   if (textWithout || /^any text$/i.test(remaining)) {
     if (repetition) {
-      fail("DUPLICATE_REPETITION", "This short form already repeats its atom.", location);
+      fail("DUPLICATE_REPETITION", "This rule already matches a sequence.", {
+        line: location.line,
+        column: location.column + offset,
+      });
     }
     if (textWithout) {
       const values = readCharacterList(remaining.slice(textWithout[0].length), {
@@ -256,19 +213,12 @@ function parseAtom(text, location, originalText) {
     return atom("wildcard", ".", repetition, location, originalText);
   for (const [phrase, token] of SHORTHANDS) {
     if (remaining.toLowerCase() === phrase) {
-      if (phrase === "digits" && !repetition)
-        repetition = parseRepetition("at least one time", location);
+      if (phrase === "digits" && !repetition) repetition = { kind: "oneOrMore" };
       return atom("shorthand", token, repetition, location, originalText);
     }
   }
 
-  const literalPrefix = /^(?:a|an)\s+/i.exec(remaining);
-  const literal =
-    literalPrefix && remaining[literalPrefix[0].length] === '"'
-      ? remaining.slice(literalPrefix[0].length)
-      : remaining.startsWith('"')
-        ? remaining
-        : null;
+  const literal = remaining.startsWith('"') ? remaining : null;
   if (literal !== null) {
     const offset = remaining.length - literal.length;
     const quoted = readQuoted(literal, {
@@ -287,10 +237,7 @@ function parseAtom(text, location, originalText) {
     return atom("literal", quoted.value, repetition, location, originalText);
   }
 
-  const classPrefix =
-    /^(one of:|none of:|any of the following characters:|anything except the following characters:)\s*/i.exec(
-      remaining,
-    );
+  const classPrefix = /^(one of:|none of:)\s*/i.exec(remaining);
   if (classPrefix) {
     const values = readCharacterList(remaining.slice(classPrefix[0].length), {
       line: location.line,
@@ -302,7 +249,7 @@ function parseAtom(text, location, originalText) {
       repetition,
       location,
       originalText,
-      /^(?:none of:|anything except)/iu.test(classPrefix[1].toLowerCase()),
+      classPrefix[1].toLowerCase() === "none of:",
     );
   }
 
@@ -310,7 +257,7 @@ function parseAtom(text, location, originalText) {
     "UNKNOWN_RULE",
     `Unsupported instruction: ${JSON.stringify(originalText)}.`,
     location,
-    "Use a phrase from docs/LANGUAGE.md.",
+    "Use concise rules such as `line start`, `any text` and `3 digits`.",
   );
 }
 
@@ -342,7 +289,7 @@ export function parse(source) {
     const start = START_ANCHOR.exec(text);
     if (start) {
       const phrase = start[1];
-      const mode = /(?:a line|line start)$/iu.test(phrase.toLowerCase()) ? "line" : "input";
+      const mode = phrase.toLowerCase() === "line start" ? "line" : "input";
       if (nodes.some((node) => node.kind === "anchor" && node.edge === "start")) {
         fail("DUPLICATE_ANCHOR", DUPLICATE_START_ANCHOR_MESSAGE, location());
       }
@@ -359,9 +306,9 @@ export function parse(source) {
       if (!text) continue;
     }
 
-    const end = /^(end of the input|end of the line|line end|end)$/i.exec(text);
+    const end = /^(line end|end)$/i.exec(text);
     if (end) {
-      const mode = /(?:end of the line|line end)$/iu.test(end[1].toLowerCase()) ? "line" : "input";
+      const mode = end[1].toLowerCase() === "line end" ? "line" : "input";
       if (sawEnd) fail("DUPLICATE_ANCHOR", "Only one ending anchor is allowed.", location());
       if (anchorMode && anchorMode !== mode) {
         fail("MIXED_ANCHORS", "Input and line anchors cannot be mixed.", location());
@@ -373,11 +320,6 @@ export function parse(source) {
     }
     if (sawEnd) fail("MISPLACED_ANCHOR", "No instruction may follow an ending anchor.", location());
 
-    const looking = /^I am looking for\s+/i.exec(text);
-    if (looking) {
-      text = text.slice(looking[0].length);
-      column += looking[0].length;
-    }
     nodes.push(parseAtom(text, location(), text));
   }
 
