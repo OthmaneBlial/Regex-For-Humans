@@ -34,7 +34,7 @@ npm run serve
 
 Open **http://127.0.0.1:4174/**. Pick a recipe, edit the rules, and test examples. Compilation runs in your browser; rules and examples are not sent to an application backend.
 
-![Regex For Humans workshop showing the rules start "ABC", 3 digits, end and their passing examples](media/screenshots/workshop-desktop-dev.png)
+![Regex For Humans workshop showing line start, any text, 3 digits, line end, and three passing example checks](media/screenshots/workshop-desktop-dev.png)
 
 <details>
 <summary>Mobile screenshot</summary>

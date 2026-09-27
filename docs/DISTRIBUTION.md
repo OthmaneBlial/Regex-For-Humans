@@ -1,8 +1,8 @@
 # Distribution decision record
 
-**Current state (19 September 2026):** the CLI and ESM library work from a clone and from a locally packed npm tarball. The tarball has no runtime dependencies and installs into a clean consumer. It is a Node.js package, not a standalone executable. No npm version, hosted workshop or GitHub Release has been published yet.
+**Current state (verified 27 September 2026):** the CLI and ESM library work from a clone and from a locally packed npm tarball, which installs into a clean consumer without runtime dependencies. The development project site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/). No public `regex-for-humans` version was found on npm; no stable tag or GitHub Release exists. The app remains a Node.js package, not a standalone executable.
 
-The planned primary distribution is a versioned npm package containing the library and `regex-for-humans` CLI, plus a static browser workshop for quick evaluation. The package requires Node.js 22 or newer. The repository currently offers local clone instructions in [README.md](../README.md). CI preserves the exact tarball it tests as a workflow artifact; that artifact is for verification, not a substitute for a published registry version.
+The target release route is a versioned npm package containing the library and `regex-for-humans` CLI, plus the static browser workshop. The current hosted site is a development preview, not a stable release. The package requires Node.js 22 or newer. CI preserves the exact tarball it tests as a workflow artifact; that artifact is for verification, not a substitute for a published registry version.
 
 ## Standalone binary decision
 
