@@ -27,6 +27,7 @@ for (const scenario of scenarios) {
     });
 
     await page.goto(`/?example=${scenario.id}`);
+    await expect(page.locator(".local-indicator")).toHaveText("Rules stay local");
     await expect(page.locator("#rules-input")).toHaveValue(scenario.rules);
     if (scenario.id === "excluded-characters") {
       await expect(page.locator("#trace-list")).toContainText(
