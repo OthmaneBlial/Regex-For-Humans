@@ -89,6 +89,8 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   assert.match(malformedQuote.stderr, /Line 1, column 7: Invalid JSON escape/u);
   const malformedQuoteJson = run(["--json", "-"], String.raw`a "bad\q"`);
   assert.equal(JSON.parse(malformedQuoteJson.stderr).error.column, 7);
+  const trailingLiteral = run(["--json", "-"], '  start, a "A"  extra');
+  assert.equal(JSON.parse(trailingLiteral.stderr).error.column, 17);
   assert.equal(run(["--bogus"]).status, 2);
 });
 

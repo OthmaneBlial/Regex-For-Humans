@@ -228,7 +228,12 @@ function parseAtom(text, location, originalText) {
       column: location.column + offset,
     });
     if (offset + quoted.length !== remaining.length) {
-      fail("TRAILING_TEXT", "Unexpected text after the quoted literal.", location);
+      const trailing = remaining.slice(offset + quoted.length);
+      const leadingWhitespace = trailing.length - trailing.trimStart().length;
+      fail("TRAILING_TEXT", "Unexpected text after the quoted literal.", {
+        line: location.line,
+        column: location.column + offset + quoted.length + leadingWhitespace,
+      });
     }
     if (!quoted.value) fail("EMPTY_LITERAL", "A literal cannot be empty.", location);
     return atom("literal", quoted.value, repetition, location, originalText);

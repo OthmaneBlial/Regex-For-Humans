@@ -10,6 +10,7 @@
 - Oversized repetition counts now point to the invalid number.
 - Overlength rule input now points to where the limit is exceeded.
 - A final newline no longer counts as an extra rule line.
+- Trailing text after a quoted literal points to its first unexpected character.
 - Malformed quoted values now point to invalid escapes, raw control characters or missing quotes.
 - CLI filenames beginning with `-` can follow the standard `--` option terminator.
 - Added a public project site with the hosted interactive workshop.

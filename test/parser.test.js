@@ -141,6 +141,17 @@ one of: "a", "bad\q"`;
   );
 });
 
+test("trailing literal text points to its first unexpected character", () => {
+  const rules = '  start, a "A"  extra';
+  assert.throws(
+    () => parse(rules),
+    (error) =>
+      error.code === "TRAILING_TEXT" &&
+      error.line === 1 &&
+      error.column === rules.indexOf("extra") + 1,
+  );
+});
+
 test("multi-code-point character-list errors point to the offending item", () => {
   for (const items of ["a, bc", 'a, "bc"']) {
     assert.throws(
