@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Simplified the pre-release grammar to short anchors, rule names, quoted literals and count-first repetition; verbose aliases and suffix counts are rejected.
+- Condensed exact digit explanations to one sentence.
 - Added a deterministic, documented controlled-English compiler for JavaScript regular expressions with explicit diagnostics, source spans and explanations.
 - Added compact rules such as `start`, `3 digits`, `any text`, and `text without:`.
 - Rejected misleading `alphanumeric character` aliases; use `word` and `not word` for JavaScript's `\w` and `\W` classes.

@@ -38,6 +38,7 @@ for (const scenario of scenarios) {
       await expect(page.locator("#trace-list")).toContainText(
         "Any text up to the next rule, greedily; line breaks stop it.",
       );
+      await expect(page.locator("#trace-list")).toContainText("Exactly 3 ASCII digits (0–9).");
     }
     await expect(page.locator("#regex-output")).toHaveText(`/${scenario.source}/${scenario.flags}`);
     await expect(page.locator("#test-summary")).toHaveText(

@@ -39,7 +39,7 @@ function repetitionSource(repetition) {
     case "exact":
       return `{${repetition.min}}`;
     default:
-      throw new TypeError(`Unknown repetition kind: ${repetition.kind}`);
+      throw new TypeError("Unknown repetition kind.");
   }
 }
 

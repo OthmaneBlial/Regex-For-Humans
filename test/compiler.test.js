@@ -98,9 +98,11 @@ test("explanations reflect JavaScript flags, greedy matching and shorthand limit
     excludedRule.segments[1].explanation,
     'Any text without "a", "b", "c", "d" (greedy).',
   );
-  assert.equal(lineRule.segments[2].explanation, "One ASCII digit (0–9). Exactly 3 times.");
+  assert.equal(lineRule.segments[2].explanation, "Exactly 3 ASCII digits (0–9).");
   assert.equal(lineRule.segments[3].explanation, "Line end; m lets $ match before line breaks.");
   assert.equal(compile("digits").segments[0].explanation, "One or more ASCII digits (0–9).");
+  assert.equal(compile("1 digit").segments[0].explanation, "Exactly 1 ASCII digit (0–9).");
+  assert.equal(compile("3 digits").segments[0].explanation, "Exactly 3 ASCII digits (0–9).");
   assert.equal(
     compile("any text", { flags: "s" }).segments[0].explanation,
     "Any text, greedily; line breaks included.",

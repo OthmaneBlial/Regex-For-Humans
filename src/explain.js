@@ -5,7 +5,7 @@ function repetitionText(repetition) {
     case "exact":
       return ` Exactly ${repetition.min} times.`;
     default:
-      throw new TypeError(`Unknown repetition kind: ${repetition.kind}`);
+      throw new TypeError("Unexpected repetition kind.");
   }
 }
 
@@ -37,8 +37,12 @@ export function explainNode(node, flags, hasFollowingRule = false) {
     }
   }
 
-  if (node.value === "\\d" && node.repetition?.kind === "oneOrMore") {
-    return "One or more ASCII digits (0–9).";
+  if (node.atomType === "shorthand" && node.value === "\\d") {
+    if (node.repetition?.kind === "oneOrMore") return "One or more ASCII digits (0–9).";
+    if (node.repetition?.kind === "exact") {
+      const digits = node.repetition.min === 1 ? "digit" : "digits";
+      return `Exactly ${node.repetition.min} ASCII ${digits} (0–9).`;
+    }
   }
 
   let meaning;

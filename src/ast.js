@@ -1,6 +1,6 @@
 /**
  * @typedef {{line: number, column: number}} Location
- * @typedef {{kind: 'exact'|'zeroOrMore'|'oneOrMore', min?: number}} Repetition
+ * @typedef {{kind: 'exact', min: number}|{kind: 'zeroOrMore'}|{kind: 'oneOrMore'}} Repetition
  * @typedef {{kind: 'anchor', edge: 'start'|'end', mode: 'input'|'line', location: Location, text: string}} AnchorNode
  * @typedef {{kind: 'atom', atomType: 'wildcard'|'shorthand'|'literal', value: string, negative?: boolean, repetition: Repetition|null, location: Location, text: string}} TextAtomNode
  * @typedef {{kind: 'atom', atomType: 'charSet', value: string[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} SetAtomNode
