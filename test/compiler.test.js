@@ -48,7 +48,7 @@ test("input end anchor rejects a final JavaScript line terminator", () => {
 });
 
 test("negative classes and all repetition forms are semantically distinct", () => {
-  assert.equal(compile("non-alphanumeric character").source, "\\W");
+  assert.equal(compile("not word").source, "\\W");
   assert.equal(compile("non-digit character").source, "\\D");
   assert.equal(compile("digit character between 2 and 4 times").source, "\\d{2,4}");
   assert.equal(compile("digit character at least 3 times").source, "\\d{3,}");
@@ -103,7 +103,7 @@ test("explanations reflect JavaScript flags, greedy matching and shorthand limit
     "Any text, line breaks included (greedy).",
   );
   assert.match(compile('a "ABC"', { flags: "i" }).segments[0].explanation, /ignoring case/u);
-  assert.match(compile("alphanumeric character").segments[0].explanation, /underscore/u);
+  assert.match(compile("word").segments[0].explanation, /underscore/u);
 });
 
 test("case-insensitive class explanations include JavaScript Unicode folding", () => {

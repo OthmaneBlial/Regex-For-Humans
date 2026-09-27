@@ -60,7 +60,7 @@ Put one rule on each line. `start` can prefix the first rule. Quote exact text; 
 | Character set | `one of: a, b` | `[ab]` |
 | Text without characters | `text without: a, b` | `[^ab]*` |
 
-Short forms are preferred. Older rules still work. Rule errors include line and column. The [language guide](docs/LANGUAGE.md) covers syntax, flags, and limits.
+Use `word`/`not word` for JavaScript's `\w`/`\W`; misleading `alphanumeric character` aliases are rejected. Rule errors include line and column. The [language guide](docs/LANGUAGE.md) covers syntax, flags, and limits.
 
 ## Example: date shape
 

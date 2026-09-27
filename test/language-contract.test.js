@@ -22,8 +22,8 @@ const constructions = [
   ],
   ["line end", 'a "A"\nend of the line', "A\nB", "AB", "end of the line extra"],
   ["wildcard", "any character", "A", "\n", "any characters"],
-  ["word", "alphanumeric character", "A", "-", "alphanumeric characters"],
-  ["not word", "non-alphanumeric character", "-", "A", "non-alphanumeric characters"],
+  ["word", "word", "_", "-", "alphanumeric characters"],
+  ["not word", "not word", "é", "A", "non-alphanumeric characters"],
   ["digit", "digit character", "3", "A", "digit characters"],
   ["not digit", "non-digit character", "A", "3", "non-digit characters"],
   ["space", "any whitespace", "\n", "A", "some whitespace"],
@@ -47,6 +47,12 @@ for (const [name, rules, yes, no, malformed] of constructions) {
     assert.throws(() => compile(malformed), CompileError, name);
   });
 }
+
+test("misleading alphanumeric labels are rejected", () => {
+  for (const phrase of ["alphanumeric character", "non-alphanumeric character"]) {
+    assert.throws(() => compile(phrase), { code: "UNKNOWN_RULE" }, phrase);
+  }
+});
 
 test("compact phrases compile precisely and retain useful source locations", () => {
   const examples = [

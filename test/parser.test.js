@@ -17,8 +17,8 @@ test("all reference scenarios parse into ordered instructions", () => {
   }
 });
 
-test("negative classes do not collide with their positive names", () => {
-  assert.equal(parse("non-alphanumeric character").nodes[0].value, "\\W");
+test("negative shorthands use their exact names", () => {
+  assert.equal(parse("not word").nodes[0].value, "\\W");
   assert.equal(parse("non-digit character").nodes[0].value, "\\D");
   assert.equal(parse("non-whitespace character").nodes[0].value, "\\S");
 });

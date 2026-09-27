@@ -64,8 +64,6 @@ export function validateSourceLength(source) {
 const SHORTHANDS = new Map([
   ["word", "\\w"],
   ["not word", "\\W"],
-  ["non-alphanumeric character", "\\W"],
-  ["alphanumeric character", "\\w"],
   ["not digit", "\\D"],
   ["digit", "\\d"],
   ["non-digit character", "\\D"],

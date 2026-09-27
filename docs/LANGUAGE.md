@@ -28,7 +28,9 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
 | `none of: a, b, c` | `[^abc]` | `d` | `b` |
 | `text without: a, b, c` | `[^abc]*` | zero or more characters outside the list | `cab` with `start` and `end` |
 
-`word` and `digit` follow JavaScript's `\w` and `\d`, which are ASCII-oriented even with the Unicode flag (the combination of `i` and `u` has a few Unicode case-folding exceptions for `\w`). A literal is a JSON-style double-quoted string: `"` and `\\` can be written inside it. Literal regex metacharacters are escaped by the compiler. A character-list item is exactly one Unicode code point; write ordinary items as `a, b`, and quote punctuation, commas, spaces or backslashes as `"]", "-", ",", "\\"`. The generated class escapes each item in class context. Empty lists and empty literals are errors.
+`word`/`not word` use JavaScript's `\w`/`\W`; `digit`/`not digit` use `\d`/`\D`. These classes are ASCII-oriented with `u`; `i` plus `u` adds a few Unicode case-folding matches to `\w`. `\w` includes `_` but excludes `é`. The misleading `alphanumeric character` aliases are rejected.
+
+A literal is a JSON-style double-quoted string. Escape `"` and `\\`; the compiler escapes regex metacharacters. Character-list items must each be one Unicode code point. Quote punctuation, commas, spaces and backslashes, as in `"]", "-", ",", "\\"`. Empty literals and lists are errors.
 
 `start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`. Use short forms shown above for new rules. Older forms remain accepted for existing rules.
 
