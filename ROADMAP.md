@@ -11,8 +11,8 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [x] 1.1 Installation, API et CLI — tarball installé dans un dossier vierge ; aide, fichier, stdin, erreur, import et CLI vérifiés sous Node 25.9.0
 - [x] 1.2 Parseur déterministe et diagnostics — AST, erreurs ligne/colonne, phrases inconnues rejetées ; tests parseur et CLI verts
 - [x] 1.3 Sémantique et échappement — 3 fixtures positives/négatives, régressions et caractères spéciaux vérifiés ; tarball installé proprement
-- [ ] 2.1 Explications traçables — implémentées et testées localement ; revue des 3 scénarios par une personne extérieure encore requise
-- [x] 2.2 Atelier web local — build statique avec ressources versionnées par contenu, 3 recettes, copie réelle, diagnostics, console et requêtes locales vérifiés ; tests navigateur bureau/mobile verts
+- [ ] 2.1 Explications traçables — implémentées et testées localement ; revue des 4 scénarios par une personne extérieure encore requise
+- [x] 2.2 Atelier web local — build statique avec ressources versionnées par contenu, 4 recettes, copie réelle, diagnostics, console et requêtes locales vérifiés ; tests navigateur bureau/mobile verts
 - [x] 2.3 Tests positifs et négatifs — 16 tests navigateur verts : ancres, Unicode, saut de ligne, modes, édition et écarts ; isolation contre exécution longue suivie en 3.2
 - [ ] 2.4 Interface et accessibilité — rendu et clavier vérifiés, 12 tests axe/Playwright verts localement le 27 septembre ; lecteur d'écran réel et 3 nouvelles personnes encore requis
 - [x] 3.1 Tests et compatibilité — 58 tests Node passés localement le 27 septembre 2026 sous Node 25.9.0 ; 36 tests navigateur Chrome bureau/mobile passés localement ; CI verte (run `36341300806`, commit `647ad00`) sur Linux Node 22/24, macOS/Windows Node 24 et Chromium Linux ; format, lint, typage strict du noyau/CLI, build et installation propre vérifiés ; limites documentées dans `docs/TESTING.md`

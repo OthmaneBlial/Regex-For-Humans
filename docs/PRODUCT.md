@@ -6,7 +6,7 @@ A JavaScript developer who can describe a matching rule but does not remember re
 
 Success target for usability testing: a first-time user should load an example, change a rule, verify one positive and one negative string, and copy a usable expression within two minutes, without verbal help. This is a target to measure, not an achieved metric.
 
-## Three reference tasks
+## Four reference tasks
 
 These fixtures define the product walkthrough. Their expected regex sources and positive/negative strings are checked against JavaScript `RegExp` through the library, CLI and local browser regression suites.
 
@@ -14,7 +14,9 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 2. **Exclude characters.** Rules: `start` / `text without: a, b, c, d` / `end`. Expected source `^[^abcd]*$`, flags `u`. Positive: `xyz`, empty string. Negative: `cab`.
 3. **Read a line rule.** Rules: `line start` / `any text` / `3 digits` / `line end`. Expected source `^.*\d{3}$`, flags `mu`, search mode. Positive: `item 123`, `note\nitem 123`. Negative: `item 12`. The explanation must state that `.*` is greedy, `m` changes the anchors, and this pattern permits many prefixes.
 
-The recipes use the compact syntax. The second demonstrates class exclusion and negative examples. The third makes greedy matching and permissive prefixes visible.
+4. **Match a date shape.** Rules: `start` / `4 digits` / `"-"` / `2 digits` / `"-"` / `2 digits` / `end`. Expected source `^\d{4}-\d{2}-\d{2}$`, flags `u`. Positive: `2026-09-27`, `2000-01-01`, `2026-02-31` (the impossible day still matches). Negative: `2026-9-27`, `27-09-2026`, `2026/09/27`. This checks the `YYYY-MM-DD` shape.
+
+The recipes use compact syntax for prefixes, exclusions, line matching and a fixed date shape.
 
 ## Evidence plan
 

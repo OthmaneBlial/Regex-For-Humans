@@ -28,5 +28,15 @@
     "matchMode": "search",
     "positive": ["item 123", "note\nitem 123"],
     "negative": ["item 12"]
+  },
+  {
+    "id": "date-shape",
+    "title": "Match a date shape",
+    "rules": "start\n4 digits\n\"-\"\n2 digits\n\"-\"\n2 digits\nend",
+    "source": "^\\d{4}-\\d{2}-\\d{2}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["2026-09-27", "2000-01-01", "2026-02-31"],
+    "negative": ["2026-9-27", "27-09-2026", "2026/09/27"]
   }
 ]

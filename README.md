@@ -62,6 +62,12 @@ Put one rule on each line. `start` can prefix the first rule. Quote exact text; 
 
 Short forms are preferred. Older rules still work. Rule errors include line and column. The [language guide](docs/LANGUAGE.md) covers syntax, flags, and limits.
 
+## Example: date shape
+
+`start` / `4 digits` / `"-"` / `2 digits` / `"-"` / `2 digits` / `end`
+
+This compiles to `^\d{4}-\d{2}-\d{2}$`. It checks the YYYY-MM-DD shape; it does not validate month or day values.
+
 ## Use it from JavaScript
 
 ```js
