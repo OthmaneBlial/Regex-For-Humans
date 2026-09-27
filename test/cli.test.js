@@ -41,6 +41,21 @@ test("CLI accepts a file and prints a copyable JavaScript literal", () => {
   }
 });
 
+test("CLI keeps file read failures as JSON in machine mode", () => {
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  try {
+    const result = run(["--json", join(directory, "missing.txt")]);
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, "");
+    const error = JSON.parse(result.stderr).error;
+    assert.equal(error.code, "CLI_ERROR");
+    assert.match(error.message, /ENOENT/u);
+    assert.equal("line" in error, false);
+  } finally {
+    rmdirSync(directory);
+  }
+});
+
 test("CLI accepts a leading-dash filename after --", () => {
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
   try {

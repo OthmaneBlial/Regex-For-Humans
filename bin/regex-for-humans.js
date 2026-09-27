@@ -12,7 +12,7 @@ Compile controlled-English rules from a file or standard input.
 Use - to read standard input explicitly.
 
 Options:
-  --json      Print source and flags as JSON
+  --json      Print a result or error as JSON
   --explain   Print each generated fragment and its meaning
   --ignore-case  Add the JavaScript i flag
   --dot-all      Add the JavaScript s flag
@@ -111,11 +111,18 @@ try {
     }
   }
 } catch (error) {
-  if (error instanceof CompileError) {
+  if (json) {
+    const detail =
+      error instanceof CompileError
+        ? error.toJSON()
+        : {
+            code: "CLI_ERROR",
+            message: error instanceof Error ? error.message : String(error),
+          };
+    stderr.write(`${JSON.stringify({ error: detail })}\n`);
+  } else if (error instanceof CompileError) {
     stderr.write(
-      json
-        ? `${JSON.stringify({ error: error.toJSON() })}\n`
-        : `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}\n`,
+      `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}\n`,
     );
   } else {
     stderr.write(`${String(error)}\n`);
