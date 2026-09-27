@@ -6,6 +6,7 @@
 - Added short aliases such as `start`, `3 digits`, and `one of:` while retaining the longer phrases.
 - Duplicate repetition modifiers now point to the second modifier in diagnostics.
 - Multi-character list items now point to the invalid item in diagnostics.
+- Invalid repetition ranges now point to the upper bound that needs correction.
 - Added a public project site with the hosted interactive workshop.
 - Added an ESM library API, a file/stdin CLI and a local static browser workshop with positive and negative examples.
 - Added worker-isolated browser matching with timeout, parser limits, security notes and automated Node/browser coverage.

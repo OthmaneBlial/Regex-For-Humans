@@ -46,17 +46,17 @@ function parseRepetition(text, location) {
   if (normalized === "any number of times") return { kind: "zeroOrMore" };
   if (normalized === "at least one time") return { kind: "oneOrMore" };
   if (normalized === "at most one time") return { kind: "optional" };
-  const numbers = [...normalized.matchAll(/[0-9]+/g)].map((match) => Number(match[0]));
+  const numberMatches = [...normalized.matchAll(/[0-9]+/g)];
+  const numbers = numberMatches.map((match) => Number(match[0]));
   if (numbers.some((number) => !Number.isSafeInteger(number) || number > LIMITS.repetition)) {
     fail("REPETITION_LIMIT", `Repetition counts must be at most ${LIMITS.repetition}.`, location);
   }
   if (normalized.startsWith("between ")) {
     if (numbers[0] > numbers[1]) {
-      fail(
-        "INVALID_RANGE",
-        "The lower repetition bound must not exceed the upper bound.",
-        location,
-      );
+      fail("INVALID_RANGE", "The lower repetition bound must not exceed the upper bound.", {
+        line: location.line,
+        column: location.column + (numberMatches[1]?.index ?? 0),
+      });
     }
     return { kind: "range", min: numbers[0], max: numbers[1] };
   }

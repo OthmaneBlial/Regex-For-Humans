@@ -44,6 +44,19 @@ test("repetition forms are distinct and validate their bounds", () => {
   assert.throws(() => parse("3 times"), { code: "UNKNOWN_RULE" });
 });
 
+test("an invalid repetition range points to its upper bound", () => {
+  const rules = "digit character between 4 and 2 times";
+  assert.throws(
+    () => parse(rules),
+    (error) => {
+      assert.ok(error instanceof CompileError);
+      assert.equal(error.code, "INVALID_RANGE");
+      assert.equal(error.column, rules.indexOf("2") + 1);
+      return true;
+    },
+  );
+});
+
 test("duplicate repetitions report the second modifier's location", () => {
   for (const [rules, column] of [
     ["digit character 2 times 3 times", 25],
