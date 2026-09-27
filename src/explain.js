@@ -32,6 +32,20 @@ export function explainNode(node, flags) {
       : "End of the input, or just before a final line break in JavaScript.";
   }
 
+  if (node.repetition?.kind === "zeroOrMore") {
+    if (node.atomType === "wildcard") {
+      return flags.includes("s")
+        ? "Any text, line breaks included (greedy)."
+        : "Any text without line breaks (greedy).";
+    }
+    if (node.atomType === "charSet") {
+      const characters = node.value.map((value) => JSON.stringify(value)).join(", ");
+      return node.negative
+        ? `Any text without ${characters} (greedy).`
+        : `Any sequence of ${characters} (greedy).`;
+    }
+  }
+
   let meaning;
   switch (node.atomType) {
     case "wildcard":
@@ -63,9 +77,6 @@ export function explainNode(node, flags) {
       break;
     default:
       throw new TypeError("Unknown atom type.");
-  }
-  if (node.atomType === "wildcard" && node.repetition?.kind === "zeroOrMore") {
-    meaning += " This can accept a broad range of text.";
   }
   return meaning + repetitionText(node.repetition);
 }

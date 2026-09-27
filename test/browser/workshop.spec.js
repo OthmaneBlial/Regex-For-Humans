@@ -23,6 +23,16 @@ for (const scenario of scenarios) {
 
     await page.goto(`/?example=${scenario.id}`);
     await expect(page.locator("#rules-input")).toHaveValue(scenario.rules);
+    if (scenario.id === "excluded-characters") {
+      await expect(page.locator("#trace-list")).toContainText(
+        'Any text without "a", "b", "c", "d" (greedy).',
+      );
+    }
+    if (scenario.id === "line-rule") {
+      await expect(page.locator("#trace-list")).toContainText(
+        "Any text without line breaks (greedy).",
+      );
+    }
     await expect(page.locator("#regex-output")).toHaveText(`/${scenario.source}/${scenario.flags}`);
     await expect(page.locator("#test-summary")).toHaveText(
       `${scenario.positive.length + scenario.negative.length} of ${scenario.positive.length + scenario.negative.length} examples behave as expected`,
