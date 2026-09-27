@@ -15,7 +15,7 @@ for (const scenario of scenarios) {
       if (message.type() === "error") browserErrors.push(message.text());
     });
     page.on("request", (request) => {
-      if (!request.url().startsWith("http://127.0.0.1:4174/")) remoteRequests.push(request.url());
+      if (!request.url().startsWith("http://127.0.0.1:4175/")) remoteRequests.push(request.url());
     });
     page.on("response", (response) => {
       if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.url()}`);
@@ -104,10 +104,10 @@ test("Unicode literals and dot-all behavior are visible in example results", asy
 });
 
 test("copy button places the real generated regex on the clipboard", async ({ page, context }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
-    origin: "http://127.0.0.1:4174",
-  });
   await page.goto("/");
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: new URL(page.url()).origin,
+  });
   await page.getByRole("button", { name: /Copy regex/ }).click();
   await expect(page.locator("#copy-button")).toContainText("Copied");
   const copied = await page.evaluate(() => navigator.clipboard.readText());

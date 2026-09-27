@@ -1,6 +1,6 @@
 import { defineConfig } from "@playwright/test";
 
-const baseURL = "http://127.0.0.1:4174";
+const baseURL = "http://127.0.0.1:4175";
 const channel = process.env.CI ? "chromium" : "chrome";
 
 export default defineConfig({
@@ -23,9 +23,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run build && node scripts/serve-dist.js 4174",
+    command: "npm run build && node scripts/serve-dist.js 4175",
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 30_000,
   },
 });
