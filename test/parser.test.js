@@ -48,6 +48,7 @@ test("duplicate repetitions report the second modifier's location", () => {
   for (const [rules, column] of [
     ["digit character 2 times 3 times", 25],
     ["3 digits 4 times", 10],
+    ["2 times for 3 digits", 13],
     ["at least 2 times for digit character 3 times", 38],
   ]) {
     assert.throws(

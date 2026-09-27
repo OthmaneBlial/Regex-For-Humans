@@ -149,7 +149,12 @@ function parseAtom(text, location, originalText) {
 
   const count = /^([0-9]+)\s+/u.exec(remaining);
   if (count) {
-    if (repetition) fail("DUPLICATE_REPETITION", "Use only one repetition per atom.", location);
+    if (repetition) {
+      fail("DUPLICATE_REPETITION", "Use only one repetition per atom.", {
+        line: location.line,
+        column: location.column + offset,
+      });
+    }
     repetition = parseRepetition(`${count[1]} times`, location);
     remaining = remaining.slice(count[0].length);
     offset += count[0].length;

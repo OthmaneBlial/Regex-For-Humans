@@ -59,6 +59,9 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   const duplicate = run(["-"], "digit character 2 times 3 times");
   assert.equal(duplicate.status, 1);
   assert.match(duplicate.stderr, /Line 1, column 25: Use only one repetition/u);
+  const prefixedDuplicate = run(["-"], "2 times for 3 digits");
+  assert.equal(prefixedDuplicate.status, 1);
+  assert.match(prefixedDuplicate.stderr, /Line 1, column 13: Use only one repetition/u);
   const duplicateJson = run(["--json", "-"], "3 digits 4 times");
   assert.equal(JSON.parse(duplicateJson.stderr).error.column, 10);
   const structured = run(["--json", "-"], "unexpected words");
