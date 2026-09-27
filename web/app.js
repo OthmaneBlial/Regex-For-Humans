@@ -192,17 +192,6 @@ function renderTests() {
 function compileRules() {
   const ruleCount = ui.rules.value.split("\n").filter((line) => line.trim()).length;
   ui.ruleCount.textContent = `${ruleCount} ${ruleCount === 1 ? "rule" : "rules"}`;
-  if (!ui.rules.value.trim()) {
-    compiled = null;
-    ui.output.textContent = "Select a recipe or write a rule";
-    ui.flagsSummary.textContent = "Unicode mode always on";
-    ui.copy.disabled = true;
-    setCompileState("Ready", "neutral");
-    setDiagnostic("");
-    renderTrace(null);
-    updateTestResults();
-    return;
-  }
   try {
     const flags = `${ui.ignoreCase.checked ? "i" : ""}${ui.dotAll.checked ? "s" : ""}`;
     compiled = compile(ui.rules.value, { flags });
@@ -214,15 +203,22 @@ function compileRules() {
     renderTrace(compiled.segments);
   } catch (error) {
     compiled = null;
-    ui.output.textContent = "No pattern generated";
-    ui.flagsSummary.textContent = "Fix the instruction shown below";
     ui.copy.disabled = true;
-    setCompileState("Needs a fix", "error");
-    setDiagnostic(
-      error instanceof CompileError
-        ? `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}`
-        : `Unexpected compiler error: ${error.message}`,
-    );
+    if (error instanceof CompileError && error.code === "EMPTY_SOURCE") {
+      ui.output.textContent = "Select a recipe or write a rule";
+      ui.flagsSummary.textContent = "Unicode mode always on";
+      setCompileState("Ready", "neutral");
+      setDiagnostic("");
+    } else {
+      ui.output.textContent = "No pattern generated";
+      ui.flagsSummary.textContent = "Fix the instruction shown below";
+      setCompileState("Needs a fix", "error");
+      setDiagnostic(
+        error instanceof CompileError
+          ? `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}`
+          : `Unexpected compiler error: ${error.message}`,
+      );
+    }
     renderTrace(null);
   }
   updateTestResults();

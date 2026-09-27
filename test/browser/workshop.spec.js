@@ -49,6 +49,14 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.getByRole("button", { name: /Copy regex/ })).toBeDisabled();
   await editor.fill('start "A" extra');
   await expect(page.locator("#diagnostic")).toContainText("Line 1, column 11");
+  await editor.fill("\n".repeat(201));
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Line 201, column 1: Input cannot exceed 200 lines.",
+  );
+  await editor.fill(" ".repeat(16_385));
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Line 1, column 16385: Rules cannot exceed 16384 UTF-16 code units.",
+  );
   await editor.fill(String.raw`a "bad\q"`);
   await expect(page.locator("#diagnostic")).toContainText("Line 1, column 7: Invalid JSON escape.");
   await editor.fill(

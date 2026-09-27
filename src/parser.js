@@ -272,7 +272,7 @@ export function parse(source) {
   validateSourceLength(source);
   const lines = source.split(/\r?\n/u);
   if (lines.length - Number(source.endsWith("\n")) > LIMITS.lines) {
-    fail("LINE_LIMIT", `Rules cannot exceed ${LIMITS.lines} lines.`, {
+    fail("LINE_LIMIT", `Input cannot exceed ${LIMITS.lines} lines.`, {
       line: LIMITS.lines + 1,
       column: 1,
     });

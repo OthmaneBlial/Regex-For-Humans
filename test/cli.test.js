@@ -110,6 +110,10 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
 });
 
 test("CLI enforces the source limit while reading stdin and files", () => {
+  const lineLimit = run(["-"], "\n".repeat(LIMITS.lines + 1));
+  assert.equal(lineLimit.status, 1);
+  assert.match(lineLimit.stderr, /Line 201, column 1: Input cannot exceed 200 lines\./u);
+
   const withinLimit = `a "${"😀".repeat((LIMITS.sourceLength - 4) / 2)}"`;
   assert.equal(withinLimit.length, LIMITS.sourceLength);
   assert.equal(run(["-"], withinLimit).status, 0);

@@ -210,14 +210,17 @@ test("source-length errors point to the first code unit beyond the limit", () =>
   );
 });
 
-test("line limit accepts a final newline and still rejects a 201st line", () => {
+test("line limit accepts a final newline and rejects the 201st input line", () => {
   const atLimit = Array.from({ length: LIMITS.lines }, () => "digit").join("\n");
   assert.equal(parse(`${atLimit}\n`).nodes.length, LIMITS.lines);
 
-  for (const source of [`${atLimit}\ndigit\n`, `${atLimit}\n\n`]) {
+  for (const source of [`${atLimit}\ndigit\n`, `${atLimit}\n\n`, "\n".repeat(LIMITS.lines + 1)]) {
     assert.throws(
       () => parse(source),
-      (error) => error.code === "LINE_LIMIT" && error.line === LIMITS.lines + 1,
+      (error) =>
+        error.code === "LINE_LIMIT" &&
+        error.message === `Input cannot exceed ${LIMITS.lines} lines.` &&
+        error.line === LIMITS.lines + 1,
     );
   }
 });
