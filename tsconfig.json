@@ -11,5 +11,5 @@
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["index.js", "src/**/*.js", "bin/**/*.js"]
+  "include": ["index.js", "src/**/*.js", "bin/**/*.js", "web/test-runner.js", "web/match-worker.js"]
 }

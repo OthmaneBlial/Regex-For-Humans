@@ -37,6 +37,19 @@ test("isolated runner stops a worker that does not answer", async () => {
   assert.equal(worker.terminated, true);
 });
 
+test("isolated runner reports non-Error worker failures", async () => {
+  const worker = new FakeWorker();
+  worker.postMessage = () => {
+    throw "worker unavailable";
+  };
+  const runner = new TestRunner(() => worker, 100);
+  await assert.rejects(runner.run({}), {
+    code: "WORKER_ERROR",
+    message: "worker unavailable",
+  });
+  assert.equal(worker.terminated, true);
+});
+
 test("a new run cancels the old one without showing its stale result", async () => {
   const oldWorker = new FakeWorker(false);
   const newWorker = new FakeWorker();

@@ -1,8 +1,14 @@
 import { LIMITS } from "../src/parser.js";
 
+/** @typedef {{ id: number, text: string, expected: boolean }} ExampleCase */
+/** @typedef {{ id: number, source: string, flags: string, mode: "full" | "search", cases: ExampleCase[] }} TestRequest */
+/** @typedef {{ id: number, actual: boolean, pass: boolean, detail: string }} TestResult */
+/** @typedef {{ id: number, results: TestResult[] } | { id: number, error: string }} TestReply */
+
 const MAX_CASES = 100;
 const MAX_TEXT_LENGTH = 2048;
 
+/** @param {MessageEvent<TestRequest>} event */
 self.onmessage = (event) => {
   const { id, source, flags, mode, cases } = event.data;
   try {
@@ -36,6 +42,6 @@ self.onmessage = (event) => {
     });
     self.postMessage({ id, results });
   } catch (error) {
-    self.postMessage({ id, error: error.message });
+    self.postMessage({ id, error: error instanceof Error ? error.message : String(error) });
   }
 };
