@@ -31,4 +31,4 @@ After the tasks, ask whether installing Node/npm is a barrier to using the CLI, 
 
 **Accessibility regression (27 September 2026):** Example text fields, expected-result selectors and remove buttons have distinct numbered accessible names.
 
-**Current automated evidence (27 September 2026):** All 42 browser tests pass in Chrome at 1280×800 desktop and 390×844 mobile viewports, including 14 accessibility tests. Keyboard tests cover the skip link, syntax link, regex options, copy button and match mode. Real screen-reader and participant sessions remain unverified.
+**Current automated evidence (27 September 2026):** All 44 browser tests pass in Chrome at 1280×800 desktop and 390×844 mobile viewports, including 14 accessibility tests. Keyboard tests cover the skip link, syntax link, regex options, copy button and match mode. Real screen-reader and participant sessions remain unverified.
