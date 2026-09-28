@@ -60,6 +60,26 @@ test("a second count points to its own column", () => {
   );
 });
 
+test("counted instruction errors point past the count", () => {
+  const cases = [
+    [String.raw`3 "bad\q"`, "INVALID_QUOTE", "\\q"],
+    ['3 ""', "EMPTY_LITERAL", '""'],
+    ['3 "A"  extra', "TRAILING_TEXT", "extra"],
+    ["3 one of: a, bc", "INVALID_CHARACTER", "bc"],
+    ["3 surprise phrase", "UNKNOWN_RULE", "surprise"],
+  ];
+  for (const [rules, code, marker] of cases) {
+    assert.throws(
+      () => parse(rules),
+      (error) =>
+        error instanceof CompileError &&
+        error.code === code &&
+        error.column === rules.indexOf(marker) + 1,
+      rules,
+    );
+  }
+});
+
 test("counts on anchors point to the anchor", () => {
   for (const [rules, line, column] of [
     ["3 start", 1, 3],

@@ -92,6 +92,10 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   );
   await editor.fill('start "A" extra');
   await expect(page.locator("#diagnostic")).toContainText("Line 1, column 11");
+  await editor.fill('3 "A"  extra');
+  await expect(page.locator("#diagnostic")).toContainText("Line 1, column 8");
+  await editor.fill("3 one of: a, bc");
+  await expect(page.locator("#diagnostic")).toContainText("Line 1, column 14");
   await editor.fill("\n".repeat(201));
   await expect(page.locator("#diagnostic")).toContainText(
     "Line 201, column 1: Input cannot exceed 200 lines.",

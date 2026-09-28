@@ -228,20 +228,24 @@ function parseAtom(text, location, originalText) {
 
   const literal = remaining.startsWith('"') ? remaining : null;
   if (literal !== null) {
-    const offset = remaining.length - literal.length;
     const quoted = readQuoted(literal, {
       line: location.line,
       column: location.column + offset,
     });
-    if (offset + quoted.length !== remaining.length) {
-      const trailing = remaining.slice(offset + quoted.length);
+    if (quoted.length !== remaining.length) {
+      const trailing = remaining.slice(quoted.length);
       const leadingWhitespace = trailing.length - trailing.trimStart().length;
       fail("TRAILING_TEXT", "Unexpected text after the quoted literal.", {
         line: location.line,
         column: location.column + offset + quoted.length + leadingWhitespace,
       });
     }
-    if (!quoted.value) fail("EMPTY_LITERAL", "A literal cannot be empty.", location);
+    if (!quoted.value) {
+      fail("EMPTY_LITERAL", "A literal cannot be empty.", {
+        line: location.line,
+        column: location.column + offset,
+      });
+    }
     return atom("literal", quoted.value, repetition, location, originalText);
   }
 
@@ -249,7 +253,7 @@ function parseAtom(text, location, originalText) {
   if (classPrefix) {
     const values = readCharacterList(remaining.slice(classPrefix[0].length), {
       line: location.line,
-      column: location.column + classPrefix[0].length,
+      column: location.column + offset + classPrefix[0].length,
     });
     return atom(
       "charSet",
@@ -264,7 +268,7 @@ function parseAtom(text, location, originalText) {
   fail(
     "UNKNOWN_RULE",
     `Unsupported rule: ${JSON.stringify(originalText)}.`,
-    location,
+    { line: location.line, column: location.column + offset },
     "Try `line start`, `any text` or `3 digits`.",
   );
 }

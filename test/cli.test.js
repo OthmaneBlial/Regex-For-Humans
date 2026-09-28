@@ -131,6 +131,8 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   const trailingInput = '  start, "A"  extra';
   const trailingLiteral = run(["--json", "-"], trailingInput);
   assert.equal(JSON.parse(trailingLiteral.stderr).error.column, trailingInput.indexOf("extra") + 1);
+  const countedTrailing = run(["--json", "-"], '3 "A"  extra');
+  assert.equal(JSON.parse(countedTrailing.stderr).error.column, 8);
   assert.equal(run(["--bogus"]).status, 2);
 });
 
