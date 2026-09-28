@@ -83,6 +83,13 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#diagnostic")).toContainText(
     "Line 2, column 1: Use only one start anchor.",
   );
+  await editor.fill("3 start");
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Line 1, column 3: Counts apply to items, not anchors.",
+  );
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Remove the count or apply it to an item, such as `3 digits`.",
+  );
   await editor.fill('start "A" extra');
   await expect(page.locator("#diagnostic")).toContainText("Line 1, column 11");
   await editor.fill("\n".repeat(201));

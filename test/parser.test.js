@@ -60,6 +60,28 @@ test("a second count points to its own column", () => {
   );
 });
 
+test("counts on anchors point to the anchor", () => {
+  for (const [rules, line, column] of [
+    ["3 start", 1, 3],
+    ["3 end", 1, 3],
+    ["2 line start", 1, 3],
+    ["start 3 end", 1, 9],
+    ["line start\n2 line end", 2, 3],
+  ]) {
+    assert.throws(
+      () => parse(rules),
+      (error) =>
+        error instanceof CompileError &&
+        error.code === "ANCHOR_REPETITION" &&
+        error.line === line &&
+        error.column === column &&
+        error.message === "Counts apply to items, not anchors." &&
+        error.hint === "Remove the count or apply it to an item, such as `3 digits`.",
+      rules,
+    );
+  }
+});
+
 test("quoted literal and character-list items keep punctuation as data", () => {
   assert.equal(parse('"a.b"').nodes[0].value, "a.b");
   assert.deepEqual(parse('one of: "]", "-", ",", "\\\\"').nodes[0].value, ["]", "-", ",", "\\"]);

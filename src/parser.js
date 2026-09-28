@@ -190,6 +190,14 @@ function parseAtom(text, location, originalText) {
       column: location.column + offset,
     });
   }
+  if (repetition && /^(?:start|end|line start|line end)$/iu.test(remaining)) {
+    fail(
+      "ANCHOR_REPETITION",
+      "Counts apply to items, not anchors.",
+      { line: location.line, column: location.column + offset },
+      "Remove the count or apply it to an item, such as `3 digits`.",
+    );
+  }
 
   const textWithout = /^text without:\s*/i.exec(remaining);
   if (textWithout || /^any text$/i.test(remaining)) {

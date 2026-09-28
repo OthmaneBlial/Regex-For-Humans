@@ -42,7 +42,7 @@ A count applies to the next item. Put it first (`3 digits`). The compiler keeps 
 | --- | --- | --- | --- |
 | `3 <item>` (for example, `3 digits`) | `A{3}` | `AAA` | `AA` |
 
-Numeric counts are nonnegative integers no greater than 1,000. The compiler rejects a count attached to an anchor.
+Numeric counts are nonnegative integers no greater than 1,000. Anchors cannot have a count: `3 start` reports an error at `start`.
 
 ## Anchors and flags
 
