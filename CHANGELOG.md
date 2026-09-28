@@ -4,6 +4,7 @@
 
 - Simplified the pre-release grammar to short anchors, rule names, quoted literals and count-first repetition; verbose aliases and suffix counts are rejected.
 - Condensed exact digit explanations to one sentence.
+- Shortened unknown-rule hints and anchor errors.
 - Added a deterministic, documented controlled-English compiler for JavaScript regular expressions with explicit diagnostics, source spans and explanations.
 - Added compact rules such as `start`, `3 digits`, `any text`, and `text without:`.
 - Rejected misleading `alphanumeric character` aliases; use `word` and `not word` for JavaScript's `\w` and `\W` classes.
@@ -19,7 +20,7 @@
 - Versioned workshop assets per build so browsers load updated recipes and explanations.
 - Clarified local rule handling without implying the workshop saves edits.
 - Fixed keyboard skip navigation so it focuses the workshop without resetting edited rules.
-- Duplicate beginning anchors now report the second anchor directly.
+- Duplicate start anchors now report the second anchor directly.
 - Rule lines and line limits now recognize all JavaScript line terminators.
 - Added a compact date-shape recipe with explicit calendar-validation limits.
 - Corrected the `end` explanation and docs: JavaScript `$` rejects a final line break without `m`.
