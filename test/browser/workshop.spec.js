@@ -115,6 +115,20 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
 });
 
+test("manual edits clear the recipe highlight and reselecting restores its short rules", async ({
+  page,
+}) => {
+  await page.goto("/?example=line-rule");
+  const editor = page.locator("#rules-input");
+  const recipe = page.locator('[data-scenario="line-rule"]');
+  await expect(recipe).toHaveAttribute("aria-current", "true");
+  await editor.fill("at the beginning of a line, I am looking for any character");
+  await expect(recipe).toHaveAttribute("aria-current", "false");
+  await recipe.click();
+  await expect(recipe).toHaveAttribute("aria-current", "true");
+  await expect(editor).toHaveValue("line start\nany text\n3 digits\nline end");
+});
+
 test("rule counter counts instructions and ignores blank lines", async ({ page }) => {
   await page.goto("/");
   const counter = page.locator("#rule-count");

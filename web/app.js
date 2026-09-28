@@ -309,7 +309,13 @@ function renderScenarioButtons() {
   });
 }
 
-ui.rules.addEventListener("input", compileRules);
+ui.rules.addEventListener("input", () => {
+  activeScenario = scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null;
+  for (const button of ui.examples.querySelectorAll("button")) {
+    button.setAttribute("aria-current", String(button.dataset.scenario === activeScenario));
+  }
+  compileRules();
+});
 ui.ignoreCase.addEventListener("change", compileRules);
 ui.dotAll.addEventListener("change", compileRules);
 ui.matchMode.addEventListener("change", updateTestResults);

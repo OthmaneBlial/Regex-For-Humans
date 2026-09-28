@@ -4,6 +4,7 @@
 
 - Counts before anchors now report a specific error at the anchor.
 - Errors after a count now point past the count.
+- Editing rules clears the selected recipe highlight.
 - Simplified the pre-release grammar to short anchors, rule names, quoted literals and count-first repetition; verbose aliases and suffix counts are rejected.
 - Condensed exact digit explanations to one sentence.
 - Shortened unknown-rule hints and anchor errors.
