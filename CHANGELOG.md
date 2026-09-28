@@ -13,7 +13,7 @@
 - Explained greedy text relative to the next rule in the workshop trace.
 - Shortened trace copy while keeping flag and repetition details.
 - Shortened the homepage and workshop introductions.
-- Shortened explanations for wildcard text and repeated character sets.
+- Shortened wildcard, character and whitespace explanations.
 - Character-set explanations now describe case-insensitive matching.
 - Linked invalid rule feedback to the editor for screen readers.
 - Added strict workshop UI types and a shared worker message contract; non-Error failures stay readable.

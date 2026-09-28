@@ -18,9 +18,7 @@ export function explainNode(node, flags, hasFollowingRule = false) {
     return node.edge === "start" ? "Input start." : "Input end.";
   }
 
-  const caseNote = flags.includes("i")
-    ? ", ignoring case according to JavaScript's Unicode rules"
-    : "";
+  const caseNote = flags.includes("i") ? ", ignoring case (i)" : "";
 
   if (node.repetition?.kind === "zeroOrMore") {
     if (node.atomType === "wildcard") {
@@ -47,21 +45,21 @@ export function explainNode(node, flags, hasFollowingRule = false) {
   switch (node.atomType) {
     case "wildcard":
       meaning = flags.includes("s")
-        ? "Any one Unicode code point, including a line break."
-        : "Any one Unicode code point except a line break.";
+        ? "Any character, including line breaks."
+        : "Any character except a line break.";
       break;
     case "shorthand": {
       /** @type {Record<string, string>} */
       const shorthandMeanings = {
         "\\w":
-          "One JavaScript word character: ASCII letter, digit or underscore. With i and u, a few Unicode case-folding equivalents also match.",
+          "Word character: ASCII letter, digit or underscore. With i, a few Unicode equivalents match.",
         "\\W": flags.includes("i")
-          ? "One character outside JavaScript's word class. With i and u, a few Unicode case-folding equivalents count as word characters."
-          : "One character outside JavaScript's word class.",
+          ? "Any non-word character; i treats a few Unicode equivalents as words."
+          : "Any non-word character.",
         "\\d": "One digit (0–9).",
-        "\\D": "One character other than an ASCII digit.",
-        "\\s": "One JavaScript whitespace character, including line breaks.",
-        "\\S": "One character outside JavaScript's whitespace class.",
+        "\\D": "Any character except 0–9.",
+        "\\s": "Whitespace, including line breaks.",
+        "\\S": "Any non-whitespace character.",
       };
       meaning = shorthandMeanings[node.value];
       break;
@@ -71,7 +69,7 @@ export function explainNode(node, flags, hasFollowingRule = false) {
       break;
     case "charSet":
       meaning = node.negative
-        ? `One Unicode code point except ${node.value.map((value) => JSON.stringify(value)).join(", ")}${caseNote}.`
+        ? `Any character except ${node.value.map((value) => JSON.stringify(value)).join(", ")}${caseNote}.`
         : `One of ${node.value.map((value) => JSON.stringify(value)).join(", ")}${caseNote}.`;
       break;
     default:

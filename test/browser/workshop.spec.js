@@ -165,9 +165,7 @@ test("ignore-case option explains case-insensitive character sets", async ({ pag
   await page.goto("/");
   await page.getByRole("textbox", { name: "Write your rules" }).fill("one of: K");
   await page.locator("#ignore-case").check();
-  await expect(page.locator("#trace-list")).toContainText(
-    'One of "K", ignoring case according to JavaScript\'s Unicode rules.',
-  );
+  await expect(page.locator("#trace-list")).toContainText('One of "K", ignoring case (i).');
 });
 
 test("copy button places the real generated regex on the clipboard", async ({ page, context }) => {

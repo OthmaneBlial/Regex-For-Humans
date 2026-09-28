@@ -98,6 +98,17 @@ test("explanations reflect JavaScript flags, greedy matching and shorthand limit
   assert.equal(lineRule.segments[2].explanation, "Exactly 3 digits (0–9).");
   assert.equal(lineRule.segments[3].explanation, "End of each line (m).");
   assert.equal(compile("digit").segments[0].explanation, "One digit (0–9).");
+  assert.equal(compile("not digit").segments[0].explanation, "Any character except 0–9.");
+  assert.equal(compile("space").segments[0].explanation, "Whitespace, including line breaks.");
+  assert.equal(compile("not space").segments[0].explanation, "Any non-whitespace character.");
+  assert.equal(
+    compile("any character").segments[0].explanation,
+    "Any character except a line break.",
+  );
+  assert.equal(
+    compile("any character", { flags: "s" }).segments[0].explanation,
+    "Any character, including line breaks.",
+  );
   assert.equal(compile("digits").segments[0].explanation, "One or more digits (0–9).");
   assert.equal(compile("1 digit").segments[0].explanation, "Exactly 1 digit (0–9).");
   assert.equal(compile("3 digits").segments[0].explanation, "Exactly 3 digits (0–9).");
@@ -107,45 +118,37 @@ test("explanations reflect JavaScript flags, greedy matching and shorthand limit
   );
   assert.equal(
     compile('"ABC"', { flags: "i" }).segments[0].explanation,
-    'Literal text "ABC", ignoring case according to JavaScript\'s Unicode rules.',
+    'Literal text "ABC", ignoring case (i).',
   );
-  assert.match(compile("word").segments[0].explanation, /underscore/u);
+  assert.equal(
+    compile("word").segments[0].explanation,
+    "Word character: ASCII letter, digit or underscore. With i, a few Unicode equivalents match.",
+  );
+  assert.equal(compile("not word").segments[0].explanation, "Any non-word character.");
 });
 
 test("case-insensitive class explanations include JavaScript Unicode folding", () => {
   const positive = compile("one of: K", { flags: "i" });
-  assert.equal(
-    positive.segments[0].explanation,
-    'One of "K", ignoring case according to JavaScript\'s Unicode rules.',
-  );
+  assert.equal(positive.segments[0].explanation, 'One of "K", ignoring case (i).');
   assert.equal(toRegExp(positive).test("K"), true);
 
   const repeatedPositive = compile("3 one of: K", { flags: "i" });
   assert.equal(
     repeatedPositive.segments[0].explanation,
-    'One of "K", ignoring case according to JavaScript\'s Unicode rules. Exactly 3 times.',
+    'One of "K", ignoring case (i). Exactly 3 times.',
   );
   assert.equal(toRegExp(repeatedPositive).test("KKk"), true);
 
   const negative = compile("none of: K", { flags: "i" });
-  assert.equal(
-    negative.segments[0].explanation,
-    'One Unicode code point except "K", ignoring case according to JavaScript\'s Unicode rules.',
-  );
+  assert.equal(negative.segments[0].explanation, 'Any character except "K", ignoring case (i).');
   assert.equal(toRegExp(negative).test("K"), false);
 
   const excludedText = compile("start\ntext without: K\nend", { flags: "i" });
-  assert.match(
-    excludedText.segments[1].explanation,
-    /ignoring case according to JavaScript's Unicode rules/u,
-  );
+  assert.match(excludedText.segments[1].explanation, /ignoring case \(i\)/u);
   assert.equal(toRegExp(excludedText).test("k"), false);
 
   const notWord = compile("not word", { flags: "i" });
-  assert.match(
-    notWord.segments[0].explanation,
-    /case-folding equivalents count as word characters/u,
-  );
+  assert.match(notWord.segments[0].explanation, /i treats a few Unicode equivalents as words/u);
   assert.equal(toRegExp(notWord).test("K"), false);
 });
 
