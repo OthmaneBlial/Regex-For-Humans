@@ -1,10 +1,10 @@
 # The Regex For Humans language
 
-This document defines the implemented **version 1 core language**. The browser workshop runs locally from this clone. npm publication and a GitHub release have not yet been verified; use the repository status and release notes to check each distribution surface.
+Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples.
 
-Regex For Humans translates a small, fixed vocabulary into a JavaScript `RegExp`. It does not interpret arbitrary English or infer an expression from examples. Only the short forms below are supported. Write one instruction per nonblank line. `start` or `line start` may share a line with the first instruction. Keywords are case-insensitive; quoted literal content keeps its case. Leading and trailing spaces are ignored.
+Write one rule per line. `start` or `line start` can prefix the first rule. Keywords are case-insensitive; quoted text keeps its case. Leading and trailing spaces are ignored.
 
-Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
+Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 
 ## Instructions
 
@@ -15,7 +15,7 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029 line breaks.
 | `line start` | `^` with `m` | `^A` matches `B\nA` | `^A` does not match `BA` |
 | `line end` | `$` with `m` | `A$` matches `A\nB` | `A$` does not match `AB` |
 | `any character` | `.` | `A` | a newline unless `s` is enabled |
-| `any text` | `.*` | longest text up to the next rule; line breaks with `s` | a line break without `s` |
+| `any text` | `.*` | longest text up to the next rule; `s` includes line breaks | a line break without `s` |
 | `word` | `\w` | `A`, `_`, `3` | `-`, `é` |
 | `not word` | `\W` | `-`, `é` | `A`, `_` |
 | `digit` | `\d` | `3` | `A`, `٣` |

@@ -96,6 +96,9 @@ test("syntax guide is readable without horizontal overflow or detectable WCAG A/
   await page.goto("/web/language.html");
   await expect(page.getByRole("heading", { name: /Say only/ })).toBeVisible();
   await expect(page.getByRole("table")).toHaveCount(2);
+  await expect(page.locator(".guide-table").first()).toContainText(
+    "Longest text up to the next rule. s includes line breaks.",
+  );
   await expect(page.getByRole("link", { name: /Back to the workshop/ }).last()).toHaveAttribute(
     "href",
     "../",
