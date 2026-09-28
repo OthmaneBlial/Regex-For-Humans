@@ -139,7 +139,8 @@ test("unknown and misplaced instructions report a useful location", () => {
       assert.equal(error.code, "UNKNOWN_RULE");
       assert.equal(error.line, 2);
       assert.equal(error.column, 3);
-      assert.match(error.hint, /line start/u);
+      assert.equal(error.message, 'Unsupported rule: "surprise phrase".');
+      assert.equal(error.hint, "Try `line start`, `any text` or `3 digits`.");
       return true;
     },
   );
@@ -153,15 +154,29 @@ test("unknown and misplaced instructions report a useful location", () => {
   ]) {
     assert.throws(() => parse(legacyRule), { code: "UNKNOWN_RULE" }, legacyRule);
   }
-  assert.throws(() => parse("digit\nline start"), { code: "MISPLACED_ANCHOR" });
+  assert.throws(
+    () => parse("digit\nline start"),
+    (error) =>
+      error.code === "MISPLACED_ANCHOR" && error.message === "Start anchor must be the first rule.",
+  );
+  assert.throws(
+    () => parse("digit\nend\ntext"),
+    (error) =>
+      error.code === "MISPLACED_ANCHOR" && error.message === "End anchor must be the last rule.",
+  );
+  assert.throws(
+    () => parse("start\nline end"),
+    (error) =>
+      error.code === "MIXED_ANCHORS" && error.message === "Do not mix input and line anchors.",
+  );
   assert.throws(() => parse(" "), { code: "EMPTY_SOURCE" });
 });
 
 test("duplicate anchors point to the second anchor", () => {
   for (const [rules, line, column, message] of [
-    ["start\nstart\n3 digits", 2, 1, "Only one beginning anchor is allowed."],
-    ["start, start 3 digits", 1, 8, "Only one beginning anchor is allowed."],
-    ["digit\nend\nend", 3, 1, "Only one ending anchor is allowed."],
+    ["start\nstart\n3 digits", 2, 1, "Use only one start anchor."],
+    ["start, start 3 digits", 1, 8, "Use only one start anchor."],
+    ["digit\nend\nend", 3, 1, "Use only one end anchor."],
   ]) {
     assert.throws(
       () => parse(rules),

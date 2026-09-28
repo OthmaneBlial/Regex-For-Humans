@@ -64,11 +64,14 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   const editor = page.getByRole("textbox", { name: "Write your rules" });
   await editor.fill("alphanumeric character");
   await expect(page.locator("#diagnostic")).toContainText(
-    'Unsupported instruction: "alphanumeric character".',
+    'Unsupported rule: "alphanumeric character".',
+  );
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Try `line start`, `any text` or `3 digits`.",
   );
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
   await editor.fill("a digit");
-  await expect(page.locator("#diagnostic")).toContainText('Unsupported instruction: "a digit".');
+  await expect(page.locator("#diagnostic")).toContainText('Unsupported rule: "a digit".');
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
   await editor.fill("digit\n  unsupported words");
   await expect(editor).toHaveAttribute("aria-invalid", "true");
@@ -78,7 +81,7 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.getByRole("button", { name: /Copy regex/ })).toBeDisabled();
   await editor.fill("start\nstart\n3 digits");
   await expect(page.locator("#diagnostic")).toContainText(
-    "Line 2, column 1: Only one beginning anchor is allowed.",
+    "Line 2, column 1: Use only one start anchor.",
   );
   await editor.fill('start "A" extra');
   await expect(page.locator("#diagnostic")).toContainText("Line 1, column 11");

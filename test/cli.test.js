@@ -111,10 +111,10 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   assert.equal(JSON.parse(structured.stderr).error.code, "UNKNOWN_RULE");
   const misleading = run(["-"], "alphanumeric character");
   assert.equal(misleading.status, 1);
-  assert.match(misleading.stderr, /Unsupported instruction: "alphanumeric character"/u);
+  assert.match(misleading.stderr, /Unsupported rule: "alphanumeric character"/u);
   const article = run(["-"], "a digit");
   assert.equal(article.status, 1);
-  assert.match(article.stderr, /Unsupported instruction: "a digit"/u);
+  assert.match(article.stderr, /Unsupported rule: "a digit"/u);
   const malformedQuote = run(["-"], String.raw`"bad\q"`);
   assert.equal(malformedQuote.status, 1);
   assert.match(malformedQuote.stderr, /Line 1, column 5: Invalid JSON escape/u);
