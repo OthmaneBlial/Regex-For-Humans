@@ -37,8 +37,6 @@ const ui = {
 
 /** @type {ProductScenario[]} */
 let scenarios = [];
-/** @type {string | null} */
-let activeScenario = null;
 /** @type {TestCase[]} */
 let testCases = [];
 let nextTestId = 1;
@@ -273,9 +271,16 @@ function compileRules() {
   updateTestResults();
 }
 
+/** @param {string|null} id */
+function setScenarioSelection(id) {
+  for (const button of ui.examples.querySelectorAll("button")) {
+    button.setAttribute("aria-current", String(button.dataset.scenario === id));
+  }
+}
+
 /** @param {ProductScenario} scenario */
 function useScenario(scenario) {
-  activeScenario = scenario.id;
+  setScenarioSelection(scenario.id);
   ui.rules.value = scenario.rules;
   ui.ignoreCase.checked = false;
   ui.dotAll.checked = false;
@@ -284,9 +289,6 @@ function useScenario(scenario) {
     ...scenario.positive.map((text) => ({ id: nextTestId++, text, expected: true })),
     ...scenario.negative.map((text) => ({ id: nextTestId++, text, expected: false })),
   ];
-  for (const button of ui.examples.querySelectorAll("button")) {
-    button.setAttribute("aria-current", String(button.dataset.scenario === activeScenario));
-  }
   const url = new URL(window.location.href);
   url.searchParams.set("example", scenario.id);
   window.history.replaceState(null, "", url);
@@ -310,10 +312,7 @@ function renderScenarioButtons() {
 }
 
 ui.rules.addEventListener("input", () => {
-  activeScenario = scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null;
-  for (const button of ui.examples.querySelectorAll("button")) {
-    button.setAttribute("aria-current", String(button.dataset.scenario === activeScenario));
-  }
+  setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);
   compileRules();
 });
 ui.ignoreCase.addEventListener("change", compileRules);
