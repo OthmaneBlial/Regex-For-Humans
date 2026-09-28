@@ -4,11 +4,11 @@ The package declares Node.js `>=22`. These results passed on 28 September 2026:
 
 | Node version | Verification |
 | --- | --- |
-| 22.x | [GitHub Actions run `36363146419`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36363146419) |
-| 24.x | [GitHub Actions run `36363146419`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36363146419), Linux, macOS and Windows |
+| 22.x | [GitHub Actions run `36364750202`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36364750202) |
+| 24.x | [GitHub Actions run `36364750202`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36364750202), Linux, macOS and Windows |
 | 25.9.0 | Local checks, 61 Node tests, package and strict TypeScript consumer verification; desktop/mobile recipe regression |
 
-These results verify the three versions shown, not every possible Node release accepted by the package's engine range. GitHub Actions [run `36364048707`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36364048707) passed on commit `0fc59d9`: 61 Node tests across Linux Node 22/24, macOS and Windows Node 24, 46 browser tests on Linux Chromium, and `npm audit --audit-level=moderate` on Linux Node 24. Its tested `npm-package-tested` artifact was downloaded; the tarball SHA-256 is `2775eb2ed9eebc08463d12098f7a3eee32c1777f65db8f9e45d5276e15284702`. Disposable draft [PR #1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) confirmed that invalid syntax fails `npm run check` on a real pull-request run, then was closed without merging. The automated accessibility tests do not replace a real screen reader session.
+These results verify the three versions shown, not every possible Node release accepted by the package's engine range. GitHub Actions [run `36364750202`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36364750202) passed on commit `bcc732c`: 61 Node tests across Linux Node 22/24, macOS and Windows Node 24, 46 browser tests on Linux Chromium, and `npm audit --audit-level=moderate` on Linux Node 24. Its tested `npm-package-tested` artifact was downloaded; the tarball SHA-256 is `b3319a3f61ec03af27317b5b2ceb7e89a26dfbc6574690966b37f5c2fc82366f`. Disposable draft [PR #1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) confirmed that invalid syntax fails `npm run check` on a real pull-request run, then was closed without merging. The automated accessibility tests do not replace a real screen reader session.
 
 ## Reproduce locally
 
