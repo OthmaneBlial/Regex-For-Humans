@@ -8,7 +8,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 
 - [x] 0.1 Contrat du langage et vocabulaire — `docs/LANGUAGE.md`, 4 scénarios vérifiés avec `RegExp` sous Node 25.9.0
 - [x] 0.2 Scénarios d'adoption et mesures — 4 fixtures rejouées en bibliothèque, CLI et navigateur ; cible de premier succès définie (mesure humaine suivie en 2.4)
-- [x] 1.1 Installation, API et CLI — tarball installé dans un dossier vierge ; aide, fichier, stdin, erreur, import et CLI vérifiés sous Node 25.9.0
+- [x] 1.1 Installation, API et CLI — tarball installé dans un dossier vierge ; aide, fichier, stdin, erreur, import, CLI et déclarations TypeScript vérifiés sous Node 25.9.0
 - [x] 1.2 Parseur déterministe et diagnostics — AST, erreurs ligne/colonne, phrases inconnues rejetées ; tests parseur et CLI verts
 - [x] 1.3 Sémantique et échappement — 4 fixtures positives/négatives, régressions et caractères spéciaux vérifiés ; tarball installé proprement
 - [ ] 2.1 Explications traçables — implémentées et testées localement ; revue des 4 scénarios par une personne extérieure encore requise

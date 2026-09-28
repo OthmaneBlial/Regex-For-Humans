@@ -18,8 +18,13 @@
   },
   "homepage": "https://othmaneblial.github.io/Regex-For-Humans/",
   "type": "module",
+  "types": "./index.d.ts",
   "exports": {
-    ".": "./index.js"
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
   },
   "bin": {
     "regex-for-humans": "./bin/regex-for-humans.js"
@@ -39,6 +44,7 @@
   },
   "files": [
     "index.js",
+    "index.d.ts",
     "src/",
     "bin/",
     "docs/",

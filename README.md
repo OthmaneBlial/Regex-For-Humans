@@ -70,6 +70,8 @@ This compiles to `^\d{4}-\d{2}-\d{2}$`. It checks the YYYY-MM-DD shape; it does 
 
 ## Use it from JavaScript
 
+The package includes TypeScript declarations.
+
 ```js
 import { compile, toRegExp } from './index.js';
 

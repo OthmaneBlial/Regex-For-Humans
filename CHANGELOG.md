@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added TypeScript declarations and a strict consumer check.
 - Counts before anchors now report a specific error at the anchor.
 - Errors after a count now point past the count.
 - Editing rules clears the selected recipe highlight.

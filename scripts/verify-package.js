@@ -72,6 +72,36 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
 `,
   );
   run([smoke], { cwd: consumer });
+  const typeSmoke = join(consumer, "type-smoke.mts");
+  writeFileSync(
+    typeSmoke,
+    `import { CompileError, compile, regexMatchingThroughLines, toRegExp } from "regex-for-humans";
+import type { CompileResult, RegexSegment } from "regex-for-humans";
+const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
+const regex: RegExp = toRegExp(result);
+const segment: RegexSegment = result.segments[0];
+const source: string = regexMatchingThroughLines("digits");
+const line: number = new CompileError("UNKNOWN_RULE", "Invalid rule", { line: 1, column: 1 }).toJSON().line;
+// @ts-expect-error rules must be a string
+compile(3);
+// @ts-expect-error flags must be a string
+compile("digits", { flags: 3 });
+void [regex, segment, source, line];
+`,
+  );
+  run(
+    [
+      join(root, "node_modules", "typescript", "bin", "tsc"),
+      "--strict",
+      "--noEmit",
+      "--module",
+      "NodeNext",
+      "--moduleResolution",
+      "NodeNext",
+      typeSmoke,
+    ],
+    { cwd: consumer },
+  );
   const bin = join(installed, "bin", "regex-for-humans.js");
   const version = run([bin, "--version"], { cwd: consumer });
   if (version !== manifest.version) throw new Error("Installed CLI reported a different version.");
