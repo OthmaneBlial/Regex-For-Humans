@@ -92,9 +92,10 @@ async function main() {
     /** @type {string[]} */
     const chunks = [];
     let length = 0;
-    stream.setEncoding("utf8");
+    // Keep a leading BOM in source positions while rejecting malformed UTF-8.
+    const decoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
     for await (const chunk of stream) {
-      const text = String(chunk);
+      const text = decoder.decode(chunk, { stream: true });
       length += text.length;
       if (length > LIMITS.sourceLength) {
         stream.destroy();
@@ -102,6 +103,7 @@ async function main() {
       }
       chunks.push(text);
     }
+    decoder.decode();
     return chunks.join("");
   }
 

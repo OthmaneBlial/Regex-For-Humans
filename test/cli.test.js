@@ -69,6 +69,38 @@ test("CLI keeps file read failures as JSON in machine mode", () => {
   }
 });
 
+test("CLI rejects malformed UTF-8 in stdin and files instead of replacing bytes", () => {
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  const path = join(directory, "rules.txt");
+  const inputs = [
+    ...[[0x80], [0xc0, 0xaf], [0xed, 0xa0, 0x80], [0xf4, 0x90, 0x80, 0x80]].map((bytes) =>
+      Buffer.concat([Buffer.from('start\n"'), Buffer.from(bytes), Buffer.from('"\nend')]),
+    ),
+    Buffer.concat([Buffer.from('"'), Buffer.from([0xe2, 0x82])]),
+  ];
+  try {
+    for (const input of inputs) {
+      writeFileSync(path, input);
+      for (const file of ["-", path]) {
+        const result = run(["--json", file], file === "-" ? input : undefined);
+        assert.equal(result.status, 1);
+        assert.equal(result.stdout, "");
+        const error = JSON.parse(result.stderr).error;
+        assert.equal(error.code, "CLI_ERROR");
+        assert.match(error.message, /utf-8/iu);
+      }
+    }
+    const valid = run(["--json", "-"], '\ufeffstart "\ufffd"\nend');
+    assert.equal(valid.status, 0, valid.stderr);
+    const compiled = JSON.parse(valid.stdout);
+    assert.equal(compiled.source, "^\ufffd$");
+    assert.equal(compiled.segments[0].column, 2);
+  } finally {
+    unlinkSync(path);
+    rmdirSync(directory);
+  }
+});
+
 test("CLI accepts a leading-dash filename after --", () => {
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
   try {
