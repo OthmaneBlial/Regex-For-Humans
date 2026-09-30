@@ -7,6 +7,23 @@ const scenarios = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("phone-shape permits one optional plus and inclusive ASCII digit counts", () => {
+  const scenario = scenarios.find(({ id }) => id === "phone-shape");
+  assert.ok(scenario);
+  const result = compile(scenario.rules);
+  assert.equal(result.source, "^\\+{0,1}\\d{7,15}$");
+  assert.deepEqual(result.segments[1].repetition, { kind: "range", min: 0, max: 1 });
+  assert.ok(scenario.positive.includes("0000000"));
+  assert.match(scenario.note, /check country rules and number validity separately/i);
+  const regex = toRegExp(result);
+  for (let count = 0; count <= 16; count += 1) {
+    for (const prefix of ["", "+", "++"]) {
+      const text = prefix + "1".repeat(count);
+      assert.equal(regex.test(text), prefix !== "++" && count >= 7 && count <= 15, text);
+    }
+  }
+});
+
 test("time-shape keeps formatting separate from clock-value validation", () => {
   const scenario = scenarios.find(({ id }) => id === "time-shape");
   assert.ok(scenario, "The shared recipes must include the HH:MM shape.");

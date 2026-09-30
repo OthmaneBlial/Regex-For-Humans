@@ -408,7 +408,7 @@ test("the initial hex demo still works when extra recipes cannot load", async ({
   await expect(page.locator("#demo-open")).toHaveAttribute("href", "./workshop/?example=hex-color");
 });
 
-test("recipe cards cover every shared recipe and open invoice, username and time shapes", async ({
+test("recipe cards cover every shared recipe and open invoice, username, time and phone shapes", async ({
   page,
 }) => {
   await page.goto("/");
@@ -418,7 +418,7 @@ test("recipe cards cover every shared recipe and open invoice, username and time
   expect(ids.sort()).toEqual(recipes.map((recipe) => recipe.id).sort());
   await expect(page.locator(".syntax-list")).toContainText("between 2 and 6 digits");
   await expect(page.locator(".syntax-list")).toContainText("letters");
-  for (const id of ["invoice-number", "username-shape", "time-shape"]) {
+  for (const id of ["invoice-number", "username-shape", "time-shape", "phone-shape"]) {
     if (id !== "invoice-number") await page.goto("/");
     const recipe = recipes.find((item) => item.id === id);
     await page.locator(`.recipe-card[href*="${id}"]`).click();

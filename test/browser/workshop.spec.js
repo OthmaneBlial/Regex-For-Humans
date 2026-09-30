@@ -20,6 +20,46 @@ async function openBeforeWorkshopAppLoads(page) {
   return release;
 }
 
+test("phone shape teaches an optional plus and supports requiring it", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async (text) => {
+          window.copiedPattern = text;
+        },
+      },
+    });
+  });
+  await page.goto("/?example=phone-shape");
+  const editor = page.locator("#rules-input");
+  const rules = 'start\nbetween 0 and 1 "+"\nbetween 7 and 15 digits\nend';
+  await expect(editor).toHaveValue(rules);
+  await expect(page.locator("#recipe-note")).toContainText(
+    "check country rules and number validity separately",
+  );
+  await expect(page.locator("#trace-list")).toContainText(
+    'Literal text "+". Between 0 and 1 times (inclusive).',
+  );
+  await expect(page.locator("#test-summary")).toHaveText("17 of 17 examples behave as expected");
+  await editor.fill(rules.replace("between 0 and 1", "between 1 and 1"));
+  await expect(page.locator("#recipe-note")).toBeHidden();
+  await expect(page.locator("#regex-output")).toHaveText("/^\\+{1,1}\\d{7,15}$/u");
+  await expect(page.locator("#test-summary")).toHaveText("15 of 17 examples behave as expected");
+  for (const index of [1, 3]) {
+    await page.locator("#test-list select").nth(index).selectOption("false");
+  }
+  await expect(page.locator("#test-summary")).toHaveText("17 of 17 examples behave as expected");
+  await page.locator("#copy-button").click();
+  await expect(page.locator("#copy-button")).toContainText("Copied");
+  expect(await page.evaluate(() => window.copiedPattern)).toBe("/^\\+{1,1}\\d{7,15}$/u");
+  await page.locator('[data-scenario="phone-shape"]').click();
+  await expect(editor).toHaveValue(rules);
+  await expect(page.locator("#recipe-note")).toBeVisible();
+  await expect(page.locator("#regex-output")).toHaveText("/^\\+{0,1}\\d{7,15}$/u");
+  await expect(page.locator("#test-summary")).toHaveText("17 of 17 examples behave as expected");
+});
+
 for (const scenario of scenarios) {
   test(`${scenario.id} loads the same pattern and preserves every sample`, async ({ page }) => {
     const browserErrors = [];
@@ -209,6 +249,7 @@ test("unsupported quote styles explain the required delimiters and recover after
 
 test("editing rules reports errors without stale output and recovers", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
   const editor = page.getByRole("textbox", { name: "Write your rules" });
   await editor.fill("alphanumeric character");
   await expect(page.locator("#diagnostic")).toContainText(

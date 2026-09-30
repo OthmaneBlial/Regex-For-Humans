@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a phone-number shape recipe teaching an optional plus and 7–15 ASCII digits, with explicit limits on what matching proves.
+
 - Preserve each example field's native resized height when adding or removing other examples; fresh examples and recipes use their default heights.
 
 - Allow native rule-editor enlargement by retaining its requested height in the flex layout, including after edits and recipe changes.

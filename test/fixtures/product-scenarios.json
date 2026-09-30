@@ -118,5 +118,30 @@
       "٠٩:٣٠",
       " 09:30"
     ]
+  },
+  {
+    "id": "phone-shape",
+    "title": "Match a phone-number shape",
+    "note": "Optional + followed by 7–15 ASCII digits, without spaces or punctuation. Leading zeros are allowed. This is only a shape; check country rules and number validity separately.",
+    "rules": "start\nbetween 0 and 1 \"+\"\nbetween 7 and 15 digits\nend",
+    "source": "^\\+{0,1}\\d{7,15}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["+33123456789", "1234567", "+123456789012345", "0000000"],
+    "negative": [
+      "",
+      "+",
+      "123456",
+      "+123456",
+      "1234567890123456",
+      "+1234567890123456",
+      "++1234567",
+      "33 123456789",
+      "+33-123456789",
+      "(123)4567",
+      "١٢٣٤٥٦٧",
+      "+1234567\n",
+      "1234567+"
+    ]
   }
 ]

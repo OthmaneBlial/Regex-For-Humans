@@ -26,7 +26,9 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 
 9. **Match a time shape.** Rules: `start` / `2 digits` / `":"` / `2 digits` / `end`. Expected source `^\d{2}:\d{2}$`, flags `u`. Positive: `09:30`, `00:00`, `23:59`, `25:99` (out-of-range clock values still match). Negative: `9:30`, `09:3`, `009:30`, `09:30:00`, `9h30`, `09-30`, a time followed by a newline, Arabic-Indic digits and a leading space. This teaches exact ASCII digit counts with a literal colon. It checks the `HH:MM` shape; validate hour and minute ranges separately.
 
-The recipes use compact syntax for prefixes, exclusions, line matching, fixed date and time shapes, variable-length version components, an exact hexadecimal character count, an inclusive digit range and an alphabetic username prefix.
+10. **Match a phone-number shape.** Rules: `start` / `between 0 and 1 "+"` / `between 7 and 15 digits` / `end`. Expected source `^\+{0,1}\d{7,15}$`, flags `u`. An optional plus is followed by 7–15 ASCII digits. Positive examples include `+33123456789`, seven unprefixed digits, fifteen prefixed digits and `0000000`. Negative examples cover six or sixteen digits, duplicate or trailing plus signs, spaces, hyphens, parentheses, localized digits and a final newline. This teaches a zero lower bound for an optional literal. Leading zeros are allowed; country rules, allocation and number validity require separate checks.
+
+The recipes use compact syntax for prefixes, exclusions, line matching, fixed date and time shapes, variable-length version components, an exact hexadecimal character count, an inclusive digit range, an alphabetic username prefix and an optional phone prefix.
 
 Each fixture includes a short note about its meaning and limits. The workshop shows that note beside the selected rules, includes it in the editor's accessible description, and hides it when manual rules differ from the recipe. The homepage demo uses the same note.
 
