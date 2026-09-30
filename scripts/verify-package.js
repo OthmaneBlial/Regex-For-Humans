@@ -148,6 +148,20 @@ void [regex, segment, source, line, max];
       "Installed CLI did not expose direction controls or preserve original rule text.",
     );
   }
+  const controlText = `A${String.fromCodePoint(0, 0x1b, 0x7f, 0x9b, 0x9d, 0x2028, 0x2029)}B`;
+  const controlRules = JSON.stringify(controlText);
+  const controlOutput = run([...cliArgs, "--json", "-"], {
+    cwd: consumer,
+    input: controlRules,
+  });
+  const controlCli = JSON.parse(controlOutput);
+  if (
+    /[\p{Control}\u2028\u2029]/u.test(controlOutput) ||
+    controlCli.segments[0].text !== controlRules ||
+    !new RegExp(controlCli.source, controlCli.flags).test(controlText)
+  ) {
+    throw new Error("Installed CLI did not expose terminal controls or preserve matching data.");
+  }
   process.stdout.write(
     `Verified ${packageInfo.filename} (${packageInfo.size} bytes) in a clean consumer.\n`,
   );

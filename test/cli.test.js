@@ -117,6 +117,78 @@ test("CLI displays direction controls in diagnostics without changing decoded pa
   }
 });
 
+test("CLI exposes terminal controls in errors while preserving decoded arguments and paths", () => {
+  // NUL cannot be passed as an operating-system argument or filename.
+  const points = [
+    ...Array.from({ length: 31 }, (_, index) => index + 1),
+    ...Array.from({ length: 33 }, (_, index) => index + 0x7f),
+    0x2028,
+    0x2029,
+  ];
+  const controls = String.fromCodePoint(...points);
+  const escaped = points.map((point) => `\\u${point.toString(16).padStart(4, "0")}`).join("");
+  const option = `--unknown${controls}🧠\\tail"`;
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  try {
+    const filename = join(directory, `missing${controls}🧠.txt`);
+    for (const json of [false, true]) {
+      const usage = run(json ? ["--json", option] : [option], "");
+      assert.equal(usage.status, 2);
+      assert.equal(usage.stdout, "");
+      assert.equal(/[\p{Control}\u2028\u2029]/u.test(usage.stderr.replaceAll("\n", "")), false);
+      if (json) {
+        assert.equal(JSON.parse(usage.stderr).error.message === `Unknown option: ${option}`, true);
+      } else {
+        assert.ok(usage.stderr.startsWith(`Unknown option: --unknown${escaped}🧠\\tail"\nUsage:`));
+      }
+      const file = run(json ? ["--json", filename] : [filename], "");
+      assert.equal(file.status, 1);
+      assert.equal(file.stdout, "");
+      assert.equal(/[\p{Control}\u2028\u2029]/u.test(file.stderr.replaceAll("\n", "")), false);
+      if (json) {
+        assert.equal(JSON.parse(file.stderr).error.message.includes(filename), true);
+      } else {
+        assert.equal(file.stderr.includes(`missing${escaped}🧠.txt`), true);
+        assert.equal(file.stderr.split("\n").length, 2);
+      }
+    }
+  } finally {
+    rmdirSync(directory);
+  }
+});
+
+test("CLI exposes terminal controls in regexes and explanations without changing matching or JSON data", () => {
+  const points = [
+    ...Array.from({ length: 32 }, (_, index) => index),
+    ...Array.from({ length: 33 }, (_, index) => index + 0x7f),
+    0x2028,
+    0x2029,
+  ];
+  const text = `A${String.fromCodePoint(...points)}🧠B`;
+  const rule = JSON.stringify(text);
+  const rules = `start\n${rule}\nend`;
+  for (const args of [["-"], ["--explain", "-"], ["--json", "-"]]) {
+    const result = run(args, rules);
+    assert.equal(result.status, 0);
+    assert.equal(result.stderr, "");
+    assert.equal(/[\p{Control}\u2028\u2029]/u.test(result.stdout.replaceAll("\n", "")), false);
+    let regex;
+    if (args.includes("--json")) {
+      const decoded = JSON.parse(result.stdout);
+      assert.equal(decoded.segments[1].text === rule, true);
+      assert.equal(decoded.source.includes(String.fromCodePoint(0x9b)), true);
+      regex = new RegExp(decoded.source, decoded.flags);
+    } else {
+      const literal = result.stdout.split("\n")[0];
+      const delimiter = literal.lastIndexOf("/");
+      regex = new RegExp(literal.slice(1, delimiter), literal.slice(delimiter + 1));
+      assert.ok(literal.includes(String.raw`\u009b`));
+    }
+    assert.equal(regex.test(text), true);
+    assert.equal(regex.test("A🧠B"), false);
+  }
+});
+
 test("CLI keeps file read failures as JSON in machine mode", () => {
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
   try {
@@ -436,6 +508,12 @@ test("CLI flushes large diagnostics before exiting", () => {
   assert.deepEqual(JSON.parse(usage.stderr), {
     error: { code: "CLI_USAGE", message: `Unknown option: ${option}` },
   });
+  const plainUsage = run([option], "");
+  assert.equal(plainUsage.status, 2);
+  assert.equal(plainUsage.stdout, "");
+  const visibleOption = `--${String.raw`\u0001`.repeat(16_000)}`;
+  assert.ok(plainUsage.stderr.startsWith(`Unknown option: ${visibleOption}\nUsage:`));
+  assert.equal(/\p{Control}/u.test(plainUsage.stderr.replaceAll("\n", "")), false);
 });
 
 test("CLI enforces the source limit while reading stdin and files", () => {

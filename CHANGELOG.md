@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Escape terminal control characters and Unicode line separators in CLI results, explanations and errors while preserving matching, JSON data and diagnostic formatting.
+
 - Show Unicode direction controls as visible escapes in generated regexes, explanations, diagnostics, trace text, CLI output and match feedback while preserving matching and original rule data.
 
 - Show example count and length limits, including input truncation, and describe them for every example field.

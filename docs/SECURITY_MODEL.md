@@ -6,6 +6,8 @@ The version 1 parser accepts only the phrases in [LANGUAGE.md](LANGUAGE.md). It 
 
 Unicode direction controls appear as visible escapes in generated source and human-readable results, reducing misleading [visual ordering](https://blog.unicode.org/2022/03/avoiding-source-code-spoofing.html). This presentation does not remove them from matching data: source-text metadata and editable examples retain their original contents, and CLI JSON preserves the data round trip.
 
+The CLI also escapes C0/C1 control characters, DEL and Unicode line separators in rule output, arguments and native file errors. Its own formatting line breaks remain intact. This keeps data controls out of terminal output while preserving matching and decoded JSON values.
+
 Both bounds of `between n and m <item>` obey the numeric ceiling, with `0 ≤ n ≤ m`. Adjacent repeated atoms can still cause expensive backtracking, including when each repetition has a finite upper bound. Browser tests cover this with a compiler-generated bounded expression as well as an intentionally pathological raw expression; neither result guarantees that a copied regex is safe on arbitrary input.
 
 The browser allows compiled regex sources up to 131,072 UTF-16 code units. This covers the largest escaping expansion from the 16,384-code-unit rule limit: a literal U+2028 or U+2029 becomes an eight-code-unit Unicode escape. Each example is limited to 2,048 UTF-16 code units, with no more than 100 examples per run. The worker rejects larger or malformed requests. These limits are product constraints, not a guarantee that every generated expression is fast in every other runtime or on every input size. Users should test the expression in the runtime where they intend to use it.

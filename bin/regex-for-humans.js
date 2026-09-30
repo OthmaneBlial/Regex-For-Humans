@@ -22,6 +22,14 @@ Options:
   --version      Show the package version
 `;
 
+/** Expose data controls without changing the CLI's own line breaks. @param {string} text */
+function terminalText(text) {
+  return escapeDirectionControls(text).replace(
+    /[\p{Control}\u2028\u2029]/gu,
+    (character) => `\\u${character.charCodeAt(0).toString(16).padStart(4, "0")}`,
+  );
+}
+
 async function main() {
   const args = process.argv.slice(2);
   let json = false;
@@ -49,13 +57,13 @@ async function main() {
               code: "CLI_ERROR",
               message: error instanceof Error ? error.message : String(error),
             };
-      stderr.write(`${escapeDirectionControls(JSON.stringify({ error: detail }))}\n`);
+      stderr.write(`${terminalText(JSON.stringify({ error: detail }))}\n`);
     } else if (error instanceof CompileError) {
       stderr.write(
-        `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}\n`,
+        `Line ${error.line}, column ${error.column}: ${terminalText(error.message)}${error.hint ? `\n${terminalText(error.hint)}` : ""}\n`,
       );
     } else {
-      stderr.write(`${escapeDirectionControls(String(error))}\n`);
+      stderr.write(`${terminalText(String(error))}\n`);
     }
   }
 
@@ -68,10 +76,8 @@ async function main() {
   /** @param {string} message */
   function usageError(message) {
     if (json)
-      stderr.write(
-        `${escapeDirectionControls(JSON.stringify({ error: { code: "CLI_USAGE", message } }))}\n`,
-      );
-    else stderr.write(`${escapeDirectionControls(message)}\n${usage}`);
+      stderr.write(`${terminalText(JSON.stringify({ error: { code: "CLI_USAGE", message } }))}\n`);
+    else stderr.write(`${terminalText(message)}\n${usage}`);
     process.exitCode = 2;
   }
 
@@ -144,13 +150,13 @@ async function main() {
     );
     const result = compile(input, { flags });
     if (json) {
-      stdout.write(`${escapeDirectionControls(JSON.stringify(result))}\n`);
+      stdout.write(`${terminalText(JSON.stringify(result))}\n`);
     } else {
-      stdout.write(`/${result.source}/${result.flags}\n`);
+      stdout.write(`/${terminalText(result.source)}/${result.flags}\n`);
       if (explain) {
         for (const segment of result.segments) {
           stdout.write(
-            `${segment.line}:${segment.column}  ${segment.source}  ${segment.explanation}\n`,
+            `${segment.line}:${segment.column}  ${terminalText(segment.source)}  ${terminalText(segment.explanation)}\n`,
           );
         }
       }
