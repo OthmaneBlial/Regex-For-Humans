@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Include each example's current match feedback in its accessible description, alongside input limits, including after edits, rule repairs and row changes.
+
 - Add a phone-number shape recipe teaching an optional plus and 7–15 ASCII digits, with explicit limits on what matching proves.
 
 - Preserve each example field's native resized height when adding or removing other examples; fresh examples and recipes use their default heights.

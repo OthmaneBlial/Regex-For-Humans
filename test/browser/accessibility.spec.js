@@ -519,12 +519,44 @@ test("example length limits are visible and described for loaded, added and renu
       await page.getByRole("button", { name: "Remove example 2", exact: true }).press("Enter");
     const fields = page.locator("#test-list textarea");
     await expect(fields).toHaveCount(count);
+    await expect(page.locator('#test-list .test-row[data-result="pending"]')).toHaveCount(0);
     for (let index = 0; index < count; index += 1) {
-      await expect(fields.nth(index)).toHaveAccessibleDescription(limits);
+      const feedback = await page.locator("#test-list .test-result").nth(index).textContent();
+      await expect(fields.nth(index)).toHaveAccessibleDescription(`${limits} ${feedback}`);
       await expect(fields.nth(index)).toHaveJSProperty("maxLength", -1);
       await expect(fields.nth(index)).toHaveAttribute("aria-invalid", "false");
     }
   }
+});
+
+test("example descriptions follow matching results and rule repairs", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const limits = await page.locator("#example-limits").textContent();
+  const field = page.locator("#test-list textarea").first();
+  await expect(field).toHaveAccessibleDescription(`${limits} ✓ Matched "ABC123" at 0`);
+  await field.fill("ABC12");
+  await expect(field).toHaveAccessibleDescription(`${limits} ! No match`);
+  await page.locator("#test-list select").first().selectOption("false");
+  await expect(field).toHaveAccessibleDescription(`${limits} ✓ No match`);
+  const editor = page.locator("#rules-input");
+  await editor.fill('"ABC"');
+  await expect(field).toHaveAccessibleDescription(`${limits} ✓ Found "ABC", not the entire string`);
+  await page.locator("#match-mode").selectOption("search");
+  await expect(field).toHaveAccessibleDescription(`${limits} ! Matched "ABC" at 0`);
+  await editor.fill("unsupported words");
+  await expect(field).toHaveAccessibleDescription(`${limits} Fix the rules to run this example`);
+  await editor.fill("");
+  await expect(field).toHaveAccessibleDescription(`${limits} Write rules to run this example`);
+  await page.locator('[data-scenario="excluded-characters"]').click();
+  await expect(field).toHaveAccessibleDescription(`${limits} ✓ Matched "xyz" at 0`);
+  await page.getByRole("button", { name: "Remove example 1", exact: true }).click();
+  await expect(field).toHaveAccessibleName("Example 1 string");
+  await expect(field).toHaveAccessibleDescription(`${limits} ✓ Matched "" at 0`);
+  await page.locator("#add-example").click();
+  await expect(page.locator("#test-list textarea").last()).toHaveAccessibleDescription(
+    `${limits} ✓ Matched "" at 0`,
+  );
 });
 
 test("removing examples keeps keyboard focus in the example controls", async ({ page }) => {

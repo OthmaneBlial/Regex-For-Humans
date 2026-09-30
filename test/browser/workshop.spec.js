@@ -816,7 +816,7 @@ test("oversized examples stay intact and stop testing until repaired or removed"
   await last.fill("🧠".repeat(1024));
   await expect(last).toHaveValue("🧠".repeat(1024));
   await expect(last).toHaveAttribute("aria-invalid", "false");
-  await expect(last).toHaveAccessibleDescription(limits);
+  await expect(last).toHaveAccessibleDescription(`${limits} ! No match`);
   await expect(page.locator("#test-list .test-result").last()).toHaveText("! No match");
   expect(await page.evaluate(() => window.testRequests)).toBeGreaterThan(beforeEmoji);
   await last.fill(valid);

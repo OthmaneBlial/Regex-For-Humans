@@ -195,10 +195,6 @@ async function updateTestResults() {
   rows.forEach((row, index) => {
     const input = row.querySelector("textarea");
     input?.setAttribute("aria-invalid", String(tooLong[index]));
-    input?.setAttribute(
-      "aria-describedby",
-      tooLong[index] ? `example-limits example-result-${testCases[index].id}` : "example-limits",
-    );
   });
   if (tooLong.includes(true)) {
     testRunner.cancel();
@@ -290,7 +286,7 @@ function renderTests() {
     input.style.height = heights.get(`example-result-${sample.id}`) ?? "";
     input.placeholder = "Empty string";
     input.setAttribute("aria-label", `Example ${number} string`);
-    input.setAttribute("aria-describedby", "example-limits");
+    input.setAttribute("aria-describedby", `example-limits example-result-${sample.id}`);
     input.addEventListener("input", () => {
       sample.text = input.value;
       input.rows = sample.text.split("\n", 3).length;
