@@ -123,7 +123,7 @@
     "id": "phone-shape",
     "title": "Match a phone-number shape",
     "note": "Optional + followed by 7–15 ASCII digits, without spaces or punctuation. Leading zeros are allowed. This is only a shape; check country rules and number validity separately.",
-    "rules": "start\nbetween 0 and 1 \"+\"\nbetween 7 and 15 digits\nend",
+    "rules": "start\noptional \"+\"\nbetween 7 and 15 digits\nend",
     "source": "^\\+{0,1}\\d{7,15}$",
     "flags": "u",
     "matchMode": "full",

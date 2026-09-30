@@ -369,7 +369,9 @@ test("empty literals explain how to match empty input and recover", async ({ pag
   await expect(page.locator("#test-list .test-result").first()).toHaveText("! No match");
 });
 
-test("phone shape teaches an optional plus and supports requiring it", async ({ page }) => {
+test("phone shape teaches the optional modifier and supports requiring its literal", async ({
+  page,
+}) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
@@ -382,18 +384,16 @@ test("phone shape teaches an optional plus and supports requiring it", async ({ 
   });
   await page.goto("/?example=phone-shape");
   const editor = page.locator("#rules-input");
-  const rules = 'start\nbetween 0 and 1 "+"\nbetween 7 and 15 digits\nend';
+  const rules = 'start\noptional "+"\nbetween 7 and 15 digits\nend';
   await expect(editor).toHaveValue(rules);
   await expect(page.locator("#recipe-note")).toContainText(
     "check country rules and number validity separately",
   );
-  await expect(page.locator("#trace-list")).toContainText(
-    'Literal text "+". Between 0 and 1 times (inclusive).',
-  );
+  await expect(page.locator("#trace-list")).toContainText('Literal text "+". Optional.');
   await expect(page.locator("#test-summary")).toHaveText("17 of 17 examples behave as expected");
-  await editor.fill(rules.replace("between 0 and 1", "between 1 and 1"));
+  await editor.fill(rules.replace('optional "+"\n', '"+"\n'));
   await expect(page.locator("#recipe-note")).toBeHidden();
-  await expect(page.locator("#regex-output")).toHaveText("/^\\+{1,1}\\d{7,15}$/u");
+  await expect(page.locator("#regex-output")).toHaveText("/^\\+\\d{7,15}$/u");
   await expect(page.locator("#test-summary")).toHaveText("15 of 17 examples behave as expected");
   for (const index of [1, 3]) {
     await page.locator("#test-list select").nth(index).selectOption("false");
@@ -401,7 +401,7 @@ test("phone shape teaches an optional plus and supports requiring it", async ({ 
   await expect(page.locator("#test-summary")).toHaveText("17 of 17 examples behave as expected");
   await page.locator("#copy-button").click();
   await expect(page.locator("#copy-button")).toContainText("Copied");
-  expect(await page.evaluate(() => window.copiedPattern)).toBe("/^\\+{1,1}\\d{7,15}$/u");
+  expect(await page.evaluate(() => window.copiedPattern)).toBe("/^\\+\\d{7,15}$/u");
   await page.locator('[data-scenario="phone-shape"]').click();
   await expect(editor).toHaveValue(rules);
   await expect(page.locator("#recipe-note")).toBeVisible();
@@ -626,10 +626,10 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   );
   await editor.fill("3 start");
   await expect(page.locator("#diagnostic")).toContainText(
-    "Line 1, column 3: Counts apply to items, not anchors.",
+    "Line 1, column 3: Repetition modifiers apply to items, not anchors.",
   );
   await expect(page.locator("#diagnostic")).toContainText(
-    "Remove the count or apply it to an item, such as `3 digits`.",
+    'Remove the modifier or apply it to an item, such as `3 digits` or `optional "-"`.',
   );
   await editor.fill('start "A" extra');
   await expect(page.locator("#diagnostic")).toContainText("Line 1, column 11");

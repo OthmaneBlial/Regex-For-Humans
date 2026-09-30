@@ -63,16 +63,17 @@ C0/C1 control characters, DEL and Unicode line separators are also displayed as 
 
 ## Repetition
 
-A count or range applies to the next item. Put it first (`3 digits` or `between 2 and 4 digits`). The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters` and `spaces` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another count or range. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters. Other repetition wording, such as `at least 3 times`, is not supported.
+A count, range or `optional` modifier applies to the next item. Put it first (`3 digits`, `between 2 and 4 digits` or `optional "-"`). `optional <item>` is the same as `between 0 and 1 <item>` and generates `{0,1}`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters` and `spaces` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another count, range or optional modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters. Other repetition wording, such as `at least 3 times`, is not supported.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |
 | `3 <item>` (for example, `3 digits`) | `A{3}` | `AAA` | `AA` |
 | `between 2 and 4 <item>` (for example, `between 2 and 4 digits`) | `A{2,4}` | `AA`, `AAA`, `AAAA` | `A`, `AAAAA` with `start` and `end` |
+| `optional <item>` (for example, `optional "-"`) | `A{0,1}` | no item or one item | two items |
 
-Numeric counts are nonnegative integers no greater than 1,000, including both bounds of a range. Bounds are inclusive, and the upper count must be at least the lower count. Zero and equal bounds are valid: `between 0 and 1 "-"` allows an optional hyphen, and `between 3 and 3 digits` matches exactly three digits. Anchors cannot have a count or range: `3 start` reports an error at `start`.
+Numeric counts are nonnegative integers no greater than 1,000, including both bounds of a range. Bounds are inclusive, and the upper count must be at least the lower count. Zero and equal bounds are valid: `between 0 and 1 "-"` and `optional "-"` both allow an optional hyphen, and `between 3 and 3 digits` matches exactly three digits. Anchors cannot be repeated: `3 start` and `optional start` report an error at `start`.
 
-Write counts with ASCII digits `0`–`9`; leading zeros are allowed. Signs, fractions, scientific notation, hexadecimal notation, numeric separators and localized digits are unsupported count formats. Numeric-looking tokens such as `-1`, `1.5`, `1e2` or `٣` report `INVALID_REPETITION` at that token in both exact and bounded forms. A count without an item, such as `3` or `start 3`, reports the same code with a repair hint. A second count token reports `DUPLICATE_REPETITION` at the second token. Quoted literals and character-list items can still contain these characters as data.
+Write counts with ASCII digits `0`–`9`; leading zeros are allowed. Signs, fractions, scientific notation, hexadecimal notation, numeric separators and localized digits are unsupported count formats. Numeric-looking tokens such as `-1`, `1.5`, `1e2` or `٣` report `INVALID_REPETITION` at that token in both exact and bounded forms. A count or `optional` without an item reports the same code with a repair hint. Combining counts, ranges and `optional` reports `DUPLICATE_REPETITION` at the second modifier. Quoted literals and character-list items can still contain these characters as data.
 
 Ranges are greedy: they try the largest count first and may use a smaller count to satisfy following rules. Without anchors, `between 2 and 4 digits` can match part of `12345`; use `start` and `end` to validate the whole string. `between 2 and 4 "AB"` generates `(?:AB){2,4}`, repeating the entire literal.
 
@@ -80,7 +81,7 @@ In the workshop, **Entire string** mode checks whether the pattern can cover the
 
 The public segment metadata for a bounded instruction has `repetition: { kind: "range", min: 2, max: 4 }`. Code that switches on `repetition.kind` should handle this new variant. Existing instructions keep their original metadata and matching behavior.
 
-Malformed range syntax or non-integer bounds report `INVALID_REPETITION`. Reversed bounds report `INVALID_RANGE` at the upper count, and a bound above 1,000 reports `REPETITION_LIMIT` at that count.
+Malformed range syntax, a missing optional item or non-integer bounds report `INVALID_REPETITION`. Reversed bounds report `INVALID_RANGE` at the upper count, and a bound above 1,000 reports `REPETITION_LIMIT` at that count.
 
 ## Anchors and flags
 

@@ -256,6 +256,26 @@ test("bounded counts include zero, equal endpoints and the numeric ceiling", () 
   assert.equal(compile(String.raw`between 2 and 4 "\ud800"`).source, "\\u{d800}{2,4}");
 });
 
+test("optional modifiers preserve range output and explain zero or one match", () => {
+  for (const [item, source, values] of [
+    ["digit", "\\d", ["", "7"]],
+    ['"+"', "\\+", ["", "+"]],
+    ['"AB"', "(?:AB)", ["", "AB"]],
+  ]) {
+    const result = compile(`start\noptional ${item}\nend`);
+    assert.equal(result.source, `^${source}{0,1}$`);
+    assert.deepEqual(result.segments[1].repetition, { kind: "range", min: 0, max: 1 });
+    assert.match(result.segments[1].explanation, /Optional|Zero or one/u);
+    for (const value of values) assert.equal(toRegExp(result).test(value), true, value);
+    assert.equal(toRegExp(result).test(`${values.at(-1)}${values.at(-1)}`), false);
+  }
+  assert.equal(compile("optional digit").segments[0].explanation, "Zero or one digit (0–9).");
+  assert.equal(
+    compile("between 0 and 1 digit").segments[0].explanation,
+    "Between 0 and 1 digits (0–9), inclusive.",
+  );
+});
+
 test("literal and character-class metacharacters are escaped in their contexts", () => {
   const literal = compile('start\n"a.b/c[1]"\nend');
   assert.equal(literal.source, "^a\\.b\\/c\\[1\\]$");

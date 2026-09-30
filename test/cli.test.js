@@ -588,10 +588,10 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   const countedAnchor = run(["--json", "-"], "3 start");
   assert.deepEqual(JSON.parse(countedAnchor.stderr).error, {
     code: "ANCHOR_REPETITION",
-    message: "Counts apply to items, not anchors.",
+    message: "Repetition modifiers apply to items, not anchors.",
     line: 1,
     column: 3,
-    hint: "Remove the count or apply it to an item, such as `3 digits`.",
+    hint: 'Remove the modifier or apply it to an item, such as `3 digits` or `optional "-"`.',
   });
   const structured = run(["--json", "-"], "unexpected words");
   assert.equal(structured.status, 1);

@@ -9,7 +9,15 @@ const scenarios = JSON.parse(
 );
 
 test("empty literals suggest whole-input anchors without changing diagnostic locations", () => {
-  for (const prefix of ["", "3 ", "between 0 and 1 ", "start ", "start, 2 ", "line start "]) {
+  for (const prefix of [
+    "",
+    "3 ",
+    "between 0 and 1 ",
+    "optional ",
+    "start ",
+    "start, 2 ",
+    "line start ",
+  ]) {
     const line = `  ${prefix}""`;
     assert.throws(() => parse(`\n${line}`), {
       code: "EMPTY_LITERAL",
@@ -208,6 +216,35 @@ test("bounded counts apply to one atom and retain the original location", () => 
   }
 });
 
+test("optional modifiers use an inclusive zero-to-one range", () => {
+  for (const [rules, expectedColumn] of [
+    ["optional digit", 1],
+    ['  OPTIONAL\t"-"', 3],
+    ['start optional "AB"', 7],
+  ]) {
+    const node = parse(rules).nodes.at(-1);
+    assert.deepEqual(node.repetition, { kind: "range", min: 0, max: 1 }, rules);
+    assert.deepEqual(node.location, { line: 1, column: expectedColumn }, rules);
+  }
+  assert.throws(() => parse("optional"), {
+    code: "INVALID_REPETITION",
+    message: "An optional modifier needs an item.",
+    line: 1,
+    column: 1,
+    hint: 'Write `optional` before one item, such as `optional "-"`.',
+  });
+  for (const [rules, code, marker] of [
+    ["optional start", "ANCHOR_REPETITION", "start"],
+    ["2 optional digit", "DUPLICATE_REPETITION", "optional"],
+    ["optional 2 digits", "DUPLICATE_REPETITION", "2"],
+    ["between 2 and 4 optional digit", "DUPLICATE_REPETITION", "optional"],
+    ["optional between 2 and 4 digit", "DUPLICATE_REPETITION", "between"],
+    ["optional optional digit", "DUPLICATE_REPETITION", "optional digit"],
+  ]) {
+    assert.throws(() => parse(rules), { code, line: 1, column: rules.indexOf(marker) + 1 }, rules);
+  }
+});
+
 test("bounded count errors point to invalid bounds or incomplete syntax", () => {
   for (const [rules, code, marker] of [
     ["start between 4 and 2 digits", "INVALID_RANGE", "2"],
@@ -356,8 +393,9 @@ test("counts on anchors point to the anchor", () => {
         error.code === "ANCHOR_REPETITION" &&
         error.line === line &&
         error.column === column &&
-        error.message === "Counts apply to items, not anchors." &&
-        error.hint === "Remove the count or apply it to an item, such as `3 digits`.",
+        error.message === "Repetition modifiers apply to items, not anchors." &&
+        error.hint ===
+          'Remove the modifier or apply it to an item, such as `3 digits` or `optional "-"`.',
       rules,
     );
   }
@@ -367,7 +405,15 @@ test("unsupported quote delimiters retain positioned errors and offer a JSON quo
   const quotes = ["'ABC'", "`ABC`", "“ABC”", "”ABC”", "‘ABC’", "’ABC’"];
   const hint = 'Use JSON double quotes for quoted text, such as `"A"`.';
   for (const value of quotes) {
-    for (const prefix of ["", "start ", "0 ", "between 0 and 1 ", "start 2 ", "line start, 2 "]) {
+    for (const prefix of [
+      "",
+      "start ",
+      "0 ",
+      "between 0 and 1 ",
+      "optional ",
+      "start 2 ",
+      "line start, 2 ",
+    ]) {
       const line = `  ${prefix}${value}`;
       assert.throws(() => parse(`\n${line}`), {
         code: "UNKNOWN_RULE",

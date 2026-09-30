@@ -81,6 +81,7 @@ const START_ANCHOR = /^(line start|start)(?:,\s*|\s+|$)/i;
 const DUPLICATE_START_ANCHOR_MESSAGE = "Use only one start anchor.";
 const QUOTE_STYLES = /^['`“”‘’]/u;
 const QUOTE_HINT = 'Use JSON double quotes for quoted text, such as `"A"`.';
+const OPTIONAL_PREFIX = /^optional(?=\s|$)\s*/iu;
 // Recognize malformed numeric tokens so parseCount owns their diagnostics.
 const COUNT_PREFIX = /^([+-]?(?:\p{Nd}|\.\p{Nd})\S*)(?:\s+|$)/u;
 
@@ -196,9 +197,21 @@ function parseAtom(text, location, rawLine) {
   /** @type {Repetition|null} */
   let repetition = null;
   let offset = 0;
+  const optional = OPTIONAL_PREFIX.exec(remaining);
   const count = COUNT_PREFIX.exec(remaining);
   const range = /^(between\s+)(\S+)(\s+and\s+)(\S+)\s+/iu.exec(remaining);
-  if (range) {
+  if (optional) {
+    repetition = { kind: "range", min: 0, max: 1 };
+    offset = optional[0].length;
+    if (offset === remaining.length) {
+      fail(
+        "INVALID_REPETITION",
+        "An optional modifier needs an item.",
+        location,
+        'Write `optional` before one item, such as `optional "-"`.',
+      );
+    }
+  } else if (range) {
     const min = parseCount(range[2], {
       line: location.line,
       column: location.column + range[1].length,
@@ -239,21 +252,31 @@ function parseAtom(text, location, rawLine) {
     );
   }
   const anotherRange = /^between(?:\s|$)/iu.test(remaining);
-  if (COUNT_PREFIX.test(remaining) || anotherRange) {
+  const anotherOptional = OPTIONAL_PREFIX.test(remaining);
+  if (COUNT_PREFIX.test(remaining) || anotherRange || anotherOptional) {
+    const duplicateLocation = { line: location.line, column: location.column + offset };
+    if (optional || anotherOptional) {
+      fail(
+        "DUPLICATE_REPETITION",
+        "Use only one repetition modifier.",
+        duplicateLocation,
+        "Put one count, range or optional modifier before the item.",
+      );
+    }
     fail(
       "DUPLICATE_REPETITION",
       range || anotherRange
         ? "Put one count or range before the instruction."
         : "Put one exact count before the instruction.",
-      { line: location.line, column: location.column + offset },
+      duplicateLocation,
     );
   }
   if (repetition && /^(?:start|end|line start|line end)$/iu.test(remaining)) {
     fail(
       "ANCHOR_REPETITION",
-      "Counts apply to items, not anchors.",
+      "Repetition modifiers apply to items, not anchors.",
       { line: location.line, column: location.column + offset },
-      "Remove the count or apply it to an item, such as `3 digits`.",
+      'Remove the modifier or apply it to an item, such as `3 digits` or `optional "-"`.',
     );
   }
 
