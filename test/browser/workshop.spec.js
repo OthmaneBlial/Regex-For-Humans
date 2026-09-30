@@ -59,6 +59,12 @@ for (const scenario of scenarios) {
         "Between 2 and 6 digits (0–9), inclusive.",
       );
     }
+    if (scenario.id === "username-shape") {
+      await expect(page.locator("#trace-list")).toContainText("One ASCII letter (A–Z, a–z).");
+      await expect(page.locator("#trace-list")).toContainText(
+        "Between 2 and 15 times (inclusive).",
+      );
+    }
     await expect(page.locator("#regex-output")).toHaveText(`/${scenario.source}/${scenario.flags}`);
     await expect(page.locator("#test-summary")).toHaveText(
       `${scenario.positive.length + scenario.negative.length} of ${scenario.positive.length + scenario.negative.length} examples behave as expected`,

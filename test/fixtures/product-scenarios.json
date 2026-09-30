@@ -75,5 +75,27 @@
     "matchMode": "full",
     "positive": ["INV-12", "INV-1234", "INV-123456", "INV-0012"],
     "negative": ["INV-1", "INV-1234567", "inv-1234", "INV-١٢", "INV-12A", "INV-1234\n"]
+  },
+  {
+    "id": "username-shape",
+    "title": "Match a username shape",
+    "note": "3–16 ASCII word characters, starting with a letter; digits and underscores may follow. Check availability and service rules separately. Ignore case also permits Unicode case-folding equivalents.",
+    "rules": "start letter\nbetween 2 and 15 word\nend",
+    "source": "^[A-Za-z]\\w{2,15}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["Abc", "Alice_7", "A__", "abcdefghijklmnop"],
+    "negative": [
+      "",
+      "Al",
+      "_Alice",
+      "7Alice",
+      "a-b",
+      "élise",
+      "abcdefghijklmnopq",
+      "Alice\n",
+      "Kid",
+      "ſam"
+    ]
   }
 ]

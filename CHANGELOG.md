@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a shared username-shape recipe with an ASCII letter first and 3–16 total word characters; link it from the README and homepage, with explicit availability, service-policy and ignore-case limits.
+
 - Add `letter` and `letters` for ASCII alphabetic characters, with exact/bounded counts, shared explanations and repair hints. Document and test JavaScript's Unicode case-folding equivalents when `i` is enabled.
 
 - Version the homepage stylesheet from its content during Pages builds so visual changes bypass cached CSS automatically; reject a build whose stylesheet reference is missing.
