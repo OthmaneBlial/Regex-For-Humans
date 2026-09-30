@@ -146,6 +146,20 @@ void [regex, segment, source, line, max];
     { cwd: consumer },
   );
   const cliArgs = [npmCli, "exec", "--offline", "--yes=false", "--", "regex-for-humans"];
+  const invalidUtf8 = spawnSync(process.execPath, [...cliArgs, "--json", "-"], {
+    cwd: consumer,
+    input: Buffer.from([0xff]),
+    encoding: "utf8",
+  });
+  if (
+    invalidUtf8.status !== 1 ||
+    invalidUtf8.stdout !== "" ||
+    JSON.parse(invalidUtf8.stderr).error.code !== "CLI_ERROR" ||
+    JSON.parse(invalidUtf8.stderr).error.message !==
+      "Input must be valid UTF-8. Save the rules as UTF-8 and try again."
+  ) {
+    throw new Error("Installed CLI did not explain how to repair malformed UTF-8.");
+  }
   const version = run([...cliArgs, "--version"], { cwd: consumer });
   if (version !== manifest.version) throw new Error("Installed CLI reported a different version.");
   const help = run([...cliArgs, "--help"], { cwd: consumer });

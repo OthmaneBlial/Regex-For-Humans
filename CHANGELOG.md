@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Explain how to repair malformed UTF-8 in CLI file and stdin input, preserving `CLI_ERROR`, exit status and rejection of invalid bytes.
+
 - Keep example data synchronized with native textarea newline normalization so the worker tests the text actually displayed, including after recipe and row changes.
 
 - Check local documentation links against their file path without query strings or fragments, while preserving encoded filename characters and complete failure messages.

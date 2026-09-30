@@ -136,7 +136,7 @@ Read UTF-8 rules from a file or stdin. Use `--` before a filename starting with 
 <details>
 <summary>🔧 CLI error contract</summary>
 
-Malformed UTF-8 is rejected. In JSON mode, rule diagnostics retain their codes, invalid arguments use `CLI_USAGE`, and file/runtime failures use `CLI_ERROR`, including invalid UTF-8 and stdout write failures. If stderr also fails, the CLI exits nonzero without a diagnostic.
+Malformed UTF-8 is rejected with a message to save the rules as UTF-8 and try again; invalid bytes are never replaced silently. In JSON mode, rule diagnostics retain their codes, invalid arguments use `CLI_USAGE`, and file/runtime failures use `CLI_ERROR`, including invalid UTF-8 and stdout write failures. If stderr also fails, the CLI exits nonzero without a diagnostic.
 
 Control characters and Unicode line separators from rules, arguments and filenames appear as visible escapes in CLI output. JSON decoding restores the original data; displayed regexes still match the original characters.
 

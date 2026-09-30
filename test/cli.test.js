@@ -327,6 +327,7 @@ test("CLI preserves nonzero status when stderr cannot accept diagnostics", () =>
 });
 
 test("CLI rejects malformed UTF-8 in stdin and files instead of replacing bytes", () => {
+  const message = "Input must be valid UTF-8. Save the rules as UTF-8 and try again.";
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
   const path = join(directory, "rules.txt");
   const inputs = [
@@ -339,19 +340,25 @@ test("CLI rejects malformed UTF-8 in stdin and files instead of replacing bytes"
     for (const input of inputs) {
       writeFileSync(path, input);
       for (const file of ["-", path]) {
-        const result = run(["--json", file], file === "-" ? input : undefined);
-        assert.equal(result.status, 1);
-        assert.equal(result.stdout, "");
-        const error = JSON.parse(result.stderr).error;
-        assert.equal(error.code, "CLI_ERROR");
-        assert.match(error.message, /utf-8/iu);
+        for (const json of [false, true]) {
+          const result = run(json ? ["--json", file] : [file], file === "-" ? input : undefined);
+          assert.equal(result.status, 1);
+          assert.equal(result.stdout, "");
+          if (json)
+            assert.deepEqual(JSON.parse(result.stderr), { error: { code: "CLI_ERROR", message } });
+          else assert.equal(result.stderr, `Error: ${message}\n`);
+        }
       }
     }
-    const valid = run(["--json", "-"], '\ufeffstart "\ufffd"\nend');
-    assert.equal(valid.status, 0, valid.stderr);
-    const compiled = JSON.parse(valid.stdout);
-    assert.equal(compiled.source, "^\ufffd$");
-    assert.equal(compiled.segments[0].column, 2);
+    const repaired = '\ufeffstart "\ufffd"\nend';
+    writeFileSync(path, repaired, "utf8");
+    for (const file of ["-", path]) {
+      const valid = run(["--json", file], file === "-" ? repaired : undefined);
+      assert.equal(valid.status, 0, valid.stderr);
+      const compiled = JSON.parse(valid.stdout);
+      assert.equal(compiled.source, "^\ufffd$");
+      assert.equal(compiled.segments[0].column, 2);
+    }
   } finally {
     unlinkSync(path);
     rmdirSync(directory);

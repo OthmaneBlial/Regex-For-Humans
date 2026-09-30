@@ -49,6 +49,13 @@ async function main() {
 
   /** @param {unknown} error */
   function reportError(error) {
+    if (
+      error instanceof TypeError &&
+      "code" in error &&
+      error.code === "ERR_ENCODING_INVALID_ENCODED_DATA"
+    ) {
+      error = new Error("Input must be valid UTF-8. Save the rules as UTF-8 and try again.");
+    }
     process.exitCode = 1;
     if (json) {
       const detail =
