@@ -25,6 +25,12 @@ npm ci
 npm run verify
 ```
 
+The full gate also runs one editor-and-matching smoke test in Firefox and WebKit. Install those engines first:
+
+```sh
+npm exec -- playwright install firefox webkit
+```
+
 To repeat the full verification at the declared Node 22.0 minimum on macOS:
 
 ```sh
@@ -34,7 +40,7 @@ npm exec --yes --package=node@22.0.0 --package=npm@10 -- sh -c 'node --version &
 For bundled Playwright Chromium, install and select it explicitly:
 
 ```sh
-npx playwright install chromium
+npm exec -- playwright install chromium firefox webkit
 CI=1 npm run verify
 ```
 

@@ -175,7 +175,7 @@ Run all quality checks locally:
 npm run verify
 ```
 
-This runs lint, formatting, types, docs, Node tests, the Pages build, clean-consumer package checks, browser tests, and a dependency audit. GitHub CI is disabled. Browser checks use installed Chrome; for Playwright Chromium, install it with `npx playwright install chromium` and run `CI=1 npm run verify` locally.
+This runs lint, formatting, types, docs, Node tests, the Pages build, clean-consumer package checks, desktop/mobile Chromium tests, Firefox/WebKit compatibility smoke tests, and a dependency audit. GitHub CI is disabled. The full gate uses installed Chrome plus Playwright Firefox and WebKit; install those engines with `npm exec -- playwright install firefox webkit`. To use bundled Chromium for the desktop/mobile suites, install all three Playwright engines and run `CI=1 npm run verify` locally.
 
 ## 🧭 Know the boundaries
 

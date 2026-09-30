@@ -41,7 +41,8 @@
     "build:pages": "npm run build && node scripts/build-pages-workshop.js",
     "serve": "node scripts/serve-dist.js",
     "test:browser": "playwright test",
-    "verify": "npm run check && npm test && npm run build:pages && npm run test:package && npm run test:browser && npm run test:site && npm audit --audit-level=moderate",
+    "test:compat": "playwright test --config=playwright.compat.config.js",
+    "verify": "npm run check && npm test && npm run build:pages && npm run test:package && npm run test:browser && npm run test:compat && npm run test:site && npm audit --audit-level=moderate",
     "test:site": "playwright test --config=playwright.site.config.js"
   },
   "files": [
