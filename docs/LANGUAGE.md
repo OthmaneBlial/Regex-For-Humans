@@ -6,6 +6,8 @@ Write one rule per line. `start` or `line start` can prefix the first rule. Keyw
 
 Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 
+When using both anchor edges, pair `start` with `end`, or `line start` with `line end`. Mixing them reports `MIXED_ANCHORS` at the end anchor and suggests these compatible pairs. A single anchor can still be used alone.
+
 ## Instructions
 
 | Instruction | Generated source | Matches | Does not match |

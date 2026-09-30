@@ -70,6 +70,10 @@ try {
     smoke,
     `import { compile, toRegExp, CompileError } from "regex-for-humans";
 const result = compile(${JSON.stringify(rules)});
+try { compile("start line end"); throw new Error("Mixed anchors accepted"); }
+catch (error) { if (!(error instanceof CompileError) || error.code !== "MIXED_ANCHORS" || error.column !== 7 || error.hint !== ${JSON.stringify("Pair `start` with `end`, or `line start` with `line end`.")}) throw error; }
+const lineRepair = compile("line start\\n3 digits\\nline end");
+if (lineRepair.flags !== "mu" || !toRegExp(lineRepair).test("note\\n123")) throw new Error("Mixed-anchor line repair changed");
 const whitespace = compile("start\\nspaces\\nend");
 if (whitespace.source !== "^\\\\s+$" || !toRegExp(whitespace).test(" \\t\\n") || toRegExp(whitespace).test("") || whitespace.segments[1].explanation !== "One or more whitespace characters, including line breaks.") throw new Error("Wrong whitespace sequence behavior");
 if (!toRegExp(compile("start\\nbetween 0 and 2 spaces\\nend")).test("") || toRegExp(compile('start\\n3 " "\\nend')).test("\\t\\t\\t")) throw new Error("Wrong whitespace count or literal behavior");

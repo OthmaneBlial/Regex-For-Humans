@@ -24,6 +24,45 @@ function run(args, input) {
   return spawnSync(process.execPath, [cli, ...args], { input, encoding: "utf8" });
 }
 
+test("CLI mixed-anchor diagnostics preserve locations and explain both repairs", () => {
+  const hint = "Pair `start` with `end`, or `line start` with `line end`.";
+  for (const rules of ["start\n3 digits\nline end", "line start\n3 digits\nend"]) {
+    for (const json of [false, true]) {
+      const result = run(json ? ["--json", "-"] : ["-"], rules);
+      assert.equal(result.status, 1);
+      assert.equal(result.stdout, "");
+      if (json)
+        assert.deepEqual(JSON.parse(result.stderr), {
+          error: {
+            code: "MIXED_ANCHORS",
+            message: "Do not mix input and line anchors.",
+            line: 3,
+            column: 1,
+            hint,
+          },
+        });
+      else
+        assert.equal(
+          result.stderr,
+          `Line 3, column 1: Do not mix input and line anchors.\n${hint}\n`,
+        );
+    }
+  }
+  for (const [rules, flags, newlineMatches] of [
+    ["start\n3 digits\nend", "u", false],
+    ["line start\n3 digits\nline end", "mu", true],
+  ]) {
+    const repaired = run(["--json", "-"], rules);
+    assert.equal(repaired.status, 0, repaired.stderr);
+    const result = JSON.parse(repaired.stdout);
+    assert.equal(result.source, "^\\d{3}$");
+    assert.equal(result.flags, flags);
+    const regex = new RegExp(result.source, result.flags);
+    assert.equal(regex.test("123"), true);
+    assert.equal(regex.test("note\n123"), newlineMatches);
+  }
+});
+
 test("CLI spaces output, explanations and invalid counts use the shared language", () => {
   const output = run(["--json", "-"], "start\nspaces\nend");
   assert.equal(output.status, 0, output.stderr);

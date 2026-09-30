@@ -397,7 +397,12 @@ export function parse(source) {
       const mode = end[1].toLowerCase() === "line end" ? "line" : "input";
       if (sawEnd) fail("DUPLICATE_ANCHOR", "Use only one end anchor.", location());
       if (anchorMode && anchorMode !== mode) {
-        fail("MIXED_ANCHORS", "Do not mix input and line anchors.", location());
+        fail(
+          "MIXED_ANCHORS",
+          "Do not mix input and line anchors.",
+          location(),
+          "Pair `start` with `end`, or `line start` with `line end`.",
+        );
       }
       anchorMode = mode;
       nodes.push(anchor("end", mode, location(), text));

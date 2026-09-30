@@ -525,6 +525,38 @@ test("unknown and misplaced instructions report a useful location", () => {
   assert.throws(() => parse(" "), { code: "EMPTY_SOURCE" });
 });
 
+test("mixed anchors suggest compatible pairs without changing codes or end-anchor locations", () => {
+  const hint = "Pair `start` with `end`, or `line start` with `line end`.";
+  for (const [rules, line, column] of [
+    ["\n  start\n  3 digits\n  line end", 4, 3],
+    ["line start\nend", 2, 1],
+    ["  START, LINE END", 1, 10],
+    ["  LINE START end", 1, 14],
+    ["start\r\n3 digits\r\nline end", 3, 1],
+    ["line start\u2028end", 2, 1],
+    ["start\u2029line end", 2, 1],
+  ]) {
+    assert.throws(
+      () => parse(rules),
+      (error) => {
+        assert.ok(error instanceof CompileError);
+        assert.deepEqual(error.toJSON(), {
+          code: "MIXED_ANCHORS",
+          message: "Do not mix input and line anchors.",
+          line,
+          column,
+          hint,
+        });
+        return true;
+      },
+      rules,
+    );
+  }
+  assert.equal(parse("start\n3 digits\nend").anchorMode, "input");
+  assert.equal(parse("line start\n3 digits\nline end").anchorMode, "line");
+  assert.equal(parse("line end").anchorMode, "line");
+});
+
 test("duplicate anchors point to the second anchor", () => {
   for (const [rules, line, column, message] of [
     ["start\nstart\n3 digits", 2, 1, "Use only one start anchor."],

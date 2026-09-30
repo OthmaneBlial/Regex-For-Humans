@@ -20,6 +20,52 @@ async function openBeforeWorkshopAppLoads(page) {
   return release;
 }
 
+test("mixed anchors explain compatible pairs and recover in input and line modes", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const editor = page.locator("#rules-input");
+  const first = page.locator("#test-list textarea").first();
+  const feedback = page.locator("#test-list .test-result").first();
+  for (const [start, wrongEnd, repairedEnd, flags] of [
+    ["start", "line end", "end", "u"],
+    ["line start", "end", "line end", "mu"],
+  ]) {
+    const rules = `${start}\n3 digits\n${wrongEnd}`;
+    await editor.fill(rules);
+    await expect(page.locator("#diagnostic")).toContainText(
+      "Line 3, column 1: Do not mix input and line anchors.",
+    );
+    await expect(page.locator("#diagnostic")).toContainText(
+      "Pair `start` with `end`, or `line start` with `line end`.",
+    );
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#copy-button")).toBeDisabled();
+    await page.getByRole("button", { name: "Go to error", exact: true }).click();
+    await expect(editor).toBeFocused();
+    const position = rules.lastIndexOf(wrongEnd);
+    expect(await editor.evaluate((field) => [field.selectionStart, field.selectionEnd])).toEqual([
+      position,
+      position + 1,
+    ]);
+    await editor.fill(`${start}\n3 digits\n${repairedEnd}`);
+    await expect(page.locator("#regex-output")).toHaveText(`/^\\d{3}$/${flags}`);
+    await expect(page.locator("#diagnostic")).toBeHidden();
+    await expect(editor).toHaveAttribute("aria-invalid", "false");
+    await expect(page.locator("#copy-button")).toBeEnabled();
+    await first.fill("123");
+    await expect(feedback).toHaveText('✓ Matched "123" at 0');
+    await first.fill("note\n123");
+    if (flags === "mu") {
+      await expect(page.locator("#flags-summary")).toContainText("m Line anchors");
+      await expect(feedback).toHaveText('! Found "123", not the entire string');
+      await page.locator("#match-mode").selectOption("search");
+      await expect(feedback).toHaveText('✓ Matched "123" at 5');
+    } else await expect(feedback).toHaveText("! No match");
+  }
+});
+
 test("example testing uses the newline-normalized text displayed by native fields", async ({
   page,
 }) => {

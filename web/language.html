@@ -45,7 +45,7 @@
         <div class="guide-example"><pre><code>start "ABC"
 3 digits
 end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>Matches</strong> ABC123<br><strong>Rejects</strong> ABC12, ABC1234</p></div></div>
-        <p>Use <code>line start</code> and <code>line end</code> for line-based matching. Line anchors add JavaScript's <code>m</code> flag. Input and line anchors cannot be mixed.</p>
+        <p>Use <code>line start</code> and <code>line end</code> for line-based matching. Line anchors add JavaScript's <code>m</code> flag. Input and line anchors cannot be mixed. When both edges are present, pair <code>start</code> with <code>end</code>, or <code>line start</code> with <code>line end</code>; the error suggests these repairs at the end anchor. A single anchor can still be used alone.</p>
         <p>Without <code>m</code>, <code>start</code> and <code>end</code> match only the true input edges. They reject a final line break; <code>m</code> makes line anchors match each line.</p>
       </section>
 
