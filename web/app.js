@@ -233,6 +233,7 @@ function renderTests() {
     remove.addEventListener("click", () => {
       testCases = testCases.filter((item) => item.id !== sample.id);
       renderTests();
+      updateTestResults();
       (
         ui.testList.querySelectorAll("textarea")[Math.min(index, testCases.length - 1)] ??
         ui.addExample
@@ -241,7 +242,6 @@ function renderTests() {
     row.append(input, expected, result, remove);
     ui.testList.append(row);
   }
-  updateTestResults();
 }
 
 function compileRules() {
@@ -343,6 +343,7 @@ ui.addExample.addEventListener("click", () => {
   hasEdits = true;
   testCases.push({ id: nextTestId++, text: "", expected: true });
   renderTests();
+  updateTestResults();
   ui.testList.lastElementChild?.querySelector("textarea")?.focus();
 });
 ui.copy.addEventListener("click", async () => {

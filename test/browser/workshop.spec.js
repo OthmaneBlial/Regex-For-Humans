@@ -133,6 +133,28 @@ test("manual edits clear the recipe highlight and reselecting restores its short
   await expect(editor).toHaveValue("line start\nany text\n3 digits\nline end");
 });
 
+test("switching a recipe starts one worker for its current pattern and examples", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const NativeWorker = window.Worker;
+    window.workerStarts = 0;
+    window.Worker = class extends NativeWorker {
+      constructor(...args) {
+        super(...args);
+        window.workerStarts += 1;
+      }
+    };
+  });
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const initialStarts = await page.evaluate(() => window.workerStarts);
+  await page.locator('[data-scenario="excluded-characters"]').click();
+  await expect(page.locator("#regex-output")).toHaveText("/^[^abcd]*$/u");
+  await expect(page.locator("#test-summary")).toHaveText("3 of 3 examples behave as expected");
+  expect(await page.evaluate(() => window.workerStarts)).toBe(initialStarts + 1);
+});
+
 test("late recipes preserve edits made while loading", async ({ page }) => {
   let release;
   await page.route("**/product-scenarios.json?*", async (route) => {
