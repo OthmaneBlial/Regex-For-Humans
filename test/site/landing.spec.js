@@ -7,6 +7,39 @@ const recipes = JSON.parse(
   readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("homepage requests a versioned compiler and skips an obsolete cached module", async ({
+  page,
+}) => {
+  const compilerUrls = [];
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.route("**/workshop/index.js*", async (route) => {
+    const url = new URL(route.request().url());
+    compilerUrls.push(url);
+    if (url.searchParams.has("v")) await route.continue();
+    else {
+      await route.fulfill({
+        contentType: "text/javascript",
+        body: 'export function compile() { throw new Error("Obsolete cached compiler"); } export function toRegExp() {}',
+      });
+    }
+  });
+  await page.goto("/");
+  const appUrl = new URL(
+    await page.locator('script[type="module"]').getAttribute("src"),
+    page.url(),
+  );
+  expect(compilerUrls).toHaveLength(1);
+  expect(compilerUrls[0].search).toBe(appUrl.search);
+  expect(appUrl.searchParams.get("v")).toMatch(/^[\da-f]{12}$/u);
+  await expect(page.locator('[data-recipe="hex-color"]')).toBeEnabled();
+  await page.locator("#demo-input").fill("#badbad");
+  await expect(page.locator("#demo-result")).toHaveText("✓ Match");
+  await page.locator("#demo-input").fill("#bad");
+  await expect(page.locator("#demo-result")).toHaveText("× No match");
+  expect(errors).toEqual([]);
+});
+
 test("landing recipes compile with the real library and copy the current rules and regex", async ({
   page,
 }) => {

@@ -1,4 +1,5 @@
-import { compile, toRegExp } from "./workshop/index.js";
+const assetSearch = new URL(import.meta.url).search;
+const { compile, toRegExp } = await import(`./workshop/index.js${assetSearch}`);
 
 const input = document.getElementById("demo-input");
 const result = document.getElementById("demo-result");
@@ -53,7 +54,7 @@ for (const control of copyControls) {
 
 try {
   const recipeUrl = new URL("./workshop/test/fixtures/product-scenarios.json", import.meta.url);
-  recipeUrl.search = new URL(import.meta.url).search;
+  recipeUrl.search = assetSearch;
   const response = await fetch(recipeUrl);
   if (!response.ok) throw new Error("Recipes unavailable");
   const recipes = await response.json();

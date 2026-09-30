@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Version the homepage app, compiler entry and recipe request from the current app source and workshop build, so returning visitors receive compiler updates without a manual cache-version bump.
+
 - Add an invoice ID shape recipe using `between 2 and 6 digits`, with accepted bounds, leading zeros and rejected case, Unicode digits and trailing text; link all seven recipes from the README and homepage.
 
 - Add inclusive bounded counts with `between n and m <item>`, positioned diagnostics and explanations. New bounded instructions expose `repetition: { kind: "range", min, max }`; existing instructions retain their metadata and behavior.
