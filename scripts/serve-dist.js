@@ -16,7 +16,7 @@ const mimeTypes = {
   ".woff2": "font/woff2",
 };
 
-createServer(async (request, response) => {
+const server = createServer(async (request, response) => {
   try {
     const pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
     const path = resolve(root, `.${pathname.endsWith("/") ? `${pathname}index.html` : pathname}`);
@@ -35,5 +35,5 @@ createServer(async (request, response) => {
     response.writeHead(error.code === "ENOENT" ? 404 : 400).end();
   }
 }).listen(port, "127.0.0.1", () => {
-  process.stdout.write(`Serving ${root} at http://127.0.0.1:${port}/\n`);
+  process.stdout.write(`Serving ${root} at http://127.0.0.1:${server.address().port}/\n`);
 });

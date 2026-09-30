@@ -159,6 +159,8 @@ npm run serve
 
 Open **http://127.0.0.1:4174/**. **Go to error** jumps to a reported source position.
 
+To choose an available port automatically, use `npm run serve -- 0` and open the URL printed by the server.
+
 Run all quality checks locally:
 
 ```sh
