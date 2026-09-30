@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const scenarios = JSON.parse(
@@ -158,6 +159,37 @@ test("late recipes preserve edits made while loading", async ({ page }) => {
   await expect(page.locator("#test-list textarea")).toHaveValue("custom");
   await expect(page.locator("#test-summary")).toHaveText("1 of 1 examples behave as expected");
   await expect(page.locator('#example-list button[aria-current="true"]')).toHaveCount(0);
+});
+
+test("failed recipes leave compiler diagnostics and manual editing available", async ({ page }) => {
+  let release;
+  await page.route("**/product-scenarios.json?*", async (route) => {
+    await new Promise((resolve) => {
+      release = resolve;
+    });
+    await route.fulfill({ status: 503, body: "Recipes unavailable" });
+  });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect.poll(() => typeof release).toBe("function");
+  const editor = page.locator("#rules-input");
+  await editor.fill("invalid rule");
+  release();
+  await expect(page.locator("#example-list")).toContainText("HTTP 503");
+  await expect(page.locator("#diagnostic")).toContainText('Unsupported rule: "invalid rule".');
+  await expect(editor).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#compile-state")).toHaveText("Needs a fix");
+  await expect(page.locator("#copy-button")).toBeDisabled();
+  await editor.fill("start 3 digits\nend");
+  await expect(page.locator("#regex-output")).toHaveText("/^\\d{3}$/u");
+  await expect(page.locator("#diagnostic")).toBeHidden();
+  await expect(page.locator("#copy-button")).toBeEnabled();
+  await page.locator("#add-example").click();
+  await page.locator("#test-list textarea").fill("123");
+  await expect(page.locator("#test-summary")).toHaveText("1 of 1 examples behave as expected");
+  const accessibility = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+  expect(accessibility.violations.map((violation) => violation.id)).toEqual([]);
 });
 
 test("rule counter counts instructions and ignores blank lines", async ({ page }) => {

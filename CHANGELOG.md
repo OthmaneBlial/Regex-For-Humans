@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Recipe loading failures now appear beside the recipes without clearing compiler diagnostics or preventing manual editing and testing.
 - Recipes that finish loading after editing no longer overwrite rules, flags or examples already entered.
 - Clipboard fallback restores keyboard focus and still selects the generated pattern for manual copying when access is blocked.
 - CLI input now requires valid UTF-8, rejecting malformed files and stdin without silently changing literal values.

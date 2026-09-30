@@ -399,8 +399,12 @@ try {
   if (!scenario) throw new Error("No example recipes are available.");
   if (!hasEdits) useScenario(scenario);
 } catch (error) {
-  setDiagnostic(
+  const notice = make(
+    "p",
+    "empty-trace",
     `Example recipes could not load (${error instanceof Error ? error.message : String(error)}). You can still write rules manually.`,
   );
-  setCompileState("Examples unavailable", "error");
+  notice.setAttribute("role", "status");
+  ui.examples.replaceChildren(notice);
+  if (!hasEdits) ui.testSummary.textContent = "Write rules and add an example to test them.";
 }
