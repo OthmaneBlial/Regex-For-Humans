@@ -14,6 +14,8 @@ The browser allows compiled regex sources up to 131,072 UTF-16 code units. This 
 
 ## Browser execution
 
+The homepage demo accepts matching input up to 80 UTF-16 code units. It keeps longer values intact, marks them invalid and skips regex execution, with a visible link to the workshop's larger testing limit. It only exposes the fixed demo recipes, not custom rules.
+
 The static workshop compiles rules locally. It loads its code and public recipe fixtures from the same origin; it does not submit typed rules or examples to an application backend, add telemetry or require an account. The hosting provider can still see ordinary requests for the static files and may keep access logs.
 
 Matching examples runs in a dedicated Web Worker, not on the UI thread. Each edit cancels the previous worker. The controller terminates a worker and reports an error if it has not responded within 1,200 ms. This limit protects the workshop interaction; it does not change the behavior of a regex copied into another program. Browser tests exercise an intentionally pathological expression, confirm timeout and then confirm that a normal expression still runs.

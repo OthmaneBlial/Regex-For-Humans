@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve oversized homepage demo input and report its visible 80-unit limit before matching, instead of testing a silently truncated prefix.
+
 - Preserve oversized workshop examples instead of truncating pasted text; show accessible field errors and stop matching until they are shortened or removed, while retaining the worker's input limit.
 
 - Expose C1 controls in compiled regex source and show controls and line separators in explanations, diagnostics, trace text and match feedback, using the same display policy as the CLI.

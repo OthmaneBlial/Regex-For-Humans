@@ -249,6 +249,72 @@ test("homepage demo requests literal text entry and preserves typed case", async
   await expect(page.locator("#demo-result")).toHaveText("✓ Match");
 });
 
+test("homepage keeps oversized demo input and validates its limit without testing a prefix", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const version = page.locator('[data-recipe="version-shape"]');
+  await expect(version).toBeEnabled();
+  await version.click();
+  const input = page.locator("#demo-input");
+  const result = page.locator("#demo-result");
+  const valid = `${"1".repeat(76)}.2.3`;
+  const oversized = `${valid}BBB`;
+  const compiled = compile(await page.locator("#rules-code").textContent());
+  const expression = new RegExp(compiled.source, compiled.flags);
+  expect(valid.length).toBe(80);
+  expect(expression.test(valid)).toBe(true);
+  expect(expression.test(oversized)).toBe(false);
+  await input.fill("");
+  await input.focus();
+  await page.keyboard.insertText(oversized);
+  await expect(input).toHaveValue(oversized);
+  await expect(input).toHaveAttribute("aria-invalid", "true");
+  await expect(result).toHaveText("Too long");
+  await expect(result).toHaveAttribute("data-match", "invalid");
+  const limits =
+    "Demo limit: 80 UTF-16 code units. Longer input is kept but cannot be tested. The workshop accepts up to 2,048.";
+  await expect(page.locator("#demo-limits")).toBeVisible();
+  await expect(input).toHaveAccessibleDescription(`${limits} Too long`);
+  await page.evaluate(() =>
+    Promise.all(document.getAnimations().map((animation) => animation.finished)),
+  );
+  const viewport = page.viewportSize();
+  for (const width of [viewport.width, 320]) {
+    await page.setViewportSize({ width, height: viewport.height });
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+    const check = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+      .analyze();
+    expect(
+      check.violations.map(({ id, nodes }) => ({
+        id,
+        nodes: nodes.map(({ target, failureSummary }) => ({ target, failureSummary })),
+      })),
+    ).toEqual([]);
+  }
+  await input.fill(valid);
+  await expect(input).toHaveValue(valid);
+  await expect(input).toHaveAttribute("aria-invalid", "false");
+  await expect(result).toHaveText("✓ Match");
+  await input.fill("");
+  await input.focus();
+  await page.keyboard.insertText("🧠".repeat(41));
+  await expect(input).toHaveValue("🧠".repeat(41));
+  await expect(input).toHaveAttribute("aria-invalid", "true");
+  await expect(result).toHaveText("Too long");
+  await input.fill("🧠".repeat(40));
+  await expect(input).toHaveValue("🧠".repeat(40));
+  await expect(input).toHaveAttribute("aria-invalid", "false");
+  await expect(result).toHaveText("× No match");
+  await page.locator('[data-recipe="hex-color"]').click();
+  await expect(input).toHaveValue("#ff6b6b");
+  await expect(input).toHaveAttribute("aria-invalid", "false");
+  await expect(result).toHaveText("✓ Match");
+});
+
 test("landing recipes compile with the real library and copy the current rules and regex", async ({
   page,
 }) => {

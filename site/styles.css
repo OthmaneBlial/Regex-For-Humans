@@ -400,8 +400,15 @@ h1 {
 .try-sample output[data-match="true"] {
   color: #2d5726;
 }
-.try-sample output[data-match="false"] {
+.try-sample output[data-match="false"],
+.try-sample output[data-match="invalid"] {
   color: #8b3027;
+}
+#demo-limits {
+  margin: 8px 0 0;
+  color: var(--soft);
+  font-size: 11px;
+  line-height: 1.5;
 }
 #demo-note {
   margin: 10px 0 12px;

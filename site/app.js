@@ -62,8 +62,17 @@ try {
   const { compile, toRegExp } = await import(`./workshop/index.js${assetSearch}`);
   pattern = toRegExp(compile(document.getElementById("rules-code").textContent));
   function testSample() {
+    const tooLong = input.value.length > 80;
+    input.setAttribute("aria-invalid", String(tooLong));
+    if (tooLong) {
+      result.textContent = "Too long";
+      result.setAttribute("aria-label", result.textContent);
+      result.dataset.match = "invalid";
+      return;
+    }
     const matches = pattern.test(input.value);
     result.textContent = matches ? "✓ Match" : "× No match";
+    result.setAttribute("aria-label", result.textContent);
     result.dataset.match = String(matches);
   }
   input.addEventListener("input", testSample);
