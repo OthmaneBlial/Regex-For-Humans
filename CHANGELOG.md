@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Wrap long literal explanations inside the trace viewport while keeping source selection available.
+
 - Request literal text entry without spelling checks, completion, automatic capitalization or autocorrection in rules, examples and the homepage demo.
 
 - Make the accessible-label regression wait for recipe rendering instead of racing its asynchronous response.

@@ -180,6 +180,42 @@ test("oversized and HTML-like rules are rejected or rendered as text", async ({ 
   await expect(page.locator("img")).toHaveCount(0);
 });
 
+test("long literal explanations wrap within the trace viewport and keep source selection working", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const editor = page.locator("#rules-input");
+  const viewport = page.viewportSize();
+  for (const length of [4096, LIMITS.sourceLength - 2]) {
+    const rules = JSON.stringify("x".repeat(length));
+    const result = compile(rules);
+    await editor.fill(rules);
+    await expect(page.locator("#compile-state")).toHaveText("Compiled");
+    await expect(page.locator("#regex-output")).toHaveText(`/${result.source}/${result.flags}`);
+    await expect(page.locator("#copy-button")).toBeEnabled();
+    for (const width of [viewport.width, 320]) {
+      await page.setViewportSize({ width, height: viewport.height });
+      expect(
+        await page
+          .locator("#trace-list")
+          .evaluate((trace) => trace.scrollWidth <= trace.clientWidth),
+      ).toBe(true);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      ).toBe(true);
+      const explanation = page.locator("#trace-list button").first();
+      await explanation.focus();
+      await explanation.press("Enter");
+      await expect(editor).toBeFocused();
+      expect(await editor.evaluate((input) => [input.selectionStart, input.selectionEnd])).toEqual([
+        0,
+        rules.length,
+      ]);
+    }
+  }
+});
+
 test("long unknown rules keep diagnostics within the viewport", async ({ page }) => {
   await page.goto("/");
   const editor = page.getByRole("textbox", { name: "Write your rules" });

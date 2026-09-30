@@ -609,6 +609,7 @@ a {
   color: #eff5eb;
   font-size: 12px;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .examples-panel {
