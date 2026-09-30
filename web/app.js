@@ -112,7 +112,7 @@ function renderTrace(segments) {
     button.type = "button";
     button.setAttribute(
       "aria-label",
-      `Rule on line ${segment.line}: ${segment.explanation}. Select source line.`,
+      `Rule on line ${segment.line}: ${segment.explanation} Select source line.`,
     );
     button.append(make("code", "trace-fragment", segment.source));
     const detail = make("span");

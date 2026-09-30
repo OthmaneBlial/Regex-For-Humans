@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { compile } from "../../index.js";
 
 const scenarios = JSON.parse(
   readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),
@@ -52,6 +53,14 @@ for (const scenario of scenarios) {
     await expect(page.locator("#recipe-count")).toHaveText(
       `01—${String(scenarios.length).padStart(2, "0")}`,
     );
+    const segments = compile(scenario.rules).segments;
+    const trace = page.locator("#trace-list button");
+    await expect(trace).toHaveCount(segments.length);
+    for (const [index, segment] of segments.entries()) {
+      await expect(trace.nth(index)).toHaveAccessibleName(
+        `Rule on line ${segment.line}: ${segment.explanation} Select source line.`,
+      );
+    }
     if (scenario.id === "excluded-characters") {
       await expect(page.locator("#trace-list")).toContainText(
         'Longest text without "a", "b", "c", "d".',
@@ -530,7 +539,7 @@ test("direction controls are visible in output, trace, feedback and diagnostics 
   expect(/\p{Bidi_Control}/u.test(await page.locator("#trace-list").textContent())).toBe(false);
   await expect(page.locator("#trace-list")).toContainText(`Literal text "${visible}".`);
   const trace = page.getByRole("button", {
-    name: `Rule on line 1: Literal text "${visible}".. Select source line.`,
+    name: `Rule on line 1: Literal text "${visible}". Select source line.`,
     exact: true,
   });
   await trace.press("Enter");
