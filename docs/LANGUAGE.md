@@ -42,6 +42,8 @@ A literal is a JSON-style double-quoted string. Escape `"` and `\\`; the compile
 
 JSON strings may contain lone UTF-16 surrogates, such as `"\ud800"`. The compiler emits them as `\u{d800}` so copying a pattern or writing it as UTF-8 preserves the value. Separate surrogate items in a character list remain separate; a paired surrogate inside one quoted item represents one astral character.
 
+Unicode direction controls (`Bidi_Control`) remain literal matching data. Generated source, quoted explanations, diagnostics, trace text and match feedback show them as visible `\uXXXX` escapes: `"A\u202eB"` emits `A\u202eB`. Ordinary Arabic and Hebrew letters and emoji stay unchanged. `segments[].text` and editable inputs retain the original source; CLI `--json` escapes these controls in transit, so decoding the JSON restores the original metadata.
+
 `start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`.
 
 ## Repetition

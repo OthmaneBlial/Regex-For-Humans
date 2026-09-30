@@ -60,6 +60,9 @@ try {
   const rules = 'start "ABC"\n3 digits\nend';
   const boundedRules = "start between 2 and 4 digits\nend";
   const boundedSource = "^\\d{2,4}$";
+  const directionText = `A${String.fromCodePoint(0x202e)}B`;
+  const directionRules = JSON.stringify(directionText);
+  const directionSource = String.raw`A\u202eB`;
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
@@ -79,6 +82,8 @@ if (!toRegExp(foldedLetter).test("K") || !foldedLetter.segments[1].explanation
 const bounded = compile(${JSON.stringify(boundedRules)});
 if (bounded.source !== ${JSON.stringify(boundedSource)} || !toRegExp(bounded).test("12") || !toRegExp(bounded).test("1234") || toRegExp(bounded).test("1") || toRegExp(bounded).test("12345")) throw new Error("Wrong bounded repetition behavior");
 if (bounded.segments[1].repetition?.kind !== "range" || bounded.segments[1].repetition.min !== 2 || bounded.segments[1].repetition.max !== 4) throw new Error("Missing range metadata");
+const directional = compile(${JSON.stringify(directionRules)});
+if (directional.source !== ${JSON.stringify(directionSource)} || !toRegExp(directional).test(${JSON.stringify(directionText)}) || directional.segments[0].text !== ${JSON.stringify(directionRules)}) throw new Error("Wrong direction-control behavior");
 try { compile("unsupported words"); throw new Error("Unknown rule accepted"); }
 catch (error) { if (!(error instanceof CompileError)) throw error; }
 `,
@@ -128,6 +133,20 @@ void [regex, segment, source, line, max];
   );
   if (boundedCli.source !== boundedSource || boundedCli.segments[1].repetition?.max !== 4) {
     throw new Error("Installed CLI did not preserve bounded repetition.");
+  }
+  const directionOutput = run([...cliArgs, "--json", "-"], {
+    cwd: consumer,
+    input: directionRules,
+  });
+  const directionCli = JSON.parse(directionOutput);
+  if (
+    /\p{Bidi_Control}/u.test(directionOutput) ||
+    directionCli.source !== directionSource ||
+    directionCli.segments[0].text !== directionRules
+  ) {
+    throw new Error(
+      "Installed CLI did not expose direction controls or preserve original rule text.",
+    );
   }
   process.stdout.write(
     `Verified ${packageInfo.filename} (${packageInfo.size} bytes) in a clean consumer.\n`,

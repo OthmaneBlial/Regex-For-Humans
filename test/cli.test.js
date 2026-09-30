@@ -62,6 +62,61 @@ test("CLI preserves lone surrogate literals in its UTF-8 output", () => {
   }
 });
 
+test("CLI exposes direction controls while JSON preserves original rule text", () => {
+  const points = [
+    0x061c, 0x200e, 0x200f, 0x202a, 0x202b, 0x202c, 0x202d, 0x202e, 0x2066, 0x2067, 0x2068, 0x2069,
+  ];
+  const text = `A${String.fromCodePoint(...points)}B`;
+  const escaped = `A${points.map((point) => `\\u${point.toString(16).padStart(4, "0")}`).join("")}B`;
+  const rule = JSON.stringify(text);
+  for (const args of [["-"], ["--explain", "-"], ["--json", "-"]]) {
+    const result = run(args, `start\n${rule}\nend`);
+    assert.equal(result.status, 0);
+    assert.equal(result.stderr, "");
+    assert.equal(/\p{Bidi_Control}/u.test(result.stdout), false);
+    if (args.includes("--json")) {
+      const decoded = JSON.parse(result.stdout);
+      assert.equal(decoded.source, `^${escaped}$`);
+      assert.equal(decoded.segments[1].text, rule);
+      assert.equal(new RegExp(decoded.source, decoded.flags).test(text), true);
+    } else {
+      assert.ok(result.stdout.startsWith(`/^${escaped}$/u\n`));
+      if (args.includes("--explain"))
+        assert.ok(result.stdout.includes(`Literal text "${escaped}".`));
+    }
+  }
+});
+
+test("CLI displays direction controls in diagnostics without changing decoded path or argument data", () => {
+  const character = String.fromCodePoint(0x202e);
+  for (const json of [false, true]) {
+    const invalid = run(json ? ["--json", "-"] : ["-"], `unsupported${character}words`);
+    assert.equal(invalid.status, 1);
+    assert.equal(/\p{Bidi_Control}/u.test(invalid.stderr), false);
+    const message = json ? JSON.parse(invalid.stderr).error.message : invalid.stderr;
+    assert.ok(message.includes(String.raw`unsupported\u202ewords`));
+    const option = `--unknown${character}option`;
+    const usage = run(json ? ["--json", option] : [option], "");
+    assert.equal(usage.status, 2);
+    assert.equal(/\p{Bidi_Control}/u.test(usage.stderr), false);
+    if (json) assert.equal(JSON.parse(usage.stderr).error.message, `Unknown option: ${option}`);
+    else assert.ok(usage.stderr.includes(String.raw`--unknown\u202eoption`));
+  }
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  try {
+    const filename = join(directory, `missing${character}.txt`);
+    for (const json of [false, true]) {
+      const result = run(json ? ["--json", filename] : [filename], "");
+      assert.equal(result.status, 1);
+      assert.equal(/\p{Bidi_Control}/u.test(result.stderr), false);
+      if (json) assert.ok(JSON.parse(result.stderr).error.message.includes(filename));
+      else assert.ok(result.stderr.includes(String.raw`missing\u202e.txt`));
+    }
+  } finally {
+    rmdirSync(directory);
+  }
+});
+
 test("CLI keeps file read failures as JSON in machine mode", () => {
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
   try {

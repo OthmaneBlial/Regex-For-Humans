@@ -1,4 +1,5 @@
 import { fail } from "./diagnostics.js";
+import { escapeDirectionControls } from "./display.js";
 import { explainNode } from "./explain.js";
 
 /** @typedef {import('./ast.js').AtomNode} AtomNode */
@@ -69,7 +70,7 @@ function atomSource(node) {
     default:
       throw new TypeError("Unknown atom type.");
   }
-  return source + repetitionSource(node.repetition);
+  return escapeDirectionControls(source + repetitionSource(node.repetition));
 }
 
 /** @param {unknown} options */

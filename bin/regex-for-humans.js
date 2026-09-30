@@ -4,6 +4,7 @@ import { createReadStream, readFileSync } from "node:fs";
 import { stderr, stdin, stdout } from "node:process";
 import { fileURLToPath } from "node:url";
 import { CompileError, compile } from "../index.js";
+import { escapeDirectionControls } from "../src/display.js";
 import { LIMITS, validateSourceLength } from "../src/parser.js";
 
 const usage = `Usage: regex-for-humans [options] [--] [file|-]
@@ -48,13 +49,13 @@ async function main() {
               code: "CLI_ERROR",
               message: error instanceof Error ? error.message : String(error),
             };
-      stderr.write(`${JSON.stringify({ error: detail })}\n`);
+      stderr.write(`${escapeDirectionControls(JSON.stringify({ error: detail }))}\n`);
     } else if (error instanceof CompileError) {
       stderr.write(
         `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}\n`,
       );
     } else {
-      stderr.write(`${String(error)}\n`);
+      stderr.write(`${escapeDirectionControls(String(error))}\n`);
     }
   }
 
@@ -66,8 +67,11 @@ async function main() {
 
   /** @param {string} message */
   function usageError(message) {
-    if (json) stderr.write(`${JSON.stringify({ error: { code: "CLI_USAGE", message } })}\n`);
-    else stderr.write(`${message}\n${usage}`);
+    if (json)
+      stderr.write(
+        `${escapeDirectionControls(JSON.stringify({ error: { code: "CLI_USAGE", message } }))}\n`,
+      );
+    else stderr.write(`${escapeDirectionControls(message)}\n${usage}`);
     process.exitCode = 2;
   }
 
@@ -140,7 +144,7 @@ async function main() {
     );
     const result = compile(input, { flags });
     if (json) {
-      stdout.write(`${JSON.stringify(result)}\n`);
+      stdout.write(`${escapeDirectionControls(JSON.stringify(result))}\n`);
     } else {
       stdout.write(`/${result.source}/${result.flags}\n`);
       if (explain) {

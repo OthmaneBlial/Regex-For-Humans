@@ -1,5 +1,6 @@
 import { anchor, atom } from "./ast.js";
 import { fail } from "./diagnostics.js";
+import { quoteText } from "./display.js";
 
 /** @typedef {import('./ast.js').Location} Location */
 /** @typedef {import('./ast.js').Repetition} Repetition */
@@ -319,7 +320,7 @@ function parseAtom(text, location, originalText) {
 
   fail(
     "UNKNOWN_RULE",
-    `Unsupported rule: ${JSON.stringify(originalText)}.`,
+    `Unsupported rule: ${quoteText(originalText)}.`,
     { line: location.line, column: location.column + offset },
     /^hex(?:\s|$)/i.test(remaining)
       ? "Use `hex digit` for one character or `hex digits` for one or more."

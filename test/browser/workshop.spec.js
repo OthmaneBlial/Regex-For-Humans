@@ -503,6 +503,67 @@ test("rule and example inputs request literal text entry and preserve typed case
   await expect(page.locator("#test-summary")).toHaveText("5 of 5 examples behave as expected");
 });
 
+test("direction controls are visible in output, trace, feedback and diagnostics without changing input", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: {
+        writeText: async (text) => {
+          window.copiedPattern = text;
+        },
+      },
+    });
+  });
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  const points = [
+    0x061c, 0x200e, 0x200f, 0x202a, 0x202b, 0x202c, 0x202d, 0x202e, 0x2066, 0x2067, 0x2068, 0x2069,
+  ];
+  const text = `A${String.fromCodePoint(...points)}B`;
+  const visible = `A${points.map((point) => `\\u${point.toString(16).padStart(4, "0")}`).join("")}B`;
+  const rules = `start ${JSON.stringify(text)}\nend`;
+  const editor = page.locator("#rules-input");
+  await editor.fill(rules);
+  expect(/\p{Bidi_Control}/u.test(await page.locator("#regex-output").textContent())).toBe(false);
+  await expect(page.locator("#regex-output")).toHaveText(`/^${visible}$/u`);
+  expect(/\p{Bidi_Control}/u.test(await page.locator("#trace-list").textContent())).toBe(false);
+  await expect(page.locator("#trace-list")).toContainText(`Literal text "${visible}".`);
+  const trace = page.getByRole("button", {
+    name: `Rule on line 1: Literal text "${visible}".. Select source line.`,
+    exact: true,
+  });
+  await trace.press("Enter");
+  await expect(editor).toBeFocused();
+  expect(
+    await editor.evaluate((input) => input.value.slice(input.selectionStart, input.selectionEnd)),
+  ).toBe(rules.split("\n")[0]);
+  await expect(editor).toHaveValue(rules);
+  const example = page.getByRole("textbox", { name: "Example 1 string", exact: true });
+  await example.fill(text);
+  await expect(example).toHaveValue(text);
+  const feedback = page.locator("#test-list .test-result").first();
+  await expect(feedback).toHaveText(`✓ Matched "${visible}" at 0`);
+  await page.locator("#copy-button").press("Enter");
+  await expect(page.locator("#copy-button")).toContainText("Copied");
+  expect(await page.evaluate(() => window.copiedPattern)).toBe(`/^${visible}$/u`);
+  await editor.fill(JSON.stringify(text));
+  await example.fill(`${text}tail`);
+  await expect(feedback).toHaveText(`! Found "${visible}", not the entire string`);
+  await page.locator("#match-mode").selectOption("search");
+  await expect(feedback).toHaveText(`✓ Matched "${visible}" at 0`);
+  await editor.fill(`unsupported${text}`);
+  await expect(page.locator("#compile-state")).toHaveText("Needs a fix");
+  expect(/\p{Bidi_Control}/u.test(await page.locator("#diagnostic").textContent())).toBe(false);
+  await expect(page.locator("#diagnostic")).toContainText(
+    `Unsupported rule: "unsupported${visible}".`,
+  );
+  await page.getByRole("button", { name: "Go to error", exact: true }).press("Enter");
+  expect(await editor.evaluate((input) => [input.selectionStart, input.selectionEnd])).toEqual([
+    0, 1,
+  ]);
+});
+
 test("positive and negative examples expose a changed outcome", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");

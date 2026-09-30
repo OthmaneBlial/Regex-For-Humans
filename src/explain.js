@@ -1,3 +1,5 @@
+import { quoteText } from "./display.js";
+
 /** @param {import('./ast.js').Repetition|null} repetition */
 function repetitionText(repetition) {
   if (!repetition) return "";
@@ -30,7 +32,7 @@ export function explainNode(node, flags, hasFollowingRule = false) {
         : `Longest text${context}, excluding line breaks.`;
     }
     if (node.atomType === "charSet") {
-      const characters = node.value.map((value) => JSON.stringify(value)).join(", ");
+      const characters = node.value.map(quoteText).join(", ");
       return `Longest text without ${characters}${caseNote}.`;
     }
   }
@@ -83,12 +85,12 @@ export function explainNode(node, flags, hasFollowingRule = false) {
       break;
     }
     case "literal":
-      meaning = `Literal text ${JSON.stringify(node.value)}${caseNote}.`;
+      meaning = `Literal text ${quoteText(node.value)}${caseNote}.`;
       break;
     case "charSet":
       meaning = node.negative
-        ? `Any character except ${node.value.map((value) => JSON.stringify(value)).join(", ")}${caseNote}.`
-        : `One of ${node.value.map((value) => JSON.stringify(value)).join(", ")}${caseNote}.`;
+        ? `Any character except ${node.value.map(quoteText).join(", ")}${caseNote}.`
+        : `One of ${node.value.map(quoteText).join(", ")}${caseNote}.`;
       break;
     default:
       throw new TypeError("Unknown atom type.");

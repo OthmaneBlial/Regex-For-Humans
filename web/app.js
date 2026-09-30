@@ -1,4 +1,5 @@
 import { CompileError, compile } from "../index.js";
+import { escapeDirectionControls } from "../src/display.js";
 import { splitLines } from "../src/parser.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 
@@ -115,7 +116,13 @@ function renderTrace(segments) {
     );
     button.append(make("code", "trace-fragment", segment.source));
     const detail = make("span");
-    detail.append(make("span", "trace-text", `${segment.line}:${segment.column} ${segment.text}`));
+    detail.append(
+      make(
+        "span",
+        "trace-text",
+        `${segment.line}:${segment.column} ${escapeDirectionControls(segment.text)}`,
+      ),
+    );
     detail.append(make("span", "trace-meaning", segment.explanation));
     button.append(detail);
     button.addEventListener("click", () => selectLine(segment.line));

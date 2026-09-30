@@ -153,6 +153,61 @@ test("lone surrogates survive UTF-8 transport in literals and character sets", (
   assert.equal(toRegExp(separateSurrogates).test("\ud800\udc00"), false);
 });
 
+test("direction controls have visible escapes without changing literal or class matching", () => {
+  for (const codePoint of [
+    0x061c, 0x200e, 0x200f, 0x202a, 0x202b, 0x202c, 0x202d, 0x202e, 0x2066, 0x2067, 0x2068, 0x2069,
+  ]) {
+    const character = String.fromCodePoint(codePoint);
+    const quoted = JSON.stringify(character);
+    const escaped = `\\u${codePoint.toString(16).padStart(4, "0")}`;
+    for (const flags of ["", "i", "s", "is"]) {
+      for (const [rule, source, sample, expected] of [
+        [quoted, escaped, character, true],
+        [`2 ${quoted}`, `${escaped}{2}`, character.repeat(2), true],
+        [`one of: ${quoted}`, `[${escaped}]`, character, true],
+        [`none of: ${quoted}`, `[^${escaped}]`, character, false],
+        [`text without: ${quoted}`, `[^${escaped}]*`, character, false],
+      ]) {
+        const result = compile(`start\n${rule}\nend`, { flags });
+        assert.equal(/\p{Bidi_Control}/u.test(result.source), false);
+        assert.equal(result.source, `^${source}$`);
+        assert.equal(toRegExp(result).test(sample), expected);
+        assert.equal(toRegExp(result).test("A"), !expected);
+        assert.equal(result.segments[1].text, rule);
+        assert.equal(/\p{Bidi_Control}/u.test(result.segments[1].explanation), false);
+        for (const segment of result.segments)
+          assert.equal(result.source.slice(segment.sourceStart, segment.sourceEnd), segment.source);
+      }
+    }
+  }
+  const text = "مرحبا שלום 👩‍💻";
+  assert.equal(compile(JSON.stringify(text)).source, text);
+  const escapedText = String.raw`\u202e`;
+  const escapedLiteral = toRegExp(compile(JSON.stringify(escapedText)));
+  assert.equal(escapedLiteral.test(escapedText), true);
+  assert.equal(escapedLiteral.test(String.fromCodePoint(0x202e)), false);
+});
+
+test("explanations and diagnostics expose direction controls while preserving original source positions", () => {
+  const character = String.fromCodePoint(0x202e);
+  const rules = JSON.stringify(`A${character}B`);
+  const result = compile(rules);
+  assert.equal(/\p{Bidi_Control}/u.test(result.segments[0].explanation), false);
+  assert.equal(result.segments[0].explanation, String.raw`Literal text "A\u202eB".`);
+  assert.equal(result.segments[0].text, rules);
+  assert.deepEqual([result.segments[0].line, result.segments[0].column], [1, 1]);
+  assert.throws(
+    () => compile(`digit\n  unsupported${character}words`),
+    (error) => {
+      assert.ok(error instanceof CompileError);
+      assert.equal(/\p{Bidi_Control}/u.test(error.message), false);
+      assert.equal(error.message, String.raw`Unsupported rule: "unsupported\u202ewords".`);
+      assert.deepEqual([error.code, error.line, error.column], ["UNKNOWN_RULE", 2, 3]);
+      return true;
+    },
+  );
+});
+
 test("flags and segment positions describe the emitted expression", () => {
   const result = compile("line start\nany character\nline end", {
     flags: "is",

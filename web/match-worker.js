@@ -1,3 +1,4 @@
+import { escapeDirectionControls, quoteText } from "../src/display.js";
 import { LIMITS } from "../src/parser.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestRequest} TestRequest */
@@ -41,8 +42,8 @@ self.onmessage = (event) => {
         mode === "search"
           ? match !== null
           : match !== null && match.index === 0 && match[0].length === sample.text.length;
-      let detail = match ? `Matched ${JSON.stringify(match[0])} at ${match.index}` : "No match";
-      if (match && !actual) detail = `Found ${JSON.stringify(match[0])}, not the entire string`;
+      let detail = match ? `Matched ${quoteText(match[0])} at ${match.index}` : "No match";
+      if (match && !actual) detail = `Found ${quoteText(match[0])}, not the entire string`;
       return { id: sample.id, actual, pass: actual === sample.expected, detail };
     });
     /** @type {WorkerReply} */
@@ -50,7 +51,10 @@ self.onmessage = (event) => {
     self.postMessage(reply);
   } catch (error) {
     /** @type {WorkerReply} */
-    const reply = { id, error: error instanceof Error ? error.message : String(error) };
+    const reply = {
+      id,
+      error: escapeDirectionControls(error instanceof Error ? error.message : String(error)),
+    };
     self.postMessage(reply);
   }
 };
