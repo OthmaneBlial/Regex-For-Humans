@@ -294,6 +294,15 @@ test("counts on anchors point to the anchor", () => {
 test("quoted literal and character-list items keep punctuation as data", () => {
   assert.equal(parse('"a.b"').nodes[0].value, "a.b");
   assert.deepEqual(parse('one of: "]", "-", ",", "\\\\"').nodes[0].value, ["]", "-", ",", "\\"]);
+  for (const trailing of ["   ", "\t ", "\u00a0 "]) {
+    const literal = parse(`  start 2 "😀 "${trailing}`).nodes[1];
+    assert.equal(literal.value, "😀 ");
+    assert.equal(literal.text, '2 "😀 "');
+    assert.deepEqual(literal.location, { line: 1, column: 9 });
+    const list = parse(`  start one of: "a", "😀"${trailing}`).nodes[1];
+    assert.deepEqual(list.value, ["a", "😀"]);
+    assert.equal(list.text, 'one of: "a", "😀"');
+  }
   assert.throws(() => parse('"bad\\q"'), { code: "INVALID_QUOTE" });
   assert.throws(() => parse('""'), { code: "EMPTY_LITERAL" });
   assert.throws(() => parse("one of:"), { code: "EMPTY_CHARACTER_LIST" });
@@ -333,6 +342,34 @@ one of: "a", "bad\q"`;
     () => parse(list),
     (error) => error.code === "INVALID_QUOTE" && error.line === 2 && error.column === 18,
   );
+  for (const prefix of [
+    "",
+    "start ",
+    "start 2 ",
+    "start between 0 and 4 ",
+    "one of: a, ",
+    "none of: a, ",
+    "text without: a, ",
+  ]) {
+    for (const trailing of ["   ", "\u00a0 ", "\u2003 "]) {
+      const line = `  ${prefix}"😀${trailing}`;
+      assert.throws(() => parse(`\n${line}`), {
+        code: "INVALID_QUOTE",
+        message: "Missing closing double quote.",
+        line: 2,
+        column: line.length + 1,
+      });
+    }
+    for (const control of ["\t", "\r", "\n", "\v", "\f"]) {
+      const line = `  ${prefix}"😀${control} `;
+      assert.throws(() => parse(`\n${line}`), {
+        code: "INVALID_QUOTE",
+        message: "Escape control characters inside quoted values.",
+        line: 2,
+        column: line.indexOf(control) + 1,
+      });
+    }
+  }
 });
 
 test("trailing literal text points to its first unexpected character", () => {

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Validate quoted values against their original source line so trailing whitespace does not hide control characters or move missing-quote diagnostics away from the actual line end.
+
 - Preserve newly focused inputs and selected text when a delayed homepage or workshop clipboard request fails or times out.
 
 - Select the requested homepage snippet for keyboard copying when clipboard access is missing, blocked or stalled, while retaining button focus and ignoring outdated requests.

@@ -88,6 +88,9 @@ const directional = compile(${JSON.stringify(directionRules)});
 if (directional.source !== ${JSON.stringify(directionSource)} || !toRegExp(directional).test(${JSON.stringify(directionText)}) || directional.segments[0].text !== ${JSON.stringify(directionRules)}) throw new Error("Wrong direction-control behavior");
 const controlled = compile(${JSON.stringify(controlRules)});
 if (/[\\p{Control}\\u2028\\u2029]/u.test(controlled.source + controlled.segments[0].explanation) || !toRegExp(controlled).test(${JSON.stringify(controlText)}) || controlled.segments[0].text !== ${JSON.stringify(controlRules)}) throw new Error("Wrong control display or matching behavior");
+const unfinished = ${JSON.stringify('start 2 "😀   ')};
+try { compile(unfinished); throw new Error("Unfinished quote accepted"); }
+catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_QUOTE" || error.column !== unfinished.length + 1) throw error; }
 try { compile("unsupported words"); throw new Error("Unknown rule accepted"); }
 catch (error) { if (!(error instanceof CompileError)) throw error; }
 `,

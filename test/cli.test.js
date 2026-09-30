@@ -425,6 +425,32 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   assert.equal(run(["--bogus"]).status, 2);
 });
 
+test("CLI preserves original quote error positions after trailing whitespace", () => {
+  for (const prefix of ["start 2 ", "none of: a, ", "text without: a, "]) {
+    for (const trailing of ["   ", "\u00a0 ", "\t "]) {
+      const line = `  ${prefix}"😀${trailing}`;
+      const rules = `\n${line}`;
+      const control = trailing.includes("\t");
+      const detail = {
+        code: "INVALID_QUOTE",
+        message: control
+          ? "Escape control characters inside quoted values."
+          : "Missing closing double quote.",
+        line: 2,
+        column: control ? line.indexOf("\t") + 1 : line.length + 1,
+      };
+      const structured = run(["--json", "-"], rules);
+      assert.equal(structured.status, 1);
+      assert.equal(structured.stdout, "");
+      assert.deepEqual(JSON.parse(structured.stderr), { error: detail });
+      const plain = run(["-"], rules);
+      assert.equal(plain.status, 1);
+      assert.equal(plain.stdout, "");
+      assert.equal(plain.stderr, `Line 2, column ${detail.column}: ${detail.message}\n`);
+    }
+  }
+});
+
 test("CLI reports malformed and incomplete exact counts with structured repair hints", () => {
   for (const [rules, message, hint, line, column] of [
     [

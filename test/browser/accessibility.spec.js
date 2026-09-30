@@ -161,6 +161,11 @@ test("a diagnostic can focus its exact source position from the keyboard", async
     ['start "😀"\u2028  unexpected words', "unexpected"],
     ['start "😀"\n"bad\\q"', "\\q"],
     ['start "😀"\n"missing', null],
+    ['start "😀"\n"missing   ', null],
+    ['start 2 "missing\u00a0 ', null],
+    ['start "😀"\none of: "missing   ', null],
+    ['start "😀"\ntext without: a, "missing   ', null],
+    ['start "😀"\nnone of: a, "bad\t ', "\t"],
   ]) {
     await editor.fill(rules);
     await page.getByRole("button", { name: "Go to error", exact: true }).press("Enter");

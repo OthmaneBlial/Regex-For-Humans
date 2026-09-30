@@ -87,6 +87,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
         <div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">BOUNDARIES</p><h2 id="flags-title">Flags and limits</h2></div></div>
         <div class="guide-facts"><div><strong><code>u</code> always</strong><p>Unicode regex mode is always enabled.</p></div><div><strong><code>i</code> and <code>s</code> optional</strong><p>Choose ignore case or dot matches newlines in the workshop or CLI.</p></div><div><strong><code>m</code> from line anchors</strong><p>Line anchors enable multiline behavior automatically.</p></div></div>
         <p>Rules are limited to 16,384 UTF-16 code units, 200 lines and numeric repetition counts up to 1,000. The workshop limits example strings and runs matching in a time-limited worker. These limits do not guarantee that a copied regex is fast in another program.</p>
+        <p>A missing closing quote points to the actual line end, including trailing spaces. Raw control characters inside unfinished quotes still report their own position. Whitespace after a closed quoted value is ignored.</p>
         <p>Groups, alternation, lookaround, raw regex injection and other regex engines are outside this language version. Read the <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">full language contract ↗</a>, or the <a href="../docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">local Markdown source ↗</a> when offline.</p>
       </section>
 

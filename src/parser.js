@@ -133,8 +133,8 @@ function readQuoted(text, location) {
   return failAt("Missing closing double quote.", text.length);
 }
 
-/** @param {string} text @param {Location} location @returns {string[]} */
-function readCharacterList(text, location) {
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {string[]} */
+function readCharacterList(text, location, rawLine) {
   const items = [];
   let index = 0;
   while (index < text.length) {
@@ -143,7 +143,7 @@ function readCharacterList(text, location) {
     const itemStart = index;
     let value;
     if (text[index] === '"') {
-      const quoted = readQuoted(text.slice(index), {
+      const quoted = readQuoted(rawLine.slice(location.column - 1 + index), {
         line: location.line,
         column: location.column + index,
       });
@@ -184,8 +184,8 @@ function readCharacterList(text, location) {
   return items;
 }
 
-/** @param {string} text @param {Location} location @param {string} originalText @returns {AtomNode} */
-function parseAtom(text, location, originalText) {
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode} */
+function parseAtom(text, location, rawLine) {
   let remaining = text;
   /** @type {Repetition|null} */
   let repetition = null;
@@ -260,28 +260,30 @@ function parseAtom(text, location, originalText) {
       });
     }
     if (textWithout) {
-      const values = readCharacterList(remaining.slice(textWithout[0].length), {
-        line: location.line,
-        column: location.column + textWithout[0].length,
-      });
-      return atom("charSet", values, { kind: "zeroOrMore" }, location, originalText, true);
+      const values = readCharacterList(
+        remaining.slice(textWithout[0].length),
+        {
+          line: location.line,
+          column: location.column + textWithout[0].length,
+        },
+        rawLine,
+      );
+      return atom("charSet", values, { kind: "zeroOrMore" }, location, text, true);
     }
-    return atom("wildcard", ".", { kind: "zeroOrMore" }, location, originalText);
+    return atom("wildcard", ".", { kind: "zeroOrMore" }, location, text);
   }
 
-  if (/^any character$/i.test(remaining))
-    return atom("wildcard", ".", repetition, location, originalText);
+  if (/^any character$/i.test(remaining)) return atom("wildcard", ".", repetition, location, text);
   for (const [phrase, token] of SHORTHANDS) {
     if (remaining.toLowerCase() === phrase) {
       if (["digits", "hex digits", "letters"].includes(phrase) && !repetition)
         repetition = { kind: "oneOrMore" };
-      return atom("shorthand", token, repetition, location, originalText);
+      return atom("shorthand", token, repetition, location, text);
     }
   }
 
-  const literal = remaining.startsWith('"') ? remaining : null;
-  if (literal !== null) {
-    const quoted = readQuoted(literal, {
+  if (remaining.startsWith('"')) {
+    const quoted = readQuoted(rawLine.slice(location.column - 1 + offset), {
       line: location.line,
       column: location.column + offset,
     });
@@ -299,28 +301,32 @@ function parseAtom(text, location, originalText) {
         column: location.column + offset,
       });
     }
-    return atom("literal", quoted.value, repetition, location, originalText);
+    return atom("literal", quoted.value, repetition, location, text);
   }
 
   const classPrefix = /^(one of:|none of:)\s*/i.exec(remaining);
   if (classPrefix) {
-    const values = readCharacterList(remaining.slice(classPrefix[0].length), {
-      line: location.line,
-      column: location.column + offset + classPrefix[0].length,
-    });
+    const values = readCharacterList(
+      remaining.slice(classPrefix[0].length),
+      {
+        line: location.line,
+        column: location.column + offset + classPrefix[0].length,
+      },
+      rawLine,
+    );
     return atom(
       "charSet",
       values,
       repetition,
       location,
-      originalText,
+      text,
       classPrefix[1].toLowerCase() === "none of:",
     );
   }
 
   fail(
     "UNKNOWN_RULE",
-    `Unsupported rule: ${quoteText(originalText)}.`,
+    `Unsupported rule: ${quoteText(text)}.`,
     { line: location.line, column: location.column + offset },
     /^hex(?:\s|$)/i.test(remaining)
       ? "Use `hex digit` for one character or `hex digits` for one or more."
@@ -389,7 +395,7 @@ export function parse(source) {
     }
     if (sawEnd) fail("MISPLACED_ANCHOR", "End anchor must be the last rule.", location());
 
-    nodes.push(parseAtom(text, location(), text));
+    nodes.push(parseAtom(text, location(), raw));
   }
 
   if (nodes.length === 0)
