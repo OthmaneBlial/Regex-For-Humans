@@ -208,6 +208,10 @@ function renderTests() {
     const number = index + 1;
     const row = make("div", "test-row");
     const input = make("textarea");
+    input.spellcheck = false;
+    input.autocomplete = "off";
+    input.autocapitalize = "off";
+    input.setAttribute("autocorrect", "off");
     input.rows = Math.min(3, Math.max(1, sample.text.split("\n").length));
     input.value = sample.text;
     input.placeholder = "Empty string";

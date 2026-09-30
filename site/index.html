@@ -10,7 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css?v=e523c91db551">
   <link rel="preload" href="./assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <script type="module" src="./app.js?v=c291dcaf4c9d"></script>
+  <script type="module" src="./app.js?v=c1740c693e49"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -36,7 +36,7 @@ end</code></pre></div>
         <div class="connector" aria-hidden="true">↓ same rules, different language ↓</div>
         <div class="code-block regex-block"><div class="code-label"><span>02 / THE REGEX BIT</span><button type="button" data-copy="regex-code" disabled>Copy regex</button></div><pre><code id="regex-code">/^#[0-9A-Fa-f]{6}$/u</code></pre></div>
         <div id="demo-samples" class="sample-chips"><span>✓ <code>#12aBcF</code></span><span class="no-match">× <code>#123</code></span></div>
-        <div class="try-sample"><label for="demo-input">Your turn. Does it match?</label><div><input id="demo-input" type="text" value="#ff6b6b" maxlength="80" autocomplete="off" spellcheck="false" aria-describedby="demo-result" disabled><output id="demo-result" for="demo-input" aria-live="polite">Not checked</output></div></div>
+        <div class="try-sample"><label for="demo-input">Your turn. Does it match?</label><div><input id="demo-input" type="text" value="#ff6b6b" maxlength="80" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-describedby="demo-result" disabled><output id="demo-result" for="demo-input" aria-live="polite">Not checked</output></div></div>
         <noscript><p>The demo needs JavaScript. You can still read the patterns and copy them manually.</p></noscript>
         <p id="demo-note">Six hex digits after #, in either letter case. Only #RRGGBB; no shorthand, alpha or other CSS color forms.</p>
         <a id="demo-open" class="demo-open" href="./workshop/?example=hex-color">Edit this in the workshop ↗</a>

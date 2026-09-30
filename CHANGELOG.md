@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Request literal text entry without spelling checks, completion, automatic capitalization or autocorrection in rules, examples and the homepage demo.
+
 - Make the accessible-label regression wait for recipe rendering instead of racing its asynchronous response.
 
 - Copy linked files into independent static-build outputs before versioning them, so building the workshop leaves their original targets unchanged.

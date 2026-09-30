@@ -225,6 +225,30 @@ test("homepage requests a versioned compiler and skips an obsolete cached module
   expect(errors).toEqual([]);
 });
 
+test("homepage demo requests literal text entry and preserves typed case", async ({ page }) => {
+  await page.goto("/");
+  const recipe = page.locator('[data-recipe="prefixed-identifier"]');
+  await expect(recipe).toBeEnabled();
+  await recipe.click();
+  const input = page.locator("#demo-input");
+  for (const [attribute, value] of [
+    ["spellcheck", "false"],
+    ["autocomplete", "off"],
+    ["autocapitalize", "off"],
+    ["autocorrect", "off"],
+  ]) {
+    await expect(input).toHaveAttribute(attribute, value);
+  }
+  await input.fill("");
+  await input.pressSequentially("abc123");
+  await expect(input).toHaveValue("abc123");
+  await expect(page.locator("#demo-result")).toHaveText("× No match");
+  await input.fill("");
+  await input.pressSequentially("ABC123");
+  await expect(input).toHaveValue("ABC123");
+  await expect(page.locator("#demo-result")).toHaveText("✓ Match");
+});
+
 test("landing recipes compile with the real library and copy the current rules and regex", async ({
   page,
 }) => {

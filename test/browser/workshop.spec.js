@@ -466,6 +466,43 @@ test("trace selection and rule count use the compiler's line separators", async 
   }
 });
 
+test("rule and example inputs request literal text entry and preserve typed case and punctuation", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  for (const add of [false, true]) {
+    if (add) await page.locator("#add-example").click();
+    for (const input of await page.locator("#rules-input, #test-list textarea").all()) {
+      for (const [attribute, value] of [
+        ["spellcheck", "false"],
+        ["autocomplete", "off"],
+        ["autocapitalize", "off"],
+        ["autocorrect", "off"],
+      ]) {
+        await expect(input).toHaveAttribute(attribute, value);
+      }
+    }
+  }
+  const text = "teh.A_b/7";
+  await page.locator("#rules-input").fill(`start ${JSON.stringify(text)}\nend`);
+  const first = page.locator("#test-list textarea").first();
+  await first.fill("");
+  await first.pressSequentially(text);
+  await expect(first).toHaveValue(text);
+  const added = page.locator("#test-list textarea").last();
+  await added.pressSequentially(text);
+  await expect(added).toHaveValue(text);
+  await expect(page.locator("#test-list .test-row .test-result").first()).toContainText(
+    `Matched ${JSON.stringify(text)} at 0`,
+  );
+  await expect(page.locator("#test-summary")).toHaveText("5 of 5 examples behave as expected");
+  await first.fill("Teh.A_b/7");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 5 examples behave as expected");
+  await first.fill(text);
+  await expect(page.locator("#test-summary")).toHaveText("5 of 5 examples behave as expected");
+});
+
 test("positive and negative examples expose a changed outcome", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
