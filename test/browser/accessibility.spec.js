@@ -71,6 +71,21 @@ test("a diagnostic can focus its exact source position from the keyboard", async
       await editor.evaluate((input) => ({ start: input.selectionStart, end: input.selectionEnd })),
     ).toEqual({ start: position, end: position + Number(marker !== null) });
   }
+  const longRules = `${"digit\n".repeat(199)}unsupported words`;
+  await editor.fill(longRules);
+  await editor.evaluate((input) => {
+    input.scrollTop = 0;
+  });
+  await page.getByRole("button", { name: "Go to error", exact: true }).press("Enter");
+  await expect(editor).toBeFocused();
+  expect(await editor.evaluate((input) => input.selectionStart)).toBe(
+    longRules.indexOf("unsupported"),
+  );
+  await expect
+    .poll(() =>
+      editor.evaluate((input) => input.scrollHeight - input.clientHeight - input.scrollTop),
+    )
+    .toBeLessThanOrEqual(1);
   await editor.fill("digit");
   await expect(page.getByRole("button", { name: "Go to error", exact: true })).toHaveCount(0);
 });
