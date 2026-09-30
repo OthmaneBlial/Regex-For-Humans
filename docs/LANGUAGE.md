@@ -40,6 +40,8 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 
 A literal is a JSON-style double-quoted string. Escape `"` and `\\`; the compiler escapes regex metacharacters. Character-list items must each be one Unicode code point. Quote punctuation, commas, spaces and backslashes, as in `"]", "-", ",", "\\"`. Empty literals and lists are errors.
 
+An empty literal such as `""` reports `EMPTY_LITERAL` at its opening quote and suggests `start` and `end` on separate lines. Those anchors produce `^$`, matching only empty input. A quoted space is still a valid literal, and an empty character-list item still reports the one-code-point requirement.
+
 Single quotes, backticks and smart quotes are not string delimiters. Unsupported quoted literals such as `'ABC'` and multi-character list entries such as `one of: 'A'` suggest JSON double quotes, for example `"A"`. Their error codes and source locations remain unchanged. These quote characters are still valid matching data inside a JSON string or as individual one-code-point list items. An already JSON-quoted list item with several code points still reports the one-code-point requirement without a quote-style hint.
 
 Whitespace after a closed quoted value is ignored. An unfinished quoted value retains its trailing whitespace for validation: a missing quote points to the actual line end, while raw control characters such as a tab still report their own position. This applies to literals and quoted character-list items, including after an anchor or count.

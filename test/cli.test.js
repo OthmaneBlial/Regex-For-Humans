@@ -24,6 +24,39 @@ function run(args, input) {
   return spawnSync(process.execPath, [cli, ...args], { input, encoding: "utf8" });
 }
 
+test("CLI empty-literal diagnostics include a usable repair in text and JSON", () => {
+  const line = '  start between 0 and 1 ""';
+  const hint = "Use `start` and `end` on separate lines to match an empty string.";
+  for (const json of [false, true]) {
+    const result = run(json ? ["--json", "-"] : ["-"], `\n${line}`);
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, "");
+    if (json) {
+      assert.deepEqual(JSON.parse(result.stderr), {
+        error: {
+          code: "EMPTY_LITERAL",
+          message: "A literal cannot be empty.",
+          line: 2,
+          column: line.indexOf('""') + 1,
+          hint,
+        },
+      });
+    } else {
+      assert.equal(
+        result.stderr,
+        `Line 2, column ${line.indexOf('""') + 1}: A literal cannot be empty.\n${hint}\n`,
+      );
+    }
+  }
+  const repaired = run(["--json", "-"], "start\nend");
+  assert.equal(repaired.status, 0, repaired.stderr);
+  const result = JSON.parse(repaired.stdout);
+  assert.equal(result.source, "^$");
+  const regex = new RegExp(result.source, result.flags);
+  assert.equal(regex.test(""), true);
+  for (const text of [" ", "A", "\n"]) assert.equal(regex.test(text), false, JSON.stringify(text));
+});
+
 test("CLI help includes a working first-use example and exit codes", () => {
   const result = run(["--help"]);
   assert.equal(result.status, 0);

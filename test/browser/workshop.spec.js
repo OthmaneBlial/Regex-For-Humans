@@ -20,6 +20,37 @@ async function openBeforeWorkshopAppLoads(page) {
   return release;
 }
 
+test("empty literals explain how to match empty input and recover", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const editor = page.locator("#rules-input");
+  for (const rules of ['""', '\n  start 3 ""', 'between 0 and 1 ""']) {
+    await editor.fill(rules);
+    await expect(page.locator("#diagnostic")).toContainText("A literal cannot be empty.");
+    await expect(page.locator("#diagnostic")).toContainText(
+      "Use `start` and `end` on separate lines to match an empty string.",
+    );
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#copy-button")).toBeDisabled();
+    await page.getByRole("button", { name: "Go to error", exact: true }).click();
+    const position = rules.indexOf('""');
+    expect(await editor.evaluate((input) => [input.selectionStart, input.selectionEnd])).toEqual([
+      position,
+      position + 1,
+    ]);
+  }
+  await editor.fill("start\nend");
+  await expect(page.locator("#regex-output")).toHaveText("/^$/u");
+  await expect(page.locator("#diagnostic")).toBeHidden();
+  await expect(editor).toHaveAttribute("aria-invalid", "false");
+  await expect(page.locator("#copy-button")).toBeEnabled();
+  await page.locator("#test-list textarea").first().fill("");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  await expect(page.locator("#test-list .test-result").first()).toHaveText('✓ Matched "" at 0');
+  await page.locator("#test-list textarea").first().fill("\n");
+  await expect(page.locator("#test-list .test-result").first()).toHaveText("! No match");
+});
+
 test("phone shape teaches an optional plus and supports requiring it", async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "clipboard", {

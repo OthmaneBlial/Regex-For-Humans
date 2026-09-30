@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Suggest whole-input anchors when an empty literal is rejected, preserving its error code and quote location; verify repair through the parser, CLI and workshop.
+
 - Describe each example's match feedback on its expected-result selector, including focused expectation changes, rule repairs and input-length errors.
 
 - Align the release preflight with local artifact verification and the existing owner Pages deployment, keeping source-repository GitHub Actions disabled.

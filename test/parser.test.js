@@ -8,6 +8,25 @@ const scenarios = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("empty literals suggest whole-input anchors without changing diagnostic locations", () => {
+  for (const prefix of ["", "3 ", "between 0 and 1 ", "start ", "start, 2 ", "line start "]) {
+    const line = `  ${prefix}""`;
+    assert.throws(() => parse(`\n${line}`), {
+      code: "EMPTY_LITERAL",
+      message: "A literal cannot be empty.",
+      line: 2,
+      column: line.indexOf('""') + 1,
+      hint: "Use `start` and `end` on separate lines to match an empty string.",
+    });
+  }
+  assert.deepEqual(
+    parse("start\nend").nodes.map(({ kind }) => kind),
+    ["anchor", "anchor"],
+  );
+  assert.equal(parse('" "').nodes[0].value, " ");
+  assert.throws(() => parse('one of: ""'), { code: "INVALID_CHARACTER" });
+});
+
 test("all reference scenarios parse into ordered instructions", () => {
   for (const scenario of scenarios) {
     const { nodes } = parse(scenario.rules);

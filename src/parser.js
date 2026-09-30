@@ -300,10 +300,12 @@ function parseAtom(text, location, rawLine) {
       });
     }
     if (!quoted.value) {
-      fail("EMPTY_LITERAL", "A literal cannot be empty.", {
-        line: location.line,
-        column: location.column + offset,
-      });
+      fail(
+        "EMPTY_LITERAL",
+        "A literal cannot be empty.",
+        { line: location.line, column: location.column + offset },
+        "Use `start` and `end` on separate lines to match an empty string.",
+      );
     }
     return atom("literal", quoted.value, repetition, location, text);
   }

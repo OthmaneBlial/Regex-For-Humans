@@ -101,6 +101,10 @@ for (const [rules, code, column] of ${JSON.stringify([
 }
 const quoteData = ${JSON.stringify("'A'")};
 if (!toRegExp(compile(JSON.stringify(quoteData))).test(quoteData)) throw new Error("Quote data changed");
+try { compile('start 3 ""'); throw new Error("Empty literal accepted"); }
+catch (error) { if (!(error instanceof CompileError) || error.code !== "EMPTY_LITERAL" || error.column !== 9 || error.hint !== ${JSON.stringify("Use `start` and `end` on separate lines to match an empty string.")}) throw error; }
+const emptyPattern = toRegExp(compile(${JSON.stringify("start\nend")}));
+if (!emptyPattern.test("") || emptyPattern.test(${JSON.stringify("\n")})) throw new Error("Empty-input repair changed");
 try { compile("unsupported words"); throw new Error("Unknown rule accepted"); }
 catch (error) { if (!(error instanceof CompileError)) throw error; }
 `,
