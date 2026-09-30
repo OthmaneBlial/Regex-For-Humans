@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const output = join(root, "dist");
+// Node 25.9.0's recursive fast path preserves symlinks; a filter selects the JS path.
+const copyOptions = { recursive: true, dereference: true, filter: () => true };
 const { version } = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const buildLabel = version.includes("-") ? `DEV · ${version}` : `v${version}`;
 
@@ -39,18 +41,19 @@ function versionJavaScript(directory) {
 
 rmSync(output, { recursive: true, force: true });
 mkdirSync(output, { recursive: true });
-cpSync(join(root, "web"), join(output, "web"), { recursive: true, force: true });
-cpSync(join(root, "src"), join(output, "src"), { recursive: true, force: true });
-cpSync(join(root, "docs"), join(output, "docs"), { recursive: true, force: true });
+cpSync(join(root, "web"), join(output, "web"), copyOptions);
+cpSync(join(root, "src"), join(output, "src"), copyOptions);
+cpSync(join(root, "docs"), join(output, "docs"), copyOptions);
 for (const name of ["README.md", "CHANGELOG.md", "SECURITY.md", "LICENSE"]) {
-  cpSync(join(root, name), join(output, name));
+  cpSync(join(root, name), join(output, name), copyOptions);
 }
 mkdirSync(join(output, "test", "fixtures"), { recursive: true });
 cpSync(
   join(root, "test", "fixtures", "product-scenarios.json"),
   join(output, "test", "fixtures", "product-scenarios.json"),
+  copyOptions,
 );
-cpSync(join(root, "index.js"), join(output, "index.js"));
+cpSync(join(root, "index.js"), join(output, "index.js"), copyOptions);
 versionJavaScript(join(output, "web"));
 versionJavaScript(join(output, "src"));
 writeFileSync(

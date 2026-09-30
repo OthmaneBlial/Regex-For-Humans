@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Copy linked files into independent static-build outputs before versioning them, so building the workshop leaves their original targets unchanged.
+
 - Reject local-server symlinks whose resolved targets escape the selected static root, while keeping in-root links and a symlinked root usable.
 
 - Report the actual local development server port when port `0` lets the operating system choose one.

@@ -51,6 +51,8 @@ Node tests cover the public API, parser diagnostics, every instruction and repet
 
 Local-server regressions start temporary static roots on operating-system-assigned ports. They verify the reported loopback URL, index and nested asset responses, MIME types, `nosniff` and missing-file status. Temporary directory links verify that a symlinked root and in-root targets remain usable, while outside targets and encoded traversal return `403` without file content. Each test stops its server and removes its temporary files.
 
+A temporary static-build regression links modules, HTML, CSS, documentation and recipe data to original files outside its fixture project. It verifies that the outputs are regular files, versioned module and HTML references are correct, and the original targets remain unchanged. This case skips on Windows only if the OS denies file-symlink creation.
+
 Entire-string regressions verify that a partial greedy match can backtrack to cover the full example, while search mode retains the first match. They include overlapping repeated literals, zero counts, upper bounds, final newlines and line-mode suffix matches. The worker timeout check also covers expensive backtracking introduced by retrying a partial match against the whole input.
 
 Worker-controller regressions cover startup failures as rejected `WORKER_ERROR` promises, cancellation of a previous run, recovery and request-ID ownership. Real-worker browser checks verify that extra top-level payload IDs do not cause false timeouts and that example IDs remain intact.
