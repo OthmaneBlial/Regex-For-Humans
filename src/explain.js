@@ -4,6 +4,8 @@ function repetitionText(repetition) {
   switch (repetition.kind) {
     case "exact":
       return ` Exactly ${repetition.min} times.`;
+    case "range":
+      return ` Between ${repetition.min} and ${repetition.max} times (inclusive).`;
     default:
       throw new TypeError("Unexpected repetition kind.");
   }
@@ -40,6 +42,9 @@ export function explainNode(node, flags, hasFollowingRule = false) {
     if (node.repetition?.kind === "exact") {
       const digits = node.repetition.min === 1 ? digit : `${digit}s`;
       return `Exactly ${node.repetition.min} ${digits} (${range}).`;
+    }
+    if (node.repetition?.kind === "range") {
+      return `Between ${node.repetition.min} and ${node.repetition.max} ${digit}s (${range}), inclusive.`;
     }
     return `One ${digit} (${range}).`;
   }

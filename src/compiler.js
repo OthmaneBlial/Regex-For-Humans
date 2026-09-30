@@ -44,6 +44,8 @@ function repetitionSource(repetition) {
       return "+";
     case "exact":
       return `{${repetition.min}}`;
+    case "range":
+      return `{${repetition.min},${repetition.max}}`;
     default:
       throw new TypeError("Unknown repetition kind.");
   }

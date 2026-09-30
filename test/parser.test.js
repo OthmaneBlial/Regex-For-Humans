@@ -57,6 +57,80 @@ test("exact counts stay before one rule and validate their limit", () => {
   });
 });
 
+test("bounded counts apply to one atom and retain the original location", () => {
+  const line = "  START, Between\t02 And 4 HEX DIGITS";
+  const node = parse(`\n${line}\nend`).nodes[1];
+  assert.equal(node.value, "[0-9A-Fa-f]");
+  assert.deepEqual(node.repetition, { kind: "range", min: 2, max: 4 });
+  assert.deepEqual(node.location, { line: 2, column: line.indexOf("Between") + 1 });
+  for (const [min, max] of [
+    [0, 0],
+    [0, 1],
+    [3, 3],
+    [0, 1000],
+  ]) {
+    assert.deepEqual(parse(`between ${min} and ${max} digit`).nodes[0].repetition, {
+      kind: "range",
+      min,
+      max,
+    });
+  }
+});
+
+test("bounded count errors point to invalid bounds or incomplete syntax", () => {
+  for (const [rules, code, marker] of [
+    ["start between 4 and 2 digits", "INVALID_RANGE", "2"],
+    ["between -1 and 4 digits", "INVALID_REPETITION", "-1"],
+    ["between 1.5 and 4 digits", "INVALID_REPETITION", "1.5"],
+    ["between two and 4 digits", "INVALID_REPETITION", "two"],
+    ["between 2 and -4 digits", "INVALID_REPETITION", "-4"],
+    ["between 2 and 0x4 digits", "INVALID_REPETITION", "0x4"],
+    ["between 2 and Infinity digits", "INVALID_REPETITION", "Infinity"],
+    ["between 1001 and 1002 digits", "REPETITION_LIMIT", "1001"],
+    ["between 2 and 1001 digits", "REPETITION_LIMIT", "1001"],
+    ["between 2 and 9007199254740992 digits", "REPETITION_LIMIT", "9007199254740992"],
+    ["between 2 to 4 digits", "INVALID_REPETITION", "between"],
+    ["between 2 and 4", "INVALID_REPETITION", "between"],
+  ]) {
+    assert.throws(
+      () => parse(rules),
+      {
+        code,
+        line: 1,
+        column: rules.indexOf(marker) + 1,
+      },
+      rules,
+    );
+  }
+});
+
+test("bounded counts preserve duplicate, anchor and atom diagnostics", () => {
+  for (const [rules, code, marker] of [
+    ["between 2 and 4 3 digits", "DUPLICATE_REPETITION", "3 digits"],
+    ["3 between 2 and 4 digits", "DUPLICATE_REPETITION", "between"],
+    ["between 2 and 4 between 1 and 3 digits", "DUPLICATE_REPETITION", "between 1"],
+    ["between 2 and 4 line start", "ANCHOR_REPETITION", "line start"],
+    ["start between 2 and 4 end", "ANCHOR_REPETITION", "end"],
+    ["between 2 and 4 any text", "DUPLICATE_REPETITION", "any text"],
+    ["between 2 and 4 text without: a", "DUPLICATE_REPETITION", "text without"],
+    [String.raw`between 2 and 4 "bad\q"`, "INVALID_QUOTE", "\\q"],
+    ['between 2 and 4 ""', "EMPTY_LITERAL", '""'],
+    ['between 2 and 4 "A" extra', "TRAILING_TEXT", "extra"],
+    ["between 2 and 4 one of: a, bc", "INVALID_CHARACTER", "bc"],
+    ["between 2 and 4 hex characters", "UNKNOWN_RULE", "hex"],
+  ]) {
+    assert.throws(
+      () => parse(rules),
+      {
+        code,
+        line: 1,
+        column: rules.indexOf(marker) + 1,
+      },
+      rules,
+    );
+  }
+});
+
 test("an excessive repetition count points to the count", () => {
   const count = String(LIMITS.repetition + 1);
   const rules = `${count} digit`;

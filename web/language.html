@@ -69,10 +69,13 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
 
       <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">
         <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one thing</h2></div></div>
-        <p>Put exact counts first: <code>3 digits</code> generates <code>\d{3}</code>, and <code>6 hex digits</code> generates <code>[0-9A-Fa-f]{6}</code>. <code>digits</code> and <code>hex digits</code> mean one or more of their characters. <code>any text</code> and <code>text without</code> already match sequences.</p>
+        <p>Put counts or ranges first: <code>3 digits</code> generates <code>\d{3}</code>, and <code>between 2 and 4 digits</code> generates <code>\d{2,4}</code>. <code>digits</code> and <code>hex digits</code> mean one or more unless a count or range replaces that default. <code>any text</code> and <code>text without</code> already match sequences.</p>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Form</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
           <tr><td><code>3 &lt;item&gt;</code> (for example, <code>3 digits</code>)</td><td><code>{3}</code></td><td>Exactly three</td></tr>
+          <tr><td><code>between 2 and 4 &lt;item&gt;</code></td><td><code>{2,4}</code></td><td>Two, three or four; both bounds included</td></tr>
         </tbody></table></div>
+        <p>Both counts must be integers from 0 to 1,000, with the upper count at least the lower. <code>between 0 and 1 "-"</code> allows an optional hyphen. A multi-character literal stays together: <code>between 2 and 4 "AB"</code> generates <code>(?:AB){2,4}</code>.</p>
+        <p>Ranges try the largest count first, then backtrack if the next rule needs it. Add <code>start</code> and <code>end</code> to validate the entire string; an unanchored range can find part of a longer string.</p>
       </section>
 
       <section id="flags" class="panel guide-panel" aria-labelledby="flags-title">

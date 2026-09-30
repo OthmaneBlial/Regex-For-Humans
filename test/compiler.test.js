@@ -56,6 +56,61 @@ test("negative classes and concise repetition forms compile exactly", () => {
   assert.equal(compile("text without: a, b").source, "[^ab]*");
 });
 
+test("bounded counts preserve atom escaping, inclusive matches and explanations", () => {
+  for (const [item, source, positive, negative] of [
+    ["digits", "\\d", ["12", "123", "1234"], ["", "1", "12345", "١٢"]],
+    ["hex digits", "[0-9A-Fa-f]", ["0F", "09a", "09aF"], ["f", "0xFF", "abcde", "ＦＦ"]],
+    ["not digit", "\\D", ["ab", "abc", "abcd"], ["a", "a1", "abcde"]],
+    ["any character", ".", ["😀😀", "abc", "abcd"], ["😀", "a\nb", "abcde"]],
+    ['"a.b"', "(?:a\\.b)", ["a.ba.b", "a.ba.ba.b"], ["a.b", "axba.b", "a.b".repeat(5)]],
+    ["one of: a, b", "[ab]", ["ab", "aba", "abab"], ["a", "ac", "ababa"]],
+    ["none of: a, b", "[^ab]", ["😀😀", "xyz", "xyzz"], ["😀", "xa", "xyzzz"]],
+  ]) {
+    const result = compile(`start\nbetween 2 and 4 ${item}\nend`);
+    assert.equal(result.source, `^${source}{2,4}$`, item);
+    assert.deepEqual(result.segments[1].repetition, { kind: "range", min: 2, max: 4 });
+    assert.match(result.segments[1].explanation, /Between 2 and 4/u);
+    assert.match(result.segments[1].explanation, /inclusive/u);
+    for (const value of positive) assert.equal(toRegExp(result).test(value), true, value);
+    for (const value of negative) assert.equal(toRegExp(result).test(value), false, value);
+  }
+  assert.equal(
+    compile("between 2 and 4 digits").segments[0].explanation,
+    "Between 2 and 4 digits (0–9), inclusive.",
+  );
+  assert.equal(
+    compile("between 2 and 4 hex digits").segments[0].explanation,
+    "Between 2 and 4 hexadecimal digits (0–9, A–F, a–f), inclusive.",
+  );
+  assert.equal(toRegExp(compile("between 2 and 4 digits")).exec("12345")[0], "1234");
+});
+
+test("bounded counts include zero, equal endpoints and the numeric ceiling", () => {
+  for (const [item, unit] of [
+    ["digit", "7"],
+    ['"A😀"', "A😀"],
+    ["none of: a, b", "😀"],
+  ]) {
+    for (let min = 0; min <= 4; min += 1) {
+      for (let max = min; max <= 6; max += 1) {
+        const regex = toRegExp(compile(`start\nbetween ${min} and ${max} ${item}\nend`));
+        for (let count = 0; count <= 7; count += 1) {
+          assert.equal(
+            regex.test(unit.repeat(count)),
+            count >= min && count <= max,
+            `${item}: ${min}–${max}, count ${count}`,
+          );
+        }
+      }
+    }
+  }
+  const ceiling = compile("start between 1000 and 1000 digits\nend");
+  assert.equal(ceiling.source, "^\\d{1000,1000}$");
+  assert.equal(toRegExp(ceiling).test("7".repeat(1000)), true);
+  assert.equal(toRegExp(ceiling).test("7".repeat(1001)), false);
+  assert.equal(compile(String.raw`between 2 and 4 "\ud800"`).source, "\\u{d800}{2,4}");
+});
+
 test("literal and character-class metacharacters are escaped in their contexts", () => {
   const literal = compile('start\n"a.b/c[1]"\nend');
   assert.equal(literal.source, "^a\\.b\\/c\\[1\\]$");

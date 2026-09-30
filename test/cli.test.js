@@ -205,6 +205,30 @@ test("CLI exposes flags, help and version", () => {
   );
 });
 
+test("CLI exposes bounded counts and positioned range errors", () => {
+  const rules = 'start "INV-"\nbetween 2 and 4 digits\nend';
+  const output = run(["--json", "-"], rules);
+  assert.equal(output.status, 0, output.stderr);
+  const result = JSON.parse(output.stdout);
+  assert.equal(result.source, "^INV-\\d{2,4}$");
+  assert.deepEqual(result.segments[2].repetition, { kind: "range", min: 2, max: 4 });
+  assert.match(
+    run(["--explain", "-"], rules).stdout,
+    /Between 2 and 4 digits \(0–9\), inclusive\./u,
+  );
+  const invalid = "start between 4 and 2 digits";
+  const failure = run(["--json", "-"], invalid);
+  assert.equal(failure.status, 1);
+  assert.equal(failure.stdout, "");
+  assert.deepEqual(JSON.parse(failure.stderr).error, {
+    code: "INVALID_RANGE",
+    message: "The upper count cannot be smaller than the lower count.",
+    line: 1,
+    column: invalid.indexOf("2") + 1,
+    hint: "Put the smaller count first, such as `between 2 and 4 digits`.",
+  });
+});
+
 test("CLI reports an unknown rule with position and nonzero status", () => {
   const result = run(["-"], "digit\n  unexpected words");
   assert.equal(result.status, 1);

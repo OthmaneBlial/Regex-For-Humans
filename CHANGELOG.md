@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add inclusive bounded counts with `between n and m <item>`, positioned diagnostics and explanations. New bounded instructions expose `repetition: { kind: "range", min, max }`; existing instructions retain their metadata and behavior.
+
 - Show shared recipe notes in the workshop and homepage, including date, version and color validation limits; clarify that the line recipe accepts four or more trailing digits.
 
 - Clear homepage copy confirmations when switching demo recipes and ignore clipboard results for a previous recipe.

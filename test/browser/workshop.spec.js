@@ -345,6 +345,41 @@ test("hex rules explain single digits, sequences and exact counts in the worksho
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
 });
 
+test("bounded counts show inclusive matches, literal grouping and positioned errors", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const editor = page.locator("#rules-input");
+  const sample = page.locator("#test-list textarea").first();
+  for (const [rule, source, positive, negative] of [
+    ["between 2 and 4 digits", "\\d{2,4}", "1234", "12345"],
+    ["between 2 and 4 hex digits", "[0-9A-Fa-f]{2,4}", "09aF", "ag"],
+    ['between 0 and 1 "AB"', "(?:AB){0,1}", "", "ABAB"],
+    ["between 2 and 3 one of: a, b", "[ab]{2,3}", "aba", "a"],
+  ]) {
+    await editor.fill(`start\n${rule}\nend`);
+    await expect(page.locator("#regex-output")).toHaveText(`/^${source}$/u`);
+    await expect(page.locator("#trace-list")).toContainText("inclusive");
+    await sample.fill(positive);
+    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+    await sample.fill(negative);
+    await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
+  }
+  await editor.fill("start between 4 and 2 digits\nend");
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Line 1, column 21: The upper count cannot be smaller than the lower count.",
+  );
+  await expect(page.locator("#copy-button")).toBeDisabled();
+  await page.getByRole("button", { name: "Go to error", exact: true }).click();
+  expect(
+    await editor.evaluate((input) => input.value.slice(input.selectionStart, input.selectionEnd)),
+  ).toBe("2");
+  await editor.fill("start between 2 and 4 digits\nend");
+  await sample.fill("12");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+});
+
 test("copy button places the real generated regex on the clipboard", async ({ page, context }) => {
   await page.goto("/");
   await context.grantPermissions(["clipboard-read", "clipboard-write"], {
@@ -470,6 +505,9 @@ test("syntax link opens the local rendered guide", async ({ page, context }) => 
   await expect(guide.locator(".guide-hero .hero-copy")).toContainText("Use short rules.");
   await expect(guide.getByText(/They reject a final line break/u)).toBeVisible();
   await expect(guide.locator("#repetition tbody tr").first()).toContainText("3 <item>");
+  await expect(guide.locator("#repetition tbody tr").nth(1)).toContainText(
+    "between 2 and 4 <item>",
+  );
   await guide.close();
 });
 

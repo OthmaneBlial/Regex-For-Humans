@@ -2,9 +2,14 @@ import { expect, test } from "@playwright/test";
 import { compile } from "../../index.js";
 import { LIMITS } from "../../src/parser.js";
 
-test("a pathological regex times out in a worker and normal tests still run", async ({ page }) => {
+test("pathological and compiler-generated bounded regexes time out without blocking recovery", async ({
+  page,
+}) => {
   await page.goto("/");
-  const outcome = await page.evaluate(async () => {
+  const bounded = compile(
+    ["start", ...Array(20).fill("between 1 and 1000 digits"), "end"].join("\n"),
+  );
+  const outcome = await page.evaluate(async (boundedSource) => {
     const { TestRunner } = await import("/web/test-runner.js");
     const makeRunner = (timeout) =>
       new TestRunner(() => new Worker("/web/match-worker.js", { type: "module" }), timeout);
@@ -14,16 +19,23 @@ test("a pathological regex times out in a worker and normal tests still run", as
       mode: "full",
       cases: [{ id: 1, text: "aaa", expected: true }],
     });
-    let timedOut = false;
-    try {
-      await makeRunner(150).run({
-        source: "^(a+)+$",
-        flags: "u",
-        mode: "full",
-        cases: [{ id: 2, text: `${"a".repeat(2047)}!`, expected: false }],
-      });
-    } catch (error) {
-      timedOut = error.code === "TIMEOUT";
+    const timedOut = [];
+    for (const [source, text] of [
+      ["^(a+)+$", `${"a".repeat(2047)}!`],
+      [boundedSource, `${"7".repeat(2047)}!`],
+    ]) {
+      let stopped = false;
+      try {
+        await makeRunner(150).run({
+          source,
+          flags: "u",
+          mode: "full",
+          cases: [{ id: 2, text, expected: false }],
+        });
+      } catch (error) {
+        stopped = error.code === "TIMEOUT";
+      }
+      timedOut.push(stopped);
     }
     const recovered = await makeRunner(1000).run({
       source: "^b+$",
@@ -32,9 +44,9 @@ test("a pathological regex times out in a worker and normal tests still run", as
       cases: [{ id: 3, text: "bbb", expected: true }],
     });
     return { normal, timedOut, recovered };
-  });
+  }, bounded.source);
   expect(outcome.normal[0].pass).toBe(true);
-  expect(outcome.timedOut).toBe(true);
+  expect(outcome.timedOut).toEqual([true, true]);
   expect(outcome.recovered[0].pass).toBe(true);
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
 });

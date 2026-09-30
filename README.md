@@ -89,6 +89,7 @@ Put one instruction on each line. Quote literal text. Add anchors to check the w
 | `line start` · `line end` | `^` · `$` + `m` | Line bounds |
 | `digit` · `not digit` | `\d` · `\D` | One digit / one non-digit |
 | `3 digits` · `digits` | `\d{3}` · `\d+` | Exactly three / one or more |
+| `between 2 and 4 digits` | `\d{2,4}` | Two to four digits, inclusive |
 | `hex digit` · `6 hex digits` | `[0-9A-Fa-f]` · `[0-9A-Fa-f]{6}` | ASCII hexadecimal digits |
 | `"hello"` | `hello` | Exact text, safely escaped |
 | `one of: a, b` | `[ab]` | One character from the list |

@@ -5,6 +5,7 @@ export interface SourceLocation {
 
 export type Repetition =
   | { kind: "exact"; min: number }
+  | { kind: "range"; min: number; max: number }
   | { kind: "zeroOrMore" }
   | { kind: "oneOrMore" };
 

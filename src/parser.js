@@ -76,13 +76,16 @@ const SHORTHANDS = new Map([
 const START_ANCHOR = /^(line start|start)(?:,\s*|\s+|$)/i;
 const DUPLICATE_START_ANCHOR_MESSAGE = "Use only one start anchor.";
 
-/** @param {string} count @param {Location} location @returns {Repetition} */
-function parseRepetition(count, location) {
+/** @param {string} count @param {Location} location @returns {number} */
+function parseCount(count, location) {
+  if (!/^[0-9]+$/u.test(count)) {
+    fail("INVALID_REPETITION", "Counts must be nonnegative integers.", location);
+  }
   const number = Number(count);
   if (!Number.isSafeInteger(number) || number > LIMITS.repetition) {
     fail("REPETITION_LIMIT", `Repetition counts must be at most ${LIMITS.repetition}.`, location);
   }
-  return { kind: "exact", min: number };
+  return number;
 }
 
 /** @param {string} text @param {Location} location @returns {{value: string, length: number}} */
@@ -178,19 +181,48 @@ function parseAtom(text, location, originalText) {
   let repetition = null;
   let offset = 0;
   const count = /^([0-9]+)\s+/u.exec(remaining);
-  if (count) {
-    repetition = parseRepetition(count[1], {
+  const range = /^(between\s+)(\S+)(\s+and\s+)(\S+)\s+/iu.exec(remaining);
+  if (range) {
+    const min = parseCount(range[2], {
       line: location.line,
-      column: location.column + offset,
+      column: location.column + range[1].length,
     });
-    remaining = remaining.slice(count[0].length);
-    offset += count[0].length;
+    const maxLocation = {
+      line: location.line,
+      column: location.column + range[1].length + range[2].length + range[3].length,
+    };
+    const max = parseCount(range[4], maxLocation);
+    if (max < min) {
+      fail(
+        "INVALID_RANGE",
+        "The upper count cannot be smaller than the lower count.",
+        maxLocation,
+        "Put the smaller count first, such as `between 2 and 4 digits`.",
+      );
+    }
+    repetition = { kind: "range", min, max };
+    offset = range[0].length;
+  } else if (count) {
+    repetition = { kind: "exact", min: parseCount(count[1], location) };
+    offset = count[0].length;
+  } else if (/^between(?:\s|$)/iu.test(remaining)) {
+    fail(
+      "INVALID_REPETITION",
+      "A range needs two counts and an item.",
+      location,
+      "Use `between 2 and 4 digits`, with the count range before the item.",
+    );
   }
-  if (/^[0-9]+\s+/u.test(remaining)) {
-    fail("DUPLICATE_REPETITION", "Put one exact count before the instruction.", {
-      line: location.line,
-      column: location.column + offset,
-    });
+  remaining = remaining.slice(offset);
+  const anotherRange = /^between(?:\s|$)/iu.test(remaining);
+  if (/^[0-9]+\s+/u.test(remaining) || anotherRange) {
+    fail(
+      "DUPLICATE_REPETITION",
+      range || anotherRange
+        ? "Put one count or range before the instruction."
+        : "Put one exact count before the instruction.",
+      { line: location.line, column: location.column + offset },
+    );
   }
   if (repetition && /^(?:start|end|line start|line end)$/iu.test(remaining)) {
     fail(

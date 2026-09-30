@@ -32,7 +32,7 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 
 `word`/`not word` use JavaScript's `\w`/`\W`; `digit`/`not digit` use `\d`/`\D`. These classes are ASCII-oriented with `u`; `i` plus `u` adds a few Unicode case-folding matches to `\w`. `\w` includes `_` but excludes `é`. The misleading `alphanumeric character` aliases are rejected.
 
-`hex digit` matches one ASCII hexadecimal digit in either letter case. `hex digits` matches one or more; an exact count replaces that default, as in `6 hex digits`. They do not include a `0x` prefix, separators or non-ASCII digits. Add quoted literals for a required prefix, and anchors to validate the whole string.
+`hex digit` matches one ASCII hexadecimal digit in either letter case. `hex digits` matches one or more; an exact count or bounded range replaces that default, as in `6 hex digits` or `between 2 and 4 hex digits`. They do not include a `0x` prefix, separators or non-ASCII digits. Add quoted literals for a required prefix, and anchors to validate the whole string.
 
 A literal is a JSON-style double-quoted string. Escape `"` and `\\`; the compiler escapes regex metacharacters. Character-list items must each be one Unicode code point. Quote punctuation, commas, spaces and backslashes, as in `"]", "-", ",", "\\"`. Empty literals and lists are errors.
 
@@ -42,13 +42,20 @@ JSON strings may contain lone UTF-16 surrogates, such as `"\ud800"`. The compile
 
 ## Repetition
 
-A count applies to the next item. Put it first (`3 digits`). The compiler keeps a multi-character literal together. `digits` and `hex digits` mean one or more of their respective characters; `any text` and `text without` already match sequences. Other repetition wording is not supported.
+A count or range applies to the next item. Put it first (`3 digits` or `between 2 and 4 digits`). The compiler keeps a multi-character literal together. `digits` and `hex digits` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another count or range. Other repetition wording, such as `at least 3 times`, is not supported.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |
 | `3 <item>` (for example, `3 digits`) | `A{3}` | `AAA` | `AA` |
+| `between 2 and 4 <item>` (for example, `between 2 and 4 digits`) | `A{2,4}` | `AA`, `AAA`, `AAAA` | `A`, `AAAAA` with `start` and `end` |
 
-Numeric counts are nonnegative integers no greater than 1,000. Anchors cannot have a count: `3 start` reports an error at `start`.
+Numeric counts are nonnegative integers no greater than 1,000, including both bounds of a range. Bounds are inclusive, and the upper count must be at least the lower count. Zero and equal bounds are valid: `between 0 and 1 "-"` allows an optional hyphen, and `between 3 and 3 digits` matches exactly three digits. Anchors cannot have a count or range: `3 start` reports an error at `start`.
+
+Ranges are greedy: they try the largest count first and may use a smaller count to satisfy following rules. Without anchors, `between 2 and 4 digits` can match part of `12345`; use `start` and `end` to validate the whole string. `between 2 and 4 "AB"` generates `(?:AB){2,4}`, repeating the entire literal.
+
+The public segment metadata for a bounded instruction has `repetition: { kind: "range", min: 2, max: 4 }`. Code that switches on `repetition.kind` should handle this new variant. Existing instructions keep their original metadata and matching behavior.
+
+Malformed range syntax or non-integer bounds report `INVALID_REPETITION`. Reversed bounds report `INVALID_RANGE` at the upper count, and a bound above 1,000 reports `REPETITION_LIMIT` at that count.
 
 ## Anchors and flags
 

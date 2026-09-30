@@ -22,6 +22,7 @@ const constructions = [
   ["unlimited digits", "digits", "123", "abc", "digit any number of times"],
   ["any text", "any text", "hello", "", "any character any number of times"],
   ["exact count", '3 "AB"', "ABABAB", "ABAB", 'three "AB"'],
+  ["bounded count", 'between 2 and 4 "AB"', "ABABAB", "AB", 'two to four "AB"'],
 ];
 
 for (const [name, rules, yes, no, legacy] of constructions) {
