@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Repeated copies now restart the Copied feedback timer so an older copy cannot clear a newer confirmation.
 - The isolated example worker now rejects non-string flags instead of coercing an array such as `["u"]` into a valid flag string.
 - The JavaScript API now rejects `flags: null` as `UNSUPPORTED_FLAGS`, consistently with other non-string flag values; omitted and undefined flags keep their defaults.
 - Editing rules, changing flags or choosing a recipe now immediately clears the previous pattern's Copied feedback.

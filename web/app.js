@@ -45,6 +45,7 @@ let nextTestId = 1;
 /** @type {ReturnType<typeof compile> | null} */
 let compiled = null;
 let hasEdits = false;
+let copyFeedbackTimer = 0;
 const testRunner = new TestRunner(
   () => new Worker(new URL("./match-worker.js", import.meta.url), { type: "module" }),
 );
@@ -245,6 +246,7 @@ function renderTests() {
 }
 
 function compileRules() {
+  window.clearTimeout(copyFeedbackTimer);
   ui.copy.textContent = "Copy regex ↗";
   const ruleCount = splitLines(ui.rules.value).filter((line) => line.trim()).length;
   ui.ruleCount.textContent = `${ruleCount} ${ruleCount === 1 ? "rule" : "rules"}`;
@@ -398,7 +400,8 @@ ui.copy.addEventListener("click", async () => {
   if (compiled !== result) return;
   setDiagnostic("");
   ui.copy.textContent = "Copied ✓";
-  window.setTimeout(() => {
+  window.clearTimeout(copyFeedbackTimer);
+  copyFeedbackTimer = window.setTimeout(() => {
     ui.copy.textContent = "Copy regex ↗";
   }, 1800);
 });

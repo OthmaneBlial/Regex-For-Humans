@@ -322,6 +322,26 @@ test("copy button places the real generated regex on the clipboard", async ({ pa
   expect(await page.locator("#copy-button").textContent()).toBe("Copy regex ↗");
 });
 
+test("repeated copies keep feedback until the latest copy expires", async ({ page }) => {
+  await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+  await page.clock.pauseAt(new Date("2026-01-01T00:01:00Z"));
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: async () => {} } });
+  });
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const button = page.locator("#copy-button");
+  await button.click();
+  await expect(button).toContainText("Copied");
+  await page.clock.fastForward(1000);
+  await button.click();
+  await expect(button).toContainText("Copied");
+  await page.clock.fastForward(900);
+  expect(await button.textContent()).toBe("Copied ✓");
+  await page.clock.fastForward(1000);
+  await expect(button).toHaveText("Copy regex ↗");
+});
+
 for (const copied of [true, false]) {
   test(`clipboard fallback keeps keyboard focus when copy ${copied ? "succeeds" : "fails"}`, async ({
     page,
