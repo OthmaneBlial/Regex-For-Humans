@@ -24,27 +24,34 @@ const sampleInputs = {
 };
 
 let statusResetTimer;
-for (const button of document.querySelectorAll("[data-copy]")) {
-  const label = button.textContent;
-  let resetTimer;
+const copyStatus = document.getElementById("copy-status");
+const copyControls = [...document.querySelectorAll("[data-copy]")].map((button) => ({
+  button,
+  label: button.textContent,
+  resetTimer: undefined,
+}));
+for (const control of copyControls) {
+  const { button, label } = control;
   button.addEventListener("click", async () => {
     const source = document.getElementById(button.dataset.copy);
-    const status = document.getElementById("copy-status");
+    const copiedPattern = pattern;
     try {
       await navigator.clipboard.writeText(source.textContent.trim());
-      window.clearTimeout(resetTimer);
-      status.textContent = `${label.replace("Copy ", "")} copied. Ready to paste!`;
+      if (pattern !== copiedPattern) return;
+      window.clearTimeout(control.resetTimer);
+      copyStatus.textContent = `${label.replace("Copy ", "")} copied. Ready to paste!`;
       button.textContent = "Copied ✓";
-      resetTimer = window.setTimeout(() => {
+      control.resetTimer = window.setTimeout(() => {
         button.textContent = label;
       }, 1800);
       window.clearTimeout(statusResetTimer);
       statusResetTimer = window.setTimeout(() => {
-        status.textContent = "";
+        copyStatus.textContent = "";
       }, 1800);
     } catch {
+      if (pattern !== copiedPattern) return;
       window.clearTimeout(statusResetTimer);
-      status.textContent = "Clipboard access is unavailable. Select the text to copy it.";
+      copyStatus.textContent = "Clipboard access is unavailable. Select the text to copy it.";
     }
   });
 }
@@ -59,6 +66,12 @@ try {
       const recipe = recipes.find((item) => item.id === button.dataset.recipe);
       const compiled = compile(recipe.rules);
       pattern = toRegExp(compiled);
+      window.clearTimeout(statusResetTimer);
+      copyStatus.textContent = "";
+      for (const control of copyControls) {
+        window.clearTimeout(control.resetTimer);
+        control.button.textContent = control.label;
+      }
       document.getElementById("rules-code").textContent = recipe.rules;
       document.getElementById("regex-code").textContent = `/${compiled.source}/${compiled.flags}`;
       document.getElementById("demo-note").textContent = notes[recipe.id];

@@ -122,6 +122,70 @@ test("copying a second snippet keeps its feedback after the first timer expires"
   await expect(page.locator('[data-copy="regex-code"]')).toHaveText("Copy regex");
 });
 
+for (const success of [true, false]) {
+  test(`recipe changes clear copied labels and ignore ${success ? "resolved" : "rejected"} older clipboard requests`, async ({
+    page,
+  }) => {
+    await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+    await page.clock.pauseAt(new Date("2026-01-01T00:01:00Z"));
+    await page.addInitScript((success) => {
+      window.pendingCopies = [];
+      window.deferCopies = false;
+      Object.defineProperty(navigator, "clipboard", {
+        value: {
+          writeText: () =>
+            window.deferCopies
+              ? new Promise((resolve, reject) => {
+                  window.pendingCopies.push(() =>
+                    success ? resolve() : reject(new Error("Clipboard blocked")),
+                  );
+                })
+              : Promise.resolve(),
+        },
+      });
+    }, success);
+    await page.goto("/");
+    await expect(page.locator('[data-recipe="hex-color"]')).toBeEnabled();
+    const rules = page.locator('[data-copy="rules-code"]');
+    const regex = page.locator('[data-copy="regex-code"]');
+    const status = page.locator("#copy-status");
+    await rules.click();
+    await regex.click();
+    await expect(rules).toHaveText("Copied ✓");
+    await expect(regex).toHaveText("Copied ✓");
+    await page.clock.fastForward(1000);
+    await page.locator('[data-recipe="prefixed-identifier"]').click();
+    await expect(rules).toHaveText("Copy rules");
+    await expect(regex).toHaveText("Copy regex");
+    await expect(status).toBeEmpty();
+
+    await page.evaluate(() => {
+      window.deferCopies = true;
+    });
+    await rules.click();
+    await regex.click();
+    await expect.poll(() => page.evaluate(() => window.pendingCopies.length)).toBe(2);
+    await page.locator('[data-recipe="version-shape"]').click();
+    await page.evaluate(() => {
+      window.deferCopies = false;
+    });
+    await regex.click();
+    await page.evaluate(async () => {
+      for (const finish of window.pendingCopies) finish();
+      await Promise.resolve();
+    });
+    await expect(rules).toHaveText("Copy rules");
+    await expect(regex).toHaveText("Copied ✓");
+    await expect(status).toHaveText("regex copied. Ready to paste!");
+    await page.clock.fastForward(900);
+    await expect(regex).toHaveText("Copied ✓");
+    await expect(status).toHaveText("regex copied. Ready to paste!");
+    await page.clock.fastForward(1000);
+    await expect(regex).toHaveText("Copy regex");
+    await expect(status).toBeEmpty();
+  });
+}
+
 test("copy and the initial demo remain usable while extra recipes are still loading", async ({
   page,
 }) => {
