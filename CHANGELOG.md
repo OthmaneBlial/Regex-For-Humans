@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix Entire string mode rejecting valid examples when a greedy count first returns a partial match; preserve first-match search results, partial-match explanations and worker timeouts.
+
 - Version the homepage app, compiler entry and recipe request from the current app source and workshop build, so returning visitors receive compiler updates without a manual cache-version bump.
 
 - Add an invoice ID shape recipe using `between 2 and 6 digits`, with accepted bounds, leading zeros and rejected case, Unicode digits and trailing text; link all seven recipes from the README and homepage.

@@ -301,6 +301,35 @@ test("line-mode sample keeps its newline and changes under full-match mode", asy
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
 });
 
+test("entire string mode backtracks past a partial greedy match and preserves search results", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const editor = page.locator("#rules-input");
+  const sample = page.locator("#test-list textarea").first();
+  const row = page.locator(".test-row").first();
+  const result = page.locator(".test-result").first();
+  for (const prefix of ["", "line start\n"]) {
+    await editor.fill(`${prefix}between 0 and 2 "ab"\nbetween 0 and 2 "abc"`);
+    await page.locator("#match-mode").selectOption("full");
+    for (const text of ["ababc", "ababcabc", "abababcabc", ""]) {
+      await sample.fill(text);
+      await expect(row).toHaveAttribute("data-result", "pass");
+      await expect(result).toHaveText(`✓ Matched ${JSON.stringify(text)} at 0`);
+    }
+    for (const text of ["ababx", "ababcabcabc", "ababc\n", "ababc\nabc"]) {
+      await sample.fill(text);
+      await expect(row).toHaveAttribute("data-result", "fail");
+      await expect(result).toContainText("not the entire string");
+    }
+    await sample.fill("ababc");
+    await page.locator("#match-mode").selectOption("search");
+    await expect(row).toHaveAttribute("data-result", "pass");
+    await expect(result).toHaveText('✓ Matched "abab" at 0');
+  }
+});
+
 test("Unicode literals and dot-all behavior are visible in example results", async ({ page }) => {
   await page.goto("/");
   const editor = page.getByRole("textbox", { name: "Write your rules" });

@@ -22,6 +22,8 @@ self.onmessage = (event) => {
       throw new Error("Invalid example test request.");
     }
     const expression = new RegExp(source, flags);
+    // A strict input end still applies when line mode enables the m flag.
+    const fullExpression = mode === "full" ? new RegExp(`^(?:${source})(?![\\s\\S])`, flags) : null;
     const results = cases.map((sample) => {
       if (
         typeof sample.text !== "string" ||
@@ -30,7 +32,11 @@ self.onmessage = (event) => {
       ) {
         throw new Error("An example is too long or invalid.");
       }
-      const match = expression.exec(sample.text);
+      let match = expression.exec(sample.text);
+      if (fullExpression && match?.index === 0 && match[0].length !== sample.text.length) {
+        const complete = fullExpression.exec(sample.text);
+        if (complete?.index === 0) match = complete;
+      }
       const actual =
         mode === "search"
           ? match !== null

@@ -22,6 +22,7 @@ test("pathological and compiler-generated bounded regexes time out without block
     const timedOut = [];
     for (const [source, text] of [
       ["^(a+)+$", `${"a".repeat(2047)}!`],
+      ["(a+)+", `${"a".repeat(2047)}!`],
       [boundedSource, `${"7".repeat(2047)}!`],
     ]) {
       let stopped = false;
@@ -46,7 +47,7 @@ test("pathological and compiler-generated bounded regexes time out without block
     return { normal, timedOut, recovered };
   }, bounded.source);
   expect(outcome.normal[0].pass).toBe(true);
-  expect(outcome.timedOut).toEqual([true, true]);
+  expect(outcome.timedOut).toEqual([true, true, true]);
   expect(outcome.recovered[0].pass).toBe(true);
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
 });
