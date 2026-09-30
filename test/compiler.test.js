@@ -7,6 +7,38 @@ const scenarios = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("filename-shape bounds Unicode stem length and excludes separators under every option flag", () => {
+  const scenario = scenarios.find(({ id }) => id === "filename-shape");
+  assert.ok(scenario);
+  const source = String.raw`^[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,64}\.txt$`;
+  assert.equal(scenario.source, source);
+  assert.match(scenario.note, /filesystem rules and file existence separately/i);
+  for (const flags of ["", "i", "s", "is"]) {
+    const result = compile(scenario.rules, { flags });
+    assert.equal(result.source, source);
+    assert.deepEqual(result.segments[1].repetition, { kind: "range", min: 1, max: 64 });
+    assert.equal(result.segments[1].negative, true);
+    const regex = toRegExp(result);
+    for (const item of ["a", "é", "📄"]) {
+      for (let count = 0; count <= 65; count += 1) {
+        const value = `${item.repeat(count)}.txt`;
+        assert.equal(regex.test(value), count >= 1 && count <= 64, JSON.stringify(value));
+      }
+    }
+    for (const forbidden of ["/", "\\", "\0", "\n", "\r", "\u2028", "\u2029"]) {
+      for (const stem of [`${forbidden}a`, `a${forbidden}b`, `a${forbidden}`]) {
+        assert.equal(regex.test(`${stem}.txt`), false, JSON.stringify(stem));
+      }
+      assert.equal(regex.test(`a.txt${forbidden}`), false);
+    }
+    assert.equal(regex.test("notes.TXT"), flags.includes("i"));
+    assert.equal(regex.test("notes.md"), false);
+    assert.equal(regex.test("notes.txt.bak"), false);
+    assert.equal(regex.test(".notes.txt"), true);
+    assert.equal(regex.test("notes:2026.txt"), true);
+  }
+});
+
 test("phone-shape permits one optional plus and inclusive ASCII digit counts", () => {
   const scenario = scenarios.find(({ id }) => id === "phone-shape");
   assert.ok(scenario);

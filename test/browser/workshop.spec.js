@@ -20,6 +20,51 @@ async function openBeforeWorkshopAppLoads(page) {
   return release;
 }
 
+test("filename shape teaches exclusions, Unicode bounds and editable extensions", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async (text) => {
+          window.copiedPattern = text;
+        },
+      },
+    });
+  });
+  await page.goto("/?example=filename-shape");
+  const recipe = scenarios.find(({ id }) => id === "filename-shape");
+  const editor = page.locator("#rules-input");
+  await expect(editor).toHaveValue(recipe.rules);
+  await expect(page.locator("#recipe-note")).toHaveText(recipe.note);
+  await expect(page.locator("#trace-list")).toContainText("Between 1 and 64 times (inclusive).");
+  await expect(page.locator("#test-summary")).toHaveText("20 of 20 examples behave as expected");
+  const first = page.locator("#test-list textarea").first();
+  await first.fill(`${"📄".repeat(64)}.txt`);
+  await expect(page.locator("#test-list .test-result").first()).toContainText("✓ Matched");
+  await first.fill(`${"📄".repeat(65)}.txt`);
+  await expect(page.locator("#test-list .test-result").first()).toHaveText("! No match");
+  await editor.fill(recipe.rules.replace('".txt"', '".md"'));
+  await expect(page.locator("#recipe-note")).toBeHidden();
+  await expect(page.locator("#regex-output")).toHaveText(
+    `/${recipe.source.replace("txt$", "md$")}/u`,
+  );
+  await first.fill("report.md");
+  await expect(page.locator("#test-list .test-result").first()).toHaveText(
+    '✓ Matched "report.md" at 0',
+  );
+  await page.locator("#copy-button").click();
+  await expect(page.locator("#copy-button")).toContainText("Copied");
+  expect(await page.evaluate(() => window.copiedPattern)).toBe(
+    `/${recipe.source.replace("txt$", "md$")}/u`,
+  );
+  await page.locator('[data-scenario="filename-shape"]').click();
+  await expect(editor).toHaveValue(recipe.rules);
+  await expect(page.locator("#recipe-note")).toBeVisible();
+  await expect(page.locator("#test-summary")).toHaveText("20 of 20 examples behave as expected");
+});
+
 test("empty literals explain how to match empty input and recover", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
@@ -167,7 +212,10 @@ for (const scenario of scenarios) {
     const visibleSamples = await page
       .locator("#test-list textarea")
       .evaluateAll((elements) => elements.map((element) => element.value));
-    expect(visibleSamples).toEqual([...scenario.positive, ...scenario.negative]);
+    // Textareas normalize CR and CRLF to LF; matching still uses the complete value.
+    expect(visibleSamples).toEqual(
+      [...scenario.positive, ...scenario.negative].map((sample) => sample.replace(/\r\n?/gu, "\n")),
+    );
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);

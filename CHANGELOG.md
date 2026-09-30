@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a text-filename shape recipe teaching bounded Unicode character exclusions and an editable extension, with explicit filesystem-validation limits.
+
 - Report malformed URL escapes alongside missing documentation links instead of stopping the local documentation check with an uncaught error.
 
 - Suggest whole-input anchors when an empty literal is rejected, preserving its error code and quote location; verify repair through the parser, CLI and workshop.
