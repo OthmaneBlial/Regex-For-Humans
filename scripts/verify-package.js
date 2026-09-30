@@ -63,6 +63,8 @@ try {
   const directionText = `A${String.fromCodePoint(0x202e)}B`;
   const directionRules = JSON.stringify(directionText);
   const directionSource = String.raw`A\u202eB`;
+  const controlText = `A${String.fromCodePoint(0, 0x1b, 0x7f, 0x9b, 0x9d, 0x2028, 0x2029)}B`;
+  const controlRules = JSON.stringify(controlText);
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
@@ -84,6 +86,8 @@ if (bounded.source !== ${JSON.stringify(boundedSource)} || !toRegExp(bounded).te
 if (bounded.segments[1].repetition?.kind !== "range" || bounded.segments[1].repetition.min !== 2 || bounded.segments[1].repetition.max !== 4) throw new Error("Missing range metadata");
 const directional = compile(${JSON.stringify(directionRules)});
 if (directional.source !== ${JSON.stringify(directionSource)} || !toRegExp(directional).test(${JSON.stringify(directionText)}) || directional.segments[0].text !== ${JSON.stringify(directionRules)}) throw new Error("Wrong direction-control behavior");
+const controlled = compile(${JSON.stringify(controlRules)});
+if (/[\\p{Control}\\u2028\\u2029]/u.test(controlled.source + controlled.segments[0].explanation) || !toRegExp(controlled).test(${JSON.stringify(controlText)}) || controlled.segments[0].text !== ${JSON.stringify(controlRules)}) throw new Error("Wrong control display or matching behavior");
 try { compile("unsupported words"); throw new Error("Unknown rule accepted"); }
 catch (error) { if (!(error instanceof CompileError)) throw error; }
 `,
@@ -148,8 +152,6 @@ void [regex, segment, source, line, max];
       "Installed CLI did not expose direction controls or preserve original rule text.",
     );
   }
-  const controlText = `A${String.fromCodePoint(0, 0x1b, 0x7f, 0x9b, 0x9d, 0x2028, 0x2029)}B`;
-  const controlRules = JSON.stringify(controlText);
   const controlOutput = run([...cliArgs, "--json", "-"], {
     cwd: consumer,
     input: controlRules,

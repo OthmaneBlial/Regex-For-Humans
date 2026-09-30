@@ -176,7 +176,7 @@ test("CLI exposes terminal controls in regexes and explanations without changing
     if (args.includes("--json")) {
       const decoded = JSON.parse(result.stdout);
       assert.equal(decoded.segments[1].text === rule, true);
-      assert.equal(decoded.source.includes(String.fromCodePoint(0x9b)), true);
+      assert.equal(decoded.source.includes(String.raw`\u009b`), true);
       regex = new RegExp(decoded.source, decoded.flags);
     } else {
       const literal = result.stdout.split("\n")[0];

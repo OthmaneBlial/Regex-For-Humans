@@ -44,6 +44,8 @@ JSON strings may contain lone UTF-16 surrogates, such as `"\ud800"`. The compile
 
 Unicode direction controls (`Bidi_Control`) remain literal matching data. Generated source, quoted explanations, diagnostics, trace text and match feedback show them as visible `\uXXXX` escapes: `"A\u202eB"` emits `A\u202eB`. Ordinary Arabic and Hebrew letters and emoji stay unchanged. `segments[].text` and editable inputs retain the original source; CLI `--json` escapes these controls in transit, so decoding the JSON restores the original metadata.
 
+C0/C1 control characters, DEL and Unicode line separators are also displayed as escapes instead of raw control characters. C1 values such as U+009B emit `\u009b` in literals and character lists. Existing source escapes for C0, DEL and line separators keep their braced form, such as `\u{a}` and `\u{2028}`; quoted explanations and match feedback use visible JSON-style escapes. Matching and original source metadata remain unchanged.
+
 `start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`.
 
 ## Repetition

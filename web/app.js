@@ -1,5 +1,5 @@
 import { CompileError, compile } from "../index.js";
-import { escapeDirectionControls } from "../src/display.js";
+import { escapeControls } from "../src/display.js";
 import { splitLines } from "../src/parser.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 
@@ -120,7 +120,7 @@ function renderTrace(segments) {
       make(
         "span",
         "trace-text",
-        `${segment.line}:${segment.column} ${escapeDirectionControls(segment.text)}`,
+        `${segment.line}:${segment.column} ${escapeControls(segment.text)}`,
       ),
     );
     detail.append(make("span", "trace-meaning", segment.explanation));

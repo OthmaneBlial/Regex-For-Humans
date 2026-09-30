@@ -1,4 +1,4 @@
-import { escapeDirectionControls, quoteText } from "../src/display.js";
+import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS } from "../src/parser.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestRequest} TestRequest */
@@ -53,7 +53,7 @@ self.onmessage = (event) => {
     /** @type {WorkerReply} */
     const reply = {
       id,
-      error: escapeDirectionControls(error instanceof Error ? error.message : String(error)),
+      error: escapeControls(error instanceof Error ? error.message : String(error)),
     };
     self.postMessage(reply);
   }

@@ -6,7 +6,7 @@ The version 1 parser accepts only the phrases in [LANGUAGE.md](LANGUAGE.md). It 
 
 Unicode direction controls appear as visible escapes in generated source and human-readable results, reducing misleading [visual ordering](https://blog.unicode.org/2022/03/avoiding-source-code-spoofing.html). This presentation does not remove them from matching data: source-text metadata and editable examples retain their original contents, and CLI JSON preserves the data round trip.
 
-The CLI also escapes C0/C1 control characters, DEL and Unicode line separators in rule output, arguments and native file errors. Its own formatting line breaks remain intact. This keeps data controls out of terminal output while preserving matching and decoded JSON values.
+The shared display policy also escapes C0/C1 control characters, DEL and Unicode line separators in generated source and human-readable values. Copied patterns, explanations, diagnostics, trace text and match feedback contain visible escapes while editable input and original source metadata retain the data. The CLI applies the same policy to arguments and native file errors separately from its own formatting line breaks; JSON decoding restores the original values.
 
 Both bounds of `between n and m <item>` obey the numeric ceiling, with `0 ≤ n ≤ m`. Adjacent repeated atoms can still cause expensive backtracking, including when each repetition has a finite upper bound. Browser tests cover this with a compiler-generated bounded expression as well as an intentionally pathological raw expression; neither result guarantees that a copied regex is safe on arbitrary input.
 

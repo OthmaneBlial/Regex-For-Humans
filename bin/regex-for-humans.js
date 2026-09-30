@@ -4,7 +4,7 @@ import { createReadStream, readFileSync } from "node:fs";
 import { stderr, stdin, stdout } from "node:process";
 import { fileURLToPath } from "node:url";
 import { CompileError, compile } from "../index.js";
-import { escapeDirectionControls } from "../src/display.js";
+import { escapeControls } from "../src/display.js";
 import { LIMITS, validateSourceLength } from "../src/parser.js";
 
 const usage = `Usage: regex-for-humans [options] [--] [file|-]
@@ -21,14 +21,6 @@ Options:
   --help         Show this help
   --version      Show the package version
 `;
-
-/** Expose data controls without changing the CLI's own line breaks. @param {string} text */
-function terminalText(text) {
-  return escapeDirectionControls(text).replace(
-    /[\p{Control}\u2028\u2029]/gu,
-    (character) => `\\u${character.charCodeAt(0).toString(16).padStart(4, "0")}`,
-  );
-}
 
 async function main() {
   const args = process.argv.slice(2);
@@ -57,13 +49,13 @@ async function main() {
               code: "CLI_ERROR",
               message: error instanceof Error ? error.message : String(error),
             };
-      stderr.write(`${terminalText(JSON.stringify({ error: detail }))}\n`);
+      stderr.write(`${escapeControls(JSON.stringify({ error: detail }))}\n`);
     } else if (error instanceof CompileError) {
       stderr.write(
-        `Line ${error.line}, column ${error.column}: ${terminalText(error.message)}${error.hint ? `\n${terminalText(error.hint)}` : ""}\n`,
+        `Line ${error.line}, column ${error.column}: ${escapeControls(error.message)}${error.hint ? `\n${escapeControls(error.hint)}` : ""}\n`,
       );
     } else {
-      stderr.write(`${terminalText(String(error))}\n`);
+      stderr.write(`${escapeControls(String(error))}\n`);
     }
   }
 
@@ -76,8 +68,10 @@ async function main() {
   /** @param {string} message */
   function usageError(message) {
     if (json)
-      stderr.write(`${terminalText(JSON.stringify({ error: { code: "CLI_USAGE", message } }))}\n`);
-    else stderr.write(`${terminalText(message)}\n${usage}`);
+      stderr.write(
+        `${escapeControls(JSON.stringify({ error: { code: "CLI_USAGE", message } }))}\n`,
+      );
+    else stderr.write(`${escapeControls(message)}\n${usage}`);
     process.exitCode = 2;
   }
 
@@ -150,13 +144,13 @@ async function main() {
     );
     const result = compile(input, { flags });
     if (json) {
-      stdout.write(`${terminalText(JSON.stringify(result))}\n`);
+      stdout.write(`${escapeControls(JSON.stringify(result))}\n`);
     } else {
-      stdout.write(`/${terminalText(result.source)}/${result.flags}\n`);
+      stdout.write(`/${escapeControls(result.source)}/${result.flags}\n`);
       if (explain) {
         for (const segment of result.segments) {
           stdout.write(
-            `${segment.line}:${segment.column}  ${terminalText(segment.source)}  ${terminalText(segment.explanation)}\n`,
+            `${segment.line}:${segment.column}  ${escapeControls(segment.source)}  ${escapeControls(segment.explanation)}\n`,
           );
         }
       }

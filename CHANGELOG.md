@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Expose C1 controls in compiled regex source and show controls and line separators in explanations, diagnostics, trace text and match feedback, using the same display policy as the CLI.
+
 - Keep each trace button's accessible name consistent with the compiler's explanation, without adding duplicate punctuation.
 
 - Escape terminal control characters and Unicode line separators in CLI results, explanations and errors while preserving matching, JSON data and diagnostic formatting.

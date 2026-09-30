@@ -153,9 +153,21 @@ test("lone surrogates survive UTF-8 transport in literals and character sets", (
   assert.equal(toRegExp(separateSurrogates).test("\ud800\udc00"), false);
 });
 
-test("direction controls have visible escapes without changing literal or class matching", () => {
+test("direction and C1 controls have visible escapes without changing literal or class matching", () => {
   for (const codePoint of [
-    0x061c, 0x200e, 0x200f, 0x202a, 0x202b, 0x202c, 0x202d, 0x202e, 0x2066, 0x2067, 0x2068, 0x2069,
+    ...Array.from({ length: 32 }, (_, index) => index + 0x80),
+    0x061c,
+    0x200e,
+    0x200f,
+    0x202a,
+    0x202b,
+    0x202c,
+    0x202d,
+    0x202e,
+    0x2066,
+    0x2067,
+    0x2068,
+    0x2069,
   ]) {
     const character = String.fromCodePoint(codePoint);
     const quoted = JSON.stringify(character);
@@ -169,12 +181,12 @@ test("direction controls have visible escapes without changing literal or class 
         [`text without: ${quoted}`, `[^${escaped}]*`, character, false],
       ]) {
         const result = compile(`start\n${rule}\nend`, { flags });
-        assert.equal(/\p{Bidi_Control}/u.test(result.source), false);
+        assert.equal(/[\p{Bidi_Control}\p{Control}]/u.test(result.source), false);
         assert.equal(result.source, `^${source}$`);
         assert.equal(toRegExp(result).test(sample), expected);
         assert.equal(toRegExp(result).test("A"), !expected);
         assert.equal(result.segments[1].text, rule);
-        assert.equal(/\p{Bidi_Control}/u.test(result.segments[1].explanation), false);
+        assert.equal(/[\p{Bidi_Control}\p{Control}]/u.test(result.segments[1].explanation), false);
         for (const segment of result.segments)
           assert.equal(result.source.slice(segment.sourceStart, segment.sourceEnd), segment.source);
       }
@@ -188,24 +200,32 @@ test("direction controls have visible escapes without changing literal or class 
   assert.equal(escapedLiteral.test(String.fromCodePoint(0x202e)), false);
 });
 
-test("explanations and diagnostics expose direction controls while preserving original source positions", () => {
-  const character = String.fromCodePoint(0x202e);
-  const rules = JSON.stringify(`A${character}B`);
-  const result = compile(rules);
-  assert.equal(/\p{Bidi_Control}/u.test(result.segments[0].explanation), false);
-  assert.equal(result.segments[0].explanation, String.raw`Literal text "A\u202eB".`);
-  assert.equal(result.segments[0].text, rules);
-  assert.deepEqual([result.segments[0].line, result.segments[0].column], [1, 1]);
-  assert.throws(
-    () => compile(`digit\n  unsupported${character}words`),
-    (error) => {
-      assert.ok(error instanceof CompileError);
-      assert.equal(/\p{Bidi_Control}/u.test(error.message), false);
-      assert.equal(error.message, String.raw`Unsupported rule: "unsupported\u202ewords".`);
-      assert.deepEqual([error.code, error.line, error.column], ["UNKNOWN_RULE", 2, 3]);
-      return true;
-    },
-  );
+test("explanations and diagnostics expose controls while preserving original source positions", () => {
+  for (const point of [0x202e, ...Array.from({ length: 32 }, (_, index) => index + 0x80)]) {
+    const character = String.fromCodePoint(point);
+    const escaped = `\\u${point.toString(16).padStart(4, "0")}`;
+    const rules = JSON.stringify(`A${character}B`);
+    const result = compile(rules);
+    assert.equal(/[\p{Bidi_Control}\p{Control}]/u.test(result.segments[0].explanation), false);
+    assert.equal(result.segments[0].explanation, `Literal text "A${escaped}B".`);
+    assert.equal(result.segments[0].text, rules);
+    assert.deepEqual([result.segments[0].line, result.segments[0].column], [1, 1]);
+    assert.throws(
+      () => compile(`digit\n  unsupported${character}words`),
+      (error) => {
+        assert.ok(error instanceof CompileError);
+        assert.equal(/[\p{Bidi_Control}\p{Control}]/u.test(error.message), false);
+        assert.equal(error.message, `Unsupported rule: "unsupported${escaped}words".`);
+        assert.deepEqual([error.code, error.line, error.column], ["UNKNOWN_RULE", 2, 3]);
+        return true;
+      },
+    );
+  }
+  for (const point of [0x2028, 0x2029]) {
+    const result = compile(JSON.stringify(String.fromCodePoint(point)));
+    assert.equal(result.source, `\\u{${point.toString(16)}}`);
+    assert.equal(result.segments[0].explanation, `Literal text "\\u${point.toString(16)}".`);
+  }
 });
 
 test("flags and segment positions describe the emitted expression", () => {
