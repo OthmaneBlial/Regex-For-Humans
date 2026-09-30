@@ -6,7 +6,7 @@ A JavaScript developer who can describe a matching rule but does not remember re
 
 Success target for usability testing: a first-time user should load an example, change a rule, verify one positive and one negative string, and copy a usable expression within two minutes, without verbal help. This is a target to measure, not an achieved metric.
 
-## Four reference tasks
+## Reference tasks
 
 These fixtures define the product walkthrough. Their expected regex sources and positive/negative strings are checked against JavaScript `RegExp` through the library, CLI and local browser regression suites.
 
@@ -16,7 +16,9 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 
 4. **Match a date shape.** Rules: `start` / `4 digits` / `"-"` / `2 digits` / `"-"` / `2 digits` / `end`. Expected source `^\d{4}-\d{2}-\d{2}$`, flags `u`. Positive: `2026-09-27`, `2000-01-01`, `2026-02-31` (the impossible day still matches). Negative: `2026-9-27`, `27-09-2026`, `2026/09/27`. This checks the `YYYY-MM-DD` shape.
 
-The recipes use compact syntax for prefixes, exclusions, line matching and a fixed date shape.
+5. **Match a version shape.** Rules: `start` / `digits` / `"."` / `digits` / `"."` / `digits` / `end`. Expected source `^\d+\.\d+\.\d+$`, flags `u`. Positive: `1.2.3`, `10.20.300`, `01.2.3`. Negative: `1.2`, `1.2.3.4`, `v1.2.3`, `1x2x3`, `1.2.3-beta`. This teaches one-or-more digits and escaped literal dots. It checks only three numeric components, accepts leading zeros and rejects prerelease suffixes; use separate validation for full Semantic Versioning rules.
+
+The recipes use compact syntax for prefixes, exclusions, line matching, a fixed date shape and variable-length version components.
 
 ## Evidence plan
 

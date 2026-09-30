@@ -38,5 +38,15 @@
     "matchMode": "full",
     "positive": ["2026-09-27", "2000-01-01", "2026-02-31"],
     "negative": ["2026-9-27", "27-09-2026", "2026/09/27"]
+  },
+  {
+    "id": "version-shape",
+    "title": "Match a version shape",
+    "rules": "start\ndigits\n\".\"\ndigits\n\".\"\ndigits\nend",
+    "source": "^\\d+\\.\\d+\\.\\d+$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["1.2.3", "10.20.300", "01.2.3"],
+    "negative": ["1.2", "1.2.3.4", "v1.2.3", "1x2x3", "1.2.3-beta"]
   }
 ]

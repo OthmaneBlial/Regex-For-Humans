@@ -68,6 +68,8 @@ Use `word`/`not word` for JavaScript's `\w`/`\W`; misleading `alphanumeric chara
 
 This compiles to `^\d{4}-\d{2}-\d{2}$`. It checks the YYYY-MM-DD shape; it does not validate month or day values.
 
+The workshop also has a version-shape recipe: `start` / `digits` / `"."` / `digits` / `"."` / `digits` / `end`. Its `^\d+\.\d+\.\d+$` matches three numeric components such as `1.2.3`, allows leading zeros and rejects prerelease suffixes. Full Semantic Versioning rules require separate validation.
+
 ## Use it from JavaScript
 
 The package includes TypeScript declarations.

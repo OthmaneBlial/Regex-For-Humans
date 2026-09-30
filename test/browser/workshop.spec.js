@@ -30,6 +30,9 @@ for (const scenario of scenarios) {
     await page.goto(`/?example=${scenario.id}`);
     await expect(page.locator(".local-indicator")).toHaveText("Rules stay local");
     await expect(page.locator("#rules-input")).toHaveValue(scenario.rules);
+    await expect(page.locator("#recipe-count")).toHaveText(
+      `01—${String(scenarios.length).padStart(2, "0")}`,
+    );
     if (scenario.id === "excluded-characters") {
       await expect(page.locator("#trace-list")).toContainText(
         'Longest text without "a", "b", "c", "d".',

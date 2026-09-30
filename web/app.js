@@ -20,6 +20,7 @@ function requiredElement(id, type) {
 
 const ui = {
   examples: requiredElement("example-list", HTMLElement),
+  recipeCount: requiredElement("recipe-count", HTMLSpanElement),
   rules: requiredElement("rules-input", HTMLTextAreaElement),
   ruleCount: requiredElement("rule-count", HTMLSpanElement),
   ignoreCase: requiredElement("ignore-case", HTMLInputElement),
@@ -304,6 +305,9 @@ function useScenario(scenario) {
 
 function renderScenarioButtons() {
   ui.examples.replaceChildren();
+  ui.recipeCount.textContent = scenarios.length
+    ? `01—${String(scenarios.length).padStart(2, "0")}`
+    : "";
   scenarios.forEach((scenario, index) => {
     const button = make("button", "example-button");
     button.type = "button";
