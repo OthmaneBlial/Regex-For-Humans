@@ -191,3 +191,23 @@ test("invalid input fails explicitly rather than returning partial output", () =
   assert.throws(() => compile("digit", { flags: "ii" }), { code: "UNSUPPORTED_FLAGS" });
   assert.throws(() => toRegExp({ source: 1, flags: "u" }), TypeError);
 });
+
+test("API options reject non-string flags while preserving omitted defaults", () => {
+  for (const options of [null, [], "i", 1, false]) {
+    assert.throws(() => compile("digit", options), {
+      name: "TypeError",
+      message: "Options must be an object.",
+    });
+  }
+  for (const flags of [null, false, 0, [], {}, Symbol("i")]) {
+    assert.throws(() => compile("digit", { flags }), {
+      name: "CompileError",
+      code: "UNSUPPORTED_FLAGS",
+      line: 1,
+      column: 1,
+    });
+  }
+  for (const options of [undefined, {}, { flags: undefined }, { flags: "" }]) {
+    assert.equal(compile("digit", options).flags, "u");
+  }
+});

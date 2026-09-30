@@ -75,7 +75,8 @@ function normalizeOptions(options) {
   if (options === null || typeof options !== "object" || Array.isArray(options)) {
     throw new TypeError("Options must be an object.");
   }
-  const requested = "flags" in options ? (options.flags ?? "") : "";
+  let requested = "flags" in options ? options.flags : "";
+  if (requested === undefined) requested = "";
   if (
     typeof requested !== "string" ||
     /[^is]/u.test(requested) ||
