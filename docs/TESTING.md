@@ -93,7 +93,7 @@ The numbered example-label check holds the recipe response, confirms the initial
 
 Each recipe's trace buttons use the shared compiler's complete explanations in their accessible names, followed by the source-selection instruction. Exact-name checks cover anchors, literals, shorthands and repetition without duplicate punctuation.
 
-Example fields describe their current result as well as input limits. Browser accessibility checks verify matching, no match, partial matches, Search mode, invalid and empty rules, recipe replacement and row changes. Oversized-input checks verify the same description after repair. These checks cover browser-computed accessible descriptions; a real screen-reader session remains unverified.
+Example fields describe their current result as well as input limits; expected-result selectors describe the same feedback. Browser accessibility checks verify matching, no match, a focused change to the expected outcome, partial matches, Search mode, invalid and empty rules, recipe replacement and row changes. Oversized-input checks verify both controls' descriptions during the error and after repair. These checks cover browser-computed accessible descriptions; a real screen-reader session remains unverified.
 
 Phone-shape checks cover the optional plus and every digit count from zero through sixteen, including prefixed and unprefixed inputs. Browser checks require the plus by editing its lower bound, correct example expectations, copy the changed regex and restore the recipe. Shared fixtures also run through the CLI, library and both workshop viewport sizes.
 

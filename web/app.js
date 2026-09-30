@@ -295,6 +295,7 @@ function renderTests() {
 
     const expected = make("select");
     expected.setAttribute("aria-label", `Expected match result for example ${number}`);
+    expected.setAttribute("aria-describedby", `example-result-${sample.id}`);
     for (const [value, label] of [
       ["true", "Should match"],
       ["false", "Should not match"],

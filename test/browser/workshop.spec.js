@@ -796,6 +796,7 @@ test("oversized examples stay intact and stop testing until repaired or removed"
     "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested.";
   const error = "Example too long. Limit: 2,048 UTF-16 code units.";
   await expect(first).toHaveAccessibleDescription(`${limits} ${error}`);
+  await expect(page.locator("#test-list select").first()).toHaveAccessibleDescription(error);
   await expect(page.locator("#test-list .test-result").first()).toHaveText(error);
   await expect(page.locator("#test-list .test-row").first()).toHaveAttribute(
     "data-result",
@@ -827,12 +828,14 @@ test("oversized examples stay intact and stop testing until repaired or removed"
   await page.keyboard.insertText("🧠".repeat(1025));
   await expect(last).toHaveValue("🧠".repeat(1025));
   await expect(last).toHaveAccessibleDescription(`${limits} ${error}`);
+  await expect(page.locator("#test-list select").last()).toHaveAccessibleDescription(error);
   await expect(last).toHaveAttribute("aria-invalid", "true");
   expect(await page.evaluate(() => window.testRequests)).toBe(beforeEmoji);
   await last.fill("🧠".repeat(1024));
   await expect(last).toHaveValue("🧠".repeat(1024));
   await expect(last).toHaveAttribute("aria-invalid", "false");
   await expect(last).toHaveAccessibleDescription(`${limits} ! No match`);
+  await expect(page.locator("#test-list select").last()).toHaveAccessibleDescription("! No match");
   await expect(page.locator("#test-list .test-result").last()).toHaveText("! No match");
   expect(await page.evaluate(() => window.testRequests)).toBeGreaterThan(beforeEmoji);
   await last.fill(valid);

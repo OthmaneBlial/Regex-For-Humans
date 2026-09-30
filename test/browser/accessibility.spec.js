@@ -534,28 +534,45 @@ test("example descriptions follow matching results and rule repairs", async ({ p
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
   const limits = await page.locator("#example-limits").textContent();
   const field = page.locator("#test-list textarea").first();
+  const expected = page.locator("#test-list select").first();
   await expect(field).toHaveAccessibleDescription(`${limits} ✓ Matched "ABC123" at 0`);
+  await expect(expected).toHaveAccessibleDescription('✓ Matched "ABC123" at 0');
   await field.fill("ABC12");
   await expect(field).toHaveAccessibleDescription(`${limits} ! No match`);
-  await page.locator("#test-list select").first().selectOption("false");
+  await expect(expected).toHaveAccessibleDescription("! No match");
+  await expected.focus();
+  await expected.selectOption("false");
+  await expect(expected).toHaveValue("false");
+  await expect(expected).toBeFocused();
   await expect(field).toHaveAccessibleDescription(`${limits} ✓ No match`);
+  await expect(expected).toHaveAccessibleDescription("✓ No match");
   const editor = page.locator("#rules-input");
   await editor.fill('"ABC"');
   await expect(field).toHaveAccessibleDescription(`${limits} ✓ Found "ABC", not the entire string`);
+  await expect(expected).toHaveAccessibleDescription('✓ Found "ABC", not the entire string');
   await page.locator("#match-mode").selectOption("search");
   await expect(field).toHaveAccessibleDescription(`${limits} ! Matched "ABC" at 0`);
+  await expect(expected).toHaveAccessibleDescription('! Matched "ABC" at 0');
   await editor.fill("unsupported words");
   await expect(field).toHaveAccessibleDescription(`${limits} Fix the rules to run this example`);
+  await expect(expected).toHaveAccessibleDescription("Fix the rules to run this example");
   await editor.fill("");
   await expect(field).toHaveAccessibleDescription(`${limits} Write rules to run this example`);
+  await expect(expected).toHaveAccessibleDescription("Write rules to run this example");
   await page.locator('[data-scenario="excluded-characters"]').click();
   await expect(field).toHaveAccessibleDescription(`${limits} ✓ Matched "xyz" at 0`);
+  await expect(expected).toHaveAccessibleDescription('✓ Matched "xyz" at 0');
   await page.getByRole("button", { name: "Remove example 1", exact: true }).click();
   await expect(field).toHaveAccessibleName("Example 1 string");
   await expect(field).toHaveAccessibleDescription(`${limits} ✓ Matched "" at 0`);
+  await expect(expected).toHaveAccessibleName("Expected match result for example 1");
+  await expect(expected).toHaveAccessibleDescription('✓ Matched "" at 0');
   await page.locator("#add-example").click();
   await expect(page.locator("#test-list textarea").last()).toHaveAccessibleDescription(
     `${limits} ✓ Matched "" at 0`,
+  );
+  await expect(page.locator("#test-list select").last()).toHaveAccessibleDescription(
+    '✓ Matched "" at 0',
   );
 });
 

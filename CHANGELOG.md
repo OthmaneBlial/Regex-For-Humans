@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Describe each example's match feedback on its expected-result selector, including focused expectation changes, rule repairs and input-length errors.
+
 - Align the release preflight with local artifact verification and the existing owner Pages deployment, keeping source-repository GitHub Actions disabled.
 
 - Add a runnable first-use example and exit-code meanings to CLI help, with a regression that compiles the displayed rules.
