@@ -269,6 +269,12 @@ async function updateTestResults() {
 }
 
 function renderTests() {
+  const heights = new Map(
+    [...ui.testList.querySelectorAll(".test-row")].map((row) => [
+      row.querySelector(".test-result")?.id,
+      row.querySelector("textarea")?.style.height ?? "",
+    ]),
+  );
   ui.testList.replaceChildren();
   ui.addExample.disabled = testCases.length >= 100;
   for (const [index, sample] of testCases.entries()) {
@@ -281,6 +287,7 @@ function renderTests() {
     input.setAttribute("autocorrect", "off");
     input.rows = sample.text.split("\n", 3).length;
     input.value = sample.text;
+    input.style.height = heights.get(`example-result-${sample.id}`) ?? "";
     input.placeholder = "Empty string";
     input.setAttribute("aria-label", `Example ${number} string`);
     input.setAttribute("aria-describedby", "example-limits");

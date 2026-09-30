@@ -380,6 +380,79 @@ test("native resize grip enlarges the editor and retains its height through edit
   }
 });
 
+test("example resize heights follow their identities when adding and removing rows", async ({
+  page,
+}) => {
+  const viewport = page.viewportSize();
+  for (const width of [viewport.width, 320]) {
+    await page.setViewportSize({ width, height: viewport.height });
+    await page.goto("/");
+    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+    });
+    const fields = page.locator("#test-list textarea");
+    const text = "ABC12\nABC12";
+    const heights = [];
+    for (const [index, delta] of [
+      [1, 120],
+      [2, 180],
+    ]) {
+      const field = fields.nth(index);
+      await field.fill(text);
+      const before = await field.evaluate((input) => input.clientHeight);
+      await field.evaluate((input) =>
+        window.scrollBy({
+          top: input.getBoundingClientRect().top - 50,
+          behavior: "instant",
+        }),
+      );
+      const box = await field.boundingBox();
+      const x = box.x + box.width - 8;
+      const y = box.y + box.height - 8;
+      await page.mouse.move(x, y);
+      await page.mouse.down();
+      await page.mouse.move(x, y + delta, { steps: 10 });
+      await page.mouse.up();
+      await expect
+        .poll(() => field.evaluate((input) => input.clientHeight))
+        .toBeGreaterThan(before + 90);
+      heights.push(await field.evaluate((input) => input.style.height));
+    }
+    expect(heights[0]).not.toBe(heights[1]);
+    await page.locator("#add-example").click();
+    await expect(fields).toHaveCount(5);
+    await expect(fields.last()).toBeFocused();
+    for (const [index, height] of heights.entries()) {
+      expect(await fields.nth(index + 1).evaluate((input) => input.style.height)).toBe(height);
+      await expect(fields.nth(index + 1)).toHaveValue(text);
+    }
+    await page.locator("#test-list select").last().selectOption("false");
+    await expect(page.locator("#test-summary")).toHaveText("5 of 5 examples behave as expected");
+    await page.getByRole("button", { name: "Remove example 1", exact: true }).click();
+    await expect(fields).toHaveCount(4);
+    await expect(fields.first()).toBeFocused();
+    for (const [index, height] of heights.entries()) {
+      expect(await fields.nth(index).evaluate((input) => input.style.height)).toBe(height);
+      await expect(fields.nth(index)).toHaveAccessibleName(`Example ${index + 1} string`);
+      await expect(fields.nth(index)).toHaveValue(text);
+    }
+    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+    await page.getByRole("button", { name: "Remove example 1", exact: true }).click();
+    expect(await fields.first().evaluate((input) => input.style.height)).toBe(heights[1]);
+    await page.locator("#add-example").click();
+    await fields.last().fill(text);
+    await page.locator("#test-list select").last().selectOption("false");
+    expect(await fields.last().evaluate((input) => input.style.height)).toBe("");
+    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+    await page.locator('[data-scenario="time-shape"]').click();
+    expect(
+      await fields.evaluateAll((inputs) => inputs.every((input) => input.style.height === "")),
+    ).toBe(true);
+    await expect(page.locator("#test-summary")).toHaveText("13 of 13 examples behave as expected");
+  }
+});
+
 test("skip link focuses the workshop without resetting edited rules", async ({ page }) => {
   await page.goto("/?example=line-rule");
   const editor = page.getByRole("textbox", { name: "Write your rules" });

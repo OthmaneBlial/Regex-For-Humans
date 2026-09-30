@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve each example field's native resized height when adding or removing other examples; fresh examples and recipes use their default heights.
+
 - Allow native rule-editor enlargement by retaining its requested height in the flex layout, including after edits and recipe changes.
 
 - Reveal error and trace destinations in the page viewport as well as inside the workshop editor, including stacked mobile layouts and editors taller than the window.
