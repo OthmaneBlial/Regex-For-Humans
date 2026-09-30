@@ -456,6 +456,46 @@ test("copying a second snippet keeps its feedback after the first timer expires"
   await expect(page.locator('[data-copy="regex-code"]')).toHaveText("Copy regex");
 });
 
+for (const unavailable of [true, false]) {
+  test(`homepage selects snippets for keyboard copying when clipboard access is ${unavailable ? "unavailable" : "blocked"}`, async ({
+    page,
+  }) => {
+    await page.addInitScript((unavailable) => {
+      window.copyEvents = [];
+      Object.defineProperty(navigator, "clipboard", {
+        value: unavailable
+          ? undefined
+          : {
+              writeText: async () => {
+                throw new Error("Clipboard access blocked");
+              },
+            },
+      });
+      document.addEventListener("copy", (event) => {
+        window.copyEvents.push(window.getSelection()?.toString());
+        event.preventDefault();
+      });
+    }, unavailable);
+    await page.goto("/");
+    for (const target of ["rules-code", "regex-code"]) {
+      const button = page.locator(`[data-copy="${target}"]`);
+      await expect(button).toBeEnabled();
+      const text = await page.locator(`#${target}`).textContent();
+      await button.focus();
+      await page.keyboard.press("Enter");
+      await expect.poll(() => page.evaluate(() => window.getSelection()?.toString())).toBe(text);
+      await expect(button).toBeFocused();
+      await expect(page.locator("#copy-status")).toHaveText(
+        "Clipboard access is unavailable. The text is selected; press your keyboard copy shortcut.",
+      );
+      await page.keyboard.press("ControlOrMeta+C");
+      expect(await page.evaluate(() => window.copyEvents.at(-1))).toBe(text);
+      await expect(button).toBeFocused();
+      await expect(button).toHaveText(target === "rules-code" ? "Copy rules" : "Copy regex");
+    }
+  });
+}
+
 test("a stalled copy clears old confirmation, offers manual copying and recovers", async ({
   page,
 }) => {
@@ -485,14 +525,20 @@ test("a stalled copy clears old confirmation, offers manual copying and recovers
   });
   await button.click();
   await page.clock.fastForward(1000);
-  await expect(status).toHaveText("Clipboard access is unavailable. Select the text to copy it.");
+  await expect(status).toHaveText(
+    "Clipboard access is unavailable. The text is selected; press your keyboard copy shortcut.",
+  );
+  expect(await page.evaluate(() => window.getSelection()?.toString())).toBe(
+    await page.locator("#regex-code").textContent(),
+  );
+  await expect(button).toBeFocused();
   await expect(button).toHaveText("Copy regex");
   await page.evaluate(async () => {
     window.finishStalledCopy();
     await Promise.resolve();
     window.stallCopy = false;
   });
-  await expect(status).toContainText("Select the text to copy it");
+  await expect(status).toContainText("The text is selected");
   await page.locator('[data-recipe="prefixed-identifier"]').click();
   await expect(status).toBeEmpty();
   await button.click();

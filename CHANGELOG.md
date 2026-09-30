@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Select the requested homepage snippet for keyboard copying when clipboard access is missing, blocked or stalled, while retaining button focus and ignoring outdated requests.
+
 - Preserve oversized homepage demo input and report its visible 80-unit limit before matching, instead of testing a silently truncated prefix.
 
 - Preserve oversized workshop examples instead of truncating pasted text; show accessible field errors and stop matching until they are shortened or removed, while retaining the worker's input limit.

@@ -50,7 +50,14 @@ for (const control of copyControls) {
       }, 1800);
     } catch {
       if (request !== copySequence) return;
-      copyStatus.textContent = "Clipboard access is unavailable. Select the text to copy it.";
+      const selection = window.getSelection();
+      if (selection) {
+        selection.selectAllChildren(source);
+        copyStatus.textContent =
+          "Clipboard access is unavailable. The text is selected; press your keyboard copy shortcut.";
+      } else {
+        copyStatus.textContent = "Clipboard access is unavailable. Select the text to copy it.";
+      }
     } finally {
       window.clearTimeout(requestTimer);
     }
