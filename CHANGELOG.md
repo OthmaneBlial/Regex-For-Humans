@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Tell users a blank example field tests an empty string, as visible guidance and in each field's accessible description.
+
 - Traverse linked directories when scanning static-build assets, producing independent output copies without rewriting original files or changing versions for identical content.
 
 - Locate trailing character-list comma errors at the separator itself so workshop error navigation selects the character to remove.

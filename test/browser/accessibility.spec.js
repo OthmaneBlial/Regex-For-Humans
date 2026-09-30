@@ -510,7 +510,7 @@ test("example length limits are visible and described for loaded, added and renu
   await page.goto("/");
   await expect(page.locator("#test-list textarea")).toHaveCount(4);
   const limits =
-    "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested.";
+    "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested. Leave a field blank to test an empty string.";
   await expect(page.locator("#example-limits")).toBeVisible();
   await expect(page.locator("#example-limits")).toHaveText(limits);
   for (const count of [4, 5, 4]) {

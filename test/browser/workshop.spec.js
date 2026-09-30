@@ -1145,7 +1145,7 @@ test("oversized examples stay intact and stop testing until repaired or removed"
   await expect(first).toHaveValue(oversized);
   await expect(first).toHaveAttribute("aria-invalid", "true");
   const limits =
-    "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested.";
+    "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested. Leave a field blank to test an empty string.";
   const error = "Example too long. Limit: 2,048 UTF-16 code units.";
   await expect(first).toHaveAccessibleDescription(`${limits} ${error}`);
   await expect(page.locator("#test-list select").first()).toHaveAccessibleDescription(error);
