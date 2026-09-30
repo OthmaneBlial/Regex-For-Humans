@@ -41,6 +41,19 @@ test("CLI accepts a file and prints a copyable JavaScript literal", () => {
   }
 });
 
+test("CLI preserves lone surrogate literals in its UTF-8 output", () => {
+  for (const character of ["\ud800", "\udfff"]) {
+    const input = `start\n${JSON.stringify(character)}\nend`;
+    const result = run(["-"], input);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stderr, "");
+    assert.equal(result.stdout, `/^\\u{${character.charCodeAt(0).toString(16)}}$/u\n`);
+    const json = JSON.parse(run(["--json", "-"], input).stdout);
+    assert.equal(result.stdout.trim(), `/${json.source}/${json.flags}`);
+    assert.equal(new RegExp(json.source, json.flags).test(character), true);
+  }
+});
+
 test("CLI keeps file read failures as JSON in machine mode", () => {
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
   try {

@@ -32,6 +32,8 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 
 A literal is a JSON-style double-quoted string. Escape `"` and `\\`; the compiler escapes regex metacharacters. Character-list items must each be one Unicode code point. Quote punctuation, commas, spaces and backslashes, as in `"]", "-", ",", "\\"`. Empty literals and lists are errors.
 
+JSON strings may contain lone UTF-16 surrogates, such as `"\ud800"`. The compiler emits them as `\u{d800}` so copying a pattern or writing it as UTF-8 preserves the value. Separate surrogate items in a character list remain separate; a paired surrogate inside one quoted item represents one astral character.
+
 `start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`.
 
 ## Repetition

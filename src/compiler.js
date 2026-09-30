@@ -11,7 +11,13 @@ const locationOfOptions = { line: 1, column: 1 };
 function escapeCharacter(character, inClass) {
   const codePoint = character.codePointAt(0);
   if (codePoint === undefined) throw new TypeError("Cannot escape an empty character.");
-  if (codePoint < 0x20 || codePoint === 0x7f || codePoint === 0x2028 || codePoint === 0x2029) {
+  if (
+    codePoint < 0x20 ||
+    codePoint === 0x7f ||
+    codePoint === 0x2028 ||
+    codePoint === 0x2029 ||
+    (codePoint >= 0xd800 && codePoint <= 0xdfff)
+  ) {
     return `\\u{${codePoint.toString(16)}}`;
   }
   const special = inClass ? /[\\[\]\-^/]/u : /[\\.*+?^${}()|[\]/]/u;

@@ -71,6 +71,32 @@ test("literal and character-class metacharacters are escaped in their contexts",
   assert.equal(compile('"\\n"').source, "\\u{a}");
 });
 
+test("lone surrogates survive UTF-8 transport in literals and character sets", () => {
+  for (const character of ["\ud800", "\udbff", "\udc00", "\udfff"]) {
+    const quoted = JSON.stringify(character);
+    const escaped = `\\u{${character.charCodeAt(0).toString(16)}}`;
+    for (const [rule, source, sample, expected] of [
+      [quoted, escaped, character, true],
+      [`2 ${quoted}`, `${escaped}{2}`, character.repeat(2), true],
+      [`one of: ${quoted}`, `[${escaped}]`, character, true],
+      [`none of: ${quoted}`, `[^${escaped}]`, character, false],
+      [`text without: ${quoted}`, `[^${escaped}]*`, character, false],
+    ]) {
+      const result = compile(`start\n${rule}\nend`);
+      assert.equal(result.source, `^${source}$`, rule);
+      assert.equal(Buffer.from(result.source).toString("utf8"), result.source, rule);
+      assert.equal(toRegExp(result).test(sample), expected, rule);
+      assert.equal(toRegExp(result).test("\ufffd"), !expected, rule);
+    }
+  }
+  assert.equal(compile('"😀"').source, "😀");
+  const separateSurrogates = compile(String.raw`one of: "\ud800", "\udc00"`);
+  assert.equal(separateSurrogates.source, "[\\u{d800}\\u{dc00}]");
+  for (const character of ["\ud800", "\udc00"])
+    assert.equal(toRegExp(separateSurrogates).test(character), true);
+  assert.equal(toRegExp(separateSurrogates).test("\ud800\udc00"), false);
+});
+
 test("flags and segment positions describe the emitted expression", () => {
   const result = compile("line start\nany character\nline end", {
     flags: "is",

@@ -202,6 +202,10 @@ test("copy button places the real generated regex on the clipboard", async ({ pa
   await expect(page.locator("#copy-button")).toContainText("Copied");
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied).toBe("/^ABC\\d{3}$/u");
+  await page.locator("#rules-input").fill(`start\n${JSON.stringify("\ud800")}\nend`);
+  await expect(page.locator("#regex-output")).toHaveText("/^\\u{d800}$/u");
+  await page.locator("#copy-button").click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("/^\\u{d800}$/u");
 });
 
 test("syntax link opens the local rendered guide", async ({ page, context }) => {

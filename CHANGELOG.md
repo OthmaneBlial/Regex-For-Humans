@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Escaped lone UTF-16 surrogates so CLI output and copied regex preserve them; separate surrogate items no longer merge inside character sets.
 - Added TypeScript declarations and a strict consumer check.
 - Counts before anchors now report a specific error at the anchor.
 - Errors after a count now point past the count.
