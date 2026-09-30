@@ -155,6 +155,30 @@ async function updateTestResults() {
   const rows = [...ui.testList.querySelectorAll(".test-row")].filter(
     (row) => row instanceof HTMLDivElement,
   );
+  const tooLong = testCases.map(({ text }) => text.length > 2048);
+  rows.forEach((row, index) => {
+    const input = row.querySelector("textarea");
+    input?.setAttribute("aria-invalid", String(tooLong[index]));
+    input?.setAttribute(
+      "aria-describedby",
+      tooLong[index] ? `example-limits example-result-${testCases[index].id}` : "example-limits",
+    );
+  });
+  if (tooLong.includes(true)) {
+    testRunner.cancel();
+    rows.forEach((row, index) => {
+      row.dataset.result = tooLong[index] ? "invalid" : "pending";
+      setTestResult(
+        row,
+        tooLong[index]
+          ? "Example too long. Limit: 2,048 UTF-16 code units."
+          : "Shorten the oversized examples to run this example.",
+      );
+    });
+    ui.testSummary.textContent = "Shorten examples to 2,048 UTF-16 code units or fewer.";
+    ui.testSummary.dataset.state = "error";
+    return;
+  }
   if (!compiled || testCases.length === 0) {
     const invalidRules = ui.rules.getAttribute("aria-invalid") === "true";
     const rulePrompt = invalidRules ? "Fix the rules" : "Write rules";
@@ -219,15 +243,14 @@ function renderTests() {
     input.autocomplete = "off";
     input.autocapitalize = "off";
     input.setAttribute("autocorrect", "off");
-    input.rows = Math.min(3, Math.max(1, sample.text.split("\n").length));
+    input.rows = sample.text.split("\n", 3).length;
     input.value = sample.text;
     input.placeholder = "Empty string";
-    input.maxLength = 2048;
     input.setAttribute("aria-label", `Example ${number} string`);
     input.setAttribute("aria-describedby", "example-limits");
     input.addEventListener("input", () => {
       sample.text = input.value;
-      input.rows = Math.min(3, Math.max(1, sample.text.split("\n").length));
+      input.rows = sample.text.split("\n", 3).length;
       updateTestResults();
     });
 
@@ -248,6 +271,7 @@ function renderTests() {
     });
 
     const result = make("span", "test-result");
+    result.id = `example-result-${sample.id}`;
     const remove = make("button", "remove-example", "×");
     remove.type = "button";
     remove.setAttribute("aria-label", `Remove example ${number}`);

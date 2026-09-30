@@ -245,7 +245,8 @@ test("example length limits are visible and described for loaded, added and renu
 }) => {
   await page.goto("/");
   await expect(page.locator("#test-list textarea")).toHaveCount(4);
-  const limits = "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is cut off.";
+  const limits =
+    "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested.";
   await expect(page.locator("#example-limits")).toBeVisible();
   await expect(page.locator("#example-limits")).toHaveText(limits);
   for (const count of [4, 5, 4]) {
@@ -256,7 +257,8 @@ test("example length limits are visible and described for loaded, added and renu
     await expect(fields).toHaveCount(count);
     for (let index = 0; index < count; index += 1) {
       await expect(fields.nth(index)).toHaveAccessibleDescription(limits);
-      await expect(fields.nth(index)).toHaveAttribute("maxlength", "2048");
+      await expect(fields.nth(index)).toHaveJSProperty("maxLength", -1);
+      await expect(fields.nth(index)).toHaveAttribute("aria-invalid", "false");
     }
   }
 });

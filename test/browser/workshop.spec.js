@@ -601,6 +601,92 @@ test("direction and C1 controls are visible in output, trace, feedback and diagn
   }
 });
 
+test("oversized examples stay intact and stop testing until repaired or removed", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const NativeWorker = window.Worker;
+    window.testRequests = 0;
+    window.Worker = class extends NativeWorker {
+      postMessage(message) {
+        window.testRequests += 1;
+        if (!window.pauseMatches) super.postMessage(message);
+      }
+    };
+  });
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  await page.locator("#rules-input").fill('start 1000 "aa"\n48 "a"\nend');
+  const valid = "a".repeat(2048);
+  for (const [index, field] of (await page.locator("#test-list textarea").all()).entries()) {
+    await field.fill(index < 2 ? valid : "no");
+    await page
+      .locator("#test-list select")
+      .nth(index)
+      .selectOption(index < 2 ? "true" : "false");
+  }
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const first = page.getByRole("textbox", { name: "Example 1 string", exact: true });
+  await page.clock.install();
+  // Hold a valid request so oversized input must cancel its pending timeout.
+  await page.evaluate(() => {
+    window.pauseMatches = true;
+  });
+  await first.fill("");
+  await expect(page.locator("#test-summary")).toHaveText("Checking examples…");
+  const requests = await page.evaluate(() => window.testRequests);
+  const oversized = `${valid}BBB`;
+  await first.focus();
+  await page.keyboard.insertText(oversized);
+  await expect(first).toHaveValue(oversized);
+  await expect(first).toHaveAttribute("aria-invalid", "true");
+  const limits =
+    "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested.";
+  const error = "Example too long. Limit: 2,048 UTF-16 code units.";
+  await expect(first).toHaveAccessibleDescription(`${limits} ${error}`);
+  await expect(page.locator("#test-list .test-result").first()).toHaveText(error);
+  await expect(page.locator("#test-list .test-row").first()).toHaveAttribute(
+    "data-result",
+    "invalid",
+  );
+  await expect(page.locator("#test-summary")).toHaveText(
+    "Shorten examples to 2,048 UTF-16 code units or fewer.",
+  );
+  await page.clock.fastForward(1500);
+  await expect(page.locator("#test-summary")).toHaveText(
+    "Shorten examples to 2,048 UTF-16 code units or fewer.",
+  );
+  expect(await page.evaluate(() => window.testRequests)).toBe(requests);
+  await page.evaluate(() => {
+    window.pauseMatches = false;
+  });
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+  expect(results.violations.map(({ id }) => id)).toEqual([]);
+  await page.locator("#add-example").press("Enter");
+  await expect(first).toHaveValue(oversized);
+  await expect(first).toHaveAccessibleDescription(`${limits} ${error}`);
+  await page.getByRole("button", { name: "Remove example 1", exact: true }).press("Enter");
+  await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
+  const last = page.getByRole("textbox", { name: "Example 4 string", exact: true });
+  const beforeEmoji = await page.evaluate(() => window.testRequests);
+  await last.focus();
+  await page.keyboard.insertText("🧠".repeat(1025));
+  await expect(last).toHaveValue("🧠".repeat(1025));
+  await expect(last).toHaveAccessibleDescription(`${limits} ${error}`);
+  await expect(last).toHaveAttribute("aria-invalid", "true");
+  expect(await page.evaluate(() => window.testRequests)).toBe(beforeEmoji);
+  await last.fill("🧠".repeat(1024));
+  await expect(last).toHaveValue("🧠".repeat(1024));
+  await expect(last).toHaveAttribute("aria-invalid", "false");
+  await expect(last).toHaveAccessibleDescription(limits);
+  await expect(page.locator("#test-list .test-result").last()).toHaveText("! No match");
+  expect(await page.evaluate(() => window.testRequests)).toBeGreaterThan(beforeEmoji);
+  await last.fill(valid);
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+});
+
 test("positive and negative examples expose a changed outcome", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");

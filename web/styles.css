@@ -698,7 +698,8 @@ a {
 .test-row[data-result="pass"] {
   border-left-color: var(--green);
 }
-.test-row[data-result="fail"] {
+.test-row[data-result="fail"],
+.test-row[data-result="invalid"] {
   border-left-color: var(--red);
 }
 .test-row textarea,
@@ -724,7 +725,8 @@ a {
 .test-row[data-result="pass"] .test-result {
   color: var(--green);
 }
-.test-row[data-result="fail"] .test-result {
+.test-row[data-result="fail"] .test-result,
+.test-row[data-result="invalid"] .test-result {
   color: var(--red);
 }
 .remove-example {

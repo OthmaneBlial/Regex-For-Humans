@@ -77,7 +77,7 @@ The numbered example-label check holds the recipe response, confirms the initial
 
 Each recipe's trace buttons use the shared compiler's complete explanations in their accessible names, followed by the source-selection instruction. Exact-name checks cover anchors, literals, shorthands and repetition without duplicate punctuation.
 
-Example-limit checks verify the visible count, length and truncation instructions, along with each field's accessible description and native length cap after loading, adding and removing examples.
+Example-limit checks verify visible count and length instructions and each field's accessible description after loading, adding and removing examples. Native text insertion preserves oversized ASCII and emoji values instead of truncating them; invalid fields describe their errors, no oversized request reaches a worker, and a pending valid request is cancelled without a later timeout replacing the field error. Adding or removing another example preserves the original value. Shortening or removing an oversized example resumes testing. The boundary uses UTF-16 units, so 1,024 astral emoji are accepted and 1,025 are too long. Automated WCAG A/AA checks also cover the oversized-input state.
 
 Text entry regressions verify the spelling, completion, capitalization and correction attributes on the rule editor, recipe examples, added examples and homepage demo. Keyboard input preserves literal punctuation and case; changing case changes the matching result. Desktop and mobile browser automation checks these attributes and input handling. Physical keyboard behavior is unverified; browsers and input methods can override [autocapitalization hints](https://html.spec.whatwg.org/multipage/interaction.html#autocapitalization).
 
