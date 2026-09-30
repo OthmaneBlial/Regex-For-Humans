@@ -1,7 +1,31 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { compile } from "../../index.js";
+
+const stylesheetVersion = createHash("sha256")
+  .update(readFileSync(new URL("../../site/styles.css", import.meta.url)))
+  .digest("hex")
+  .slice(0, 12);
+
+test("homepage requests its current stylesheet and bypasses an obsolete cached style", async ({
+  page,
+}) => {
+  const stylesheets = [];
+  await page.route("**/styles.css*", async (route) => {
+    const url = new URL(route.request().url());
+    stylesheets.push(url);
+    if (url.searchParams.get("v") === stylesheetVersion) await route.continue();
+    else
+      await route.fulfill({ contentType: "text/css", body: "body { background: rgb(0, 0, 0); }" });
+  });
+  await page.goto("/");
+  await expect(page.locator("#demo-input")).toBeEnabled();
+  expect(stylesheets).toHaveLength(1);
+  expect(stylesheets[0].searchParams.get("v")).toBe(stylesheetVersion);
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(255, 253, 245)");
+});
 
 const recipes = JSON.parse(
   readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),

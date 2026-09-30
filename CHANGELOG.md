@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Version the homepage stylesheet from its content during Pages builds so visual changes bypass cached CSS automatically; reject a build whose stylesheet reference is missing.
+
 - Report malformed numeric exact counts and counts without an item as positioned `INVALID_REPETITION` errors with repair hints; recognize malformed second count tokens as `DUPLICATE_REPETITION`. Valid count syntax and matching stay unchanged.
 
 - Show honest homepage loading and failure states, enable matching only after the compiler is ready, and keep static pattern copying available while the compiler loads or fails.
