@@ -83,6 +83,34 @@ test("worker accepts regex source expanded by Unicode escaping", async ({ page }
   expect(outcome.oversizedRejected).toBe(true);
 });
 
+test("worker rejects non-string flags without coercing them", async ({ page }) => {
+  await page.goto("/");
+  const outcome = await page.evaluate(async () => {
+    const { TestRunner } = await import("/web/test-runner.js");
+    const runner = new TestRunner(() => new Worker("/web/match-worker.js", { type: "module" }));
+    const payload = {
+      source: "a",
+      flags: "u",
+      mode: "full",
+      cases: [{ id: 1, text: "a", expected: true }],
+    };
+    const errors = [];
+    for (const flags of [["u"], null, 0, {}]) {
+      try {
+        await runner.run({ ...payload, flags });
+        errors.push(null);
+      } catch (error) {
+        errors.push({ code: error.code, message: error.message });
+      }
+    }
+    return { errors, recovered: await runner.run(payload) };
+  });
+  expect(outcome.errors).toEqual(
+    Array(4).fill({ code: "WORKER_ERROR", message: "Invalid regex test request." }),
+  );
+  expect(outcome.recovered[0].pass).toBe(true);
+});
+
 test("oversized and HTML-like rules are rejected or rendered as text", async ({ page }) => {
   await page.goto("/");
   const editor = page.getByRole("textbox", { name: "Write your rules" });
