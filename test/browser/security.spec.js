@@ -124,6 +124,50 @@ test("worker rejects non-string flags without coercing them", async ({ page }) =
   expect(outcome.recovered[0].pass).toBe(true);
 });
 
+test("worker startup errors use the regular error code and extra payload IDs cannot cause timeouts", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const outcome = await page.evaluate(async () => {
+    const { TestRunner } = await import("/web/test-runner.js");
+    let blocked = true;
+    const runner = new TestRunner(() => {
+      if (blocked) {
+        blocked = false;
+        throw new Error("Worker construction blocked");
+      }
+      return new Worker("/web/match-worker.js", { type: "module" });
+    });
+    const payload = {
+      source: "^a+$",
+      flags: "u",
+      mode: "full",
+      cases: [
+        { id: 101, text: "aaa", expected: true },
+        { id: 102, text: "bbb", expected: false },
+      ],
+    };
+    let startup;
+    try {
+      await runner.run(payload);
+    } catch (error) {
+      startup = { code: error.code, message: error.message };
+    }
+    const recovered = [];
+    for (const id of [999, 0]) recovered.push(await runner.run({ ...payload, id }));
+    return { startup, recovered };
+  });
+  expect(outcome.startup).toEqual({
+    code: "WORKER_ERROR",
+    message: "Worker construction blocked",
+  });
+  for (const results of outcome.recovered) {
+    expect(results.map((result) => result.id)).toEqual([101, 102]);
+    expect(results.every((result) => result.pass)).toBe(true);
+  }
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+});
+
 test("oversized and HTML-like rules are rejected or rendered as text", async ({ page }) => {
   await page.goto("/");
   const editor = page.getByRole("textbox", { name: "Write your rules" });

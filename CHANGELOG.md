@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Report worker construction failures as rejected `WORKER_ERROR` promises, retain cancellation and recovery, and prevent extra payload fields from replacing the controller's request ID.
+
 - Bound homepage clipboard requests to one second, clear previous confirmation when copying again, and ignore older copy results for the same recipe so they cannot replace newer feedback.
 
 - Fix Entire string mode rejecting valid examples when a greedy count first returns a partial match; preserve first-match search results, partial-match explanations and worker timeouts.

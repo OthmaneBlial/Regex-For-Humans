@@ -55,6 +55,52 @@ test("isolated runner reports non-Error worker failures", async () => {
   assert.equal(worker.terminated, true);
 });
 
+test("worker startup failures reject promises, cancel the old run and allow recovery", async () => {
+  const oldWorker = new FakeWorker(false);
+  const recoveredWorker = new FakeWorker();
+  const creations = [
+    oldWorker,
+    new Error("Worker construction blocked"),
+    "worker unavailable",
+    recoveredWorker,
+  ];
+  const runner = new TestRunner(() => {
+    const creation = creations.shift();
+    if (creation instanceof FakeWorker) return creation;
+    throw creation;
+  }, 100);
+  const first = runner.run({ source: "old" });
+  const cancelled = assert.rejects(first, { code: "CANCELLED" });
+  for (const message of ["Worker construction blocked", "worker unavailable"]) {
+    const attempt = runner.run({ source: "new" });
+    assert.equal(typeof attempt.then, "function");
+    await assert.rejects(attempt, { code: "WORKER_ERROR", message });
+  }
+  await cancelled;
+  assert.equal(oldWorker.terminated, true);
+  const recovered = await runner.run({ source: "a", flags: "u", mode: "full", cases: [] });
+  assert.equal(recovered[0].pass, true);
+  assert.equal(recoveredWorker.terminated, true);
+  assert.notEqual(recoveredWorker.request.id, oldWorker.request.id);
+});
+
+test("the controller owns request IDs even when a payload has an extra id", async () => {
+  const workers = [];
+  const runner = new TestRunner(() => {
+    const worker = new FakeWorker();
+    workers.push(worker);
+    return worker;
+  }, 100);
+  for (const [index, id] of [999, 1, undefined].entries()) {
+    const payload = { source: "a", flags: "u", mode: "full", cases: [], id };
+    const result = await runner.run(payload);
+    assert.equal(result[0].pass, true);
+    assert.equal(workers[index].request.id, index + 1);
+    assert.equal(workers[index].terminated, true);
+    assert.equal(payload.id, id);
+  }
+});
+
 test("a new run cancels the old one without showing its stale result", async () => {
   const oldWorker = new FakeWorker(false);
   const newWorker = new FakeWorker();

@@ -34,7 +34,14 @@ export class TestRunner {
   /** @param {TestPayload} payload @returns {Promise<TestResult[]>} */
   run(payload) {
     this.cancel();
-    const worker = this.factory();
+    let worker;
+    try {
+      worker = this.factory();
+    } catch (error) {
+      return Promise.reject(
+        new TestRunError("WORKER_ERROR", error instanceof Error ? error.message : String(error)),
+      );
+    }
     const id = ++this.sequence;
     return new Promise((resolve, reject) => {
       /** @param {Error | null} error @param {TestResult[]} [result=[]] */
@@ -63,7 +70,7 @@ export class TestRunner {
       };
       try {
         /** @type {TestRequest} */
-        const request = { id, ...payload };
+        const request = { ...payload, id };
         worker.postMessage(request);
       } catch (error) {
         finish(
