@@ -262,6 +262,52 @@ test("source navigation reveals wrapped and middle lines after the caret moves",
   }
 });
 
+test("source navigation reveals its destination in the page viewport", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const editor = page.locator("#rules-input");
+  const viewport = page.viewportSize();
+  for (const width of [viewport.width, 320]) {
+    await page.setViewportSize({ width, height: viewport.height });
+    for (const height of [null, 1200]) {
+      await editor.evaluate((input, height) => {
+        if (height === null) input.style.removeProperty("min-height");
+        else input.style.minHeight = `${height}px`;
+      }, height);
+      for (const [last, name] of [
+        ["unknown rule", "Go to error"],
+        ['"TARGET"', /^Rule on line 91:/],
+      ]) {
+        const rules = `${"digit\n".repeat(90)}${last}`;
+        await editor.fill(rules);
+        await editor.evaluate((input) => {
+          input.setSelectionRange(0, 0);
+          input.scrollTop = 0;
+        });
+        await page.getByRole("button", { name }).press("Enter");
+        await expect(editor).toBeFocused();
+        expect(await editor.evaluate((input) => input.selectionStart)).toBe(rules.indexOf(last));
+        await expect
+          .poll(() =>
+            editor.evaluate((input) => {
+              const style = getComputedStyle(input);
+              const lineHeight = Number.parseFloat(style.lineHeight);
+              const top =
+                input.getBoundingClientRect().top +
+                Number.parseFloat(style.borderTopWidth) +
+                Number.parseFloat(style.paddingTop) +
+                90 * lineHeight -
+                input.scrollTop;
+              return top >= 0 && top + lineHeight <= window.innerHeight;
+            }),
+          )
+          .toBe(true);
+        await expect(editor).toHaveValue(rules);
+      }
+    }
+  }
+});
+
 test("skip link focuses the workshop without resetting edited rules", async ({ page }) => {
   await page.goto("/?example=line-rule");
   const editor = page.getByRole("textbox", { name: "Write your rules" });

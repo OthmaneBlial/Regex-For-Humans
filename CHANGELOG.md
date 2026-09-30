@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reveal error and trace destinations in the page viewport as well as inside the workshop editor, including stacked mobile layouts and editors taller than the window.
+
 - Add an HH:MM time-shape recipe with ASCII digits, whole-input anchors and explicit examples of out-of-range clock values that still match.
 
 - Scroll the workshop editor to the selected start when navigating to an error or trace rule, including wrapped literals and a caret moved elsewhere.
