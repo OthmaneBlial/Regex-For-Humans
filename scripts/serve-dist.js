@@ -1,9 +1,11 @@
-import { readFile } from "node:fs/promises";
+import { readFile, realpath } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = resolve(process.argv[3] ?? fileURLToPath(new URL("../dist/", import.meta.url)));
+const root = await realpath(
+  resolve(process.argv[3] ?? fileURLToPath(new URL("../dist/", import.meta.url))),
+);
 const port = Number(process.argv[2] ?? 4174);
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -24,7 +26,12 @@ const server = createServer(async (request, response) => {
       response.writeHead(403).end();
       return;
     }
-    const data = await readFile(path);
+    const target = await realpath(path);
+    if (!target.startsWith(`${root}${sep}`)) {
+      response.writeHead(403).end();
+      return;
+    }
+    const data = await readFile(target);
     response
       .writeHead(200, {
         "content-type": mimeTypes[extname(path)] ?? "application/octet-stream",

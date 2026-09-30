@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject local-server symlinks whose resolved targets escape the selected static root, while keeping in-root links and a symlinked root usable.
+
 - Report the actual local development server port when port `0` lets the operating system choose one.
 
 - Explain why the workshop cannot compile or test with JavaScript disabled, and link to its static syntax guide.
