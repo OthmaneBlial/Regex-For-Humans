@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Package verification now runs the npm-installed CLI command shim in its clean consumer using offline `npm exec`.
 - Added a hex-color recipe that teaches exact character-list repetition and accepts only six-digit `#RRGGBB` notation.
 - CLI stdout write failures now use the regular diagnostic format, including JSON errors; failed stderr writes preserve a nonzero exit status.
 - Long rule diagnostics now wrap within the workshop viewport.

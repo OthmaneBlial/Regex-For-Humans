@@ -103,10 +103,10 @@ void [regex, segment, source, line];
     ],
     { cwd: consumer },
   );
-  const bin = join(installed, "bin", "regex-for-humans.js");
-  const version = run([bin, "--version"], { cwd: consumer });
+  const cliArgs = [npmCli, "exec", "--offline", "--yes=false", "--", "regex-for-humans"];
+  const version = run([...cliArgs, "--version"], { cwd: consumer });
   if (version !== manifest.version) throw new Error("Installed CLI reported a different version.");
-  const cliResult = JSON.parse(run([bin, "--json", "-"], { cwd: consumer, input: rules }));
+  const cliResult = JSON.parse(run([...cliArgs, "--json", "-"], { cwd: consumer, input: rules }));
   if (cliResult.source !== "^ABC\\d{3}$" || cliResult.flags !== "u") {
     throw new Error("Installed CLI produced an unexpected expression.");
   }
