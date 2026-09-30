@@ -75,4 +75,6 @@ Text entry regressions verify the spelling, completion, capitalization and corre
 
 Long literal trace checks cover 4,096-character values and rules at the input-length limit. Explanations wrap without horizontal trace or page overflow at desktop, mobile and 320px widths. The regex output remains intact, and keyboard activation of its trace button selects the entire original source line.
 
+Generated-output keyboard checks cover short and horizontally clipped patterns at desktop, mobile and 320px widths. Tab focuses the named regex region with a visible outline, Right Arrow scrolls clipped source, and the next Tab reaches Copy. Enter copies the entire pattern and keeps focus on the button.
+
 `npm run test:site` builds and serves the complete `site/` directory. It verifies the homepage demo against the shared compiler, an obsolete cached compiler response, shared recipe notes, clipboard text and feedback after recipe changes, one-second clipboard timeout and recovery, overlapping copy requests for the same recipe, recipe navigation, recipe-load recovery, copied documentation, local assets, 320px layout, and automated WCAG A/AA checks at desktop and mobile sizes. Fake-clock regressions exercise delayed resolve/reject responses and confirm that older clipboard operations cannot replace the latest copy confirmation.

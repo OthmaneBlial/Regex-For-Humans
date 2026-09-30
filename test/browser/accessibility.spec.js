@@ -54,6 +54,61 @@ test("keyboard can reach the editor, options, copy and test controls", async ({ 
   await expect(page.locator("#match-mode")).toBeFocused();
 });
 
+test("generated regex is a named keyboard stop with native horizontal scrolling", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: {
+        writeText: async (text) => {
+          window.copiedPattern = text;
+        },
+      },
+    });
+  });
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const output = page.getByRole("region", { name: "Generated JavaScript regex", exact: true });
+  const copy = page.locator("#copy-button");
+  const viewport = page.viewportSize();
+  for (const literal of ["ABC", "x".repeat(4096)]) {
+    const pattern = `/${literal}/u`;
+    await page.locator("#rules-input").fill(JSON.stringify(literal));
+    await expect(page.locator("#regex-output")).toHaveText(pattern);
+    for (const width of [viewport.width, 320]) {
+      await page.setViewportSize({ width, height: viewport.height });
+      await page.locator("#dot-all").focus();
+      await page.keyboard.press("Tab");
+      await expect(output).toBeFocused();
+      await expect(output).toHaveCSS("outline-style", "solid");
+      expect(
+        await output.evaluate((element) =>
+          Number.parseFloat(getComputedStyle(element).outlineWidth),
+        ),
+      ).toBeGreaterThan(0);
+      if (literal.length > 3) {
+        expect(await output.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(
+          true,
+        );
+        const before = await output.evaluate((element) => element.scrollLeft);
+        await page.keyboard.press("ArrowRight");
+        await expect
+          .poll(() => output.evaluate((element) => element.scrollLeft))
+          .toBeGreaterThan(before);
+      }
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      ).toBe(true);
+      await page.keyboard.press("Tab");
+      await expect(copy).toBeFocused();
+      await page.keyboard.press("Enter");
+      await expect(copy).toContainText("Copied");
+      expect(await page.evaluate(() => window.copiedPattern)).toBe(pattern);
+      await expect(copy).toBeFocused();
+    }
+  }
+});
+
 test("a diagnostic can focus its exact source position from the keyboard", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");

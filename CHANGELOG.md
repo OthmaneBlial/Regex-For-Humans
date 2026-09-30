@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Give the generated regex a named keyboard stop with visible focus and native horizontal scrolling.
+
 - Wrap long literal explanations inside the trace viewport while keeping source selection available.
 
 - Request literal text entry without spelling checks, completion, automatic capitalization or autocorrection in rules, examples and the homepage demo.

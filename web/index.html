@@ -63,7 +63,8 @@
         <section class="panel result-panel" aria-labelledby="result-title">
           <div class="panel-heading"><span class="step-number">02</span><div><p class="kicker">THE OUTPUT 🔎</p><h2 id="result-title">Understand the pattern</h2></div></div>
           <div class="result-label-row"><span>JAVASCRIPT REGEXP</span><span id="compile-state" class="state-pill" role="status">Ready</span></div>
-          <div class="pattern-box"><code id="regex-output">Select a recipe or write a rule</code></div>
+          <!-- biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard focus enables native scrolling of clipped regex. -->
+          <section class="pattern-box" aria-label="Generated JavaScript regex" tabindex="0"><code id="regex-output">Select a recipe or write a rule</code></section>
           <div class="result-actions"><span id="flags-summary">Unicode mode always on</span><button id="copy-button" class="copy-button" type="button" disabled>Copy regex <span aria-hidden="true">↗</span></button></div>
           <div id="diagnostic" class="diagnostic" role="alert" hidden></div>
           <div class="trace-heading"><h3>How it was built</h3><span>RULE → FRAGMENT</span></div>
