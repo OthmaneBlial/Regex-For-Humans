@@ -310,8 +310,16 @@ test("copy button places the real generated regex on the clipboard", async ({ pa
   expect(copied).toBe("/^ABC\\d{3}$/u");
   await page.locator("#rules-input").fill(`start\n${JSON.stringify("\ud800")}\nend`);
   await expect(page.locator("#regex-output")).toHaveText("/^\\u{d800}$/u");
+  expect(await page.locator("#copy-button").textContent()).toBe("Copy regex ↗");
   await page.locator("#copy-button").click();
+  await expect(page.locator("#copy-button")).toContainText("Copied");
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("/^\\u{d800}$/u");
+  await page.locator("#ignore-case").check();
+  expect(await page.locator("#copy-button").textContent()).toBe("Copy regex ↗");
+  await page.locator("#copy-button").click();
+  await expect(page.locator("#copy-button")).toContainText("Copied");
+  await page.locator('[data-scenario="excluded-characters"]').click();
+  expect(await page.locator("#copy-button").textContent()).toBe("Copy regex ↗");
 });
 
 for (const copied of [true, false]) {

@@ -245,6 +245,7 @@ function renderTests() {
 }
 
 function compileRules() {
+  ui.copy.textContent = "Copy regex ↗";
   const ruleCount = splitLines(ui.rules.value).filter((line) => line.trim()).length;
   ui.ruleCount.textContent = `${ruleCount} ${ruleCount === 1 ? "rule" : "rules"}`;
   try {
