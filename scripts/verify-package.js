@@ -91,6 +91,16 @@ if (/[\\p{Control}\\u2028\\u2029]/u.test(controlled.source + controlled.segments
 const unfinished = ${JSON.stringify('start 2 "😀   ')};
 try { compile(unfinished); throw new Error("Unfinished quote accepted"); }
 catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_QUOTE" || error.column !== unfinished.length + 1) throw error; }
+for (const [rules, code, column] of ${JSON.stringify([
+      ["start 2 'A'", "UNKNOWN_RULE", 9],
+      ["one of: a, ‘B’", "INVALID_CHARACTER", 12],
+      ["text without: a, `B`", "INVALID_CHARACTER", 18],
+    ])}) {
+  try { compile(rules); throw new Error("Unsupported quote style accepted"); }
+  catch (error) { if (!(error instanceof CompileError) || error.code !== code || error.line !== 1 || error.column !== column || error.hint !== ${JSON.stringify('Use JSON double quotes for quoted text, such as `"A"`.')}) throw error; }
+}
+const quoteData = ${JSON.stringify("'A'")};
+if (!toRegExp(compile(JSON.stringify(quoteData))).test(quoteData)) throw new Error("Quote data changed");
 try { compile("unsupported words"); throw new Error("Unknown rule accepted"); }
 catch (error) { if (!(error instanceof CompileError)) throw error; }
 `,

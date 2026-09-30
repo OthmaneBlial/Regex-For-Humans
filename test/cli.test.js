@@ -425,6 +425,37 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   assert.equal(run(["--bogus"]).status, 2);
 });
 
+test("CLI offers the JSON quote hint without changing positioned literal or list errors", () => {
+  const hint = 'Use JSON double quotes for quoted text, such as `"A"`.';
+  for (const value of ["'ABC'", "`ABC`", "“ABC”", "‘ABC’"]) {
+    for (const prefix of ["start 2 ", "one of: a, ", "none of: a, ", "text without: a, "]) {
+      const literal = prefix.startsWith("start");
+      const message = literal
+        ? `Unsupported rule: ${JSON.stringify(`2 ${value}`)}.`
+        : "Each character-list item must be one Unicode code point.";
+      const line = `  ${prefix}${value}`;
+      const input = `\n${line}`;
+      const column = line.indexOf(value) + 1;
+      const structured = run(["--json", "-"], input);
+      assert.equal(structured.status, 1);
+      assert.equal(structured.stdout, "");
+      assert.deepEqual(JSON.parse(structured.stderr), {
+        error: {
+          code: literal ? "UNKNOWN_RULE" : "INVALID_CHARACTER",
+          message,
+          line: 2,
+          column,
+          hint,
+        },
+      });
+      const plain = run(["-"], input);
+      assert.equal(plain.status, 1);
+      assert.equal(plain.stdout, "");
+      assert.equal(plain.stderr, `Line 2, column ${column}: ${message}\n${hint}\n`);
+    }
+  }
+});
+
 test("CLI preserves original quote error positions after trailing whitespace", () => {
   for (const prefix of ["start 2 ", "none of: a, ", "text without: a, "]) {
     for (const trailing of ["   ", "\u00a0 ", "\t "]) {

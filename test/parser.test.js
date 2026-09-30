@@ -291,6 +291,44 @@ test("counts on anchors point to the anchor", () => {
   }
 });
 
+test("unsupported quote delimiters retain positioned errors and offer a JSON quote hint", () => {
+  const quotes = ["'ABC'", "`ABC`", "“ABC”", "”ABC”", "‘ABC’", "’ABC’"];
+  const hint = 'Use JSON double quotes for quoted text, such as `"A"`.';
+  for (const value of quotes) {
+    for (const prefix of ["", "start ", "0 ", "between 0 and 1 ", "start 2 ", "line start, 2 "]) {
+      const line = `  ${prefix}${value}`;
+      assert.throws(() => parse(`\n${line}`), {
+        code: "UNKNOWN_RULE",
+        line: 2,
+        column: line.indexOf(value) + 1,
+        hint,
+      });
+    }
+    for (const prefix of ["one of: b, ", "none of: b, ", "text without: b, "]) {
+      const line = `  ${prefix}${value}`;
+      assert.throws(() => parse(`\n${line}`), {
+        code: "INVALID_CHARACTER",
+        line: 2,
+        column: line.indexOf(value) + 1,
+        hint,
+      });
+    }
+    assert.equal(parse(JSON.stringify(value)).nodes[0].value, value);
+    assert.throws(
+      () => parse(`one of: ${JSON.stringify(value)}`),
+      (error) => error.code === "INVALID_CHARACTER" && error.hint === undefined,
+    );
+  }
+  assert.deepEqual(parse("one of: ', `, “, ”, ‘, ’").nodes[0].value, [
+    "'",
+    "`",
+    "“",
+    "”",
+    "‘",
+    "’",
+  ]);
+});
+
 test("quoted literal and character-list items keep punctuation as data", () => {
   assert.equal(parse('"a.b"').nodes[0].value, "a.b");
   assert.deepEqual(parse('one of: "]", "-", ",", "\\\\"').nodes[0].value, ["]", "-", ",", "\\"]);

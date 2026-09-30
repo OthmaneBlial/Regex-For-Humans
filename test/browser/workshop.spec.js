@@ -112,6 +112,49 @@ for (const scenario of scenarios) {
   });
 }
 
+test("unsupported quote styles explain the required delimiters and recover after repair", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const editor = page.locator("#rules-input");
+  for (const [opening, closing] of [
+    ["'", "'"],
+    ["`", "`"],
+    ["“", "”"],
+    ["‘", "’"],
+  ]) {
+    for (const [prefix, letter, source] of [
+      ["start ", "A", "^ABC\\d{3}$"],
+      ["start\none of: ", "A", "^[A]BC\\d{3}$"],
+      ["start\nnone of: ", "B", "^[^B]BC\\d{3}$"],
+      ["start\ntext without: ", "B", "^[^B]*BC\\d{3}$"],
+    ]) {
+      const value = opening + letter + closing;
+      const rules = `${prefix}${value}\n"BC"\n3 digits\nend`;
+      await editor.fill(rules);
+      await expect(page.locator("#diagnostic")).toContainText(
+        'Use JSON double quotes for quoted text, such as `"A"`.',
+      );
+      await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
+      await expect(page.locator("#copy-button")).toBeDisabled();
+      await expect(editor).toHaveAttribute("aria-invalid", "true");
+      await page.getByRole("button", { name: "Go to error", exact: true }).press("Enter");
+      await expect(editor).toBeFocused();
+      await expect(editor).toHaveValue(rules);
+      expect(
+        await editor.evaluate((element) => [element.selectionStart, element.selectionEnd]),
+      ).toEqual([rules.indexOf(value), rules.indexOf(value) + 1]);
+      await editor.fill(rules.replace(value, JSON.stringify(letter)));
+      await expect(page.locator("#regex-output")).toHaveText(`/${source}/u`);
+      await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+      await expect(page.locator("#diagnostic")).toBeHidden();
+      await expect(editor).toHaveAttribute("aria-invalid", "false");
+      await expect(page.locator("#copy-button")).toBeEnabled();
+    }
+  }
+});
+
 test("editing rules reports errors without stale output and recovers", async ({ page }) => {
   await page.goto("/");
   const editor = page.getByRole("textbox", { name: "Write your rules" });

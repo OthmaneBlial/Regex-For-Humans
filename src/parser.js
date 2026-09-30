@@ -78,6 +78,8 @@ const SHORTHANDS = new Map([
 
 const START_ANCHOR = /^(line start|start)(?:,\s*|\s+|$)/i;
 const DUPLICATE_START_ANCHOR_MESSAGE = "Use only one start anchor.";
+const QUOTE_STYLES = /^['`“”‘’]/u;
+const QUOTE_HINT = 'Use JSON double quotes for quoted text, such as `"A"`.';
 // Recognize malformed numeric tokens so parseCount owns their diagnostics.
 const COUNT_PREFIX = /^([+-]?(?:\p{Nd}|\.\p{Nd})\S*)(?:\s+|$)/u;
 
@@ -156,10 +158,12 @@ function readCharacterList(text, location, rawLine) {
       index = end;
     }
     if ([...value].length !== 1) {
-      fail("INVALID_CHARACTER", "Each character-list item must be one Unicode code point.", {
-        line: location.line,
-        column: location.column + itemStart,
-      });
+      fail(
+        "INVALID_CHARACTER",
+        "Each character-list item must be one Unicode code point.",
+        { line: location.line, column: location.column + itemStart },
+        QUOTE_STYLES.test(text.slice(itemStart)) ? QUOTE_HINT : undefined,
+      );
     }
     items.push(value);
     while (/\s/u.test(text[index] ?? "")) index += 1;
@@ -328,11 +332,13 @@ function parseAtom(text, location, rawLine) {
     "UNKNOWN_RULE",
     `Unsupported rule: ${quoteText(text)}.`,
     { line: location.line, column: location.column + offset },
-    /^hex(?:\s|$)/i.test(remaining)
-      ? "Use `hex digit` for one character or `hex digits` for one or more."
-      : /^letters?(?:\s|$)/i.test(remaining)
-        ? "Use `letter` for one ASCII letter or `letters` for one or more."
-        : "Try `line start`, `any text` or `3 digits`.",
+    QUOTE_STYLES.test(remaining)
+      ? QUOTE_HINT
+      : /^hex(?:\s|$)/i.test(remaining)
+        ? "Use `hex digit` for one character or `hex digits` for one or more."
+        : /^letters?(?:\s|$)/i.test(remaining)
+          ? "Use `letter` for one ASCII letter or `letters` for one or more."
+          : "Try `line start`, `any text` or `3 digits`.",
   );
 }
 
