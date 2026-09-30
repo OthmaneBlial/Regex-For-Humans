@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Links to screenshots, contributing instructions and the roadmap now resolve from the installed npm package. Package verification checks installed documentation links.
 - Added a version-shape recipe using one-or-more digits and literal dots, with explicit examples and Semantic Versioning limits. Recipe numbering now follows the loaded fixtures.
 - Recipe loading failures now appear beside the recipes without clearing compiler diagnostics or preventing manual editing and testing.
 - Recipes that finish loading after editing no longer overwrite rules, flags or examples already entered.

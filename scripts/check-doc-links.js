@@ -2,18 +2,18 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = fileURLToPath(new URL("../", import.meta.url));
+const root = process.argv[2]
+  ? resolve(process.argv[2])
+  : fileURLToPath(new URL("../", import.meta.url));
 const files = [
-  "README.md",
-  "ROADMAP.md",
-  "CONTRIBUTING.md",
-  "SECURITY.md",
-  "CHANGELOG.md",
-  ".github/pull_request_template.md",
+  ...readdirSync(root).filter((name) => name.endsWith(".md")),
   ...readdirSync(resolve(root, "docs"))
     .filter((name) => name.endsWith(".md"))
     .map((name) => `docs/${name}`),
 ];
+if (existsSync(resolve(root, ".github/pull_request_template.md"))) {
+  files.push(".github/pull_request_template.md");
+}
 let checked = 0;
 const missing = [];
 

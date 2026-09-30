@@ -4,7 +4,7 @@ This is a runbook for a future stable release, not a record of publication. As o
 
 ## Gates before a version bump
 
-1. Complete the open human reviews in [USABILITY-STUDY.md](USABILITY-STUDY.md): explanation accuracy, three first-use sessions, a real screen reader session, a novice README review, and an external contribution review. Record observed problems and fixes; keep the corresponding [roadmap](../ROADMAP.md) tasks open until verified.
+1. Complete the open human reviews in [USABILITY-STUDY.md](USABILITY-STUDY.md): explanation accuracy, three first-use sessions, a real screen reader session, a novice README review, and an external contribution review. Record observed problems and fixes; keep the corresponding [roadmap](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/ROADMAP.md) tasks open until verified.
 2. Capture final desktop and mobile screenshots from the tested build after UX changes are settled. Verify their visible examples against the compiler and inspect the rendered README.
 3. The CI rejection gate was verified on 19 September 2026: disposable draft [PR #1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) failed `npm run check` in all four core jobs of run `35444252927`, then was closed without merging and its temporary branch was removed. Recheck the gate if the CI workflow changes materially.
 4. Decide whether the observed users need standalone executables. Record the evidence in [DISTRIBUTION.md](DISTRIBUTION.md). The default remains npm/Node plus the browser workshop unless the sessions show a concrete need.

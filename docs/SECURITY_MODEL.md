@@ -16,4 +16,4 @@ The UI writes rules, examples, diagnostics and explanations through `textContent
 
 ## Verification and limits
 
-Run `npm test`, `npm run build` and `npm run test:browser`. Automated accessibility and security tests cover the documented cases, while broader browser/security review and real-user tests remain separate release gates in [ROADMAP.md](../ROADMAP.md). Groups, alternation, lookaround, arbitrary regex injection and other engines are outside the version 1 language; adding any of them requires a new complexity and compatibility review.
+Run `npm test`, `npm run build` and `npm run test:browser`. Automated accessibility and security tests cover the documented cases, while broader browser/security review and real-user tests remain separate release gates in [ROADMAP.md](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/ROADMAP.md). Groups, alternation, lookaround, arbitrary regex injection and other engines are outside the version 1 language; adding any of them requires a new complexity and compatibility review.

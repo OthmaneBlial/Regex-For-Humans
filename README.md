@@ -34,16 +34,16 @@ npm run serve
 
 Open **http://127.0.0.1:4174/**. Pick a recipe, edit the rules, and test examples. Compilation runs in your browser; rules and examples are not sent to an application backend.
 
-![Regex For Humans workshop showing line start, any text, 3 digits, line end, and three passing example checks](media/screenshots/workshop-desktop-dev.png)
+![Regex For Humans workshop showing line start, any text, 3 digits, line end, and three passing example checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png)
 
 <details>
 <summary>Mobile screenshot</summary>
 
-![Mobile view of the Regex For Humans workshop](media/screenshots/workshop-mobile-dev.png)
+![Mobile view of the Regex For Humans workshop](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-mobile-dev.png)
 
 </details>
 
-[Screenshot source and checksums](media/screenshots/README.md).
+[Screenshot source and checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md).
 
 ## Write a rule
 
@@ -102,4 +102,4 @@ npm run build:pages
 npm run test:package
 ```
 
-To run browser tests: `npx playwright install chromium` then `npm run test:browser`. See [testing and compatibility](docs/TESTING.md), [contributing](CONTRIBUTING.md), [changelog](CHANGELOG.md), and [MIT license](LICENSE). Report security issues through the private process in [SECURITY.md](SECURITY.md).
+To run browser tests: `npx playwright install chromium` then `npm run test:browser`. See [testing and compatibility](docs/TESTING.md), [contributing](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md), [changelog](CHANGELOG.md), and [MIT license](LICENSE). Report security issues through the private process in [SECURITY.md](SECURITY.md).
