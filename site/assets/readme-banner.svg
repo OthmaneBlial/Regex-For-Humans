@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="460" viewBox="0 0 1200 460" role="img" aria-labelledby="title desc">
+<title id="title">Regex For Humans</title><desc id="desc">Little rules. Big aha moments. Write it, understand it, test it.</desc>
+<rect x="3" y="3" width="1194" height="454" rx="28" fill="#fffdf5" stroke="#202735" stroke-width="6"/>
+<g fill="#e9e4d5"><circle cx="40" cy="80" r="2"/><circle cx="1140" cy="380" r="2"/><circle cx="620" cy="330" r="2"/></g>
+<g transform="translate(54 45) rotate(-6 35 35)"><rect x="4" y="5" width="70" height="70" rx="20" fill="#202735"/><rect width="70" height="70" rx="20" fill="#ffdf58" stroke="#202735" stroke-width="3"/><path d="m15 31 7-9 7 9m13 0 7-9 7 9M28 47q8 7 16 0" fill="none" stroke="#202735" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="151" y="75" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="15" font-weight="700" letter-spacing="2">LITTLE RULES. BIG AHA MOMENTS.</text>
+<text x="54" y="187" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="76" font-weight="900" letter-spacing="-5">regex</text>
+<path d="m49 267 511-12 4 62-511 13z" fill="#ff8b7b"/>
+<text x="54" y="301" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="76" font-weight="900" letter-spacing="-5">for humans.</text>
+<text x="57" y="355" fill="#535969" font-family="Trebuchet MS, sans-serif" font-size="21">Less squinting. More matching.</text>
+<g transform="translate(670 70) rotate(3 220 140)"><rect x="7" y="8" width="445" height="300" rx="18" fill="#202735"/><rect width="445" height="300" rx="18" fill="#fff" stroke="#202735" stroke-width="3"/><path d="m161-13 106-2 1 29-106 5z" fill="#ffdf58" opacity=".9"/>
+<text x="25" y="43" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="20" font-weight="700">Words in. Regex out.</text>
+<rect x="23" y="64" width="399" height="118" rx="10" fill="#fff8dc" stroke="#202735" stroke-width="2"/>
+<g fill="#202735" font-family="Menlo, Consolas, monospace" font-size="20"><text x="41" y="96">start "#"</text><text x="41" y="129">6 hex digits</text><text x="41" y="162">end</text></g>
+<rect x="23" y="201" width="399" height="62" rx="10" fill="#202735"/><text x="41" y="241" fill="#ffdf58" font-family="Menlo, Consolas, monospace" font-size="21">/^#[0-9A-Fa-f]{6}$/u</text>
+<circle cx="342" cy="289" r="23" fill="#c9ed97" stroke="#202735" stroke-width="2"/><path d="m331 289 7 7 15-16" stroke="#202735" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(57 390)"><rect width="158" height="32" rx="16" fill="#acd9fa" stroke="#202735" stroke-width="2"/><text x="79" y="22" text-anchor="middle" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="14" font-weight="700">WRITE IT</text><rect x="170" width="171" height="32" rx="16" fill="#ffdf58" stroke="#202735" stroke-width="2"/><text x="255" y="22" text-anchor="middle" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="14" font-weight="700">UNDERSTAND IT</text><rect x="354" width="145" height="32" rx="16" fill="#c9ed97" stroke="#202735" stroke-width="2"/><text x="426" y="22" text-anchor="middle" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="14" font-weight="700">TEST IT</text></g>
+<path d="m1119 27 5 14 15 5-15 5-5 15-5-15-15-5 15-5z" fill="#ff8b7b" stroke="#202735" stroke-width="2"/>
+</svg>
