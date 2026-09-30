@@ -97,5 +97,26 @@
       "Kid",
       "ſam"
     ]
+  },
+  {
+    "id": "time-shape",
+    "title": "Match a time shape",
+    "note": "HH:MM shape only, using ASCII digits. Values such as 25:99 also match; validate hour and minute ranges separately.",
+    "rules": "start\n2 digits\n\":\"\n2 digits\nend",
+    "source": "^\\d{2}:\\d{2}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["09:30", "00:00", "23:59", "25:99"],
+    "negative": [
+      "9:30",
+      "09:3",
+      "009:30",
+      "09:30:00",
+      "9h30",
+      "09-30",
+      "09:30\n",
+      "٠٩:٣٠",
+      " 09:30"
+    ]
   }
 ]

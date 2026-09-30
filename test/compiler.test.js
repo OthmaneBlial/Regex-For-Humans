@@ -7,6 +7,23 @@ const scenarios = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("time-shape keeps formatting separate from clock-value validation", () => {
+  const scenario = scenarios.find(({ id }) => id === "time-shape");
+  assert.ok(scenario, "The shared recipes must include the HH:MM shape.");
+  const result = compile(scenario.rules);
+  assert.equal(result.source, "^\\d{2}:\\d{2}$");
+  assert.equal(result.flags, "u");
+  assert.ok(scenario.positive.includes("25:99"), "Show the clock-value limitation explicitly.");
+  assert.match(scenario.note, /validate hour and minute ranges separately/i);
+  const regex = toRegExp(result);
+  for (let hour = 0; hour <= 99; hour += 1) {
+    for (let minute = 0; minute <= 99; minute += 1) {
+      const text = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+      assert.equal(regex.test(text), true, text);
+    }
+  }
+});
+
 test("reference scenarios compile to exact source and flags and match both ways", () => {
   for (const scenario of scenarios) {
     const result = compile(scenario.rules);

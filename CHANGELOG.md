@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add an HH:MM time-shape recipe with ASCII digits, whole-input anchors and explicit examples of out-of-range clock values that still match.
+
 - Scroll the workshop editor to the selected start when navigating to an error or trace rule, including wrapped literals and a caret moved elsewhere.
 
 - Suggest JSON double quotes for unsupported single, backtick and smart quote delimiters in literals and character lists, preserving error codes, locations and valid quote characters used as matching data.

@@ -24,7 +24,9 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 
 8. **Match a username shape.** Rules: `start letter` / `between 2 and 15 word` / `end`. Expected source `^[A-Za-z]\w{2,15}$`, flags `u`. Positive: `Abc`, `Alice_7`, `A__`, a 16-letter name. Negative: empty string, `Al`, `_Alice`, `7Alice`, `a-b`, `élise`, a 17-letter name, a name followed by a newline, `Kid` and `ſam`. This teaches an alphabetic first character followed by an inclusive range of word characters, for a total of 3–16. Digits and underscores are allowed after the first letter. Ignore case adds JavaScript's Unicode case-folding equivalents. The recipe checks only this shape; validate availability and a service's account rules separately.
 
-The recipes use compact syntax for prefixes, exclusions, line matching, a fixed date shape, variable-length version components, an exact hexadecimal character count, an inclusive digit range and an alphabetic username prefix.
+9. **Match a time shape.** Rules: `start` / `2 digits` / `":"` / `2 digits` / `end`. Expected source `^\d{2}:\d{2}$`, flags `u`. Positive: `09:30`, `00:00`, `23:59`, `25:99` (out-of-range clock values still match). Negative: `9:30`, `09:3`, `009:30`, `09:30:00`, `9h30`, `09-30`, a time followed by a newline, Arabic-Indic digits and a leading space. This teaches exact ASCII digit counts with a literal colon. It checks the `HH:MM` shape; validate hour and minute ranges separately.
+
+The recipes use compact syntax for prefixes, exclusions, line matching, fixed date and time shapes, variable-length version components, an exact hexadecimal character count, an inclusive digit range and an alphabetic username prefix.
 
 Each fixture includes a short note about its meaning and limits. The workshop shows that note beside the selected rules, includes it in the editor's accessible description, and hides it when manual rules differ from the recipe. The homepage demo uses the same note.
 

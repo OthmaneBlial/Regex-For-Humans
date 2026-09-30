@@ -57,6 +57,8 @@ Entire-string regressions verify that a partial greedy match can backtrack to co
 
 Worker-controller regressions cover startup failures as rejected `WORKER_ERROR` promises, cancellation of a previous run, recovery and request-ID ownership. Real-worker browser checks verify that extra top-level payload IDs do not cause false timeouts and that example IDs remain intact.
 
+Time-shape recipe checks cover all 10,000 two-digit hour/minute combinations, including out-of-range clock values, plus rejected widths, separators, suffixes, whitespace and non-ASCII digits. Shared fixture checks exercise the public API, CLI and browser. The workshop regression verifies the visible range-validation reminder, copied pattern and an editable one-or-two-digit hour count with a corrected example expectation.
+
 Count-diagnostic regressions cover signed, fractional, scientific, hexadecimal, separated and localized numeric tokens in exact and bounded forms, missing items and duplicate tokens. They preserve zero, leading zeros, the upper limit and numeric characters used as quoted or character-list data. CLI checks verify structured errors, exit status and repair hints; workshop checks verify disabled copy, error-token focus and recovery.
 
 Quote-style regressions cover single quotes, backticks and opening/closing smart quotes after anchors and counts, and in positive/negative lists and text exclusions. They verify unchanged error codes and UTF-16 locations, the JSON quote repair hint, valid quote data, and correctly quoted multi-character list errors without that hint. CLI text/JSON, installed-package checks and keyboard error-jump/recovery checks exercise the shared behavior.

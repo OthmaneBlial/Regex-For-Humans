@@ -112,6 +112,58 @@ for (const scenario of scenarios) {
   });
 }
 
+test("time shape explains its limits and supports editing, expectation changes and copying", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: {
+        writeText: async (text) => {
+          window.copiedPattern = text;
+        },
+      },
+    });
+  });
+  await page.goto("/?example=time-shape");
+  const scenario = scenarios.find(({ id }) => id === "time-shape");
+  const count = scenario.positive.length + scenario.negative.length;
+  const editor = page.locator("#rules-input");
+  await expect(editor).toHaveValue(scenario.rules);
+  await expect(page.locator("#recipe-note")).toHaveText(scenario.note);
+  await expect(page.locator("#trace-list")).toContainText("Exactly 2 digits (0–9).");
+  await page.locator("#test-list textarea").first().fill("25:99");
+  await expect(page.locator("#test-summary")).toHaveText(
+    `${count} of ${count} examples behave as expected`,
+  );
+  await page.locator("#copy-button").click();
+  await expect(page.locator("#copy-button")).toContainText("Copied");
+  expect(await page.evaluate(() => window.copiedPattern)).toBe("/^\\d{2}:\\d{2}$/u");
+  const edited = scenario.rules.replace("2 digits", "between 1 and 2 digits");
+  await editor.fill(edited);
+  await expect(page.locator("#recipe-note")).toBeHidden();
+  await expect(page.locator("#regex-output")).toHaveText("/^\\d{1,2}:\\d{2}$/u");
+  await expect(page.locator("#test-summary")).toHaveText(
+    `${count - 1} of ${count} examples behave as expected`,
+  );
+  const firstNegative = scenario.positive.length;
+  await expect(page.locator("#test-list textarea").nth(firstNegative)).toHaveValue("9:30");
+  await page.locator("#test-list select").nth(firstNegative).selectOption("true");
+  await expect(page.locator("#test-summary")).toHaveText(
+    `${count} of ${count} examples behave as expected`,
+  );
+  await expect(editor).toHaveValue(edited);
+  await page.locator("#copy-button").click();
+  await expect(page.locator("#copy-button")).toContainText("Copied");
+  expect(await page.evaluate(() => window.copiedPattern)).toBe("/^\\d{1,2}:\\d{2}$/u");
+  await page.locator('[data-scenario="time-shape"]').click();
+  await expect(editor).toHaveValue(scenario.rules);
+  await expect(page.locator("#recipe-note")).toHaveText(scenario.note);
+  await expect(page.locator("#test-list textarea").first()).toHaveValue("09:30");
+  await expect(page.locator("#test-summary")).toHaveText(
+    `${count} of ${count} examples behave as expected`,
+  );
+});
+
 test("unsupported quote styles explain the required delimiters and recover after repair", async ({
   page,
 }) => {
