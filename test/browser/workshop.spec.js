@@ -20,6 +20,40 @@ async function openBeforeWorkshopAppLoads(page) {
   return release;
 }
 
+test("match modes describe whole-string checks and zero-based UTF-16 search positions", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const mode = page.getByRole("combobox", { name: "Match mode", exact: true });
+  const help =
+    "Entire string requires a match covering the whole example. Search anywhere shows the first match, which can be empty. Positions start at 0 and count UTF-16 code units; an emoji such as 😀 counts as two.";
+  await expect(page.locator("#match-mode-help")).toBeVisible();
+  await expect(mode).toHaveAccessibleDescription(help);
+  await mode.focus();
+  await expect(mode).toBeFocused();
+  const editor = page.locator("#rules-input");
+  const field = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  await editor.fill('"A"');
+  await field.fill("😀A");
+  await expect(result).toHaveText('! Found "A", not the entire string');
+  await mode.selectOption("search");
+  await expect(result).toHaveText('✓ Matched "A" at 2');
+  await field.fill("e\u0301A");
+  await expect(result).toHaveText('✓ Matched "A" at 2');
+  await field.fill("A");
+  await expect(result).toHaveText('✓ Matched "A" at 0');
+  await editor.fill('between 0 and 1 "A"');
+  await field.fill("😀");
+  await expect(result).toHaveText('✓ Matched "" at 0');
+  await mode.selectOption("full");
+  await expect(result).toHaveText('! Found "", not the entire string');
+  await field.fill("");
+  await expect(result).toHaveText('✓ Matched "" at 0');
+  await expect(mode).toHaveAccessibleDescription(help);
+});
+
 test("counted sequences explain replacement items and recover with preserved bounds", async ({
   page,
 }) => {

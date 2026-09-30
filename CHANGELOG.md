@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Explain match modes, empty search matches and zero-based UTF-16 result positions beside the workshop examples and in the mode selector’s accessible description.
+
 - Suggest countable character rules when a count or range is applied to an existing text sequence, preserving its diagnostic code and location.
 
 - Suggest compatible input or line anchor pairs when mixed anchors are rejected, preserving the diagnostic code and end-anchor location.
