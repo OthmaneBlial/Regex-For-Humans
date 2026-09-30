@@ -1,5 +1,13 @@
 import { createHash } from "node:crypto";
-import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,7 +22,9 @@ function filesIn(directory) {
   return readdirSync(directory, { withFileTypes: true })
     .flatMap((entry) => {
       const path = join(directory, entry.name);
-      return entry.isDirectory() ? filesIn(path) : [path];
+      return entry.isDirectory() || (entry.isSymbolicLink() && statSync(path).isDirectory())
+        ? filesIn(path)
+        : [path];
     })
     .sort();
 }

@@ -14,7 +14,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
 
-test("the static build versions independent copies of linked files without rewriting their targets", (t) => {
+test("the static build versions independent copies of linked files and nested directories", (t) => {
   const scratch = mkdtempSync(join(tmpdir(), "regex-for-humans-web-links-"));
   const root = join(scratch, "project");
   const originals = join(scratch, "originals");
@@ -27,6 +27,9 @@ test("the static build versions independent copies of linked files without rewri
     ["docs/LANGUAGE.md", "# Language guide\n"],
     ["README.md", "# Linked README\n"],
     ["test/fixtures/product-scenarios.json", "[]\n"],
+    ["web/shared/styles.css", "strong { color: green; }\n"],
+    ["src/shared/helper.js", "export const shared = true;\n"],
+    ["docs/shared/guide.md", "# Nested guide\n"],
   ];
   try {
     for (const directory of ["scripts", "web", "src", "docs", "test/fixtures"]) {
@@ -42,6 +45,7 @@ test("the static build versions independent copies of linked files without rewri
     for (const [path, content] of linked) {
       const original = join(originals, path);
       mkdirSync(dirname(original), { recursive: true });
+      mkdirSync(dirname(join(root, path)), { recursive: true });
       writeFileSync(original, content);
       try {
         symlinkSync(original, join(root, path), "file");
@@ -71,6 +75,22 @@ test("the static build versions independent copies of linked files without rewri
       readFileSync(join(root, "dist", "web", "index.html"), "utf8"),
       /src="\.\/app\.js\?v=[\da-f]{12}".*DEV · 0\.1\.0-dev/u,
     );
+    const versionedApp = readFileSync(join(root, "dist", "web", "app.js"), "utf8");
+    for (const directory of ["web/shared", "src/shared", "docs/shared"]) {
+      rmSync(join(root, directory), { recursive: true });
+      symlinkSync(join(originals, directory), join(root, directory), "junction");
+    }
+    const rebuilt = spawnSync(process.execPath, [script], { encoding: "utf8" });
+    assert.equal(rebuilt.status, 0, rebuilt.stderr);
+    assert.equal(readFileSync(join(root, "dist", "web", "app.js"), "utf8"), versionedApp);
+    for (const [path, content] of linked) {
+      assert.equal(readFileSync(join(originals, path), "utf8"), content, path);
+      assert.equal(lstatSync(join(root, "dist", path)).isSymbolicLink(), false, path);
+    }
+    for (const directory of ["web/shared", "src/shared", "docs/shared"]) {
+      assert.equal(lstatSync(join(root, "dist", directory)).isSymbolicLink(), false, directory);
+      assert.equal(lstatSync(join(root, "dist", directory)).isDirectory(), true, directory);
+    }
   } finally {
     rmSync(scratch, { recursive: true, force: true });
   }

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Traverse linked directories when scanning static-build assets, producing independent output copies without rewriting original files or changing versions for identical content.
+
 - Locate trailing character-list comma errors at the separator itself so workshop error navigation selects the character to remove.
 
 - Check documentation link destinations independently of optional titles, keeping query handling, encoded filenames and actionable missing-link diagnostics.
