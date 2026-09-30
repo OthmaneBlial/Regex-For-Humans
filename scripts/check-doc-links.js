@@ -20,7 +20,8 @@ const missing = [];
 for (const file of files) {
   const content = readFileSync(resolve(root, file), "utf8");
   for (const match of content.matchAll(/\]\(([^)]+)\)/g)) {
-    const target = match[1].split(/[?#]/u, 1)[0];
+    const destination = match[1].trim().split(/\s+(?=["'(])/u, 1)[0];
+    const target = destination.split(/[?#]/u, 1)[0];
     if (!target || /^(?:https?:|mailto:)/u.test(target)) continue;
     checked += 1;
     let decoded;
@@ -28,11 +29,11 @@ for (const file of files) {
       decoded = decodeURIComponent(target);
     } catch (error) {
       if (!(error instanceof URIError)) throw error;
-      missing.push(`${file}: ${match[1]} (invalid URL escape)`);
+      missing.push(`${file}: ${destination} (invalid URL escape)`);
       continue;
     }
     if (!existsSync(resolve(root, dirname(file), decoded))) {
-      missing.push(`${file}: ${match[1]}`);
+      missing.push(`${file}: ${destination}`);
     }
   }
 }

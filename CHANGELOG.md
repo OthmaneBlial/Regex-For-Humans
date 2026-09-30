@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Check documentation link destinations independently of optional titles, keeping query handling, encoded filenames and actionable missing-link diagnostics.
+
 - Redirect local preview directory URLs to their trailing-slash form, preserving encoded paths and query strings while retaining symlink confinement and missing-file behavior.
 
 - Explain match modes, empty search matches and zero-based UTF-16 result positions beside the workshop examples and in the mode selector’s accessible description.

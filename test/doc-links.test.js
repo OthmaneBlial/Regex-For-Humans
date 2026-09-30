@@ -6,6 +6,53 @@ import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
+test("documentation checks resolve destinations separately from optional link titles", () => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-titles-"));
+  try {
+    mkdirSync(join(root, "docs"));
+    writeFileSync(join(root, "docs", "guide.md"), "# Guide\n");
+    writeFileSync(join(root, "docs", "space name.md"), "# Space\n");
+    writeFileSync(join(root, "docs", "author's.md"), "# Author\n");
+    const links =
+      '[Guide](docs/guide.md "Read the guide")\n' +
+      "[Single](docs/guide.md 'Read the guide')\n" +
+      "[Parentheses](docs/guide.md (Read the guide))\n" +
+      '[Punctuation](docs/guide.md "Guide (v1)? #intro")\n' +
+      '[Query](docs/guide.md?view=1#intro "Guide")\n' +
+      '[Encoded space](docs/space%20name.md "Space")\n' +
+      "[Filename quote](docs/author's.md)\n" +
+      '[Section](#intro "Introduction")\n';
+    writeFileSync(join(root, "README.md"), links);
+    const check = () =>
+      spawnSync(
+        process.execPath,
+        [fileURLToPath(new URL("../scripts/check-doc-links.js", import.meta.url)), root],
+        { encoding: "utf8" },
+      );
+    const valid = check();
+    assert.equal(valid.status, 0, valid.stderr);
+    assert.equal(valid.stderr, "");
+    assert.equal(valid.stdout, "Checked 7 local Markdown links in 4 files.\n");
+    writeFileSync(
+      join(root, "README.md"),
+      links +
+        '[Missing](docs/missing.md?view=1#intro "Optional title")\n' +
+        "[Bad escape](docs/%ZZ.md 'Broken')\n",
+    );
+    const invalid = check();
+    assert.equal(invalid.status, 1);
+    assert.equal(invalid.stdout, "");
+    assert.equal(
+      invalid.stderr,
+      "Missing local Markdown links:\n" +
+        "README.md: docs/missing.md?view=1#intro\n" +
+        "README.md: docs/%ZZ.md (invalid URL escape)\n",
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("documentation checks ignore URL queries without stripping encoded filename characters", () => {
   const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-query-"));
   try {
