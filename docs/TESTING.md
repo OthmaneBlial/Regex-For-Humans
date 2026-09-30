@@ -71,6 +71,8 @@ Workshop startup regressions hold the app module while rules and options are ent
 
 The numbered example-label check holds the recipe response, confirms the initial empty state, then releases the response and waits for the complete accessible-label snapshot. It verifies every label without racing asynchronous recipe rendering.
 
+Example-limit checks verify the visible count, length and truncation instructions, along with each field's accessible description and native length cap after loading, adding and removing examples.
+
 Text entry regressions verify the spelling, completion, capitalization and correction attributes on the rule editor, recipe examples, added examples and homepage demo. Keyboard input preserves literal punctuation and case; changing case changes the matching result. Desktop and mobile browser automation checks these attributes and input handling. Physical keyboard behavior is unverified; browsers and input methods can override [autocapitalization hints](https://html.spec.whatwg.org/multipage/interaction.html#autocapitalization).
 
 Long literal trace checks cover 4,096-character values and rules at the input-length limit. Explanations wrap without horizontal trace or page overflow at desktop, mobile and 320px widths. Focused trace buttons retain visible side outlines inside the scroller. The regex output remains intact, and keyboard activation of its trace button selects the entire original source line.

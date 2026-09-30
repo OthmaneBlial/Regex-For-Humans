@@ -240,6 +240,27 @@ test("example controls have distinct numbered accessible names after delayed rec
   }
 });
 
+test("example length limits are visible and described for loaded, added and renumbered fields", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  const limits = "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is cut off.";
+  await expect(page.locator("#example-limits")).toBeVisible();
+  await expect(page.locator("#example-limits")).toHaveText(limits);
+  for (const count of [4, 5, 4]) {
+    if (count === 5) await page.locator("#add-example").press("Enter");
+    else if ((await page.locator("#test-list textarea").count()) === 5)
+      await page.getByRole("button", { name: "Remove example 2", exact: true }).press("Enter");
+    const fields = page.locator("#test-list textarea");
+    await expect(fields).toHaveCount(count);
+    for (let index = 0; index < count; index += 1) {
+      await expect(fields.nth(index)).toHaveAccessibleDescription(limits);
+      await expect(fields.nth(index)).toHaveAttribute("maxlength", "2048");
+    }
+  }
+});
+
 test("removing examples keeps keyboard focus in the example controls", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-list .test-row")).toHaveCount(4);

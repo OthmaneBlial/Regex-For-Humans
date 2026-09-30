@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Show example count and length limits, including input truncation, and describe them for every example field.
+
 - Keep result panel keyboard focus visible with brighter outlines and prevent clipping around trace buttons.
 
 - Give the generated regex a named keyboard stop with visible focus and native horizontal scrolling.

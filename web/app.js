@@ -217,6 +217,7 @@ function renderTests() {
     input.placeholder = "Empty string";
     input.maxLength = 2048;
     input.setAttribute("aria-label", `Example ${number} string`);
+    input.setAttribute("aria-describedby", "example-limits");
     input.addEventListener("input", () => {
       sample.text = input.value;
       input.rows = Math.min(3, Math.max(1, sample.text.split("\n").length));
