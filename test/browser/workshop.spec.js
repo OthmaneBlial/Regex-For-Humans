@@ -129,6 +129,37 @@ test("manual edits clear the recipe highlight and reselecting restores its short
   await expect(editor).toHaveValue("line start\nany text\n3 digits\nline end");
 });
 
+test("late recipes preserve edits made while loading", async ({ page }) => {
+  let release;
+  await page.route("**/product-scenarios.json?*", async (route) => {
+    await new Promise((resolve) => {
+      release = resolve;
+    });
+    await route.continue();
+  });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect.poll(() => typeof release).toBe("function");
+  const editor = page.locator("#rules-input");
+  const rules = 'start "CUSTOM"\nend';
+  await editor.fill(rules);
+  await page.locator("#ignore-case").check();
+  await page.locator("#dot-all").check();
+  await page.locator("#match-mode").selectOption("search");
+  await page.locator("#add-example").click();
+  await page.getByRole("textbox", { name: "Example 1 string", exact: true }).fill("custom");
+  release();
+  await expect(page.locator("#example-list button")).toHaveCount(scenarios.length);
+  await expect(editor).toHaveValue(rules);
+  await expect(page.locator("#regex-output")).toHaveText("/^CUSTOM$/isu");
+  await expect(page.locator("#ignore-case")).toBeChecked();
+  await expect(page.locator("#dot-all")).toBeChecked();
+  await expect(page.locator("#match-mode")).toHaveValue("search");
+  await expect(page.locator("#test-list textarea")).toHaveCount(1);
+  await expect(page.locator("#test-list textarea")).toHaveValue("custom");
+  await expect(page.locator("#test-summary")).toHaveText("1 of 1 examples behave as expected");
+  await expect(page.locator('#example-list button[aria-current="true"]')).toHaveCount(0);
+});
+
 test("rule counter counts instructions and ignores blank lines", async ({ page }) => {
   await page.goto("/");
   const counter = page.locator("#rule-count");

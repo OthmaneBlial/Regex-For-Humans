@@ -43,6 +43,7 @@ let testCases = [];
 let nextTestId = 1;
 /** @type {ReturnType<typeof compile> | null} */
 let compiled = null;
+let hasEdits = false;
 const testRunner = new TestRunner(
   () => new Worker(new URL("./match-worker.js", import.meta.url), { type: "module" }),
 );
@@ -316,6 +317,9 @@ function renderScenarioButtons() {
   });
 }
 
+document.addEventListener("input", () => {
+  hasEdits = true;
+});
 ui.rules.addEventListener("input", () => {
   setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);
   compileRules();
@@ -324,6 +328,7 @@ ui.ignoreCase.addEventListener("change", compileRules);
 ui.dotAll.addEventListener("change", compileRules);
 ui.matchMode.addEventListener("change", updateTestResults);
 ui.addExample.addEventListener("click", () => {
+  hasEdits = true;
   testCases.push({ id: nextTestId++, text: "", expected: true });
   renderTests();
   ui.testList.lastElementChild?.querySelector("textarea")?.focus();
@@ -392,7 +397,7 @@ try {
   const requested = new URLSearchParams(window.location.search).get("example");
   const scenario = scenarios.find((item) => item.id === requested) ?? scenarios[0];
   if (!scenario) throw new Error("No example recipes are available.");
-  useScenario(scenario);
+  if (!hasEdits) useScenario(scenario);
 } catch (error) {
   setDiagnostic(
     `Example recipes could not load (${error instanceof Error ? error.message : String(error)}). You can still write rules manually.`,
