@@ -174,6 +174,98 @@ test("copying a second snippet keeps its feedback after the first timer expires"
   await expect(page.locator('[data-copy="regex-code"]')).toHaveText("Copy regex");
 });
 
+test("a stalled copy clears old confirmation, offers manual copying and recovers", async ({
+  page,
+}) => {
+  await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+  await page.clock.pauseAt(new Date("2026-01-01T00:01:00Z"));
+  await page.addInitScript(() => {
+    window.stallCopy = false;
+    Object.defineProperty(navigator, "clipboard", {
+      value: {
+        writeText: () =>
+          window.stallCopy
+            ? new Promise((resolve) => {
+                window.finishStalledCopy = resolve;
+              })
+            : Promise.resolve(),
+      },
+    });
+  });
+  await page.goto("/");
+  await expect(page.locator('[data-recipe="hex-color"]')).toBeEnabled();
+  const button = page.locator('[data-copy="regex-code"]');
+  const status = page.locator("#copy-status");
+  await button.click();
+  await expect(button).toHaveText("Copied ✓");
+  await page.evaluate(() => {
+    window.stallCopy = true;
+  });
+  await button.click();
+  await page.clock.fastForward(1000);
+  await expect(status).toHaveText("Clipboard access is unavailable. Select the text to copy it.");
+  await expect(button).toHaveText("Copy regex");
+  await page.evaluate(async () => {
+    window.finishStalledCopy();
+    await Promise.resolve();
+    window.stallCopy = false;
+  });
+  await expect(status).toContainText("Select the text to copy it");
+  await page.locator('[data-recipe="prefixed-identifier"]').click();
+  await expect(status).toBeEmpty();
+  await button.click();
+  await expect(button).toHaveText("Copied ✓");
+  await expect(status).toHaveText("regex copied. Ready to paste!");
+});
+
+for (const success of [true, false]) {
+  test(`a newer copy keeps its feedback when an older request ${success ? "resolves" : "rejects"} for the same recipe`, async ({
+    page,
+  }) => {
+    await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+    await page.clock.pauseAt(new Date("2026-01-01T00:01:00Z"));
+    await page.addInitScript(() => {
+      window.pendingCopies = [];
+      Object.defineProperty(navigator, "clipboard", {
+        value: {
+          writeText: () =>
+            new Promise((resolve, reject) => {
+              window.pendingCopies.push({ resolve, reject });
+            }),
+        },
+      });
+    });
+    await page.goto("/");
+    await expect(page.locator('[data-recipe="hex-color"]')).toBeEnabled();
+    const rules = page.locator('[data-copy="rules-code"]');
+    const regex = page.locator('[data-copy="regex-code"]');
+    const status = page.locator("#copy-status");
+    await rules.click();
+    await page.clock.fastForward(100);
+    await regex.click();
+    await page.evaluate(async () => {
+      window.pendingCopies[1].resolve();
+      await Promise.resolve();
+    });
+    await expect(regex).toHaveText("Copied ✓");
+    await expect(status).toHaveText("regex copied. Ready to paste!");
+    await page.evaluate(async (success) => {
+      const previous = window.pendingCopies[0];
+      if (success) previous.resolve();
+      else previous.reject(new Error("Clipboard access blocked"));
+      await Promise.resolve();
+    }, success);
+    await expect(rules).toHaveText("Copy rules");
+    await expect(status).toHaveText("regex copied. Ready to paste!");
+    await page.clock.fastForward(900);
+    await expect(regex).toHaveText("Copied ✓");
+    await expect(status).toHaveText("regex copied. Ready to paste!");
+    await page.clock.fastForward(1000);
+    await expect(regex).toHaveText("Copy regex");
+    await expect(status).toBeEmpty();
+  });
+}
+
 for (const success of [true, false]) {
   test(`recipe changes clear copied labels and ignore ${success ? "resolved" : "rejected"} older clipboard requests`, async ({
     page,

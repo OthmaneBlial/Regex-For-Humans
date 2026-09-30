@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Bound homepage clipboard requests to one second, clear previous confirmation when copying again, and ignore older copy results for the same recipe so they cannot replace newer feedback.
+
 - Fix Entire string mode rejecting valid examples when a greedy count first returns a partial match; preserve first-match search results, partial-match explanations and worker timeouts.
 
 - Version the homepage app, compiler entry and recipe request from the current app source and workshop build, so returning visitors receive compiler updates without a manual cache-version bump.

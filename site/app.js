@@ -20,6 +20,7 @@ const sampleInputs = {
 };
 
 let statusResetTimer;
+let copySequence = 0;
 const copyStatus = document.getElementById("copy-status");
 const copyControls = [...document.querySelectorAll("[data-copy]")].map((button) => ({
   button,
@@ -31,23 +32,36 @@ for (const control of copyControls) {
   button.addEventListener("click", async () => {
     const source = document.getElementById(button.dataset.copy);
     const copiedPattern = pattern;
+    const request = ++copySequence;
+    window.clearTimeout(control.resetTimer);
+    button.textContent = label;
+    window.clearTimeout(statusResetTimer);
+    copyStatus.textContent = "";
+    let requestTimer;
     try {
-      await navigator.clipboard.writeText(source.textContent.trim());
-      if (pattern !== copiedPattern) return;
-      window.clearTimeout(control.resetTimer);
+      await Promise.race([
+        navigator.clipboard.writeText(source.textContent.trim()),
+        new Promise((_, reject) => {
+          requestTimer = window.setTimeout(
+            () => reject(new Error("Clipboard request timed out")),
+            1000,
+          );
+        }),
+      ]);
+      if (pattern !== copiedPattern || request !== copySequence) return;
       copyStatus.textContent = `${label.replace("Copy ", "")} copied. Ready to paste!`;
       button.textContent = "Copied ✓";
       control.resetTimer = window.setTimeout(() => {
         button.textContent = label;
       }, 1800);
-      window.clearTimeout(statusResetTimer);
       statusResetTimer = window.setTimeout(() => {
         copyStatus.textContent = "";
       }, 1800);
     } catch {
-      if (pattern !== copiedPattern) return;
-      window.clearTimeout(statusResetTimer);
+      if (pattern !== copiedPattern || request !== copySequence) return;
       copyStatus.textContent = "Clipboard access is unavailable. Select the text to copy it.";
+    } finally {
+      window.clearTimeout(requestTimer);
     }
   });
 }
