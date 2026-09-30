@@ -94,3 +94,15 @@ test("oversized and HTML-like rules are rejected or rendered as text", async ({ 
   await expect(page.locator("#regex-output")).toContainText("<img src=x onerror=alert");
   await expect(page.locator("img")).toHaveCount(0);
 });
+
+test("long unknown rules keep diagnostics within the viewport", async ({ page }) => {
+  await page.goto("/");
+  const editor = page.getByRole("textbox", { name: "Write your rules" });
+  await editor.fill("unsupported".repeat(500));
+  await expect(page.locator("#diagnostic")).toContainText("Unsupported rule");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
+  await page.getByRole("button", { name: "Go to error", exact: true }).click();
+  await expect(editor).toBeFocused();
+});
