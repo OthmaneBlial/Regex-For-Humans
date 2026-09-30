@@ -281,8 +281,9 @@ function renderTests() {
     input.autocomplete = "off";
     input.autocapitalize = "off";
     input.setAttribute("autocorrect", "off");
-    input.rows = sample.text.split("\n", 3).length;
     input.value = sample.text;
+    sample.text = input.value;
+    input.rows = sample.text.split("\n", 3).length;
     input.style.height = heights.get(`example-result-${sample.id}`) ?? "";
     input.placeholder = "Empty string";
     input.setAttribute("aria-label", `Example ${number} string`);

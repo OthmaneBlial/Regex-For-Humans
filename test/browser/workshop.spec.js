@@ -20,6 +20,67 @@ async function openBeforeWorkshopAppLoads(page) {
   return release;
 }
 
+test("example testing uses the newline-normalized text displayed by native fields", async ({
+  page,
+}) => {
+  await page.route("**/product-scenarios.json*", async (route) => {
+    const response = await route.fetch();
+    const recipes = await response.json();
+    recipes.find(({ id }) => id === "filename-shape").negative.push("a\r\nb.txt");
+    await route.fulfill({ response, json: recipes });
+  });
+  await page.addInitScript(() => {
+    const NativeWorker = window.Worker;
+    window.Worker = class extends NativeWorker {
+      postMessage(payload) {
+        window.lastExampleTexts = payload.cases.map(({ text }) => text);
+        super.postMessage(payload);
+      }
+    };
+  });
+  await page.goto("/?example=filename-shape");
+  await expect(page.locator("#test-summary")).toHaveText("21 of 21 examples behave as expected");
+  const inputs = page.locator("#test-list textarea");
+  await expect(inputs.last()).toHaveValue("a\nb.txt");
+  expect(await page.evaluate(() => window.lastExampleTexts)).toEqual(
+    await inputs.evaluateAll((fields) => fields.map((field) => field.value)),
+  );
+  const field = page.getByRole("textbox", { name: "Example 15 string", exact: true });
+  await expect(field).toHaveValue("a\nb.txt");
+  await page.locator("#rules-input").fill('start\n"a\\nb.txt"\nend');
+  await expect(page.locator("#test-list .test-result").nth(14)).toHaveText(
+    '! Matched "a\\nb.txt" at 0',
+  );
+  await page
+    .getByRole("combobox", { name: "Expected match result for example 15", exact: true })
+    .selectOption("true");
+  await expect(page.locator("#test-list .test-result").nth(14)).toHaveText(
+    '✓ Matched "a\\nb.txt" at 0',
+  );
+  await page.locator("#add-example").click();
+  await expect(page.locator("#test-list .test-result").nth(14)).toHaveText(
+    '✓ Matched "a\\nb.txt" at 0',
+  );
+  expect(await page.evaluate(() => window.lastExampleTexts)).toEqual(
+    await inputs.evaluateAll((fields) => fields.map((field) => field.value)),
+  );
+  await page.getByRole("button", { name: "Remove example 1", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Example 14 string", exact: true })).toHaveValue(
+    "a\nb.txt",
+  );
+  await expect(page.locator("#test-list .test-result").nth(13)).toHaveText(
+    '✓ Matched "a\\nb.txt" at 0',
+  );
+  expect(await page.evaluate(() => window.lastExampleTexts)).toEqual(
+    await inputs.evaluateAll((fields) => fields.map((field) => field.value)),
+  );
+  await page.locator('[data-scenario="filename-shape"]').click();
+  await expect(page.locator("#test-summary")).toHaveText("21 of 21 examples behave as expected");
+  expect(await page.evaluate(() => window.lastExampleTexts)).toEqual(
+    await inputs.evaluateAll((fields) => fields.map((field) => field.value)),
+  );
+});
+
 test("spaces explains whitespace, supports count overrides and recovers from unsupported syntax", async ({
   page,
 }) => {
