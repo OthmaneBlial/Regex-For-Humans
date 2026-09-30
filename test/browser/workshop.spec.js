@@ -42,6 +42,7 @@ for (const scenario of scenarios) {
 
     await page.goto(`/?example=${scenario.id}`);
     await expect(page.locator(".local-indicator")).toHaveText("Rules stay local");
+    await expect(page.locator("noscript")).toBeHidden();
     await expect(page.locator("#rules-input")).toHaveValue(scenario.rules);
     await expect(page.locator("#recipe-note")).toBeVisible();
     await expect(page.locator("#recipe-note")).toHaveText(scenario.note);
@@ -327,6 +328,49 @@ test("pre-app invalid rules get diagnostics even when recipes fail", async ({ pa
     expect(errors).toEqual([]);
   } finally {
     release();
+  }
+});
+
+test("JavaScript-disabled workshop explains its controls and opens the static syntax guide", async ({
+  browser,
+  page,
+}, testInfo) => {
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    viewport: page.viewportSize(),
+    baseURL: testInfo.project.use.baseURL,
+  });
+  const staticPage = await context.newPage();
+  const failedResponses = [];
+  staticPage.on("response", (response) => {
+    if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.url()}`);
+  });
+  try {
+    for (const entry of [".", "./web/index.html"]) {
+      await staticPage.goto(entry);
+      await expect(staticPage.locator("noscript p")).toContainText("needs JavaScript");
+      await expect(staticPage.locator("#copy-button")).toBeDisabled();
+      await expect(staticPage.locator("#add-example")).toBeDisabled();
+      await expect(staticPage.locator("#regex-output")).toHaveText(
+        "Select a recipe or write a rule",
+      );
+      for (const width of [page.viewportSize().width, 320]) {
+        await staticPage.setViewportSize({ width, height: page.viewportSize().height });
+        expect(
+          await staticPage.evaluate(
+            () => document.documentElement.scrollWidth <= window.innerWidth,
+          ),
+        ).toBe(true);
+      }
+      const guide = staticPage.getByRole("link", { name: "Read the syntax guide", exact: true });
+      await guide.focus();
+      await guide.press("Enter");
+      await expect(staticPage).toHaveURL(/\/web\/language\.html\?v=[\da-f]{12}$/u);
+      await expect(staticPage.getByRole("heading", { name: /Say only/ })).toBeVisible();
+    }
+    expect(failedResponses).toEqual([]);
+  } finally {
+    await context.close();
   }
 });
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Explain why the workshop cannot compile or test with JavaScript disabled, and link to its static syntax guide.
+
 - Preserve workshop rules and options entered before its app loads, compile that initial content even if recipes fail, and enable adding examples only after the handler is ready.
 
 - Add a shared username-shape recipe with an ASCII letter first and 3–16 total word characters; link it from the README and homepage, with explicit availability, service-policy and ignore-case limits.
