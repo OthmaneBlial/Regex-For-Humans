@@ -30,6 +30,7 @@ npm run build
 npm run test:package
 npx playwright install chromium
 npm run test:browser
+npm run test:site
 npm audit --audit-level=moderate
 npm pack --dry-run --json
 ```
@@ -39,3 +40,5 @@ npm pack --dry-run --json
 `npm run test:package` packs the current checkout, installs that exact tarball into a new temporary consumer, then checks installed documentation links, package import, matching, trace, diagnostics, TypeScript declarations, the installed CLI link, version and JSON output. CLI checks use offline `npm exec` to run the command shim created by npm, including the Windows `.cmd` shim, without permitting another package installation. It removes the temporary consumer afterward. Set `PACK_OUTPUT_DIR=artifacts npm run test:package` locally to retain the exact tested tarball. A retained tarball is not an npm publication or GitHub Release.
 
 Node tests cover the public API, parser diagnostics, every instruction and repetition form listed in [LANGUAGE.md](LANGUAGE.md), literal/character-set escaping with deterministic Unicode samples, 517 seeded arbitrary-rule cases, CLI use from files/stdin, and the isolated worker runner. The arbitrary-rule check verifies deterministic compilation, valid regex output, contiguous source spans, and positioned `CompileError` failures. Browser tests cover all recipe fixtures, build-versioned asset URLs, editing and recovery, examples, clipboard, keyboard flow, the local syntax guide and visible build version, automated WCAG A/AA checks, oversized and HTML-like input, worker timeout/recovery, and expanded Unicode-escaped regex source.
+
+`npm run test:site` builds and serves the complete `site/` directory. It verifies the homepage demo against the shared compiler, clipboard text, recipe navigation, recipe-load recovery, local assets, 320px layout, and automated WCAG A/AA checks at desktop and mobile sizes.

@@ -3,7 +3,7 @@ import { createServer } from "node:http";
 import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = resolve(fileURLToPath(new URL("../dist/", import.meta.url)));
+const root = resolve(process.argv[3] ?? fileURLToPath(new URL("../dist/", import.meta.url)));
 const port = Number(process.argv[2] ?? 4174);
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -13,12 +13,13 @@ const mimeTypes = {
   ".md": "text/markdown; charset=utf-8",
   ".png": "image/png",
   ".svg": "image/svg+xml",
+  ".woff2": "font/woff2",
 };
 
 createServer(async (request, response) => {
   try {
     const pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
-    const path = resolve(root, `.${pathname === "/" ? "/index.html" : pathname}`);
+    const path = resolve(root, `.${pathname.endsWith("/") ? `${pathname}index.html` : pathname}`);
     if (!path.startsWith(`${root}${sep}`)) {
       response.writeHead(403).end();
       return;

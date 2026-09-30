@@ -1,17 +1,24 @@
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("./assets/bricolage-grotesque-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+}
 :root {
   color-scheme: light;
-  --ink: #173e49;
-  --ink-deep: #102e37;
-  --ink-soft: #48606a;
-  --paper: #f4f0e6;
-  --paper-light: #fffdf7;
-  --line: #d8d6c8;
-  --gold: #f1bf39;
-  --orange: #a8482b;
-  --green: #276f55;
-  --red: #ad4b35;
-  --display: "Iowan Old Style", "Baskerville", "Palatino Linotype", Georgia, serif;
-  --body: "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
+  --ink: #202735;
+  --ink-deep: #202735;
+  --ink-soft: #535969;
+  --paper: #fffdf5;
+  --paper-light: #ffffff;
+  --line: #b9bdc5;
+  --gold: #ffdf58;
+  --orange: #9e3429;
+  --green: #2f642b;
+  --red: #a32d2d;
+  --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --body: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
   --mono: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
@@ -94,13 +101,6 @@ a {
   font: 800 20px / 1 var(--mono);
   transform: rotate(-5deg);
 }
-.brand-mark span:first-child {
-  transform: translateY(-3px);
-}
-.brand-mark span:last-child {
-  font-size: 14px;
-  transform: translate(-2px, 4px);
-}
 .brand-name {
   font: 600 19px / 0.94 var(--display);
   letter-spacing: -0.03em;
@@ -154,8 +154,8 @@ a {
   transform: translateX(2px);
 }
 .example-button[aria-current="true"] {
-  border-color: #f1bf3975;
-  background: #f1bf3922;
+  border-color: var(--gold);
+  background: #ffdf5828;
 }
 .example-number {
   color: var(--gold);
@@ -248,12 +248,13 @@ a {
 .hero h1 {
   margin: 13px 0 17px;
   color: var(--ink-deep);
-  font: 500 clamp(42px, 5.3vw, 78px) / 0.98 var(--display);
+  font: 800 clamp(42px, 5.3vw, 78px) / 0.98 var(--display);
   letter-spacing: -0.055em;
 }
 .hero h1 em {
   color: var(--orange);
-  font-weight: 400;
+  font-weight: 800;
+  font-style: normal;
 }
 .hero p {
   max-width: 580px;
@@ -266,14 +267,14 @@ a {
   position: absolute;
   right: 15px;
   top: 18px;
-  color: #e1dfd2;
+  color: #c8e9ff;
   font: 400 clamp(135px, 19vw, 280px) / 1 var(--display);
   letter-spacing: -0.12em;
   transform: rotate(12deg);
   user-select: none;
 }
 .hero-symbol span {
-  color: #e9d59c;
+  color: #ffb8a5;
 }
 
 .workbench {
@@ -284,10 +285,10 @@ a {
 }
 .panel {
   min-width: 0;
-  border: 1px solid var(--line);
+  border: 2px solid var(--ink);
   border-radius: 14px;
   background: var(--paper-light);
-  box-shadow: 0 12px 34px #253c3a0a;
+  box-shadow: 4px 4px 0 var(--ink);
 }
 .editor-panel,
 .result-panel {
@@ -306,7 +307,8 @@ a {
   width: 39px;
   height: 39px;
   flex: none;
-  border: 1px solid #c6d1c7;
+  border: 2px solid var(--ink);
+  background: #ffed96;
   border-radius: 11px;
   color: var(--ink);
   font: 700 12px var(--mono);
@@ -317,7 +319,7 @@ a {
 .panel-heading h2 {
   margin: 0;
   color: var(--ink-deep);
-  font: 500 23px / 1.12 var(--display);
+  font: 800 23px / 1.12 var(--display);
   letter-spacing: -0.035em;
 }
 .field-label {
@@ -336,7 +338,7 @@ a {
   border: 1px solid #b8c8c4;
   border-left: 4px solid var(--gold);
   border-radius: 8px;
-  background: #f9f9f4;
+  background: #fffae8;
   color: var(--ink-deep);
   font: 13px / 1.9 var(--mono);
   tab-size: 2;
@@ -439,8 +441,9 @@ a {
   color: #ecf0e7;
 }
 .result-panel .step-number {
-  border-color: #709090;
-  color: var(--gold);
+  border-color: var(--ink);
+  background: #acd9fa;
+  color: var(--ink);
 }
 .result-panel .panel-heading h2 {
   color: white;
@@ -482,7 +485,7 @@ a {
   padding: 20px;
   border: 1px solid #668b8b;
   border-radius: 8px;
-  background: #0b2934;
+  background: #151b27;
   overflow-x: auto;
 }
 #regex-output {
@@ -513,9 +516,7 @@ a {
   font-size: 12px;
   font-weight: 800;
   white-space: nowrap;
-  transition:
-    transform 0.16s ease,
-    background 0.16s ease;
+  transition: transform 0.16s ease;
 }
 .copy-button:hover:not(:disabled) {
   transform: translateY(-2px);
@@ -578,12 +579,12 @@ a {
   padding: 10px;
   border: 1px solid #557676;
   border-radius: 6px;
-  background: #1b4650;
+  background: #303b50;
   color: #e8f0e6;
   text-align: left;
 }
 .trace-item:hover {
-  background: #285761;
+  background: #3d4961;
 }
 .trace-fragment {
   color: var(--gold);
@@ -642,7 +643,7 @@ a {
   color: white;
 }
 .secondary-button:hover {
-  background: #2b5963;
+  background: #3d4961;
 }
 .diagnostic .secondary-button {
   display: block;
@@ -679,7 +680,7 @@ a {
   border: 1px solid var(--line);
   border-left: 3px solid #b5c7ba;
   border-radius: 6px;
-  background: #f9faf5;
+  background: #f3f8ff;
 }
 .test-row[data-result="pass"] {
   border-left-color: var(--green);

@@ -1,16 +1,15 @@
 # Screenshot evidence
 
-Both files are full-page Chrome captures of the local static workshop, built from commit `3d43554` with `npm run build:pages` and served at `http://127.0.0.1:4177/` on 28 September 2026. They show the `line-rule` recipe: `line start`, `any text`, `3 digits`, `line end`. All three example checks pass. The desktop view lists all four recipes; the mobile recipe bar scrolls. Both show `Rules stay local`, the visible `DEV · 0.1.0-dev` label and shorter rule explanations, including `Exactly 3 digits (0–9).` No interface elements, examples or results were composited or edited. The screenshots contain only project-owned UI and system fonts.
+These are full-page Chrome captures of the local static workshop from this source tree on 30 September 2026, after `npm run verify` passed. Build fingerprint: `e4bc180e0aec`; visible version: `DEV · 0.1.0-dev`. The build was served from `site/` at `http://127.0.0.1:4187/workshop/`. No UI elements or results were composited or edited. The Bricolage Grotesque font is hosted locally and distributed with its SIL Open Font License in `web/assets/OFL.txt` and `site/assets/fonts/OFL.txt`.
+
+The README desktop and mobile captures show the `hex-color` recipe: `start "#"`, `6 hex digits`, `end`. The generated regex is `/^#[0-9A-Fa-f]{6}$/u`; all eight example checks pass. The desktop sidebar lists six recipes; the mobile recipe bar scrolls.
+
+The homepage preview is a separate capture of `prefixed-identifier`, with `/^ABC\d{3}$/u` and all four example checks passing.
 
 | File | Viewport | Pixels | Size | SHA-256 |
 | --- | --- | --- | --- | --- |
-| `workshop-desktop-dev.png` | 1280 × 800 | 1280 × 1489 | 199.2 KiB | `7159e6be7c490b1bd33645458ba4fcd86943557363aa04831b6362d84288f1c9` |
-| `workshop-mobile-dev.png` | 390 × 844 | 390 × 2424 | 141.8 KiB | `0b19249ab8069ab4f7d577ac6c759595461c76714b76e4e8ea586f1bc7eef86e` |
+| `media/screenshots/workshop-desktop-dev.png` | 1280 × 800 | 1280 × 1771 | 216.5 KiB | `ea8ad4302ecefa895db3ee430a34863da25626109576bac93f7a756a31faf0e9` |
+| `media/screenshots/workshop-mobile-dev.png` | 390 × 844 | 390 × 3051 | 161.5 KiB | `88d027526010c5ca2f8b274f681f8240b2772c6370689f1a4d56b6dc780b65e7` |
+| `site/assets/workshop-preview.png` | 1280 × 800 | 1280 × 1519 | 190.4 KiB | `2ac4704f784178b02a7f7e34d77c7b58a364f7a2e68bb0736e1ba06283ae55c4` |
 
-The homepage preview at `site/assets/workshop-preview.png` is a separate capture of `prefixed-identifier`; its four sample checks pass.
-
-| File | Viewport | Pixels | Size | SHA-256 |
-| --- | --- | --- | --- | --- |
-| `site/assets/workshop-preview.png` | 1280 × 800 | 1280 × 1521 | 195.1 KiB | `2d128ad4f7f855eb61d3ee67a1c7d0b5ed3c37d6d7aadf68d83459c117896db2` |
-
-These are local development captures, not published-release evidence. Re-capture from the final tested build after UX reviews before closing roadmap task 4.2.
+These are local development captures, not stable-release or human usability evidence. Re-capture after the remaining UX reviews before closing roadmap task 4.2.

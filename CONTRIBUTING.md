@@ -11,7 +11,7 @@ npm ci
 npm run verify
 ```
 
-GitHub Actions is disabled; checks run locally. `npm run verify` runs formatting, lint, types, docs, Node tests, the static build, the clean-consumer package test, browser tests and the dependency audit. Playwright uses installed Chrome by default. If Chrome is unavailable, run `npx playwright install chromium` and use `CI=1 npm run verify` to select Chromium locally. See [testing and compatibility](docs/TESTING.md) for the exact scope of each check. Include the command and result when reporting a failure.
+GitHub Actions is disabled; checks run locally. `npm run verify` runs formatting, lint, types, docs, Node tests, the static build, the clean-consumer package test, workshop and homepage browser tests, and the dependency audit. Playwright uses installed Chrome by default. If Chrome is unavailable, run `npx playwright install chromium` and use `CI=1 npm run verify` to select Chromium locally. See [testing and compatibility](docs/TESTING.md) for the exact scope of each check. Include the command and result when reporting a failure.
 
 ## Adding or changing a language rule
 
