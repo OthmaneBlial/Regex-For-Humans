@@ -643,6 +643,10 @@ a {
 .secondary-button:hover {
   background: #2b5963;
 }
+.diagnostic .secondary-button {
+  display: block;
+  margin-top: 8px;
+}
 .examples-intro {
   margin: 14px 0 15px;
   color: var(--ink-soft);

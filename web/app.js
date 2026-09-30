@@ -76,12 +76,14 @@ function setDiagnostic(message, invalidRules = false) {
   ui.rules.setAttribute("aria-invalid", String(invalidRules));
 }
 
-/** @param {number} number */
-function selectLine(number) {
+/** @param {number} number @param {number} [column] */
+function selectLine(number, column) {
   const lines = splitLines(ui.rules.value);
   const start = lines.slice(0, number - 1).reduce((sum, line) => sum + line.length + 1, 0);
+  const end = start + (lines[number - 1]?.length ?? 0);
+  const position = column === undefined ? start : Math.min(start + column - 1, end);
   ui.rules.focus();
-  ui.rules.setSelectionRange(start, start + (lines[number - 1]?.length ?? 0));
+  ui.rules.setSelectionRange(position, column === undefined ? end : Math.min(position + 1, end));
 }
 
 /** @param {ReturnType<typeof compile>["segments"] | null} segments */
@@ -272,6 +274,12 @@ function compileRules() {
           : `Unexpected compiler error: ${error instanceof Error ? error.message : String(error)}`,
         true,
       );
+      if (error instanceof CompileError) {
+        const jump = make("button", "secondary-button", "Go to error");
+        jump.type = "button";
+        jump.addEventListener("click", () => selectLine(error.line, error.column));
+        ui.diagnostic.append(jump);
+      }
     }
     renderTrace(null);
   }

@@ -54,6 +54,27 @@ test("keyboard can reach the editor, options, copy and test controls", async ({ 
   await expect(page.locator("#match-mode")).toBeFocused();
 });
 
+test("a diagnostic can focus its exact source position from the keyboard", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const editor = page.locator("#rules-input");
+  for (const [rules, marker] of [
+    ['start "😀"\u2028  unexpected words', "unexpected"],
+    ['start "😀"\n"bad\\q"', "\\q"],
+    ['start "😀"\n"missing', null],
+  ]) {
+    await editor.fill(rules);
+    await page.getByRole("button", { name: "Go to error", exact: true }).press("Enter");
+    await expect(editor).toBeFocused();
+    const position = marker === null ? rules.length : rules.indexOf(marker);
+    expect(
+      await editor.evaluate((input) => ({ start: input.selectionStart, end: input.selectionEnd })),
+    ).toEqual({ start: position, end: position + Number(marker !== null) });
+  }
+  await editor.fill("digit");
+  await expect(page.getByRole("button", { name: "Go to error", exact: true })).toHaveCount(0);
+});
+
 test("skip link focuses the workshop without resetting edited rules", async ({ page }) => {
   await page.goto("/?example=line-rule");
   const editor = page.getByRole("textbox", { name: "Write your rules" });

@@ -34,6 +34,8 @@ npm run serve
 
 Open **http://127.0.0.1:4174/**. Pick a recipe, edit the rules, and test examples. Compilation runs in your browser; rules and examples are not sent to an application backend.
 
+Use **Go to error** in the local workshop to focus the position reported by a compilation error.
+
 ![Regex For Humans workshop showing line start, any text, 3 digits, line end, and three passing example checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png)
 
 <details>
