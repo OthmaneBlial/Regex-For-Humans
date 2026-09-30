@@ -102,24 +102,43 @@ test("skip link focuses the workshop without resetting edited rules", async ({ p
   await expect(editor).toBeFocused();
 });
 
-test("example controls have distinct numbered accessible names", async ({ page }) => {
-  await page.goto("/");
-  const names = await page
-    .locator("#test-list .test-row")
-    .evaluateAll((rows) =>
-      rows.map((row) => [
-        row.querySelector("textarea").getAttribute("aria-label"),
-        row.querySelector("select").getAttribute("aria-label"),
-        row.querySelector("button").getAttribute("aria-label"),
-      ]),
-    );
-  expect(names).toEqual(
-    [1, 2, 3, 4].map((number) => [
-      `Example ${number} string`,
-      `Expected match result for example ${number}`,
-      `Remove example ${number}`,
-    ]),
-  );
+test("example controls have distinct numbered accessible names after delayed recipes", async ({
+  page,
+}) => {
+  let release;
+  await page.route("**/product-scenarios.json?*", async (route) => {
+    await new Promise((resolve) => {
+      release = resolve;
+    });
+    await route.continue();
+  });
+  try {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await expect.poll(() => typeof release).toBe("function");
+    await expect(page.locator("#test-list .test-row")).toHaveCount(0);
+    release();
+    await expect
+      .poll(() =>
+        page
+          .locator("#test-list .test-row")
+          .evaluateAll((rows) =>
+            rows.map((row) => [
+              row.querySelector("textarea").getAttribute("aria-label"),
+              row.querySelector("select").getAttribute("aria-label"),
+              row.querySelector("button").getAttribute("aria-label"),
+            ]),
+          ),
+      )
+      .toEqual(
+        [1, 2, 3, 4].map((number) => [
+          `Example ${number} string`,
+          `Expected match result for example ${number}`,
+          `Remove example ${number}`,
+        ]),
+      );
+  } finally {
+    release?.();
+  }
 });
 
 test("removing examples keeps keyboard focus in the example controls", async ({ page }) => {

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Make the accessible-label regression wait for recipe rendering instead of racing its asynchronous response.
+
 - Copy linked files into independent static-build outputs before versioning them, so building the workshop leaves their original targets unchanged.
 
 - Reject local-server symlinks whose resolved targets escape the selected static root, while keeping in-root links and a symlinked root usable.
