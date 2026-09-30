@@ -8,15 +8,10 @@ Use Node.js 22 or newer and npm. From a fresh clone:
 
 ```sh
 npm ci
-npm run check
-npm test
-npm run build
-npm run test:package
-npx playwright install chromium
-npm run test:browser
+npm run verify
 ```
 
-The local Playwright configuration uses installed Chrome; CI uses Playwright Chromium. If Chrome is unavailable locally, set `CI=1` after installing Chromium to run that channel. See [testing and compatibility](docs/TESTING.md) for the exact scope of each check. Include the command and result when reporting a failure.
+GitHub Actions is disabled; checks run locally. `npm run verify` runs formatting, lint, types, docs, Node tests, the static build, the clean-consumer package test, browser tests and the dependency audit. Playwright uses installed Chrome by default. If Chrome is unavailable, run `npx playwright install chromium` and use `CI=1 npm run verify` to select Chromium locally. See [testing and compatibility](docs/TESTING.md) for the exact scope of each check. Include the command and result when reporting a failure.
 
 ## Adding or changing a language rule
 

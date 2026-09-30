@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Disable repository GitHub Actions, remove automatic CI, and provide `npm run verify` for the full local quality gate.
+
 - Added `hex digit` and `hex digits` for ASCII hexadecimal characters, with exact counts, explanations and a shorter hex-color recipe.
 - Repeated copies now restart the Copied feedback timer so an older copy cannot clear a newer confirmation.
 - The isolated example worker now rejects non-string flags instead of coercing an array such as `["u"]` into a valid flag string.

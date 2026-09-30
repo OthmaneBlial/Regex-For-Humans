@@ -40,7 +40,8 @@
     "build": "node scripts/build-web.js",
     "build:pages": "npm run build && node scripts/build-pages-workshop.js",
     "serve": "node scripts/serve-dist.js",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "verify": "npm run check && npm test && npm run build:pages && npm run test:package && npm run test:browser && npm audit --audit-level=moderate"
   },
   "files": [
     "index.js",
