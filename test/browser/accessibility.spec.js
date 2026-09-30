@@ -178,6 +178,7 @@ test("a diagnostic can focus its exact source position from the keyboard", async
   const longRules = `${"digit\n".repeat(199)}unsupported words`;
   await editor.fill(longRules);
   await editor.evaluate((input) => {
+    input.setSelectionRange(0, 0);
     input.scrollTop = 0;
   });
   await page.getByRole("button", { name: "Go to error", exact: true }).press("Enter");
@@ -192,6 +193,73 @@ test("a diagnostic can focus its exact source position from the keyboard", async
     .toBeLessThanOrEqual(1);
   await editor.fill("digit");
   await expect(page.getByRole("button", { name: "Go to error", exact: true })).toHaveCount(0);
+});
+
+test("source navigation reveals wrapped and middle lines after the caret moves", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const editor = page.locator("#rules-input");
+  const viewport = page.viewportSize();
+  for (const width of [viewport.width, 320]) {
+    await page.setViewportSize({ width, height: viewport.height });
+    const prefix = `${"digit\n".repeat(20)}"${"x".repeat(2000)}"\n`;
+    const rules = `${prefix}"TARGET"\n${"digit\n".repeat(30).trimEnd()}`;
+    await editor.fill(rules);
+    for (const [line, position, selected, followingLines] of [
+      [22, prefix.length, '"TARGET"', 30],
+      [52, rules.lastIndexOf("digit"), "digit", 0],
+    ]) {
+      await editor.evaluate((input) => {
+        input.setSelectionRange(0, 0);
+        input.scrollTop = 0;
+      });
+      await page.getByRole("button", { name: new RegExp(`^Rule on line ${line}:`) }).press("Enter");
+      await expect(editor).toBeFocused();
+      expect(await editor.evaluate((input) => [input.selectionStart, input.selectionEnd])).toEqual([
+        position,
+        position + selected.length,
+      ]);
+      await expect
+        .poll(() =>
+          editor.evaluate((input, following) => {
+            const style = getComputedStyle(input);
+            const height = Number.parseFloat(style.lineHeight);
+            const top =
+              input.scrollHeight -
+              Number.parseFloat(style.paddingBottom) -
+              (following + 1) * height;
+            return (
+              top >= input.scrollTop - 1 && top + height <= input.scrollTop + input.clientHeight + 1
+            );
+          }, followingLines),
+        )
+        .toBe(true);
+      await expect(editor).toHaveValue(rules);
+    }
+    await page.getByRole("button", { name: /^Rule on line 1:/ }).press("Enter");
+    await expect(editor).toBeFocused();
+    expect(
+      await editor.evaluate((input) => [input.selectionStart, input.selectionEnd, input.scrollTop]),
+    ).toEqual([0, 5, 0]);
+    const invalid = `"${"x".repeat(4000)}\\q"`;
+    await editor.fill(invalid);
+    await editor.evaluate((input) => {
+      input.setSelectionRange(0, 0);
+      input.scrollTop = 0;
+    });
+    await page.getByRole("button", { name: "Go to error", exact: true }).press("Enter");
+    await expect(editor).toBeFocused();
+    expect(await editor.evaluate((input) => input.selectionStart)).toBe(invalid.indexOf("\\q"));
+    await expect
+      .poll(() =>
+        editor.evaluate((input) => input.scrollHeight - input.clientHeight - input.scrollTop),
+      )
+      .toBeLessThanOrEqual(1);
+    await expect(editor).toHaveValue(invalid);
+    await expect(page.locator("body > textarea")).toHaveCount(0);
+  }
 });
 
 test("skip link focuses the workshop without resetting edited rules", async ({ page }) => {

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Scroll the workshop editor to the selected start when navigating to an error or trace rule, including wrapped literals and a caret moved elsewhere.
+
 - Suggest JSON double quotes for unsupported single, backtick and smart quote delimiters in literals and character lists, preserving error codes, locations and valid quote characters used as matching data.
 
 - Validate quoted values against their original source line so trailing whitespace does not hide control characters or move missing-quote diagnostics away from the actual line end.

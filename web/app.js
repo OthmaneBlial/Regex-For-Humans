@@ -92,6 +92,29 @@ function selectLine(number, column) {
   const position = column === undefined ? start : Math.min(start + column - 1, end);
   ui.rules.focus();
   ui.rules.setSelectionRange(position, column === undefined ? end : Math.min(position + 1, end));
+  // Measure native wrapping so long literals before the selection count too.
+  const style = getComputedStyle(ui.rules);
+  const measure = make("textarea");
+  measure.setAttribute("aria-hidden", "true");
+  measure.tabIndex = -1;
+  Object.assign(measure.style, {
+    position: "fixed",
+    visibility: "hidden",
+    height: "0",
+    minHeight: "0",
+    overflow: "hidden",
+    border: "0",
+    width: `${ui.rules.clientWidth}px`,
+    padding: style.padding,
+    font: style.font,
+    tabSize: style.tabSize,
+  });
+  measure.value = `${ui.rules.value.slice(0, position)}\u200b`;
+  document.body.append(measure);
+  const lineHeight = Number.parseFloat(style.lineHeight);
+  const top = measure.scrollHeight - Number.parseFloat(style.paddingBottom) - lineHeight;
+  measure.remove();
+  ui.rules.scrollTop = top - (ui.rules.clientHeight - lineHeight) / 2;
 }
 
 /** @param {ReturnType<typeof compile>["segments"] | null} segments */
