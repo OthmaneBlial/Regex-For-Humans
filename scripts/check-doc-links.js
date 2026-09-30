@@ -23,7 +23,15 @@ for (const file of files) {
     const target = match[1].split("#", 1)[0];
     if (!target || /^(?:https?:|mailto:)/u.test(target)) continue;
     checked += 1;
-    if (!existsSync(resolve(root, dirname(file), decodeURIComponent(target)))) {
+    let decoded;
+    try {
+      decoded = decodeURIComponent(target);
+    } catch (error) {
+      if (!(error instanceof URIError)) throw error;
+      missing.push(`${file}: ${match[1]} (invalid URL escape)`);
+      continue;
+    }
+    if (!existsSync(resolve(root, dirname(file), decoded))) {
       missing.push(`${file}: ${match[1]}`);
     }
   }

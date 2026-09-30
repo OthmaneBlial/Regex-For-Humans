@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Report malformed URL escapes alongside missing documentation links instead of stopping the local documentation check with an uncaught error.
+
 - Suggest whole-input anchors when an empty literal is rejected, preserving its error code and quote location; verify repair through the parser, CLI and workshop.
 
 - Describe each example's match feedback on its expected-result selector, including focused expectation changes, rule repairs and input-length errors.
