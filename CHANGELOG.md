@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Treat an empty workshop editor as a neutral input prompt for examples, while keeping malformed and over-limit rules in the error state.
+
 - Include the changelog, security policy and license beside the static workshop README, and verify documentation links in every web build.
 
 - Keep homepage copy controls responsive while optional demo recipes are still downloading.

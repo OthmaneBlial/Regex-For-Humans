@@ -143,18 +143,20 @@ async function updateTestResults() {
     (row) => row instanceof HTMLDivElement,
   );
   if (!compiled || testCases.length === 0) {
+    const invalidRules = ui.rules.getAttribute("aria-invalid") === "true";
+    const rulePrompt = invalidRules ? "Fix the rules" : "Write rules";
     testRunner.cancel();
     rows.forEach((row) => {
       row.dataset.result = "pending";
       setTestResult(
         row,
-        compiled ? "Add an example to check the pattern" : "Fix the rules to run this example",
+        compiled ? "Add an example to check the pattern" : `${rulePrompt} to run this example`,
       );
     });
     ui.testSummary.textContent = compiled
       ? "Add a positive or negative example to check the pattern."
-      : "Fix the rules to run the examples.";
-    ui.testSummary.dataset.state = compiled ? "neutral" : "error";
+      : `${rulePrompt} to run the examples.`;
+    ui.testSummary.dataset.state = !compiled && invalidRules ? "error" : "neutral";
     return;
   }
 

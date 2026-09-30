@@ -457,3 +457,30 @@ test("syntax link opens the local rendered guide", async ({ page, context }) => 
   await expect(guide.locator("#repetition tbody tr").first()).toContainText("3 <item>");
   await guide.close();
 });
+
+test("empty rules prompt for input without marking the examples as errors", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const editor = page.locator("#rules-input");
+  for (const rules of ["", "\n \t\r\n\u2028 "]) {
+    await editor.fill(rules);
+    await expect(page.locator("#compile-state")).toHaveText("Ready");
+    await expect(editor).toHaveAttribute("aria-invalid", "false");
+    await expect(page.locator("#diagnostic")).toBeHidden();
+    await expect(page.locator("#test-summary")).toHaveText("Write rules to run the examples.");
+    await expect(page.locator("#test-summary")).toHaveAttribute("data-state", "neutral");
+    await expect(page.locator(".test-result").first()).toHaveText(
+      "Write rules to run this example",
+    );
+    await expect(page.locator("#copy-button")).toBeDisabled();
+  }
+  for (const rules of ["unsupported words", " ".repeat(16_385)]) {
+    await editor.fill(rules);
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#test-summary")).toHaveText("Fix the rules to run the examples.");
+    await expect(page.locator("#test-summary")).toHaveAttribute("data-state", "error");
+  }
+  await editor.fill('start "ABC"\n3 digits\nend');
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveAttribute("data-state", "success");
+});
