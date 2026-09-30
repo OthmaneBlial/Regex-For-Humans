@@ -140,6 +140,24 @@ test("rule counter counts instructions and ignores blank lines", async ({ page }
   await expect(counter).toHaveText("1 rule");
 });
 
+test("trace selection and rule count use the compiler's line separators", async ({ page }) => {
+  await page.goto("/");
+  const editor = page.locator("#rules-input");
+  for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"]) {
+    const rules = ["start", JSON.stringify("A\u2028B\u2029C"), "", "2 digits", "end"].join(
+      separator,
+    );
+    await editor.fill(rules);
+    await expect(page.locator("#regex-output")).toHaveText("/^A\\u{2028}B\\u{2029}C\\d{2}$/u");
+    await page.getByRole("button", { name: /^Rule on line 4:/u }).click();
+    await expect(editor).toBeFocused();
+    expect(
+      await editor.evaluate((input) => input.value.slice(input.selectionStart, input.selectionEnd)),
+    ).toBe("2 digits");
+    await expect(page.locator("#rule-count")).toHaveText("4 rules");
+  }
+});
+
 test("positive and negative examples expose a changed outcome", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");

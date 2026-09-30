@@ -1,4 +1,5 @@
 import { CompileError, compile } from "../index.js";
+import { splitLines } from "../src/parser.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestCase} TestCase */
@@ -75,7 +76,7 @@ function setDiagnostic(message, invalidRules = false) {
 
 /** @param {number} number */
 function selectLine(number) {
-  const lines = ui.rules.value.split("\n");
+  const lines = splitLines(ui.rules.value);
   const start = lines.slice(0, number - 1).reduce((sum, line) => sum + line.length + 1, 0);
   ui.rules.focus();
   ui.rules.setSelectionRange(start, start + (lines[number - 1]?.length ?? 0));
@@ -236,7 +237,7 @@ function renderTests() {
 }
 
 function compileRules() {
-  const ruleCount = ui.rules.value.split("\n").filter((line) => line.trim()).length;
+  const ruleCount = splitLines(ui.rules.value).filter((line) => line.trim()).length;
   ui.ruleCount.textContent = `${ruleCount} ${ruleCount === 1 ? "rule" : "rules"}`;
   try {
     const flags = `${ui.ignoreCase.checked ? "i" : ""}${ui.dotAll.checked ? "s" : ""}`;
