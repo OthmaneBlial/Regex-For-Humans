@@ -457,6 +457,99 @@ test("repeated copies keep feedback until the latest copy expires", async ({ pag
   await expect(button).toHaveText("Copy regex ↗");
 });
 
+for (const latestSucceeded of [true, false]) {
+  test(`latest clipboard ${latestSucceeded ? "success" : "failure"} survives an older reply for unchanged rules`, async ({
+    page,
+  }) => {
+    await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+    await page.clock.pauseAt(new Date("2026-01-01T00:01:00Z"));
+    await page.addInitScript(() => {
+      window.copyRequests = [];
+      window.legacyAttempts = 0;
+      Object.defineProperty(navigator, "clipboard", {
+        value: {
+          writeText: () =>
+            new Promise((resolve, reject) => window.copyRequests.push({ resolve, reject })),
+        },
+      });
+      document.execCommand = () => {
+        window.legacyAttempts += 1;
+        return false;
+      };
+    });
+    await page.goto("/");
+    await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+    const button = page.locator("#copy-button");
+    await button.click();
+    await button.click();
+    await page.evaluate((success) => {
+      const request = window.copyRequests[1];
+      if (success) request.resolve();
+      else request.reject(new Error("Clipboard access blocked"));
+    }, latestSucceeded);
+    if (latestSucceeded) await expect(button).toHaveText("Copied ✓");
+    else await expect(page.locator("#diagnostic")).toContainText("The pattern is selected");
+    await page.clock.fastForward(500);
+    await page.evaluate(async (success) => {
+      const request = window.copyRequests[0];
+      if (success) request.reject(new Error("Older clipboard access blocked"));
+      else request.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+    }, latestSucceeded);
+    expect(await page.evaluate(() => window.legacyAttempts)).toBe(latestSucceeded ? 0 : 1);
+    if (latestSucceeded) {
+      await expect(page.locator("#diagnostic")).toBeHidden();
+      await page.clock.fastForward(1200);
+      await expect(button).toHaveText("Copied ✓");
+      await page.clock.fastForward(101);
+      await expect(button).toHaveText("Copy regex ↗");
+    } else {
+      await expect(page.locator("#diagnostic")).toContainText("The pattern is selected");
+      await expect(button).toHaveText("Copy regex ↗");
+      expect(await page.evaluate(() => window.getSelection().toString())).toBe("/^ABC\\d{3}$/u");
+    }
+  });
+}
+
+test("a stalled workshop copy clears old confirmation, keeps fallback focus and recovers", async ({
+  page,
+}) => {
+  await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+  await page.clock.pauseAt(new Date("2026-01-01T00:01:00Z"));
+  await page.addInitScript(() => {
+    window.copyRequests = [];
+    Object.defineProperty(navigator, "clipboard", {
+      value: {
+        writeText: () =>
+          new Promise((resolve, reject) => window.copyRequests.push({ resolve, reject })),
+      },
+    });
+    document.execCommand = () => false;
+  });
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const button = page.locator("#copy-button");
+  await button.click();
+  await page.evaluate(() => window.copyRequests[0].resolve());
+  await expect(button).toHaveText("Copied ✓");
+  await page.clock.fastForward(200);
+  await button.press("Enter");
+  await expect(button).toHaveText("Copy regex ↗");
+  await page.clock.fastForward(1001);
+  await expect(page.locator("#diagnostic")).toContainText("The pattern is selected");
+  await expect(button).toBeFocused();
+  expect(await page.evaluate(() => window.getSelection().toString())).toBe("/^ABC\\d{3}$/u");
+  await page.evaluate(() => window.copyRequests[1].resolve());
+  await expect(button).toHaveText("Copy regex ↗");
+  await expect(page.locator("#diagnostic")).toBeVisible();
+  await button.press("Enter");
+  await page.evaluate(() => window.copyRequests[2].resolve());
+  await expect(button).toHaveText("Copied ✓");
+  await expect(page.locator("#diagnostic")).toBeHidden();
+  await expect(button).toBeFocused();
+});
+
 for (const copied of [true, false]) {
   test(`clipboard fallback keeps keyboard focus when copy ${copied ? "succeeds" : "fails"}`, async ({
     page,

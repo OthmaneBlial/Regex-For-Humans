@@ -47,6 +47,7 @@ let nextTestId = 1;
 let compiled = null;
 let hasEdits = false;
 let copyFeedbackTimer = 0;
+let copySequence = 0;
 const testRunner = new TestRunner(
   () => new Worker(new URL("./match-worker.js", import.meta.url), { type: "module" }),
 );
@@ -358,16 +359,24 @@ ui.copy.addEventListener("click", async () => {
   if (!compiled) return;
   const result = compiled;
   const text = `/${result.source}/${result.flags}`;
+  const request = ++copySequence;
+  window.clearTimeout(copyFeedbackTimer);
+  ui.copy.textContent = "Copy regex ↗";
+  setDiagnostic("");
+  let requestTimer = 0;
   try {
     if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable");
     await Promise.race([
       navigator.clipboard.writeText(text),
-      new Promise((_, reject) =>
-        window.setTimeout(() => reject(new Error("Clipboard request timed out")), 1000),
-      ),
+      new Promise((_, reject) => {
+        requestTimer = window.setTimeout(
+          () => reject(new Error("Clipboard request timed out")),
+          1000,
+        );
+      }),
     ]);
   } catch {
-    if (compiled !== result) return;
+    if (compiled !== result || request !== copySequence) return;
     const focused = document.activeElement;
     const helper = make("textarea");
     helper.value = text;
@@ -401,11 +410,12 @@ ui.copy.addEventListener("click", async () => {
       }
       return;
     }
+  } finally {
+    window.clearTimeout(requestTimer);
   }
-  if (compiled !== result) return;
+  if (compiled !== result || request !== copySequence) return;
   setDiagnostic("");
   ui.copy.textContent = "Copied ✓";
-  window.clearTimeout(copyFeedbackTimer);
   copyFeedbackTimer = window.setTimeout(() => {
     ui.copy.textContent = "Copy regex ↗";
   }, 1800);

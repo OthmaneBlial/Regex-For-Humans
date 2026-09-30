@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep workshop copy feedback tied to the latest request even when the rules are unchanged, clear old confirmation on retry, and cancel clipboard timeout timers after completion.
+
 - Report worker construction failures as rejected `WORKER_ERROR` promises, retain cancellation and recovery, and prevent extra payload fields from replacing the controller's request ID.
 
 - Bound homepage clipboard requests to one second, clear previous confirmation when copying again, and ignore older copy results for the same recipe so they cannot replace newer feedback.
