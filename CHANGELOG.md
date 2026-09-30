@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Align the release preflight with local artifact verification and the existing owner Pages deployment, keeping source-repository GitHub Actions disabled.
+
 - Add a runnable first-use example and exit-code meanings to CLI help, with a regression that compiles the displayed rules.
 
 - Add seeded valid-data checks for literal and character-list escaping, bounded literal repetition and exact matching after UTF-8 transport; document how joining lone surrogates changes Unicode repetition boundaries.
