@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add seeded valid-data checks for literal and character-list escaping, bounded literal repetition and exact matching after UTF-8 transport; document how joining lone surrogates changes Unicode repetition boundaries.
+
 - Include each example's current match feedback in its accessible description, alongside input limits, including after edits, rule repairs and row changes.
 
 - Add a phone-number shape recipe teaching an optional plus and 7–15 ASCII digits, with explicit limits on what matching proves.

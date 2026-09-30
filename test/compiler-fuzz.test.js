@@ -70,3 +70,73 @@ test("seeded arbitrary rules compile deterministically or fail with a valid loca
     assert.equal(end, result.source.length, JSON.stringify(source));
   }
 });
+
+test("seeded valid literals and character lists preserve exact matching through UTF-8", () => {
+  let state = 0x7e57_2026;
+  const next = () => {
+    state = (Math.imul(state, 1_664_525) + 1_013_904_223) >>> 0;
+    return state;
+  };
+  const boundaries = [
+    ...'"\\,:*?[]-^$+|().',
+    "\0",
+    "\n",
+    "\r",
+    "\t",
+    "\u0085",
+    "\u009b",
+    "\u2028",
+    "\u2029",
+    "\u202e",
+    "\ud800",
+    "\udbff",
+    "\udc00",
+    "\udfff",
+    "😀",
+    "𐀀",
+    "\ufffd",
+  ];
+  const lists = [boundaries, ["\ud800", "\udc00"], ["\ud800\udc00"], ["]", "-", "^", "\\"]];
+  for (let index = 0; index < 512; index += 1) {
+    lists.push(
+      Array.from({ length: 3 }, () =>
+        next() >>> 31 === 0
+          ? boundaries[next() % boundaries.length]
+          : String.fromCodePoint(next() % 0x110000),
+      ),
+    );
+  }
+  for (const items of lists) {
+    const value = items.join("");
+    const literal = compile(`start\n${JSON.stringify(value)}\nend`);
+    const source = Buffer.from(literal.source).toString("utf8");
+    assert.equal(source, literal.source, JSON.stringify(value));
+    const regex = new RegExp(source, literal.flags);
+    for (const candidate of [value, `${value}X`, `X${value}`, value.slice(1), `${value}\n`]) {
+      assert.equal(
+        regex.test(candidate),
+        candidate === value,
+        JSON.stringify({ value, candidate }),
+      );
+    }
+    const repeated = compile(`start\nbetween 0 and 2 ${JSON.stringify(value)}\nend`);
+    const repeatRegex = new RegExp(Buffer.from(repeated.source).toString("utf8"), repeated.flags);
+    for (let count = 0; count <= 3; count += 1) {
+      const candidate = value.repeat(count);
+      // Joining a trailing high surrogate to a leading low surrogate changes the code points.
+      const expected = count <= 2 && [...candidate].length === [...value].length * count;
+      assert.equal(repeatRegex.test(candidate), expected, JSON.stringify({ value, count }));
+    }
+    for (const negative of [false, true]) {
+      const rule = `${negative ? "none" : "one"} of: ${items.map((item) => JSON.stringify(item)).join(", ")}`;
+      const result = compile(`start\n${rule}\nend`);
+      const transported = Buffer.from(result.source).toString("utf8");
+      assert.equal(transported, result.source, rule);
+      const classRegex = new RegExp(transported, result.flags);
+      for (const candidate of [...items, ...boundaries, "", "AB"]) {
+        const expected = [...candidate].length === 1 && items.includes(candidate) !== negative;
+        assert.equal(classRegex.test(candidate), expected, JSON.stringify({ rule, candidate }));
+      }
+    }
+  }
+});

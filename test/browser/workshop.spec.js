@@ -648,7 +648,7 @@ test("rule and example inputs request literal text entry and preserve typed case
   await expect(page.locator("#test-summary")).toHaveText("5 of 5 examples behave as expected");
 });
 
-test("direction and C1 controls are visible in output, trace, feedback and diagnostics without changing input", async ({
+test("direction and C1 controls stay visible and surrogate boundaries follow Unicode matching", async ({
   page,
 }) => {
   await page.addInitScript(() => {
@@ -734,6 +734,22 @@ test("direction and C1 controls are visible in output, trace, feedback and diagn
     await example.fill(sample);
     await expect(example).toHaveValue(sample);
     await expect(feedback).toHaveText(`✓ Matched "A\\u${point.toString(16)}B" at 0`);
+  }
+  const boundary = "\udc00A\ud800";
+  for (const count of [2, 1]) {
+    await editor.fill(`start\n${count} ${JSON.stringify(boundary)}\nend`);
+    await expect(page.locator("#regex-output")).toHaveText(
+      `/^(?:\\u{dc00}A\\u{d800}){${count}}$/u`,
+    );
+    // Native text insertion replaces lone surrogates; use the original JavaScript value.
+    await example.evaluate((input, copies) => {
+      input.value = String.fromCharCode(0xdc00, 65, 0xd800).repeat(copies);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    }, count);
+    await expect(example).toHaveValue(boundary.repeat(count));
+    await expect(feedback).toHaveText(
+      count === 2 ? "! No match" : '✓ Matched "\\udc00A\\ud800" at 0',
+    );
   }
 });
 

@@ -185,6 +185,11 @@ test("lone surrogates survive UTF-8 transport in literals and character sets", (
   for (const character of ["\ud800", "\udc00"])
     assert.equal(toRegExp(separateSurrogates).test(character), true);
   assert.equal(toRegExp(separateSurrogates).test("\ud800\udc00"), false);
+  const boundary = "\udc00A\ud800";
+  for (const count of [1, 2]) {
+    const result = compile(`start\n${count} ${JSON.stringify(boundary)}\nend`);
+    assert.equal(toRegExp(result).test(boundary.repeat(count)), count === 1);
+  }
 });
 
 test("direction and C1 controls have visible escapes without changing literal or class matching", () => {
