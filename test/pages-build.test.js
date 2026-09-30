@@ -9,6 +9,7 @@ test("Pages app and stylesheet URLs change with their inputs and stay stable oth
   const root = mkdtempSync(join(tmpdir(), "regex-for-humans-pages-"));
   try {
     for (const directory of ["scripts", "site", "dist"]) mkdirSync(join(root, directory));
+    writeFileSync(join(root, "package.json"), JSON.stringify({ type: "module" }));
     const script = join(root, "scripts", "build-pages-workshop.js");
     cpSync(new URL("../scripts/build-pages-workshop.js", import.meta.url), script);
     for (const name of ["app.js", "index.html", "styles.css"]) {

@@ -37,7 +37,10 @@ test("the static build versions independent copies of linked files and nested di
     }
     const script = join(root, "scripts", "build-web.js");
     cpSync(new URL("../scripts/build-web.js", import.meta.url), script);
-    writeFileSync(join(root, "package.json"), JSON.stringify({ version: "0.1.0-dev" }));
+    writeFileSync(
+      join(root, "package.json"),
+      JSON.stringify({ type: "module", version: "0.1.0-dev" }),
+    );
     writeFileSync(join(root, "web", "language.html"), "<h1>DEVELOPMENT BUILD</h1>");
     for (const name of ["CHANGELOG.md", "SECURITY.md", "LICENSE"]) {
       writeFileSync(join(root, name), name);
