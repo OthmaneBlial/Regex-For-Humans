@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Removing an example keeps keyboard focus on the next example, the last remaining example, or the Add example button.
 - Delayed clipboard results no longer clear newer compiler errors or describe an edited pattern as copied.
 - Workshop rule counts and trace selection now recognize the compiler's Unicode line separators and quoted values.
 - CLI diagnostics now finish writing before exit, preserving large JSON errors when piped.

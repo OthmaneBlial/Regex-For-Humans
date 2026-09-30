@@ -86,6 +86,29 @@ test("example controls have distinct numbered accessible names", async ({ page }
   );
 });
 
+test("removing examples keeps keyboard focus in the example controls", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list .test-row")).toHaveCount(4);
+  let remaining = 4;
+  for (const number of [2, 3, 2, 1]) {
+    const remove = page.getByRole("button", { name: `Remove example ${number}`, exact: true });
+    await remove.focus();
+    await remove.press("Enter");
+    remaining -= 1;
+    await expect(page.locator("#test-list .test-row")).toHaveCount(remaining);
+    const next =
+      remaining === 0
+        ? page.locator("#add-example")
+        : page.getByRole("textbox", {
+            name: `Example ${Math.min(number, remaining)} string`,
+            exact: true,
+          });
+    await expect(next).toBeFocused();
+  }
+  await page.locator("#add-example").press("Enter");
+  await expect(page.getByRole("textbox", { name: "Example 1 string", exact: true })).toBeFocused();
+});
+
 test("syntax guide is readable without horizontal overflow or detectable WCAG A/AA issues", async ({
   page,
 }) => {

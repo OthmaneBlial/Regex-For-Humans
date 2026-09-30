@@ -229,6 +229,10 @@ function renderTests() {
     remove.addEventListener("click", () => {
       testCases = testCases.filter((item) => item.id !== sample.id);
       renderTests();
+      (
+        ui.testList.querySelectorAll("textarea")[Math.min(index, testCases.length - 1)] ??
+        ui.addExample
+      ).focus();
     });
     row.append(input, expected, result, remove);
     ui.testList.append(row);
