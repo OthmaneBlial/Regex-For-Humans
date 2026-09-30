@@ -7,6 +7,167 @@ const recipes = JSON.parse(
   readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("homepage waits for its app before enabling controls or claiming a match", async ({
+  page,
+}) => {
+  let release;
+  const pending = new Promise((resolve) => {
+    release = resolve;
+  });
+  let requested;
+  const started = new Promise((resolve) => {
+    requested = resolve;
+  });
+  await page.route("**/app.js*", async (route) => {
+    requested();
+    await pending;
+    await route.continue();
+  });
+  try {
+    await page.goto("/", { waitUntil: "commit" });
+    await started;
+    await expect(page.locator("#demo-input")).toBeDisabled();
+    await expect(page.locator("#demo-result")).toHaveText("Not checked");
+    for (const button of await page.locator("[data-copy]").all())
+      await expect(button).toBeDisabled();
+    await expect(page.getByRole("link", { name: /Open the playground/ })).toBeVisible();
+    release();
+    await expect(page.locator("#demo-input")).toBeEnabled();
+    await expect(page.locator("#demo-result")).toHaveText("✓ Match");
+  } finally {
+    release();
+  }
+});
+
+test("homepage copies static patterns while its compiler loads, then enables matching", async ({
+  page,
+}) => {
+  await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+  await page.clock.pauseAt(new Date("2026-01-01T00:01:00Z"));
+  let release;
+  const pending = new Promise((resolve) => {
+    release = resolve;
+  });
+  let requested;
+  const started = new Promise((resolve) => {
+    requested = resolve;
+  });
+  await page.route("**/workshop/index.js*", async (route) => {
+    requested();
+    await pending;
+    await route.continue();
+  });
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: {
+        writeText: async (text) => {
+          window.copiedText = text;
+        },
+      },
+    });
+  });
+  try {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await started;
+    await expect(page.locator("#demo-input")).toBeDisabled();
+    await expect(page.locator("#demo-result")).toHaveText("Loading…");
+    await expect(page.locator("#demo-result")).not.toHaveAttribute("data-match", /.+/);
+    await expect(page.locator('[data-recipe="hex-color"]')).toBeDisabled();
+    for (const target of ["rules-code", "regex-code"]) {
+      await page.locator(`[data-copy="${target}"]`).click();
+      await expect(page.locator(`[data-copy="${target}"]`)).toHaveText("Copied ✓");
+      expect(await page.evaluate(() => window.copiedText)).toBe(
+        await page.locator(`#${target}`).textContent(),
+      );
+    }
+    await page.evaluate(() => {
+      navigator.clipboard.writeText = () =>
+        new Promise((resolve) => {
+          window.finishLoadingCopy = resolve;
+        });
+    });
+    await page.locator('[data-copy="regex-code"]').click();
+    release();
+    await expect(page.locator("#demo-input")).toBeEnabled();
+    await expect(page.locator("#demo-result")).toHaveText("✓ Match");
+    await page.locator("#demo-input").fill("not a hex color");
+    await expect(page.locator("#demo-result")).toHaveText("× No match");
+    await expect(page.locator('[data-recipe="hex-color"]')).toBeEnabled();
+    await page.evaluate(() => window.finishLoadingCopy());
+    await expect(page.locator('[data-copy="regex-code"]')).toHaveText("Copied ✓");
+  } finally {
+    release();
+  }
+});
+
+test("a failed homepage compiler keeps copy and workshop navigation available and recovers on reload", async ({
+  page,
+}) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.route("**/workshop/index.js*", (route) => route.abort());
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: {
+        writeText: async (text) => {
+          window.copiedText = text;
+        },
+      },
+    });
+  });
+  await page.goto("/");
+  await expect(page.locator("#demo-input")).toBeDisabled();
+  await expect(page.locator("#demo-result")).toHaveText("Demo unavailable");
+  await expect(page.locator("#demo-note")).toContainText("The demo couldn't load");
+  await expect(page.locator('[data-recipe="hex-color"]')).toBeDisabled();
+  for (const target of ["rules-code", "regex-code"]) {
+    await page.locator(`[data-copy="${target}"]`).click();
+    await expect(page.locator(`[data-copy="${target}"]`)).toHaveText("Copied ✓");
+    expect(await page.evaluate(() => window.copiedText)).toBe(
+      await page.locator(`#${target}`).textContent(),
+    );
+  }
+  await expect(page.locator("#demo-open")).toHaveAttribute("href", "./workshop/?example=hex-color");
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await Promise.all(document.getAnimations().map((animation) => animation.finished));
+  });
+  expect(
+    (
+      await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+        .analyze()
+    ).violations,
+  ).toEqual([]);
+  expect(errors).toEqual([]);
+  await page.unroute("**/workshop/index.js*");
+  await page.reload();
+  await expect(page.locator("#demo-input")).toBeEnabled();
+  await expect(page.locator("#demo-result")).toHaveText("✓ Match");
+  await expect(page.locator('[data-recipe="hex-color"]')).toBeEnabled();
+});
+
+test("homepage without JavaScript keeps readable patterns and explains the inactive demo", async ({
+  browser,
+  baseURL,
+  viewport,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport });
+  try {
+    const page = await context.newPage();
+    await page.goto(baseURL);
+    await expect(page.locator("#demo-input")).toBeDisabled();
+    await expect(page.locator("#demo-result")).toHaveText("Not checked");
+    await expect(page.locator("noscript p")).toContainText("The demo needs JavaScript");
+    await expect(page.locator("#regex-code")).toHaveText("/^#[0-9A-Fa-f]{6}$/u");
+    for (const button of await page.locator("[data-copy]").all())
+      await expect(button).toBeDisabled();
+    await expect(page.getByRole("link", { name: /Open the playground/ })).toBeVisible();
+  } finally {
+    await context.close();
+  }
+});
+
 test("homepage requests a versioned compiler and skips an obsolete cached module", async ({
   page,
 }) => {

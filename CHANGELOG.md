@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Show honest homepage loading and failure states, enable matching only after the compiler is ready, and keep static pattern copying available while the compiler loads or fails.
+
 - Keep workshop copy feedback tied to the latest request even when the rules are unchanged, clear old confirmation on retry, and cancel clipboard timeout timers after completion.
 
 - Report worker construction failures as rejected `WORKER_ERROR` promises, retain cancellation and recovery, and prevent extra payload fields from replacing the controller's request ID.

@@ -8,9 +8,9 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
   <title>Regex For Humans — Less squinting. More matching.</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./styles.css?v=playful-1">
+  <link rel="stylesheet" href="./styles.css?v=playful-2">
   <link rel="preload" href="./assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <script type="module" src="./app.js?v=0d946a98d19a"></script>
+  <script type="module" src="./app.js?v=faf6cb8085f2"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -30,13 +30,14 @@
       <section class="demo" aria-labelledby="demo-title">
         <div class="demo-heading"><h2 id="demo-title"><span aria-hidden="true">🪄</span> Words in. Regex out.</h2><span class="live-label">TRY IT ↓</span></div>
         <fieldset class="demo-recipes"><legend class="sr-only">Demo recipes</legend><button type="button" data-recipe="hex-color" aria-pressed="true" disabled>🎨 Hex color</button><button type="button" data-recipe="prefixed-identifier" aria-pressed="false" disabled>🏷️ ID</button><button type="button" data-recipe="version-shape" aria-pressed="false" disabled>📦 Version</button></fieldset>
-        <div class="code-block rules-block"><div class="code-label"><span>01 / THE HUMAN BIT</span><button type="button" data-copy="rules-code">Copy rules</button></div><pre><code id="rules-code">start "#"
+        <div class="code-block rules-block"><div class="code-label"><span>01 / THE HUMAN BIT</span><button type="button" data-copy="rules-code" disabled>Copy rules</button></div><pre><code id="rules-code">start "#"
 6 hex digits
 end</code></pre></div>
         <div class="connector" aria-hidden="true">↓ same rules, different language ↓</div>
-        <div class="code-block regex-block"><div class="code-label"><span>02 / THE REGEX BIT</span><button type="button" data-copy="regex-code">Copy regex</button></div><pre><code id="regex-code">/^#[0-9A-Fa-f]{6}$/u</code></pre></div>
+        <div class="code-block regex-block"><div class="code-label"><span>02 / THE REGEX BIT</span><button type="button" data-copy="regex-code" disabled>Copy regex</button></div><pre><code id="regex-code">/^#[0-9A-Fa-f]{6}$/u</code></pre></div>
         <div id="demo-samples" class="sample-chips"><span>✓ <code>#12aBcF</code></span><span class="no-match">× <code>#123</code></span></div>
-        <div class="try-sample"><label for="demo-input">Your turn. Does it match?</label><div><input id="demo-input" type="text" value="#ff6b6b" maxlength="80" autocomplete="off" spellcheck="false" aria-describedby="demo-result"><output id="demo-result" for="demo-input" aria-live="polite">✓ Match</output></div></div>
+        <div class="try-sample"><label for="demo-input">Your turn. Does it match?</label><div><input id="demo-input" type="text" value="#ff6b6b" maxlength="80" autocomplete="off" spellcheck="false" aria-describedby="demo-result" disabled><output id="demo-result" for="demo-input" aria-live="polite">Not checked</output></div></div>
+        <noscript><p>The demo needs JavaScript. You can still read the patterns and copy them manually.</p></noscript>
         <p id="demo-note">Six hex digits after #, in either letter case. Only #RRGGBB; no shorthand, alpha or other CSS color forms.</p>
         <a id="demo-open" class="demo-open" href="./workshop/?example=hex-color">Edit this in the workshop ↗</a>
       </section>

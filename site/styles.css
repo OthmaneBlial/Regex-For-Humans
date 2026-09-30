@@ -41,7 +41,7 @@ button {
   cursor: pointer;
 }
 button:disabled {
-  cursor: wait;
+  cursor: default;
 }
 :focus-visible {
   outline: 3px solid #1645a8;
@@ -395,6 +395,9 @@ h1 {
   min-width: 82px;
   font-size: 12px;
   font-weight: 700;
+  color: var(--soft);
+}
+.try-sample output[data-match="true"] {
   color: #2d5726;
 }
 .try-sample output[data-match="false"] {
