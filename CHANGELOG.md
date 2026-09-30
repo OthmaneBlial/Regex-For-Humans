@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- CLI stdout write failures now use the regular diagnostic format, including JSON errors; failed stderr writes preserve a nonzero exit status.
 - Long rule diagnostics now wrap within the workshop viewport.
 - Workshop compilation errors now offer a Go to error button that focuses the reported source position and works from the keyboard.
 - Links to screenshots, contributing instructions and the roadmap now resolve from the installed npm package. Package verification checks installed documentation links.

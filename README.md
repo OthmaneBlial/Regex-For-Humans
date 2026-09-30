@@ -88,7 +88,7 @@ Import `./index.js` from the repository checkout.
 
 ## CLI options
 
-Read UTF-8 rules from a file or standard input. Malformed UTF-8 is rejected instead of replacing bytes. Use `--` before a filename beginning with `-`. `--explain` prints each rule's output. `--json` prints results to stdout and errors to stderr: rule diagnostics keep their codes, invalid arguments use `CLI_USAGE`, and file/runtime errors (including invalid UTF-8) use `CLI_ERROR`. `--ignore-case` adds `i`, and `--dot-all` adds `s`. Run `node bin/regex-for-humans.js --help` for usage.
+Read UTF-8 rules from a file or standard input. Malformed UTF-8 is rejected instead of replacing bytes. Use `--` before a filename beginning with `-`. `--explain` prints each rule's output. `--json` prints results to stdout and errors to stderr: rule diagnostics keep their codes, invalid arguments use `CLI_USAGE`, and file/runtime errors (including invalid UTF-8 and stdout write failures) use `CLI_ERROR`. If stderr also fails, the CLI exits with a nonzero status without a diagnostic. `--ignore-case` adds `i`, and `--dot-all` adds `s`. Run `node bin/regex-for-humans.js --help` for usage.
 
 ## Scope
 

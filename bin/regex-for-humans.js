@@ -37,6 +37,33 @@ async function main() {
   /** @type {string|undefined} */
   let file;
 
+  /** @param {unknown} error */
+  function reportError(error) {
+    process.exitCode = 1;
+    if (json) {
+      const detail =
+        error instanceof CompileError
+          ? error.toJSON()
+          : {
+              code: "CLI_ERROR",
+              message: error instanceof Error ? error.message : String(error),
+            };
+      stderr.write(`${JSON.stringify({ error: detail })}\n`);
+    } else if (error instanceof CompileError) {
+      stderr.write(
+        `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}\n`,
+      );
+    } else {
+      stderr.write(`${String(error)}\n`);
+    }
+  }
+
+  stdout.on("error", reportError);
+  stderr.on("error", () => {
+    // A broken diagnostic stream cannot report its own write failure.
+    process.exitCode ||= 1;
+  });
+
   /** @param {string} message */
   function usageError(message) {
     if (json) stderr.write(`${JSON.stringify({ error: { code: "CLI_USAGE", message } })}\n`);
@@ -125,23 +152,7 @@ async function main() {
       }
     }
   } catch (error) {
-    if (json) {
-      const detail =
-        error instanceof CompileError
-          ? error.toJSON()
-          : {
-              code: "CLI_ERROR",
-              message: error instanceof Error ? error.message : String(error),
-            };
-      stderr.write(`${JSON.stringify({ error: detail })}\n`);
-    } else if (error instanceof CompileError) {
-      stderr.write(
-        `Line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}\n`,
-      );
-    } else {
-      stderr.write(`${String(error)}\n`);
-    }
-    process.exitCode = 1;
+    reportError(error);
   }
 }
 

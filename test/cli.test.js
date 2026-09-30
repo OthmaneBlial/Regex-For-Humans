@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
+import {
+  closeSync,
+  mkdtempSync,
+  openSync,
+  readFileSync,
+  rmdirSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -65,6 +73,57 @@ test("CLI keeps file read failures as JSON in machine mode", () => {
     assert.match(error.message, /ENOENT/u);
     assert.equal("line" in error, false);
   } finally {
+    rmdirSync(directory);
+  }
+});
+
+test("CLI reports stdout write failures as JSON without an unhandled exception", () => {
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  const path = join(directory, "readonly.txt");
+  writeFileSync(path, "sentinel");
+  const descriptor = openSync(path, "r");
+  try {
+    for (const args of [["-"], ["--help"], ["--version"]]) {
+      const result = spawnSync(process.execPath, [cli, "--json", ...args], {
+        input: "digit",
+        encoding: "utf8",
+        stdio: ["pipe", descriptor, "pipe"],
+      });
+      assert.equal(result.status, 1, args.join(" "));
+      const error = JSON.parse(result.stderr).error;
+      assert.equal(error.code, "CLI_ERROR");
+      assert.match(error.message, /write/iu);
+    }
+    assert.equal(readFileSync(path, "utf8"), "sentinel");
+  } finally {
+    closeSync(descriptor);
+    unlinkSync(path);
+    rmdirSync(directory);
+  }
+});
+
+test("CLI preserves nonzero status when stderr cannot accept diagnostics", () => {
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  const path = join(directory, "readonly.txt");
+  writeFileSync(path, "sentinel");
+  const descriptor = openSync(path, "r");
+  try {
+    for (const [args, status] of [
+      [["--json", "-"], 1],
+      [["--json", "--bogus"], 2],
+    ]) {
+      const result = spawnSync(process.execPath, [cli, ...args], {
+        input: "unsupported",
+        encoding: "utf8",
+        stdio: ["pipe", "pipe", descriptor],
+      });
+      assert.equal(result.status, status);
+      assert.equal(result.stdout, "");
+    }
+    assert.equal(readFileSync(path, "utf8"), "sentinel");
+  } finally {
+    closeSync(descriptor);
+    unlinkSync(path);
     rmdirSync(directory);
   }
 });
