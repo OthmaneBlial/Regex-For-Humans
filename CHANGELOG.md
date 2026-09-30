@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add an invoice ID shape recipe using `between 2 and 6 digits`, with accepted bounds, leading zeros and rejected case, Unicode digits and trailing text; link all seven recipes from the README and homepage.
+
 - Add inclusive bounded counts with `between n and m <item>`, positioned diagnostics and explanations. New bounded instructions expose `repetition: { kind: "range", min, max }`; existing instructions retain their metadata and behavior.
 
 - Show shared recipe notes in the workshop and homepage, including date, version and color validation limits; clarify that the line recipe accepts four or more trailing digits.

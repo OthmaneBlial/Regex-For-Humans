@@ -64,5 +64,16 @@
     "matchMode": "full",
     "positive": ["#12aBcF", "#000000", "#FFFFFF"],
     "negative": ["#123", "#12345678", "#G00000", "123456", "#123456\n"]
+  },
+  {
+    "id": "invoice-number",
+    "title": "Match an invoice ID shape",
+    "note": "INV- followed by 2–6 ASCII digits. Leading zeros are allowed; verify invoice records separately.",
+    "rules": "start \"INV-\"\nbetween 2 and 6 digits\nend",
+    "source": "^INV-\\d{2,6}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["INV-12", "INV-1234", "INV-123456", "INV-0012"],
+    "negative": ["INV-1", "INV-1234567", "inv-1234", "INV-١٢", "INV-12A", "INV-1234\n"]
   }
 ]

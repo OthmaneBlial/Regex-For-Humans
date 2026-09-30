@@ -100,6 +100,24 @@ test("the initial hex demo still works when extra recipes cannot load", async ({
   await expect(page.locator("#demo-open")).toHaveAttribute("href", "./workshop/?example=hex-color");
 });
 
+test("recipe cards cover every shared recipe and open the bounded invoice shape", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const ids = await page
+    .locator(".recipe-card")
+    .evaluateAll((cards) => cards.map((card) => new URL(card.href).searchParams.get("example")));
+  expect(ids.sort()).toEqual(recipes.map((recipe) => recipe.id).sort());
+  await expect(page.locator(".syntax-list")).toContainText("between 2 and 6 digits");
+  const recipe = recipes.find((item) => item.id === "invoice-number");
+  await page.locator('.recipe-card[href*="invoice-number"]').click();
+  await expect(page).toHaveURL(/\/workshop\/\?example=invoice-number$/u);
+  await expect(page.locator("#rules-input")).toHaveValue(recipe.rules);
+  await expect(page.locator("#regex-output")).toHaveText(`/${recipe.source}/${recipe.flags}`);
+  await expect(page.locator("#recipe-note")).toHaveText(recipe.note);
+  await expect(page.locator("#test-summary")).toHaveText("10 of 10 examples behave as expected");
+});
+
 test("copying a second snippet keeps its feedback after the first timer expires", async ({
   page,
 }) => {

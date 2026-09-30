@@ -20,7 +20,9 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 
 6. **Match a hex color.** Rules: `start "#"` / `6 hex digits` / `end`. Expected source `^#[0-9A-Fa-f]{6}$`, flags `u`. Positive: `#12aBcF`, `#000000`, `#FFFFFF`. Negative: `#123`, `#12345678`, `#G00000`, `123456`, a color followed by a newline. This teaches an exact count of ASCII hexadecimal digits in either letter case. It accepts only the six-digit `#RRGGBB` notation; shorthand, alpha components, named colors and other CSS color forms are outside this recipe.
 
-The recipes use compact syntax for prefixes, exclusions, line matching, a fixed date shape, variable-length version components and an exact hexadecimal character count.
+7. **Match an invoice ID shape.** Rules: `start "INV-"` / `between 2 and 6 digits` / `end`. Expected source `^INV-\d{2,6}$`, flags `u`. Positive: `INV-12`, `INV-1234`, `INV-123456`, `INV-0012`. Negative: `INV-1`, `INV-1234567`, `inv-1234`, `INV-١٢`, `INV-12A`, an ID followed by a newline. This teaches inclusive bounded repetition with both accepted limits. Digits are ASCII, the prefix is case-sensitive and leading zeros are allowed. It checks a text shape; verify invoice records separately.
+
+The recipes use compact syntax for prefixes, exclusions, line matching, a fixed date shape, variable-length version components, an exact hexadecimal character count and an inclusive digit range.
 
 Each fixture includes a short note about its meaning and limits. The workshop shows that note beside the selected rules, includes it in the editor's accessible description, and hides it when manual rules differ from the recipe. The homepage demo uses the same note.
 
