@@ -45,7 +45,11 @@ let testCases = [];
 let nextTestId = 1;
 /** @type {ReturnType<typeof compile> | null} */
 let compiled = null;
-let hasEdits = false;
+let hasEdits =
+  ui.rules.value !== "" ||
+  ui.ignoreCase.checked ||
+  ui.dotAll.checked ||
+  ui.matchMode.value !== "full";
 let copyFeedbackTimer = 0;
 let copySequence = 0;
 const testRunner = new TestRunner(
@@ -355,6 +359,7 @@ ui.addExample.addEventListener("click", () => {
   updateTestResults();
   ui.testList.lastElementChild?.querySelector("textarea")?.focus();
 });
+ui.addExample.disabled = false;
 ui.copy.addEventListener("click", async () => {
   if (!compiled) return;
   const result = compiled;
@@ -420,6 +425,8 @@ ui.copy.addEventListener("click", async () => {
     ui.copy.textContent = "Copy regex ↗";
   }, 1800);
 });
+
+if (hasEdits) compileRules();
 
 try {
   const response = await fetch(new URL("../test/fixtures/product-scenarios.json", import.meta.url));

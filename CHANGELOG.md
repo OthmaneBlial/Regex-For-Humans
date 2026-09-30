@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve workshop rules and options entered before its app loads, compile that initial content even if recipes fail, and enable adding examples only after the handler is ready.
+
 - Add a shared username-shape recipe with an ASCII letter first and 3–16 total word characters; link it from the README and homepage, with explicit availability, service-policy and ignore-case limits.
 
 - Add `letter` and `letters` for ASCII alphabetic characters, with exact/bounded counts, shared explanations and repair hints. Document and test JavaScript's Unicode case-folding equivalents when `i` is enabled.

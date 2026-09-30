@@ -6,6 +6,19 @@ const scenarios = JSON.parse(
   readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+async function openBeforeWorkshopAppLoads(page) {
+  let release;
+  await page.route("**/web/app.js*", async (route) => {
+    await new Promise((resolve) => {
+      release = resolve;
+    });
+    await route.continue();
+  });
+  await page.goto("/", { waitUntil: "commit" });
+  await expect.poll(() => typeof release).toBe("function");
+  return release;
+}
+
 for (const scenario of scenarios) {
   test(`${scenario.id} loads the same pattern and preserves every sample`, async ({ page }) => {
     const browserErrors = [];
@@ -223,6 +236,98 @@ test("switching a recipe starts one worker for its current pattern and examples"
   await expect(page.locator("#regex-output")).toHaveText("/^[^abcd]*$/u");
   await expect(page.locator("#test-summary")).toHaveText("3 of 3 examples behave as expected");
   expect(await page.evaluate(() => window.workerStarts)).toBe(initialStarts + 1);
+});
+
+test("rules and options entered before the workshop app loads stay intact", async ({ page }) => {
+  const release = await openBeforeWorkshopAppLoads(page);
+  try {
+    await expect(page.locator("#add-example")).toBeDisabled();
+    const editor = page.locator("#rules-input");
+    const rules = 'start "CUSTOM"\nend';
+    await editor.fill(rules);
+    await page.locator("#ignore-case").check();
+    await page.locator("#dot-all").check();
+    await page.locator("#match-mode").selectOption("search");
+    release();
+    await expect(page.locator("#example-list button")).toHaveCount(scenarios.length);
+    await expect(editor).toHaveValue(rules);
+    await expect(page.locator("#regex-output")).toHaveText("/^CUSTOM$/isu");
+    await expect(page.locator("#ignore-case")).toBeChecked();
+    await expect(page.locator("#dot-all")).toBeChecked();
+    await expect(page.locator("#match-mode")).toHaveValue("search");
+    await expect(page.locator('#example-list button[aria-current="true"]')).toHaveCount(0);
+    await expect(page.locator("#recipe-note")).toBeHidden();
+    await expect(page.locator("#copy-button")).toBeEnabled();
+    await expect(page.locator("#add-example")).toBeEnabled();
+    await page.locator("#add-example").click();
+    await page.getByRole("textbox", { name: "Example 1 string", exact: true }).fill("custom");
+    await expect(page.locator("#test-summary")).toHaveText("1 of 1 examples behave as expected");
+    await page.locator('[data-scenario="prefixed-identifier"]').click();
+    await expect(editor).toHaveValue(scenarios[0].rules);
+    await expect(page.locator("#ignore-case")).not.toBeChecked();
+    await expect(page.locator("#dot-all")).not.toBeChecked();
+    await expect(page.locator("#match-mode")).toHaveValue("full");
+    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  } finally {
+    release();
+  }
+});
+
+test("pre-app option changes preserve empty or whitespace-only rules", async ({ page }) => {
+  for (const [rules, ignoreCase, dotAll, matchMode] of [
+    ["", true, false, "full"],
+    ["", false, true, "full"],
+    ["", false, false, "search"],
+    [" \n\t", false, false, "full"],
+  ]) {
+    const release = await openBeforeWorkshopAppLoads(page);
+    try {
+      const editor = page.locator("#rules-input");
+      await editor.fill(rules);
+      await page.locator("#ignore-case").setChecked(ignoreCase);
+      await page.locator("#dot-all").setChecked(dotAll);
+      await page.locator("#match-mode").selectOption(matchMode);
+      release();
+      await expect(page.locator("#example-list button")).toHaveCount(scenarios.length);
+      await expect(editor).toHaveValue(rules);
+      await expect(editor).toHaveAttribute("aria-invalid", "false");
+      expect(await page.locator("#ignore-case").isChecked()).toBe(ignoreCase);
+      expect(await page.locator("#dot-all").isChecked()).toBe(dotAll);
+      await expect(page.locator("#match-mode")).toHaveValue(matchMode);
+      await expect(page.locator("#compile-state")).toHaveText("Ready");
+      await expect(page.locator("#regex-output")).toHaveText("Select a recipe or write a rule");
+      await expect(page.locator("#copy-button")).toBeDisabled();
+      await expect(page.locator("#test-summary")).toHaveText("Write rules to run the examples.");
+    } finally {
+      release();
+    }
+  }
+});
+
+test("pre-app invalid rules get diagnostics even when recipes fail", async ({ page }) => {
+  await page.route("**/product-scenarios.json*", (route) =>
+    route.fulfill({ status: 503, body: "Recipes unavailable" }),
+  );
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const release = await openBeforeWorkshopAppLoads(page);
+  try {
+    const editor = page.locator("#rules-input");
+    await editor.fill("invalid rule");
+    release();
+    await expect(page.locator("#example-list")).toContainText("HTTP 503");
+    await expect(editor).toHaveValue("invalid rule");
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#compile-state")).toHaveText("Needs a fix");
+    await expect(page.locator("#diagnostic")).toContainText('Unsupported rule: "invalid rule".');
+    await expect(page.locator("#copy-button")).toBeDisabled();
+    await editor.fill("start 3 digits\nend");
+    await expect(page.locator("#regex-output")).toHaveText("/^\\d{3}$/u");
+    await expect(page.locator("#copy-button")).toBeEnabled();
+    expect(errors).toEqual([]);
+  } finally {
+    release();
+  }
 });
 
 test("late recipes preserve edits made while loading", async ({ page }) => {
