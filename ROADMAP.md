@@ -6,6 +6,8 @@
 
 Cocher une tâche uniquement après vérification de tous ses critères. Les dépendances externes restent ouvertes tant que leurs preuves manquent.
 
+**Politique de vérification depuis le 30 septembre 2026 :** GitHub Actions est désactivé pour ce dépôt à la demande du mainteneur. Les portes de qualité s'exécutent localement avec `npm run verify`. Les résultats CI datés ci-dessous restent des preuves historiques. La publication du site dans `OthmaneBlial.github.io` conserve son déploiement Pages. Toute réactivation de la CI de ce projet exige une nouvelle demande explicite.
+
 - [x] 0.1 Contrat du langage et vocabulaire — `docs/LANGUAGE.md`, 4 scénarios vérifiés avec `RegExp` sous Node 25.9.0
 - [x] 0.2 Scénarios d'adoption et mesures — 4 fixtures rejouées en bibliothèque, CLI et navigateur ; cible de premier succès définie (mesure humaine suivie en 2.4)
 - [x] 1.1 Installation, API et CLI — tarball installé dans un dossier vierge ; aide, fichier, stdin, erreur, import, CLI et déclarations TypeScript vérifiés sous Node 25.9.0
@@ -21,7 +23,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [ ] 4.1 README et premier succès — README réécrit, exemples CLI/bibliothèque contrôlés et site projet publié ; relecture par un novice encore requise
 - [ ] 4.2 Captures réelles — captures bureau/mobile du build local `0.1.0-dev` ajoutées au README avec provenance et SHA-256 ; captures de la version publiée à refaire après 2.4
 - [x] 4.3 Contribution et présentation GitHub — politiques et modèles d'issues/PR présents ; le signalement privé, la description, la page d'accueil et les 12 topics sont confirmés par API ; README et About vérifiés dans Chrome le 28 septembre 2026, captures bureau/mobile en HTTP 200 ; démo publique disponible
-- [x] 5.1 CI vérifiée — run `36364750202` (`bcc732c`) vert sur Linux Node 22/24, macOS/Windows Node 24 et Chromium Linux ; audit npm exécuté sur Linux Node 24 ; artefact `npm-package-tested` téléchargé (SHA-256 `b3319a3f61ec03af27317b5b2ceb7e89a26dfbc6574690966b37f5c2fc82366f`) ; PR brouillon [#1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) volontairement cassée, run `35444252927` échoué dans les quatre jobs `npm run check`, puis fermée sans fusion
+- [x] 5.1 Portes locales vérifiées — `npm run verify` réussi sur `f18fbbf` : 82 tests Node, 94 tests atelier et 34 tests site ; installation propre du tarball et audit vérifiés ; preuve CI historique du 28 septembre : run `36364750202` (`bcc732c`) vert sur Linux Node 22/24, macOS/Windows Node 24 et Chromium Linux ; audit npm exécuté sur Linux Node 24 ; artefact `npm-package-tested` téléchargé (SHA-256 `b3319a3f61ec03af27317b5b2ceb7e89a26dfbc6574690966b37f5c2fc82366f`) ; PR brouillon [#1](https://github.com/OthmaneBlial/Regex-For-Humans/pull/1) volontairement cassée, run `35444252927` échoué dans les quatre jobs `npm run check`, puis fermée sans fusion
 - [ ] 5.2 Package publié et atelier déployé — site projet et atelier vérifiés en HTTPS après publication Pages du commit `86eb726` (build `1244136835`, asset `1ccee3c7d51c`) ; les quatre recettes utilisent des règles courtes, et les trois exemples de la recette ligne passent ; le bundle inclut le correctif qui retire la sélection après modification manuelle ; tarball local testé, registry npm 404, tag stable et release absents
 - [ ] 5.3 Décision et validation des binaires — voie npm/Node retenue provisoirement dans `docs/DISTRIBUTION.md` ; besoin de binaire à mesurer dans les séances utilisateurs avant décision finale
 - [ ] 5.4 Release publiée et vérifiée
@@ -50,7 +52,7 @@ Les références externes servent seulement à cadrer le marché ; elles ne prou
 ### Cible de la première version publiable
 
 - **P0, bloquant** : un compilateur déterministe et documenté pour un sous-ensemble explicite de `RegExp` JavaScript, erreurs avec ligne/colonne, bibliothèque et CLI utilisables, tests de sémantique et installation propre.
-- **P1, différenciant** : atelier web local sans compte, scénarios positifs/négatifs, explication du résultat, accessibilité, exemples et documentation de qualité, CI multi-plateforme et release vérifiée.
+- **P1, différenciant** : atelier web local sans compte, scénarios positifs/négatifs, explication du résultat, accessibilité, exemples et documentation de qualité, vérification locale sur les plateformes annoncées et release vérifiée.
 - **P2, conditionné par l'usage** : groupes, alternance, lookaround, autres moteurs regex, édition inverse, inférence depuis exemples et exécutables autonomes. Les ajouter seulement après validation du noyau et du besoin. Une phrase arbitraire en langage naturel n'est pas l'objectif de la première release.
 
 ## Phase 0 — Contrat produit et preuve de départ (P0)
@@ -200,20 +202,20 @@ Les références externes servent seulement à cadrer le marché ; elles ne prou
 
 ## Phase 5 — Automatisation, packaging et release (P0/P1)
 
-### 5.1 Mettre en place une CI qui reproduit les portes locales
+### 5.1 Conserver les portes de vérification locales
 
-- **Objectif :** faire échouer les PR incorrectes avant merge.
-- **Changements :** GitHub Actions pour format/lint/typage, tests, build web, `npm pack`, installation du tarball et smoke CLI ; matrice sur versions Node supportées et au moins Linux/Windows/macOS pour les chemins critiques ; permissions minimales et dépendances verrouillées si présentes.
-- **Zones :** `.github/workflows/`, `package.json`, `test/`, guide de contribution.
-- **Acceptation :** PR volontairement cassée échoue ; commit valide passe sur la matrice ; artefact package identique à celui testé ; badge seulement après CI réussie.
-- **Validation :** consulter les jobs réels GitHub Actions et leurs logs, pas uniquement l'existence du YAML ; reproduire localement les commandes.
-- **Dépendances/risques :** dépend de 3.1 et 4.1 ; CI peut révéler des différences de chemins ou versions Node.
+- **Objectif :** détecter les régressions avant chaque push.
+- **Changements :** conserver `npm run verify` pour format/lint/typage, liens de documentation, tests Node/CLI, build Pages, installation du tarball, tests navigateur et audit ; verrouiller les dépendances ; enregistrer les résultats par commit et environnement.
+- **Zones :** `package.json`, `scripts/`, `test/`, guide de contribution et `docs/TESTING.md`.
+- **Acceptation :** une régression fait échouer la commande locale ; le commit valide passe toutes les portes ; l'artefact conservé correspond au tarball testé ; GitHub Actions reste désactivé pour ce dépôt.
+- **Validation :** exécuter `npm run verify` sur le commit livré ; conserver le tarball avec `PACK_OUTPUT_DIR=artifacts npm run test:package` si nécessaire ; relever Node, OS, commandes et résultats ; contrôler la permission Actions du dépôt par API.
+- **Dépendances/risques :** dépend de 3.1 et 4.1 ; chaque combinaison Node/OS annoncée exige sa preuve actuelle. Les runs CI du 28 septembre restent consultables comme historique de compatibilité.
 
 ### 5.2 Distribuer la bibliothèque, la CLI et l'atelier
 
 - **Objectif :** permettre un essai fiable sans cloner le dépôt.
 - **Changements :** limiter les fichiers inclus dans le package, définir `exports`/`bin`/`files`, publier un package npm sous un nom vérifié disponible ou choisir un nom différent ; déployer le build statique de l'atelier (GitHub Pages ou autre hébergement documenté), avec version visible et stratégie de cache.
-- **Zones :** `package.json`, build `web/`, workflow de publication, `README.md`.
+- **Zones :** `package.json`, build `web/`, scripts de distribution, publication Pages et `README.md`.
 - **Acceptation :** `npm install` ou `npx` avec la version publiée fonctionne depuis un dossier vierge ; le site public charge, compile les mêmes fixtures et ne présente pas de 404 ; les URLs publiques et la version correspondent au tag.
 - **Validation :** `npm pack`/inspection du tarball, installation de la version **publiée** dans un dossier vierge, test navigateur sur l'URL finale et comparaison avec la release.
 - **Dépendances/risques :** dépend de 5.1 ; publication npm, nom de package et hébergement sont des portes externes, jamais inférées du succès local.
@@ -222,17 +224,17 @@ Les références externes servent seulement à cadrer le marché ; elles ne prou
 
 - **Objectif :** couvrir le téléchargement sans entretenir des artefacts coûteux et trompeurs.
 - **Changements :** documenter que le package npm est la voie principale pour cet outil JavaScript ; tester si les utilisateurs cibles ont réellement besoin d'une CLI sans Node. Si oui, construire des exécutables par OS/architecture avec un outil maintenu, les signer si faisable, fournir SHA-256 et une procédure de reproduction ; sinon indiquer explicitement « aucun binaire autonome » sur la release.
-- **Zones :** `docs/DISTRIBUTION.md`, workflow de release, `README.md`, assets de release si décision positive.
+- **Zones :** `docs/DISTRIBUTION.md`, scripts de distribution, `README.md`, assets de release si décision positive.
 - **Acceptation :** décision et justification consignées ; si binaires livrés, chacun démarre sur son OS cible, affiche la version et réussit une fixture depuis un poste propre ; les noms, architectures et sommes correspondent aux fichiers téléchargeables.
-- **Validation :** smoke sur machines/CI cibles et vérification SHA-256 après téléchargement ; aucun lien vers un binaire absent.
+- **Validation :** smoke sur les machines cibles et vérification SHA-256 après téléchargement ; aucun lien vers un binaire absent.
 - **Dépendances/risques :** après 5.2 ; génération multiplateforme, signature et taille du runtime peuvent dépasser la valeur pour un petit CLI.
 
 ### 5.4 Publier une première release attestée
 
 - **Objectif :** donner une version stable, réinstallable et crédible.
 - **Changements :** choisir version et changelog avec compatibilité/limites, tag, GitHub Release, artefact package et éventuellement binaires ; mettre à jour les métadonnées GitHub, la page de démo et les liens README ; documenter rollback et correctifs.
-- **Zones :** `CHANGELOG.md`, `README.md`, workflows, métadonnées et release GitHub.
-- **Acceptation :** tag, commit, package publié, release et démo pointent vers la même version ; CI du tag réussie ; notes de version décrivent seulement des capacités vérifiées ; issues de lancement critiques closes ou explicitement connues.
+- **Zones :** `CHANGELOG.md`, `README.md`, scripts de distribution, métadonnées et release GitHub.
+- **Acceptation :** tag, commit, package publié, release et démo pointent vers la même version ; vérification locale du commit tagué réussie et enregistrée ; notes de version décrivent seulement des capacités vérifiées ; issues de lancement critiques closes ou explicitement connues.
 - **Validation :** installer depuis le registre et télécharger depuis la release, vérifier hashes si applicables, ouvrir le site public, refaire les 3 scénarios de 0.2 et contrôler les liens/badges rendus.
 - **Dépendances/risques :** seulement après acceptation des phases 0–4 et 5.1–5.3 ; publication/approbations externes et cache CDN peuvent retarder la vérification finale.
 
@@ -260,4 +262,4 @@ Les références externes servent seulement à cadrer le marché ; elles ne prou
 
 ## Définition de « terminé »
 
-La première version est publiable quand le parcours documenté fonctionne depuis une installation propre, que les exemples positifs **et** négatifs protègent la sémantique annoncée, que l'atelier est utilisable et accessible, que la CI et les artefacts publics sont vérifiés sur leurs vraies URLs, et que les limites du langage sont visibles. La vidéo n'est produite qu'ensuite. Les étoiles, la viralité, l'adoption et la qualité sur des moteurs regex non pris en charge restent des résultats à mesurer, jamais des critères que le dépôt peut garantir seul.
+La première version est publiable quand le parcours documenté fonctionne depuis une installation propre, que les exemples positifs **et** négatifs protègent la sémantique annoncée, que l'atelier est utilisable et accessible, que la vérification locale du commit livré est enregistrée, que les artefacts publics sont vérifiés sur leurs vraies URLs, et que les limites du langage sont visibles. La vidéo n'est produite qu'ensuite. Les étoiles, la viralité, l'adoption et la qualité sur des moteurs regex non pris en charge restent des résultats à mesurer, jamais des critères que le dépôt peut garantir seul.
