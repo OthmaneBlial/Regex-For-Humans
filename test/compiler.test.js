@@ -7,6 +7,36 @@ const scenarios = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("countable sequence repairs honor bounds, exclusions and dot-all", () => {
+  for (const flags of ["", "s"]) {
+    for (const [count, min, max] of [
+      ["3", 3, 3],
+      ["between 2 and 4", 2, 4],
+      ["0", 0, 0],
+    ]) {
+      for (const item of ["any character", "none of: a, b"]) {
+        const result = compile(`start\n${count} ${item}\nend`, { flags });
+        assert.equal(
+          result.source,
+          `^${item === "any character" ? "." : "[^ab]"}${min === max ? `{${min}}` : `{${min},${max}}`}$`,
+        );
+        const regex = toRegExp(result);
+        for (const character of ["c", "😀", "a", "\n"]) {
+          for (let length = 0; length <= 5; length += 1) {
+            const allowed =
+              length === 0 ||
+              (item === "any character" ? character !== "\n" || flags === "s" : character !== "a");
+            assert.equal(
+              regex.test(character.repeat(length)),
+              allowed && length >= min && length <= max,
+            );
+          }
+        }
+      }
+    }
+  }
+});
+
 test("spaces matches JavaScript whitespace with plural defaults and count overrides", () => {
   const whitespace = [
     " ",

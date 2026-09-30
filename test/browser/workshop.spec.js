@@ -20,6 +20,51 @@ async function openBeforeWorkshopAppLoads(page) {
   return release;
 }
 
+test("counted sequences explain replacement items and recover with preserved bounds", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const editor = page.locator("#rules-input");
+  const first = page.locator("#test-list textarea").first();
+  const feedback = page.locator("#test-list .test-result").first();
+  for (const [sequence, item, hint, source] of [
+    [
+      "any text",
+      "any character",
+      "Use counts with `any character`, such as `3 any character`.",
+      ".{2,4}",
+    ],
+    [
+      "text without: a, b",
+      "none of: a, b",
+      "Use counts with `none of:`, such as `3 none of: a, b`.",
+      "[^ab]{2,4}",
+    ],
+  ]) {
+    await editor.fill(`start\nbetween 2 and 4 ${sequence}\nend`);
+    await expect(page.locator("#diagnostic")).toContainText(
+      "Line 2, column 17: This rule already matches a sequence.",
+    );
+    await expect(page.locator("#diagnostic")).toContainText(hint);
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#copy-button")).toBeDisabled();
+    await editor.fill(`start\nbetween 2 and 4 ${item}\nend`);
+    await expect(page.locator("#regex-output")).toHaveText(`/^${source}$/u`);
+    await expect(page.locator("#diagnostic")).toBeHidden();
+    await expect(editor).toHaveAttribute("aria-invalid", "false");
+    await expect(page.locator("#copy-button")).toBeEnabled();
+    await first.fill("😀😀");
+    await expect(feedback).toHaveText('✓ Matched "😀😀" at 0');
+    await first.fill("ccccc");
+    await expect(feedback).toHaveText("! No match");
+    await first.fill("aba");
+    await expect(feedback).toHaveText(
+      sequence === "any text" ? '✓ Matched "aba" at 0' : "! No match",
+    );
+  }
+});
+
 test("mixed anchors explain compatible pairs and recover in input and line modes", async ({
   page,
 }) => {

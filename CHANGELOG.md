@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Suggest countable character rules when a count or range is applied to an existing text sequence, preserving its diagnostic code and location.
+
 - Suggest compatible input or line anchor pairs when mixed anchors are rejected, preserving the diagnostic code and end-anchor location.
 
 - Explain how to repair malformed UTF-8 in CLI file and stdin input, preserving `CLI_ERROR`, exit status and rejection of invalid bytes.

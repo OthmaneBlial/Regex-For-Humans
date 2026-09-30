@@ -235,6 +235,31 @@ test("bounded count errors point to invalid bounds or incomplete syntax", () => 
   }
 });
 
+test("counted sequence rules suggest countable items at the sequence location", () => {
+  for (const [sequence, hint] of [
+    ["any text", "Use counts with `any character`, such as `3 any character`."],
+    ["text without: a, b", "Use counts with `none of:`, such as `3 none of: a, b`."],
+  ]) {
+    for (const count of ["3", "between 2 and 4"]) {
+      const rules = `start\n  ${count} ${sequence}\nend`;
+      assert.throws(
+        () => parse(rules),
+        (error) => {
+          assert.deepEqual(error.toJSON(), {
+            code: "DUPLICATE_REPETITION",
+            message: "This rule already matches a sequence.",
+            line: 2,
+            column: count.length + 4,
+            hint,
+          });
+          return true;
+        },
+      );
+    }
+    assert.equal(parse(sequence).nodes[0].repetition.kind, "zeroOrMore");
+  }
+});
+
 test("bounded counts preserve duplicate, anchor and atom diagnostics", () => {
   for (const [rules, code, marker] of [
     ["between 2 and 4 3 digits", "DUPLICATE_REPETITION", "3 digits"],

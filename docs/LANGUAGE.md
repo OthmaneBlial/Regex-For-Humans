@@ -63,7 +63,7 @@ C0/C1 control characters, DEL and Unicode line separators are also displayed as 
 
 ## Repetition
 
-A count or range applies to the next item. Put it first (`3 digits` or `between 2 and 4 digits`). The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters` and `spaces` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another count or range. Other repetition wording, such as `at least 3 times`, is not supported.
+A count or range applies to the next item. Put it first (`3 digits` or `between 2 and 4 digits`). The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters` and `spaces` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another count or range. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters. Other repetition wording, such as `at least 3 times`, is not supported.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |

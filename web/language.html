@@ -79,6 +79,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
       <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">
         <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one thing</h2></div></div>
         <p>Put counts or ranges first: <code>3 digits</code> generates <code>\d{3}</code>, and <code>between 2 and 4 digits</code> generates <code>\d{2,4}</code>. <code>digits</code>, <code>hex digits</code>, <code>letters</code> and <code>spaces</code> mean one or more unless a count or range replaces that default. <code>any text</code> and <code>text without</code> already match sequences.</p>
+        <p>To set their length, use countable items: <code>3 any character</code> or <code>between 2 and 4 none of: a, b</code>. Counted sequence errors suggest these replacements. <code>any character</code> excludes line breaks unless <code>s</code> is enabled; <code>none of:</code> excludes only the listed characters.</p>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Form</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
           <tr><td><code>3 &lt;item&gt;</code> (for example, <code>3 digits</code>)</td><td><code>{3}</code></td><td>Exactly three</td></tr>
           <tr><td><code>between 2 and 4 &lt;item&gt;</code></td><td><code>{2,4}</code></td><td>Two, three or four; both bounds included</td></tr>

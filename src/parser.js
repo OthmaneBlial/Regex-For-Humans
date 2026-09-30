@@ -259,10 +259,14 @@ function parseAtom(text, location, rawLine) {
   const textWithout = /^text without:\s*/i.exec(remaining);
   if (textWithout || /^any text$/i.test(remaining)) {
     if (repetition) {
-      fail("DUPLICATE_REPETITION", "This rule already matches a sequence.", {
-        line: location.line,
-        column: location.column + offset,
-      });
+      fail(
+        "DUPLICATE_REPETITION",
+        "This rule already matches a sequence.",
+        { line: location.line, column: location.column + offset },
+        textWithout
+          ? "Use counts with `none of:`, such as `3 none of: a, b`."
+          : "Use counts with `any character`, such as `3 any character`.",
+      );
     }
     if (textWithout) {
       const values = readCharacterList(

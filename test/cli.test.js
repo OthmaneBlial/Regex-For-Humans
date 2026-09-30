@@ -24,6 +24,45 @@ function run(args, input) {
   return spawnSync(process.execPath, [cli, ...args], { input, encoding: "utf8" });
 }
 
+test("CLI counted sequence errors offer repairs in plain text and JSON", () => {
+  for (const [sequence, item, hint] of [
+    ["any text", "any character", "Use counts with `any character`, such as `3 any character`."],
+    [
+      "text without: a, b",
+      "none of: a, b",
+      "Use counts with `none of:`, such as `3 none of: a, b`.",
+    ],
+  ]) {
+    for (const json of [false, true]) {
+      const result = run(json ? ["--json", "-"] : ["-"], `start\n3 ${sequence}\nend`);
+      assert.equal(result.status, 1);
+      assert.equal(result.stdout, "");
+      if (json)
+        assert.deepEqual(JSON.parse(result.stderr), {
+          error: {
+            code: "DUPLICATE_REPETITION",
+            message: "This rule already matches a sequence.",
+            line: 2,
+            column: 3,
+            hint,
+          },
+        });
+      else
+        assert.equal(
+          result.stderr,
+          `Line 2, column 3: This rule already matches a sequence.\n${hint}\n`,
+        );
+    }
+    const repaired = run(["--json", "-"], `start\n3 ${item}\nend`);
+    assert.equal(repaired.status, 0, repaired.stderr);
+    const result = JSON.parse(repaired.stdout);
+    const regex = new RegExp(result.source, result.flags);
+    assert.equal(regex.test("ccc"), true);
+    assert.equal(regex.test("cc"), false);
+    assert.equal(regex.test("cccc"), false);
+  }
+});
+
 test("CLI mixed-anchor diagnostics preserve locations and explain both repairs", () => {
   const hint = "Pair `start` with `end`, or `line start` with `line end`.";
   for (const rules of ["start\n3 digits\nline end", "line start\n3 digits\nend"]) {
