@@ -51,6 +51,49 @@ test("the local server reports its assigned port and serves its selected root", 
   assert.equal(missing.status, 404);
 });
 
+test("the local server redirects directory URLs while preserving encoded paths and queries", {
+  timeout: 10000,
+}, async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-server-directory-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  for (const name of ["nested", "résumé notes"]) {
+    mkdirSync(join(root, name));
+    writeFileSync(join(root, name, "index.html"), '<script src="./app.js"></script>');
+    writeFileSync(join(root, name, "app.js"), "export const ready = true;\n");
+  }
+  mkdirSync(join(root, "no-index"));
+  const address = await startServer(t, root);
+  for (const name of ["nested", "résumé notes"]) {
+    const path = encodeURIComponent(name);
+    const query = "?example=hex-color&text=a%2Fb%20c";
+    for (const method of ["GET", "HEAD"]) {
+      const redirect = await fetch(`${address}${path}${query}`, {
+        method,
+        redirect: "manual",
+        signal: t.signal,
+      });
+      assert.equal(redirect.status, 308);
+      assert.equal(redirect.headers.get("location"), `/${path}/${query}`);
+      assert.equal(await redirect.text(), "");
+    }
+    const page = await fetch(`${address}${path}${query}`, { signal: t.signal });
+    assert.equal(page.status, 200);
+    assert.equal(page.url, `${address}${path}/${query}`);
+    assert.equal(await page.text(), '<script src="./app.js"></script>');
+    const asset = await fetch(new URL("./app.js", page.url), { signal: t.signal });
+    assert.equal(asset.status, 200);
+    assert.equal(await asset.text(), "export const ready = true;\n");
+  }
+  const missingIndex = await fetch(`${address}no-index`, { signal: t.signal });
+  assert.equal(missingIndex.status, 404);
+  const missingPath = await fetch(`${address}missing?example=hex-color`, {
+    redirect: "manual",
+    signal: t.signal,
+  });
+  assert.equal(missingPath.status, 404);
+  assert.equal(missingPath.headers.get("location"), null);
+});
+
 test("the local server confines symlink targets to its selected root", {
   timeout: 10000,
 }, async (t) => {
@@ -68,11 +111,22 @@ test("the local server confines symlink targets to its selected root", {
   symlinkSync(join(root, "nested"), join(root, "inside"), "junction");
   symlinkSync(outside, join(root, "outside"), "junction");
   const address = await startServer(t, alias);
-  for (const path of ["outside/", "outside/index.html", "%2e%2e%2fsite-outside/index.html"]) {
+  for (const path of [
+    "outside",
+    "outside/",
+    "outside/index.html",
+    "%2e%2e%2fsite-outside/index.html",
+  ]) {
     const response = await fetch(new URL(path, address), { signal: t.signal });
     assert.equal(response.status, 403, path);
     assert.equal(await response.text(), "", path);
   }
+  const redirect = await fetch(new URL("inside?example=hex-color", address), {
+    redirect: "manual",
+    signal: t.signal,
+  });
+  assert.equal(redirect.status, 308);
+  assert.equal(redirect.headers.get("location"), "/inside/?example=hex-color");
   for (const [path, content] of [
     ["", "<h1>Selected root</h1>"],
     ["inside/", "<h1>Inside root</h1>"],

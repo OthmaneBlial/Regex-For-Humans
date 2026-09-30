@@ -1,4 +1,4 @@
-import { readFile, realpath } from "node:fs/promises";
+import { readFile, realpath, stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,7 +20,8 @@ const mimeTypes = {
 
 const server = createServer(async (request, response) => {
   try {
-    const pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
+    const url = new URL(request.url, "http://localhost");
+    const pathname = decodeURIComponent(url.pathname);
     const path = resolve(root, `.${pathname.endsWith("/") ? `${pathname}index.html` : pathname}`);
     if (!path.startsWith(`${root}${sep}`)) {
       response.writeHead(403).end();
@@ -29,6 +30,10 @@ const server = createServer(async (request, response) => {
     const target = await realpath(path);
     if (!target.startsWith(`${root}${sep}`)) {
       response.writeHead(403).end();
+      return;
+    }
+    if (!pathname.endsWith("/") && (await stat(target)).isDirectory()) {
+      response.writeHead(308, { location: `${url.pathname}/${url.search}` }).end();
       return;
     }
     const data = await readFile(target);
