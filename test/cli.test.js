@@ -24,6 +24,21 @@ function run(args, input) {
   return spawnSync(process.execPath, [cli, ...args], { input, encoding: "utf8" });
 }
 
+test("CLI help includes a working first-use example and exit codes", () => {
+  const result = run(["--help"]);
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, "");
+  const example = result.stdout.match(/printf '([^']+)' \| regex-for-humans/u);
+  assert.ok(example, "Help should show rules piped into the CLI.");
+  const compiled = run([], example[1].replaceAll("\\n", "\n"));
+  assert.equal(compiled.status, 0, compiled.stderr);
+  assert.equal(compiled.stdout, "/^ABC\\d{3}$/u\n");
+  assert.ok(result.stdout.includes(`  # ${compiled.stdout.trim()}`));
+  assert.match(result.stdout, /0 {2}Success, help or version/u);
+  assert.match(result.stdout, /1 {2}Invalid rules, input or output error/u);
+  assert.match(result.stdout, /2 {2}Invalid command arguments/u);
+});
+
 test("CLI accepts stdin and prints the same result as the library", () => {
   for (const scenario of scenarios) {
     const result = run(["--json", "-"], scenario.rules);

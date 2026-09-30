@@ -7,7 +7,7 @@ import { CompileError, compile } from "../index.js";
 import { escapeControls } from "../src/display.js";
 import { LIMITS, validateSourceLength } from "../src/parser.js";
 
-const usage = `Usage: regex-for-humans [options] [--] [file|-]
+const usage = String.raw`Usage: regex-for-humans [options] [--] [file|-]
 
 Compile controlled English into a JavaScript regex.
 Read a file or stdin; use - for stdin.
@@ -20,6 +20,15 @@ Options:
   --             Treat the next argument as the input path
   --help         Show this help
   --version      Show the package version
+
+Example (POSIX shell):
+  printf 'start "ABC"\n3 digits\nend\n' | regex-for-humans
+  # /^ABC\d{3}$/u
+
+Exit codes:
+  0  Success, help or version
+  1  Invalid rules, input or output error
+  2  Invalid command arguments
 `;
 
 async function main() {

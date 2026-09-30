@@ -129,6 +129,8 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 
 Read UTF-8 rules from a file or stdin. Use `--` before a filename starting with `-`.
 
+`--help` includes a runnable POSIX-shell example. Exit codes are `0` for success/help/version, `1` for invalid rules or input/output failures, and `2` for invalid command arguments.
+
 <details>
 <summary>🔧 CLI error contract</summary>
 

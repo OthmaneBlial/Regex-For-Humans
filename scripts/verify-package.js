@@ -141,6 +141,16 @@ void [regex, segment, source, line, max];
   const cliArgs = [npmCli, "exec", "--offline", "--yes=false", "--", "regex-for-humans"];
   const version = run([...cliArgs, "--version"], { cwd: consumer });
   if (version !== manifest.version) throw new Error("Installed CLI reported a different version.");
+  const help = run([...cliArgs, "--help"], { cwd: consumer });
+  const example = help.match(/printf '([^']+)' \| regex-for-humans/u);
+  if (!example) throw new Error("Installed CLI help is missing its first-use example.");
+  const exampleResult = run(cliArgs, {
+    cwd: consumer,
+    input: example[1].replaceAll("\\n", "\n"),
+  });
+  if (exampleResult !== "/^ABC\\d{3}$/u" || !help.includes(`  # ${exampleResult}`)) {
+    throw new Error("Installed CLI help example did not produce its documented expression.");
+  }
   const cliResult = JSON.parse(run([...cliArgs, "--json", "-"], { cwd: consumer, input: rules }));
   if (cliResult.source !== "^ABC\\d{3}$" || cliResult.flags !== "u") {
     throw new Error("Installed CLI produced an unexpected expression.");
