@@ -24,6 +24,7 @@ for (const control of copyControls) {
   button.addEventListener("click", async () => {
     const source = document.getElementById(button.dataset.copy);
     const request = ++copySequence;
+    const focused = document.activeElement;
     window.clearTimeout(control.resetTimer);
     button.textContent = label;
     window.clearTimeout(statusResetTimer);
@@ -51,7 +52,7 @@ for (const control of copyControls) {
     } catch {
       if (request !== copySequence) return;
       const selection = window.getSelection();
-      if (selection) {
+      if (selection && document.activeElement === focused) {
         selection.selectAllChildren(source);
         copyStatus.textContent =
           "Clipboard access is unavailable. The text is selected; press your keyboard copy shortcut.";

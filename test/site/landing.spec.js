@@ -456,6 +456,47 @@ test("copying a second snippet keeps its feedback after the first timer expires"
   await expect(page.locator('[data-copy="regex-code"]')).toHaveText("Copy regex");
 });
 
+for (const timeout of [false, true]) {
+  test(`a homepage copy ${timeout ? "timeout" : "rejection"} preserves a newly focused input and selection`, async ({
+    page,
+  }) => {
+    await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+    await page.clock.pauseAt(new Date("2026-01-01T00:01:00Z"));
+    await page.addInitScript(() => {
+      window.copyRequests = [];
+      Object.defineProperty(navigator, "clipboard", {
+        value: {
+          writeText: () =>
+            new Promise((resolve, reject) => window.copyRequests.push({ resolve, reject })),
+        },
+      });
+    });
+    await page.goto("/");
+    await expect(page.locator('[data-recipe="hex-color"]')).toBeEnabled();
+    const button = page.locator('[data-copy="regex-code"]');
+    const input = page.locator("#demo-input");
+    await button.focus();
+    await page.keyboard.press("Enter");
+    await input.focus();
+    await input.evaluate((element) => element.setSelectionRange(1, 3));
+    if (timeout) await page.clock.fastForward(1001);
+    else await page.evaluate(() => window.copyRequests[0].reject(new Error("Clipboard denied")));
+    await expect(page.locator("#copy-status")).toHaveText(
+      "Clipboard access is unavailable. Select the text to copy it.",
+    );
+    await expect(input).toBeFocused();
+    await expect(input).toHaveValue("#ff6b6b");
+    expect(
+      await input.evaluate((element) => [element.selectionStart, element.selectionEnd]),
+    ).toEqual([1, 3]);
+    await button.focus();
+    await page.keyboard.press("Enter");
+    await page.evaluate(() => window.copyRequests[1].resolve());
+    await expect(button).toHaveText("Copied ✓");
+    await expect(button).toBeFocused();
+  });
+}
+
 for (const unavailable of [true, false]) {
   test(`homepage selects snippets for keyboard copying when clipboard access is ${unavailable ? "unavailable" : "blocked"}`, async ({
     page,

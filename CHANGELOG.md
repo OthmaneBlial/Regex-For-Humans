@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve newly focused inputs and selected text when a delayed homepage or workshop clipboard request fails or times out.
+
 - Select the requested homepage snippet for keyboard copying when clipboard access is missing, blocked or stalled, while retaining button focus and ignoring outdated requests.
 
 - Preserve oversized homepage demo input and report its visible 80-unit limit before matching, instead of testing a silently truncated prefix.

@@ -971,6 +971,54 @@ for (const latestSucceeded of [true, false]) {
   });
 }
 
+for (const timeout of [false, true]) {
+  test(`a workshop copy ${timeout ? "timeout" : "rejection"} preserves a newly focused input and selection`, async ({
+    page,
+  }) => {
+    await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+    await page.clock.pauseAt(new Date("2026-01-01T00:01:00Z"));
+    await page.addInitScript(() => {
+      window.copyRequests = [];
+      window.legacyCopyCalls = 0;
+      Object.defineProperty(navigator, "clipboard", {
+        value: {
+          writeText: () =>
+            new Promise((resolve, reject) => window.copyRequests.push({ resolve, reject })),
+        },
+      });
+      document.execCommand = () => {
+        window.legacyCopyCalls += 1;
+        return false;
+      };
+    });
+    await page.goto("/");
+    await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+    const button = page.locator("#copy-button");
+    const input = page.locator("#test-list textarea").first();
+    await button.focus();
+    await button.press("Enter");
+    await input.focus();
+    await input.evaluate((element) => element.setSelectionRange(1, 3));
+    if (timeout) await page.clock.fastForward(1001);
+    else await page.evaluate(() => window.copyRequests[0].reject(new Error("Clipboard denied")));
+    await expect(page.locator("#diagnostic")).toHaveText(
+      "Clipboard access was blocked. Select the pattern and press your copy shortcut.",
+    );
+    await expect(input).toBeFocused();
+    await expect(input).toHaveValue("ABC123");
+    expect(
+      await input.evaluate((element) => [element.selectionStart, element.selectionEnd]),
+    ).toEqual([1, 3]);
+    expect(await page.evaluate(() => window.legacyCopyCalls)).toBe(0);
+    await button.focus();
+    await button.press("Enter");
+    await page.evaluate(() => window.copyRequests[1].resolve());
+    await expect(button).toHaveText("Copied ✓");
+    await expect(button).toBeFocused();
+    await expect(page.locator("#diagnostic")).toBeHidden();
+  });
+}
+
 test("a stalled workshop copy clears old confirmation, keeps fallback focus and recovers", async ({
   page,
 }) => {

@@ -401,6 +401,7 @@ ui.copy.addEventListener("click", async () => {
   const result = compiled;
   const text = `/${result.source}/${result.flags}`;
   const request = ++copySequence;
+  const focused = document.activeElement;
   window.clearTimeout(copyFeedbackTimer);
   ui.copy.textContent = "Copy regex ↗";
   setDiagnostic("");
@@ -418,7 +419,12 @@ ui.copy.addEventListener("click", async () => {
     ]);
   } catch {
     if (compiled !== result || request !== copySequence) return;
-    const focused = document.activeElement;
+    if (document.activeElement !== focused) {
+      setDiagnostic(
+        "Clipboard access was blocked. Select the pattern and press your copy shortcut.",
+      );
+      return;
+    }
     const helper = make("textarea");
     helper.value = text;
     helper.setAttribute("aria-hidden", "true");

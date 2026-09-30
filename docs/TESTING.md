@@ -71,7 +71,9 @@ Workshop clipboard regressions cover overlapping requests for unchanged rules in
 
 Homepage startup regressions hold the app or compiler response and verify neutral output until matching is ready. Copy controls become available when their handlers are installed, independently of compiler loading. A failed compiler leaves static rules, clipboard controls and workshop links available, reports an unavailable demo without an uncaught error, and recovers on reload. A JavaScript-disabled check verifies the static patterns and manual-copy explanation.
 
-Homepage clipboard failures select the requested rules or regex for manual copying. Keyboard regressions cover unavailable and rejected clipboard access, preserve button focus, verify the complete selection through the native copy event and avoid changing the system clipboard. The timeout check also verifies selection and focus before a successful retry.
+Homepage clipboard failures select the requested rules or regex for manual copying when focus has not moved. Keyboard regressions cover unavailable and rejected clipboard access, preserve button focus, verify the complete selection through the native copy event and avoid changing the system clipboard. The timeout check also verifies selection and focus before a successful retry.
+
+Delayed clipboard rejection and timeout checks on both pages move focus to an example input before the request fails. Its value and selected range stay intact, focus stays on the field and the workshop skips its legacy copy helper. Returning to Copy allows a successful retry.
 
 Homepage length checks use a version-shaped value whose 80-unit prefix matches while its complete 83-unit value does not. Native insertion keeps the whole value and reports the demo limit instead of testing that prefix. Exact boundaries, astral emoji, repair and recipe changes preserve valid matching; error descriptions, 320px layout and automated WCAG A/AA checks cover the invalid state.
 
