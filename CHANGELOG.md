@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep result panel keyboard focus visible with brighter outlines and prevent clipping around trace buttons.
+
 - Give the generated regex a named keyboard stop with visible focus and native horizontal scrolling.
 
 - Wrap long literal explanations inside the trace viewport while keeping source selection available.

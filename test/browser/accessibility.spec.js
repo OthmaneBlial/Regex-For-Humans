@@ -109,6 +109,50 @@ test("generated regex is a named keyboard stop with native horizontal scrolling"
   }
 });
 
+test("result panel keyboard focus contrasts with its surrounding background", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  await page.keyboard.press("Tab");
+  for (const state of ["ready", "error"]) {
+    if (state === "error") await page.locator("#rules-input").fill("unknown rule");
+    const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
+    expect(results.violations.map((violation) => violation.id)).toEqual([]);
+    const controls =
+      state === "ready"
+        ? [
+            page.getByRole("region", { name: "Generated JavaScript regex", exact: true }),
+            page.locator("#copy-button"),
+            page.locator("#trace-list button").first(),
+          ]
+        : [page.getByRole("button", { name: "Go to error", exact: true })];
+    for (const control of controls) {
+      await control.focus();
+      await expect(control).toBeFocused();
+      await expect(control).toHaveCSS("outline-style", "solid");
+      const indicator = await control.evaluate((element) => {
+        const { Color, getContrast } = window.axe.commons.color;
+        const style = getComputedStyle(element);
+        const surrounding =
+          Number.parseFloat(style.outlineOffset) < 0
+            ? style
+            : getComputedStyle(element.closest(".diagnostic, .result-panel"));
+        const outline = new Color().parseString(style.outlineColor);
+        const background = new Color().parseString(surrounding.backgroundColor);
+        return {
+          visible: element.matches(":focus-visible"),
+          width: Number.parseFloat(style.outlineWidth),
+          backgroundAlpha: background.alpha,
+          contrast: getContrast(background, outline),
+        };
+      });
+      expect(indicator.visible).toBe(true);
+      expect(indicator.width).toBeGreaterThan(0);
+      expect(indicator.backgroundAlpha).toBe(1);
+      expect(indicator.contrast).toBeGreaterThanOrEqual(3);
+    }
+  }
+});
+
 test("a diagnostic can focus its exact source position from the keyboard", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");

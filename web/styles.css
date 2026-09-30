@@ -446,6 +446,9 @@ a {
   border-color: var(--ink-deep);
   color: #ecf0e7;
 }
+.result-panel :focus-visible {
+  outline-color: var(--gold);
+}
 .result-panel .step-number {
   border-color: var(--ink);
   background: #acd9fa;
@@ -591,6 +594,9 @@ a {
 }
 .trace-item:hover {
   background: #3d4961;
+}
+.trace-item:focus-visible {
+  outline-offset: -3px;
 }
 .trace-fragment {
   color: var(--gold);

@@ -206,6 +206,21 @@ test("long literal explanations wrap within the trace viewport and keep source s
       ).toBe(true);
       const explanation = page.locator("#trace-list button").first();
       await explanation.focus();
+      expect(
+        await explanation.evaluate((element) => {
+          const box = element.getBoundingClientRect();
+          const clip = element.parentElement.getBoundingClientRect();
+          const style = getComputedStyle(element);
+          const width = Number.parseFloat(style.outlineWidth);
+          const extent = Number.parseFloat(style.outlineOffset) + width;
+          return (
+            element.matches(":focus-visible") &&
+            width > 0 &&
+            box.left - extent >= clip.left &&
+            box.right + extent <= clip.right
+          );
+        }),
+      ).toBe(true);
       await explanation.press("Enter");
       await expect(editor).toBeFocused();
       expect(await editor.evaluate((input) => [input.selectionStart, input.selectionEnd])).toEqual([
