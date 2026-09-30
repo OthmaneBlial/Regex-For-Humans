@@ -1,6 +1,6 @@
 # First release preflight
 
-This is a runbook for a future stable release, not a record of publication. As of 28 September 2026, `package.json` is `0.1.0-dev`; the npm registry returns 404 for `regex-for-humans`, and no stable tag or GitHub Release exists. A development preview and workshop are hosted at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/). That preview is separate from publishing a stable release.
+This is a runbook for a future stable release, not a record of publication. The [distribution snapshot](DISTRIBUTION.md) records the checked package, registry, GitHub and hosted-preview state. Recheck those external surfaces at release time. A development preview and workshop are hosted at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/). That preview is separate from publishing a stable release.
 
 GitHub Actions is disabled for this repository. Quality checks and release candidate verification run locally. The manual release workflow files are inactive templates; do not enable them as part of routine verification.
 
