@@ -14,12 +14,21 @@ These results verify the three versions shown, not every possible Node release a
 
 ## Reproduce locally
 
-From a fresh checkout with a supported Node and npm:
+From a fresh checkout with a supported Node, npm and installed Google Chrome:
 
 ```sh
 npm ci
 npm run verify
 ```
+
+For bundled Playwright Chromium, install and select it explicitly:
+
+```sh
+npx playwright install chromium
+CI=1 npm run verify
+```
+
+Run `npm ci` first on a fresh checkout. `CI=1` selects Chromium and one test worker locally; it does not enable GitHub Actions. Use the same prefix for individual browser commands: `CI=1 npm run test:browser` and `CI=1 npm run test:site`.
 
 Or run the individual checks:
 
@@ -28,7 +37,6 @@ npm run check
 npm test
 npm run build
 npm run test:package
-npx playwright install chromium
 npm run test:browser
 npm run test:site
 npm audit --audit-level=moderate
