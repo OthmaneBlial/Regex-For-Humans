@@ -342,6 +342,7 @@ ui.copy.addEventListener("click", async () => {
     ]);
   } catch {
     if (compiled !== result) return;
+    const focused = document.activeElement;
     const helper = make("textarea");
     helper.value = text;
     helper.setAttribute("aria-hidden", "true");
@@ -356,6 +357,7 @@ ui.copy.addEventListener("click", async () => {
       /* select for manual copy below */
     }
     helper.remove();
+    if (focused instanceof HTMLElement) focused.focus();
     if (!copied) {
       const selection = window.getSelection();
       if (selection) {

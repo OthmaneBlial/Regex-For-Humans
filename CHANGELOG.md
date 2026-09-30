@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Clipboard fallback restores keyboard focus and still selects the generated pattern for manual copying when access is blocked.
 - CLI input now requires valid UTF-8, rejecting malformed files and stdin without silently changing literal values.
 - Removing an example keeps keyboard focus on the next example, the last remaining example, or the Add example button.
 - Delayed clipboard results no longer clear newer compiler errors or describe an edited pattern as copied.

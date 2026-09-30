@@ -226,6 +226,32 @@ test("copy button places the real generated regex on the clipboard", async ({ pa
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("/^\\u{d800}$/u");
 });
 
+for (const copied of [true, false]) {
+  test(`clipboard fallback keeps keyboard focus when copy ${copied ? "succeeds" : "fails"}`, async ({
+    page,
+  }) => {
+    await page.addInitScript((copied) => {
+      Object.defineProperty(navigator, "clipboard", { value: undefined });
+      document.execCommand = () => {
+        window.legacyCopyText = document.activeElement.value;
+        return copied;
+      };
+    }, copied);
+    await page.goto("/");
+    await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+    const button = page.locator("#copy-button");
+    await button.focus();
+    await button.press("Enter");
+    expect(await page.evaluate(() => window.legacyCopyText)).toBe("/^ABC\\d{3}$/u");
+    await expect(button).toBeFocused();
+    if (copied) await expect(button).toContainText("Copied");
+    else {
+      await expect(page.locator("#diagnostic")).toContainText("The pattern is selected");
+      expect(await page.evaluate(() => window.getSelection().toString())).toBe("/^ABC\\d{3}$/u");
+    }
+  });
+}
+
 for (const success of [true, false]) {
   test(`${success ? "resolved" : "rejected"} clipboard request preserves newer rule errors`, async ({
     page,
