@@ -42,7 +42,9 @@ mkdirSync(output, { recursive: true });
 cpSync(join(root, "web"), join(output, "web"), { recursive: true, force: true });
 cpSync(join(root, "src"), join(output, "src"), { recursive: true, force: true });
 cpSync(join(root, "docs"), join(output, "docs"), { recursive: true, force: true });
-cpSync(join(root, "README.md"), join(output, "README.md"));
+for (const name of ["README.md", "CHANGELOG.md", "SECURITY.md", "LICENSE"]) {
+  cpSync(join(root, name), join(output, name));
+}
 mkdirSync(join(output, "test", "fixtures"), { recursive: true });
 cpSync(
   join(root, "test", "fixtures", "product-scenarios.json"),

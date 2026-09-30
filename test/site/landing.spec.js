@@ -158,3 +158,15 @@ test("copy and the initial demo remain usable while extra recipes are still load
   await page.locator('[data-recipe="prefixed-identifier"]').click();
   await expect(page.locator("#regex-code")).toHaveText("/^ABC\\d{3}$/u");
 });
+
+test("the static workshop serves its README and each linked root document intact", async ({
+  request,
+}) => {
+  for (const name of ["README.md", "CHANGELOG.md", "SECURITY.md", "LICENSE"]) {
+    const response = await request.get(`/workshop/${name}`);
+    expect(response.status()).toBe(200);
+    expect(await response.text()).toBe(
+      readFileSync(new URL(`../../${name}`, import.meta.url), "utf8"),
+    );
+  }
+});
