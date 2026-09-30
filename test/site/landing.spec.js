@@ -121,3 +121,40 @@ test("copying a second snippet keeps its feedback after the first timer expires"
   await expect(page.locator("#copy-status")).toBeEmpty();
   await expect(page.locator('[data-copy="regex-code"]')).toHaveText("Copy regex");
 });
+
+test("copy and the initial demo remain usable while extra recipes are still loading", async ({
+  page,
+}) => {
+  let pendingRecipe;
+  await page.route("**/product-scenarios.json", (route) => {
+    pendingRecipe = route;
+  });
+  await page.addInitScript(() => {
+    window.copiedText = "";
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async (text) => {
+          window.copiedText = text;
+        },
+      },
+    });
+  });
+  await page.goto("/", { waitUntil: "commit" });
+  await expect.poll(() => Boolean(pendingRecipe)).toBe(true);
+  await expect(page.locator('[data-recipe="hex-color"]')).toBeDisabled();
+  await page.locator("#demo-input").fill("#123");
+  await expect(page.locator("#demo-result")).toHaveText("× No match");
+  for (const [target, text] of [
+    ["rules-code", 'start "#"\n6 hex digits\nend'],
+    ["regex-code", "/^#[0-9A-Fa-f]{6}$/u"],
+  ]) {
+    await page.locator(`[data-copy="${target}"]`).click();
+    await expect.poll(() => page.evaluate(() => window.copiedText), { timeout: 1500 }).toBe(text);
+  }
+  await pendingRecipe.fulfill({ json: recipes });
+  await expect(page.locator('[data-recipe="hex-color"]')).toBeEnabled();
+  await expect(page.locator("#demo-input")).toHaveValue("#123");
+  await page.locator('[data-recipe="prefixed-identifier"]').click();
+  await expect(page.locator("#regex-code")).toHaveText("/^ABC\\d{3}$/u");
+});

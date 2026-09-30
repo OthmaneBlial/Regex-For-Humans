@@ -23,6 +23,32 @@ const sampleInputs = {
   "version-shape": "1.2.3",
 };
 
+let statusResetTimer;
+for (const button of document.querySelectorAll("[data-copy]")) {
+  const label = button.textContent;
+  let resetTimer;
+  button.addEventListener("click", async () => {
+    const source = document.getElementById(button.dataset.copy);
+    const status = document.getElementById("copy-status");
+    try {
+      await navigator.clipboard.writeText(source.textContent.trim());
+      window.clearTimeout(resetTimer);
+      status.textContent = `${label.replace("Copy ", "")} copied. Ready to paste!`;
+      button.textContent = "Copied ✓";
+      resetTimer = window.setTimeout(() => {
+        button.textContent = label;
+      }, 1800);
+      window.clearTimeout(statusResetTimer);
+      statusResetTimer = window.setTimeout(() => {
+        status.textContent = "";
+      }, 1800);
+    } catch {
+      window.clearTimeout(statusResetTimer);
+      status.textContent = "Clipboard access is unavailable. Select the text to copy it.";
+    }
+  });
+}
+
 try {
   const response = await fetch("./workshop/test/fixtures/product-scenarios.json");
   if (!response.ok) throw new Error("Recipes unavailable");
@@ -61,30 +87,4 @@ try {
 } catch {
   document.getElementById("demo-note").textContent =
     "Extra recipes couldn't load. You can still try this hex-color pattern or open the workshop.";
-}
-
-let statusResetTimer;
-for (const button of document.querySelectorAll("[data-copy]")) {
-  const label = button.textContent;
-  let resetTimer;
-  button.addEventListener("click", async () => {
-    const source = document.getElementById(button.dataset.copy);
-    const status = document.getElementById("copy-status");
-    try {
-      await navigator.clipboard.writeText(source.textContent.trim());
-      window.clearTimeout(resetTimer);
-      status.textContent = `${label.replace("Copy ", "")} copied. Ready to paste!`;
-      button.textContent = "Copied ✓";
-      resetTimer = window.setTimeout(() => {
-        button.textContent = label;
-      }, 1800);
-      window.clearTimeout(statusResetTimer);
-      statusResetTimer = window.setTimeout(() => {
-        status.textContent = "";
-      }, 1800);
-    } catch {
-      window.clearTimeout(statusResetTimer);
-      status.textContent = "Clipboard access is unavailable. Select the text to copy it.";
-    }
-  });
 }

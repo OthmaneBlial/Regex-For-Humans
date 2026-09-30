@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep homepage copy controls responsive while optional demo recipes are still downloading.
+
 - Redesign the README, homepage and workshop with a colorful, playful visual style, a locally hosted display font, six recipe links, and a live homepage demo using the shared compiler.
 
 - Disable repository GitHub Actions, remove automatic CI, and provide `npm run verify` for the full local quality gate.
