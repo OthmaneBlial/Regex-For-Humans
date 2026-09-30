@@ -24,6 +24,29 @@ function run(args, input) {
   return spawnSync(process.execPath, [cli, ...args], { input, encoding: "utf8" });
 }
 
+test("CLI spaces output, explanations and invalid counts use the shared language", () => {
+  const output = run(["--json", "-"], "start\nspaces\nend");
+  assert.equal(output.status, 0, output.stderr);
+  const result = JSON.parse(output.stdout);
+  assert.equal(result.source, "^\\s+$");
+  assert.equal(
+    result.segments[1].explanation,
+    "One or more whitespace characters, including line breaks.",
+  );
+  assert.equal(new RegExp(result.source, result.flags).test(" \t\n"), true);
+  const explained = run(["--explain", "-"], "spaces");
+  assert.equal(explained.status, 0, explained.stderr);
+  assert.match(explained.stdout, /One or more whitespace characters, including line breaks\./u);
+  const invalid = run(["--json", "-"], "spaces 3 times");
+  assert.equal(invalid.status, 1);
+  assert.equal(invalid.stdout, "");
+  assert.equal(JSON.parse(invalid.stderr).error.code, "UNKNOWN_RULE");
+  assert.equal(
+    JSON.parse(invalid.stderr).error.hint,
+    "Use `space` for one whitespace character or `spaces` for one or more, including line breaks.",
+  );
+});
+
 test("CLI empty-literal diagnostics include a usable repair in text and JSON", () => {
   const line = '  start between 0 and 1 ""';
   const hint = "Use `start` and `end` on separate lines to match an empty string.";

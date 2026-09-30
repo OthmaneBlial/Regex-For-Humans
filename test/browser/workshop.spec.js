@@ -20,6 +20,58 @@ async function openBeforeWorkshopAppLoads(page) {
   return release;
 }
 
+test("spaces explains whitespace, supports count overrides and recovers from unsupported syntax", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async (text) => {
+          window.copiedPattern = text;
+        },
+      },
+    });
+  });
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const editor = page.locator("#rules-input");
+  const first = page.locator("#test-list textarea").first();
+  const feedback = page.locator("#test-list .test-result").first();
+  await editor.fill("start\nspaces\nend");
+  await expect(page.locator("#regex-output")).toHaveText("/^\\s+$/u");
+  await expect(page.locator("#trace-list")).toContainText(
+    "One or more whitespace characters, including line breaks.",
+  );
+  await first.fill(" \t\n");
+  await expect(feedback).toContainText("✓ Matched");
+  await first.fill("");
+  await expect(feedback).toHaveText("! No match");
+  await editor.fill("start\nbetween 0 and 2 spaces\nend");
+  await expect(page.locator("#regex-output")).toHaveText("/^\\s{0,2}$/u");
+  await expect(feedback).toHaveText('✓ Matched "" at 0');
+  await first.fill("\t\t\t");
+  await expect(feedback).toHaveText("! No match");
+  await editor.fill("spaces 3 times");
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Use `space` for one whitespace character or `spaces` for one or more, including line breaks.",
+  );
+  await expect(page.locator("#copy-button")).toBeDisabled();
+  await editor.fill("start\n3 spaces\nend");
+  await expect(page.locator("#regex-output")).toHaveText("/^\\s{3}$/u");
+  await expect(page.locator("#diagnostic")).toBeHidden();
+  await expect(feedback).toContainText("✓ Matched");
+  await page.locator("#copy-button").click();
+  await expect(page.locator("#copy-button")).toContainText("Copied");
+  expect(await page.evaluate(() => window.copiedPattern)).toBe("/^\\s{3}$/u");
+  const opened = page.waitForEvent("popup");
+  await page.getByRole("link", { name: "Read the syntax ↗", exact: true }).click();
+  const guide = await opened;
+  await expect(guide.getByRole("row").filter({ hasText: /^spaces/u })).toContainText(
+    "One or more JavaScript whitespace characters, including tabs and line breaks",
+  );
+});
+
 test("filename shape teaches exclusions, Unicode bounds and editable extensions", async ({
   page,
 }) => {

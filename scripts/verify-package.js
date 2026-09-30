@@ -70,6 +70,9 @@ try {
     smoke,
     `import { compile, toRegExp, CompileError } from "regex-for-humans";
 const result = compile(${JSON.stringify(rules)});
+const whitespace = compile("start\\nspaces\\nend");
+if (whitespace.source !== "^\\\\s+$" || !toRegExp(whitespace).test(" \\t\\n") || toRegExp(whitespace).test("") || whitespace.segments[1].explanation !== "One or more whitespace characters, including line breaks.") throw new Error("Wrong whitespace sequence behavior");
+if (!toRegExp(compile("start\\nbetween 0 and 2 spaces\\nend")).test("") || toRegExp(compile('start\\n3 " "\\nend')).test("\\t\\t\\t")) throw new Error("Wrong whitespace count or literal behavior");
 if (result.source !== "^ABC\\\\d{3}$" || result.flags !== "u") throw new Error("Wrong source or flags");
 if (!toRegExp(result).test("ABC123") || toRegExp(result).test("ABC12")) throw new Error("Wrong matching behavior");
 if (result.segments.length !== 4 || !result.segments[2].explanation) throw new Error("Missing trace");

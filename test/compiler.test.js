@@ -7,6 +7,54 @@ const scenarios = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("spaces matches JavaScript whitespace with plural defaults and count overrides", () => {
+  const whitespace = [
+    " ",
+    "\t",
+    "\n",
+    "\r",
+    "\v",
+    "\f",
+    "\u00a0",
+    "\u1680",
+    "\u2000",
+    "\u200a",
+    "\u2028",
+    "\u2029",
+    "\u202f",
+    "\u205f",
+    "\u3000",
+    "\ufeff",
+  ];
+  for (const flags of ["", "i", "s", "is"]) {
+    for (const [rule, suffix, min, max] of [
+      ["space", "", 1, 1],
+      ["spaces", "+", 1, Infinity],
+      ["3 spaces", "{3}", 3, 3],
+      ["0 spaces", "{0}", 0, 0],
+      ["between 0 and 2 spaces", "{0,2}", 0, 2],
+    ]) {
+      const result = compile(`start\n${rule}\nend`, { flags });
+      assert.equal(result.source, `^\\s${suffix}$`);
+      const regex = toRegExp(result);
+      for (const character of whitespace) {
+        for (let count = 0; count <= 4; count += 1) {
+          assert.equal(regex.test(character.repeat(count)), count >= min && count <= max);
+        }
+      }
+      for (const value of ["A", "0", "\u0085", "\u200b", "\u180e", "😀", " A "]) {
+        assert.equal(regex.test(value), false, JSON.stringify(value));
+      }
+    }
+  }
+  assert.equal(
+    compile("spaces").segments[0].explanation,
+    "One or more whitespace characters, including line breaks.",
+  );
+  assert.equal(toRegExp(compile("start\nspaces\nend")).test(" \t\n"), true);
+  assert.equal(toRegExp(compile('start\n3 " "\nend')).test("\t\t\t"), false);
+});
+
 test("filename-shape bounds Unicode stem length and excludes separators under every option flag", () => {
   const scenario = scenarios.find(({ id }) => id === "filename-shape");
   assert.ok(scenario);

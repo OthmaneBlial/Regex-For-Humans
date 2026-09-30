@@ -61,11 +61,13 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
           <tr><td><code>hex digit</code></td><td><code>[0-9A-Fa-f]</code></td><td>One ASCII hexadecimal digit, in either letter case</td></tr>
           <tr><td><code>hex digits</code></td><td><code>[0-9A-Fa-f]+</code></td><td>One or more hexadecimal digits; no prefix or separators</td></tr>
           <tr><td><code>space</code> / <code>not space</code></td><td><code>\s</code> / <code>\S</code></td><td>JavaScript whitespace / anything else</td></tr>
+          <tr><td><code>spaces</code></td><td><code>\s+</code></td><td>One or more JavaScript whitespace characters, including tabs and line breaks</td></tr>
           <tr><td><code>digits</code></td><td><code>\d+</code></td><td>One or more digits</td></tr>
           <tr><td><code>"ABC"</code></td><td><code>ABC</code></td><td>Exact quoted text; regex punctuation is escaped</td></tr>
           <tr><td><code>one of: a, b</code></td><td><code>[ab]</code></td><td>One listed character</td></tr>
           <tr><td><code>none of: a, b</code></td><td><code>[^ab]</code></td><td>One character outside the list</td></tr>
         </tbody></table></div>
+        <p><code>space</code> matches one whitespace character; <code>spaces</code> matches one or more, including tabs, nonbreaking spaces and line breaks. Counts replace that default: <code>3 spaces</code> is exactly three whitespace characters, and <code>between 0 and 2 spaces</code> permits empty input. Use <code>3 " "</code> for three ordinary spaces only. Write counts before the item; <code>spaces 3 times</code> and <code>not spaces</code> are unsupported.</p>
         <p><code>letter</code> and <code>letters</code> are not Unicode alphabetic classes: they exclude <code>é</code> by default. With <code>i</code>, JavaScript case folding also matches equivalents such as <code>K</code> and <code>ſ</code>; the explanation reports this. Use <code>3 letters</code> or a range to limit the count.</p>
         <p><code>text without: a, b</code> matches zero or more characters outside that list. Add <code>start</code> and <code>end</code> to check the whole string. Quote punctuation and spaces in lists, for example <code>one of: "]", "-", " "</code>. Each item must be one Unicode code point. A literal can contain multiple characters.</p>
         <p>Use straight JSON double quotes, such as <code>"A"</code>. Single quotes, backticks and smart quotes are not string delimiters; unsupported quoted literals and list entries offer a repair hint. Quote characters remain valid matching data inside JSON strings or as individual list items.</p>
@@ -76,7 +78,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
 
       <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">
         <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one thing</h2></div></div>
-        <p>Put counts or ranges first: <code>3 digits</code> generates <code>\d{3}</code>, and <code>between 2 and 4 digits</code> generates <code>\d{2,4}</code>. <code>digits</code>, <code>hex digits</code> and <code>letters</code> mean one or more unless a count or range replaces that default. <code>any text</code> and <code>text without</code> already match sequences.</p>
+        <p>Put counts or ranges first: <code>3 digits</code> generates <code>\d{3}</code>, and <code>between 2 and 4 digits</code> generates <code>\d{2,4}</code>. <code>digits</code>, <code>hex digits</code>, <code>letters</code> and <code>spaces</code> mean one or more unless a count or range replaces that default. <code>any text</code> and <code>text without</code> already match sequences.</p>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Form</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
           <tr><td><code>3 &lt;item&gt;</code> (for example, <code>3 digits</code>)</td><td><code>{3}</code></td><td>Exactly three</td></tr>
           <tr><td><code>between 2 and 4 &lt;item&gt;</code></td><td><code>{2,4}</code></td><td>Two, three or four; both bounds included</td></tr>

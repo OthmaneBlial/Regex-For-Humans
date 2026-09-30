@@ -97,6 +97,7 @@ Put one instruction on each line. Quote literal text. Add anchors to check the w
 | `between 2 and 4 digits` | `\d{2,4}` | Two to four digits, inclusive |
 | `hex digit` · `6 hex digits` | `[0-9A-Fa-f]` · `[0-9A-Fa-f]{6}` | ASCII hexadecimal digits |
 | `letter` · `letters` | `[A-Za-z]` · `[A-Za-z]+` | One ASCII letter / one or more |
+| `space` · `spaces` | `\s` · `\s+` | One whitespace character / one or more, including line breaks |
 | `"hello"` | `hello` | Exact text, safely escaped |
 | `one of: a, b` | `[ab]` | One character from the list |
 | `text without: a, b` | `[^ab]*` | Zero or more characters outside the list |

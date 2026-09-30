@@ -42,6 +42,34 @@ test("negative shorthands use their exact names", () => {
   assert.equal(parse("not space").nodes[0].value, "\\S");
 });
 
+test("spaces has an explicit sequence default, count overrides and positioned errors", () => {
+  for (const [rules, repetition] of [
+    ["space", null],
+    ["SPACES", { kind: "oneOrMore" }],
+    ["3 spaces", { kind: "exact", min: 3 }],
+    ["0 spaces", { kind: "exact", min: 0 }],
+    ["between 0 and 4 spaces", { kind: "range", min: 0, max: 4 }],
+  ]) {
+    const node = parse(rules).nodes[0];
+    assert.equal(node.atomType, "shorthand");
+    assert.equal(node.value, "\\s");
+    assert.deepEqual(node.repetition, repetition, rules);
+  }
+  for (const [rules, code, marker] of [
+    ["2 spaces extra", "UNKNOWN_RULE", "spaces"],
+    ["spaces 3 times", "UNKNOWN_RULE", "spaces"],
+    ["2 3 spaces", "DUPLICATE_REPETITION", "3"],
+    ["1001 spaces", "REPETITION_LIMIT", "1001"],
+    ["between 4 and 2 spaces", "INVALID_RANGE", "2"],
+  ]) {
+    assert.throws(() => parse(rules), { code, line: 1, column: rules.indexOf(marker) + 1 }, rules);
+  }
+  assert.throws(() => parse("spaces 3 times"), {
+    hint: "Use `space` for one whitespace character or `spaces` for one or more, including line breaks.",
+  });
+  assert.throws(() => parse("not spaces"), { code: "UNKNOWN_RULE" });
+});
+
 test("letter rules have explicit sequence defaults, counts and positioned errors", () => {
   for (const [rules, repetition] of [
     ["letter", null],

@@ -24,6 +24,13 @@ export function explainNode(node, flags, hasFollowingRule = false) {
 
   const caseNote = flags.includes("i") ? ", ignoring case (i)" : "";
 
+  if (
+    node.atomType === "shorthand" &&
+    node.value === "\\s" &&
+    node.repetition?.kind === "oneOrMore"
+  )
+    return "One or more whitespace characters, including line breaks.";
+
   if (node.repetition?.kind === "zeroOrMore") {
     if (node.atomType === "wildcard") {
       const context = hasFollowingRule ? " up to the next rule" : "";
