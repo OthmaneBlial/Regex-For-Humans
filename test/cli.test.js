@@ -205,6 +205,36 @@ test("CLI exposes flags, help and version", () => {
   );
 });
 
+test("CLI compiles letter sequences, counts and case-folding explanations", () => {
+  for (const [rule, source] of [
+    ["letter", "[A-Za-z]"],
+    ["letters", "[A-Za-z]+"],
+    ["3 letters", "[A-Za-z]{3}"],
+    ["between 2 and 4 letters", "[A-Za-z]{2,4}"],
+  ]) {
+    const output = run(["--json", "-"], `start ${rule}\nend`);
+    assert.equal(output.status, 0, output.stderr);
+    const result = JSON.parse(output.stdout);
+    assert.equal(result.source, `^${source}$`);
+    assert.equal(result.flags, "u");
+    assert.match(result.segments[1].explanation, /ASCII letter/u);
+  }
+  const folded = run(["--ignore-case", "--explain", "-"], "letter");
+  assert.equal(folded.status, 0, folded.stderr);
+  assert.equal(
+    folded.stdout,
+    "/[A-Za-z]/iu\n1:1  [A-Za-z]  One ASCII letter (A–Z, a–z). With i, a few Unicode equivalents also match.\n",
+  );
+  const invalid = run(["--json", "-"], "2 letter characters");
+  assert.equal(invalid.status, 1);
+  assert.equal(invalid.stdout, "");
+  assert.equal(JSON.parse(invalid.stderr).error.column, 3);
+  assert.equal(
+    JSON.parse(invalid.stderr).error.hint,
+    "Use `letter` for one ASCII letter or `letters` for one or more.",
+  );
+});
+
 test("CLI exposes bounded counts and positioned range errors", () => {
   const rules = 'start "INV-"\nbetween 2 and 4 digits\nend';
   const output = run(["--json", "-"], rules);

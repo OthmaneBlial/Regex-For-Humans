@@ -92,12 +92,13 @@ Put one instruction on each line. Quote literal text. Add anchors to check the w
 | `3 digits` · `digits` | `\d{3}` · `\d+` | Exactly three / one or more |
 | `between 2 and 4 digits` | `\d{2,4}` | Two to four digits, inclusive |
 | `hex digit` · `6 hex digits` | `[0-9A-Fa-f]` · `[0-9A-Fa-f]{6}` | ASCII hexadecimal digits |
+| `letter` · `letters` | `[A-Za-z]` · `[A-Za-z]+` | One ASCII letter / one or more |
 | `"hello"` | `hello` | Exact text, safely escaped |
 | `one of: a, b` | `[ab]` | One character from the list |
 | `text without: a, b` | `[^ab]*` | Zero or more characters outside the list |
 | `any text` | `.*` | Any text; `s` includes line breaks |
 
-`word` / `not word` use JavaScript's `\w` / `\W`. They aren't every Unicode letter: `\w` includes `_` and excludes `é`. Unicode mode `u` is always on. See the [full language guide](docs/LANGUAGE.md) for flags, escaping, limits, and diagnostics.
+`word` / `not word` use JavaScript's `\w` / `\W`. They aren't every Unicode letter: `\w` includes `_` and excludes `é`. Use `letter` / `letters` to exclude digits and underscores; counts work too, such as `3 letters`. Unicode mode `u` is always on. With `i`, the ASCII letter class also matches Unicode case-folding equivalents such as `K` and `ſ`. See the [full language guide](docs/LANGUAGE.md) for flags, escaping, limits, and diagnostics.
 
 ## 💻 Bring it to your terminal
 

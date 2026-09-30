@@ -419,6 +419,49 @@ test("hex rules explain single digits, sequences and exact counts in the worksho
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
 });
 
+test("letter rules show counts, alphabetic matching and Unicode case-folding behavior", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const editor = page.locator("#rules-input");
+  const sample = page.locator("#test-list textarea").first();
+  for (const [rule, source, text, explanation] of [
+    ["letter", "[A-Za-z]", "A", "One ASCII letter"],
+    ["letters", "[A-Za-z]+", "aBc", "One or more ASCII letters"],
+    ["3 letters", "[A-Za-z]{3}", "ABC", "Exactly 3 ASCII letters"],
+    ["between 2 and 4 letters", "[A-Za-z]{2,4}", "AbCd", "Between 2 and 4 ASCII letters"],
+  ]) {
+    await editor.fill(`start\n${rule}\nend`);
+    await expect(page.locator("#regex-output")).toHaveText(`/^${source}$/u`);
+    await expect(page.locator("#trace-list")).toContainText(explanation);
+    await sample.fill(text);
+    await expect(page.locator(".test-result").first()).toHaveText(`✓ Matched "${text}" at 0`);
+    await sample.fill("A3_");
+    await expect(page.locator(".test-result").first()).toHaveText("! No match");
+  }
+  await editor.fill("start letters\nend");
+  for (const value of ["é", "K", "ſ"]) {
+    await sample.fill(value);
+    await expect(page.locator(".test-result").first()).toHaveText("! No match");
+  }
+  await page.locator("#ignore-case").check();
+  await expect(page.locator("#trace-list")).toContainText(
+    "With i, a few Unicode equivalents also match.",
+  );
+  for (const value of ["K", "ſ"]) {
+    await sample.fill(value);
+    await expect(page.locator(".test-result").first()).toHaveText(`✓ Matched "${value}" at 0`);
+  }
+  await editor.fill("2 letter characters");
+  await expect(page.locator("#diagnostic")).toContainText("Line 1, column 3: Unsupported rule");
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Use `letter` for one ASCII letter or `letters` for one or more.",
+  );
+  await expect(page.locator("#copy-button")).toBeDisabled();
+  await editor.fill("letters");
+  await expect(page.locator("#copy-button")).toBeEnabled();
+});
+
 test("bounded counts show inclusive matches, literal grouping and positioned errors", async ({
   page,
 }) => {
@@ -669,6 +712,8 @@ test("syntax link opens the local rendered guide", async ({ page, context }) => 
   await guide.waitForLoadState();
   await expect(guide).toHaveURL(/\/web\/language\.html\?v=[\da-f]{12}$/u);
   await expect(guide.getByRole("heading", { name: "Match one thing" })).toBeVisible();
+  await expect(guide.locator("#atoms")).toContainText("[A-Za-z]");
+  await expect(guide.locator("#atoms")).toContainText("K");
   await expect(guide.locator(".guide-hero .hero-copy")).toContainText("Use short rules.");
   await expect(guide.getByText(/They reject a final line break/u)).toBeVisible();
   await expect(guide.locator("#repetition tbody tr").first()).toContainText("3 <item>");

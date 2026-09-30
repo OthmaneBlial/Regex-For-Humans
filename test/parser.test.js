@@ -23,6 +23,38 @@ test("negative shorthands use their exact names", () => {
   assert.equal(parse("not space").nodes[0].value, "\\S");
 });
 
+test("letter rules have explicit sequence defaults, counts and positioned errors", () => {
+  for (const [rules, repetition] of [
+    ["letter", null],
+    ["letters", { kind: "oneOrMore" }],
+    ["3 letters", { kind: "exact", min: 3 }],
+    ["0 letter", { kind: "exact", min: 0 }],
+    ["between 0 and 4 letters", { kind: "range", min: 0, max: 4 }],
+  ]) {
+    const node = parse(rules).nodes[0];
+    assert.equal(node.atomType, "shorthand");
+    assert.equal(node.value, "[A-Za-z]");
+    assert.deepEqual(node.repetition, repetition, rules);
+  }
+  const line = "  START, Between\t02 And 4 LETTERS";
+  const counted = parse(`\n${line}\nend`).nodes[1];
+  assert.deepEqual(counted.location, { line: 2, column: line.indexOf("Between") + 1 });
+  assert.deepEqual(counted.repetition, { kind: "range", min: 2, max: 4 });
+  for (const [rules, code, marker] of [
+    ["2 letter characters", "UNKNOWN_RULE", "letter"],
+    ["letter 3 times", "UNKNOWN_RULE", "letter"],
+    ["2 3 letters", "DUPLICATE_REPETITION", "3"],
+    ["1001 letters", "REPETITION_LIMIT", "1001"],
+    ["between 4 and 2 letters", "INVALID_RANGE", "2"],
+  ]) {
+    assert.throws(() => parse(rules), { code, line: 1, column: rules.indexOf(marker) + 1 }, rules);
+  }
+  assert.throws(() => parse("2 letter characters"), {
+    hint: "Use `letter` for one ASCII letter or `letters` for one or more.",
+  });
+  assert.throws(() => parse("not letter"), { code: "UNKNOWN_RULE" });
+});
+
 test("hex rules have explicit repetition and positioned malformed-input errors", () => {
   assert.equal(parse("hex digit").nodes[0].value, "[0-9A-Fa-f]");
   assert.equal(parse("hex digit").nodes[0].repetition, null);

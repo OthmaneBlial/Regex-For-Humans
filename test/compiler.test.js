@@ -60,6 +60,7 @@ test("bounded counts preserve atom escaping, inclusive matches and explanations"
   for (const [item, source, positive, negative] of [
     ["digits", "\\d", ["12", "123", "1234"], ["", "1", "12345", "١٢"]],
     ["hex digits", "[0-9A-Fa-f]", ["0F", "09a", "09aF"], ["f", "0xFF", "abcde", "ＦＦ"]],
+    ["letters", "[A-Za-z]", ["ab", "aBc", "AbCd"], ["a", "a1", "abcde", "éé"]],
     ["not digit", "\\D", ["ab", "abc", "abcd"], ["a", "a1", "abcde"]],
     ["any character", ".", ["😀😀", "abc", "abcd"], ["😀", "a\nb", "abcde"]],
     ['"a.b"', "(?:a\\.b)", ["a.ba.b", "a.ba.ba.b"], ["a.b", "axba.b", "a.b".repeat(5)]],
@@ -303,4 +304,53 @@ test("hex rules match exactly the ASCII hexadecimal characters and explain count
       `Exactly ${count} hexadecimal ${count === 1 ? "digit" : "digits"} (0–9, A–F, a–f).`,
     );
   }
+});
+
+test("letter rules match ASCII letters and explain Unicode case folding and counts", () => {
+  const characters = [
+    ...Array.from({ length: 128 }, (_, index) => String.fromCodePoint(index)),
+    "é",
+    "α",
+    "Ж",
+    "Ａ",
+    "K",
+    "ſ",
+    "😀",
+  ];
+  for (const flags of ["", "i", "s", "is"]) {
+    const single = compile("start\nletter\nend", { flags });
+    assert.equal(single.source, "^[A-Za-z]$");
+    const caseNote = flags.includes("i") ? " With i, a few Unicode equivalents also match." : "";
+    assert.equal(single.segments[1].explanation, `One ASCII letter (A–Z, a–z).${caseNote}`);
+    const regex = toRegExp(single);
+    for (const character of characters) {
+      const point = character.codePointAt(0);
+      const ascii = (point >= 65 && point <= 90) || (point >= 97 && point <= 122);
+      assert.equal(
+        regex.test(character),
+        ascii || (flags.includes("i") && ["K", "ſ"].includes(character)),
+        `${JSON.stringify(character)} with flags ${flags}`,
+      );
+    }
+  }
+  const plural = compile("start\nletters\nend");
+  assert.equal(plural.source, "^[A-Za-z]+$");
+  assert.equal(plural.segments[1].explanation, "One or more ASCII letters (A–Z, a–z).");
+  assert.equal(toRegExp(plural).test("aBcZ"), true);
+  for (const value of ["", "A3", "a_b", "é", "ſ", "A\n"])
+    assert.equal(toRegExp(plural).test(value), false, value);
+  for (const count of [0, 1, 3, 1000]) {
+    const counted = compile(`start ${count} letters\nend`);
+    assert.equal(counted.source, `^[A-Za-z]{${count}}$`);
+    assert.equal(toRegExp(counted).test("a".repeat(count)), true);
+    assert.equal(toRegExp(counted).test("a".repeat(count + 1)), false);
+    assert.equal(
+      counted.segments[1].explanation,
+      `Exactly ${count} ASCII ${count === 1 ? "letter" : "letters"} (A–Z, a–z).`,
+    );
+  }
+  assert.equal(
+    compile("between 2 and 4 letters").segments[0].explanation,
+    "Between 2 and 4 ASCII letters (A–Z, a–z), inclusive.",
+  );
 });

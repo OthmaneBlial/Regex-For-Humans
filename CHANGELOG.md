@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add `letter` and `letters` for ASCII alphabetic characters, with exact/bounded counts, shared explanations and repair hints. Document and test JavaScript's Unicode case-folding equivalents when `i` is enabled.
+
 - Version the homepage stylesheet from its content during Pages builds so visual changes bypass cached CSS automatically; reject a build whose stylesheet reference is missing.
 
 - Report malformed numeric exact counts and counts without an item as positioned `INVALID_REPETITION` errors with repair hints; recognize malformed second count tokens as `DUPLICATE_REPETITION`. Valid count syntax and matching stay unchanged.

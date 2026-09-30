@@ -20,6 +20,8 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 | `not word` | `\W` | `-`, `é` | `A`, `_` |
 | `digit` | `\d` | `3` | `A`, `٣` |
 | `not digit` | `\D` | `A`, `٣` | `3` |
+| `letter` | `[A-Za-z]` | `A`, `z` | `3`, `_`, `é` |
+| `letters` | `[A-Za-z]+` | `aBc` | empty string, `A3` with `start` and `end` |
 | `hex digit` | `[0-9A-Fa-f]` | `0`, `9`, `a`, `F` | `g`, `٣`, `Ｆ` |
 | `hex digits` | `[0-9A-Fa-f]+` | `09aF` | empty string, `0xFF` with `start` and `end` |
 | `space` | `\s` | a space, tab or newline | `A` |
@@ -32,6 +34,8 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 
 `word`/`not word` use JavaScript's `\w`/`\W`; `digit`/`not digit` use `\d`/`\D`. These classes are ASCII-oriented with `u`; `i` plus `u` adds a few Unicode case-folding matches to `\w`. `\w` includes `_` but excludes `é`. The misleading `alphanumeric character` aliases are rejected.
 
+`letter` matches one ASCII letter, and `letters` matches one or more. They exclude digits, underscores and accented or other non-ASCII letters by default. They are not a Unicode alphabetic class. The optional `i` flag follows JavaScript case folding: equivalents such as the Kelvin sign `K` and long s `ſ` also match `[A-Za-z]` with `iu`. The explanation reports this when `i` is enabled. Counts and ranges replace the sequence default, as in `3 letters` or `between 2 and 4 letters`. Anchor the pattern to validate the whole string. Forms such as `letter characters`, `letter 3 times` and `not letter` are unsupported.
+
 `hex digit` matches one ASCII hexadecimal digit in either letter case. `hex digits` matches one or more; an exact count or bounded range replaces that default, as in `6 hex digits` or `between 2 and 4 hex digits`. They do not include a `0x` prefix, separators or non-ASCII digits. Add quoted literals for a required prefix, and anchors to validate the whole string.
 
 A literal is a JSON-style double-quoted string. Escape `"` and `\\`; the compiler escapes regex metacharacters. Character-list items must each be one Unicode code point. Quote punctuation, commas, spaces and backslashes, as in `"]", "-", ",", "\\"`. Empty literals and lists are errors.
@@ -42,7 +46,7 @@ JSON strings may contain lone UTF-16 surrogates, such as `"\ud800"`. The compile
 
 ## Repetition
 
-A count or range applies to the next item. Put it first (`3 digits` or `between 2 and 4 digits`). The compiler keeps a multi-character literal together. `digits` and `hex digits` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another count or range. Other repetition wording, such as `at least 3 times`, is not supported.
+A count or range applies to the next item. Put it first (`3 digits` or `between 2 and 4 digits`). The compiler keeps a multi-character literal together. `digits`, `hex digits` and `letters` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another count or range. Other repetition wording, such as `at least 3 times`, is not supported.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |

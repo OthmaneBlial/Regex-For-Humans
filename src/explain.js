@@ -35,18 +35,29 @@ export function explainNode(node, flags, hasFollowingRule = false) {
     }
   }
 
-  if (node.atomType === "shorthand" && ["\\d", "[0-9A-Fa-f]"].includes(node.value)) {
-    const digit = node.value === "\\d" ? "digit" : "hexadecimal digit";
-    const range = node.value === "\\d" ? "0–9" : "0–9, A–F, a–f";
-    if (node.repetition?.kind === "oneOrMore") return `One or more ${digit}s (${range}).`;
+  if (node.atomType === "shorthand" && ["\\d", "[0-9A-Fa-f]", "[A-Za-z]"].includes(node.value)) {
+    const item =
+      node.value === "\\d"
+        ? "digit"
+        : node.value === "[A-Za-z]"
+          ? "ASCII letter"
+          : "hexadecimal digit";
+    const range =
+      node.value === "\\d" ? "0–9" : node.value === "[A-Za-z]" ? "A–Z, a–z" : "0–9, A–F, a–f";
+    const caseFoldingNote =
+      node.value === "[A-Za-z]" && flags.includes("i")
+        ? " With i, a few Unicode equivalents also match."
+        : "";
+    if (node.repetition?.kind === "oneOrMore")
+      return `One or more ${item}s (${range}).${caseFoldingNote}`;
     if (node.repetition?.kind === "exact") {
-      const digits = node.repetition.min === 1 ? digit : `${digit}s`;
-      return `Exactly ${node.repetition.min} ${digits} (${range}).`;
+      const items = node.repetition.min === 1 ? item : `${item}s`;
+      return `Exactly ${node.repetition.min} ${items} (${range}).${caseFoldingNote}`;
     }
     if (node.repetition?.kind === "range") {
-      return `Between ${node.repetition.min} and ${node.repetition.max} ${digit}s (${range}), inclusive.`;
+      return `Between ${node.repetition.min} and ${node.repetition.max} ${item}s (${range}), inclusive.${caseFoldingNote}`;
     }
-    return `One ${digit} (${range}).`;
+    return `One ${item} (${range}).${caseFoldingNote}`;
   }
 
   let meaning;

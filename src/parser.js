@@ -66,6 +66,8 @@ const SHORTHANDS = new Map([
   ["not word", "\\W"],
   ["not digit", "\\D"],
   ["digit", "\\d"],
+  ["letter", "[A-Za-z]"],
+  ["letters", "[A-Za-z]"],
   ["hex digit", "[0-9A-Fa-f]"],
   ["hex digits", "[0-9A-Fa-f]"],
   ["not space", "\\S"],
@@ -270,7 +272,7 @@ function parseAtom(text, location, originalText) {
     return atom("wildcard", ".", repetition, location, originalText);
   for (const [phrase, token] of SHORTHANDS) {
     if (remaining.toLowerCase() === phrase) {
-      if ((phrase === "digits" || phrase === "hex digits") && !repetition)
+      if (["digits", "hex digits", "letters"].includes(phrase) && !repetition)
         repetition = { kind: "oneOrMore" };
       return atom("shorthand", token, repetition, location, originalText);
     }
@@ -321,7 +323,9 @@ function parseAtom(text, location, originalText) {
     { line: location.line, column: location.column + offset },
     /^hex(?:\s|$)/i.test(remaining)
       ? "Use `hex digit` for one character or `hex digits` for one or more."
-      : "Try `line start`, `any text` or `3 digits`.",
+      : /^letters?(?:\s|$)/i.test(remaining)
+        ? "Use `letter` for one ASCII letter or `letters` for one or more."
+        : "Try `line start`, `any text` or `3 digits`.",
   );
 }
 
