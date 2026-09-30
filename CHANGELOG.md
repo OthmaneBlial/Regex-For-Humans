@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Check local documentation links against their file path without query strings or fragments, while preserving encoded filename characters and complete failure messages.
+
 - Add `spaces` for one or more JavaScript whitespace characters, with count overrides, explicit line-break explanations and positioned unsupported-syntax diagnostics.
 
 - Add a text-filename shape recipe teaching bounded Unicode character exclusions and an editable extension, with explicit filesystem-validation limits.

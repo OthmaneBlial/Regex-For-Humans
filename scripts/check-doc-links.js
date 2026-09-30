@@ -20,7 +20,7 @@ const missing = [];
 for (const file of files) {
   const content = readFileSync(resolve(root, file), "utf8");
   for (const match of content.matchAll(/\]\(([^)]+)\)/g)) {
-    const target = match[1].split("#", 1)[0];
+    const target = match[1].split(/[?#]/u, 1)[0];
     if (!target || /^(?:https?:|mailto:)/u.test(target)) continue;
     checked += 1;
     let decoded;

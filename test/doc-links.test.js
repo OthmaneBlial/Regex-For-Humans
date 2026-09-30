@@ -6,6 +6,41 @@ import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
+test("documentation checks ignore URL queries without stripping encoded filename characters", () => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-query-"));
+  try {
+    mkdirSync(join(root, "docs"));
+    writeFileSync(join(root, "docs", "guide.md"), "# Guide\n");
+    writeFileSync(join(root, "docs", "hash#name.md"), "# Hash\n");
+    const links =
+      "[Guide](docs/guide.md?v=1#section)\n" +
+      "[Query data](docs/guide.md?v=%ZZ)\n" +
+      "[Current page](?view=1#intro)\n" +
+      "[Encoded hash](docs/hash%23name.md?raw=1)\n";
+    writeFileSync(join(root, "README.md"), links);
+    const check = () =>
+      spawnSync(
+        process.execPath,
+        [fileURLToPath(new URL("../scripts/check-doc-links.js", import.meta.url)), root],
+        { encoding: "utf8" },
+      );
+    const valid = check();
+    assert.equal(valid.status, 0, valid.stderr);
+    assert.equal(valid.stderr, "");
+    assert.equal(valid.stdout, "Checked 3 local Markdown links in 3 files.\n");
+    writeFileSync(join(root, "README.md"), `${links}[Missing](docs/missing.md?view=1#intro)\n`);
+    const missing = check();
+    assert.equal(missing.status, 1);
+    assert.equal(missing.stdout, "");
+    assert.equal(
+      missing.stderr,
+      "Missing local Markdown links:\nREADME.md: docs/missing.md?view=1#intro\n",
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("documentation checks report malformed escapes and missing links together, then recover", () => {
   const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-links-"));
   try {
