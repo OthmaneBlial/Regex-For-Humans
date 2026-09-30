@@ -175,12 +175,13 @@ function readCharacterList(text, location, rawLine) {
         column: location.column + index,
       });
     }
+    const commaIndex = index;
     index += 1;
     while (/\s/u.test(text[index] ?? "")) index += 1;
     if (index === text.length) {
       fail("INVALID_CHARACTER_LIST", "A character list cannot end with a comma.", {
         line: location.line,
-        column: location.column + index,
+        column: location.column + commaIndex,
       });
     }
   }

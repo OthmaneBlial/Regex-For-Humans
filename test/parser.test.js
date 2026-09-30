@@ -401,6 +401,35 @@ test("unsupported quote delimiters retain positioned errors and offer a JSON quo
   ]);
 });
 
+test("trailing character-list commas point to the separator rather than line end", () => {
+  for (const prefix of [
+    "one of:",
+    "none of:",
+    "text without:",
+    "start 3 one of:",
+    "start between 2 and 4 none of:",
+  ]) {
+    for (const separator of ["\n", "\r\n", "\r", "\u2028", "\u2029"]) {
+      const line = `  ${prefix} "😀", ",",`;
+      for (const trailing of ["", "   ", "\t\u00a0"]) {
+        assert.throws(
+          () => parse(`${separator}${line}${trailing}`),
+          (error) => {
+            assert.deepEqual(error.toJSON(), {
+              code: "INVALID_CHARACTER_LIST",
+              message: "A character list cannot end with a comma.",
+              line: 2,
+              column: line.lastIndexOf(",") + 1,
+            });
+            return true;
+          },
+        );
+      }
+    }
+  }
+  assert.deepEqual(parse('one of: "😀", ","').nodes[0].value, ["😀", ","]);
+});
+
 test("quoted literal and character-list items keep punctuation as data", () => {
   assert.equal(parse('"a.b"').nodes[0].value, "a.b");
   assert.deepEqual(parse('one of: "]", "-", ",", "\\\\"').nodes[0].value, ["]", "-", ",", "\\"]);

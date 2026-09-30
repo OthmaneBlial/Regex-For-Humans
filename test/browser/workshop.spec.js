@@ -20,6 +20,41 @@ async function openBeforeWorkshopAppLoads(page) {
   return release;
 }
 
+test("trailing list commas select the separator and recover without changing character data", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  const editor = page.locator("#rules-input");
+  for (const prefix of ["one of:", "none of:", "text without:", "between 2 and 4 one of:"]) {
+    const line = `  ${prefix} "😀", ",",`;
+    const rules = `start\n${line}   \nend`;
+    await editor.fill(rules);
+    await expect(page.locator("#diagnostic")).toContainText(
+      `Line 2, column ${line.lastIndexOf(",") + 1}: A character list cannot end with a comma.`,
+    );
+    await expect(page.locator("#copy-button")).toBeDisabled();
+    await page.getByRole("button", { name: "Go to error", exact: true }).click();
+    await expect(editor).toBeFocused();
+    const position = rules.lastIndexOf(",");
+    expect(
+      await editor.evaluate((field) => [
+        field.selectionStart,
+        field.selectionEnd,
+        field.value.slice(field.selectionStart, field.selectionEnd),
+      ]),
+    ).toEqual([position, position + 1, ","]);
+    await editor.press("Backspace");
+    await expect(editor).toHaveValue(rules.slice(0, position) + rules.slice(position + 1));
+    await expect(page.locator("#diagnostic")).toBeHidden();
+    await expect(editor).toHaveAttribute("aria-invalid", "false");
+    await expect(page.locator("#copy-button")).toBeEnabled();
+    await expect(page.locator("#regex-output")).toContainText(
+      prefix.includes("none") || prefix.includes("without") ? "[^😀,]" : "[😀,]",
+    );
+  }
+});
+
 test("match modes describe whole-string checks and zero-based UTF-16 search positions", async ({
   page,
 }) => {

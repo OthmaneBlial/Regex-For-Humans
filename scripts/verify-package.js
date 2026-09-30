@@ -70,6 +70,9 @@ try {
     smoke,
     `import { compile, toRegExp, CompileError } from "regex-for-humans";
 const result = compile(${JSON.stringify(rules)});
+const trailingList = ${JSON.stringify('one of: "😀", ",",')};
+try { compile(trailingList); throw new Error("Trailing list comma accepted"); }
+catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_CHARACTER_LIST" || error.column !== trailingList.length) throw error; }
 try { compile("start line end"); throw new Error("Mixed anchors accepted"); }
 catch (error) { if (!(error instanceof CompileError) || error.code !== "MIXED_ANCHORS" || error.column !== 7 || error.hint !== ${JSON.stringify("Pair `start` with `end`, or `line start` with `line end`.")}) throw error; }
 const lineRepair = compile("line start\\n3 digits\\nline end");

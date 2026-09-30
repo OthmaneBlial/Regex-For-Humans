@@ -24,6 +24,40 @@ function run(args, input) {
   return spawnSync(process.execPath, [cli, ...args], { input, encoding: "utf8" });
 }
 
+test("CLI trailing-comma diagnostics identify the separator in text and JSON", () => {
+  for (const prefix of [
+    "one of:",
+    "none of:",
+    "text without:",
+    "3 one of:",
+    "between 2 and 4 none of:",
+  ]) {
+    const line = `  ${prefix} "😀", ",",`;
+    const column = line.lastIndexOf(",") + 1;
+    for (const json of [false, true]) {
+      const output = run(json ? ["--json", "-"] : ["-"], `start\n${line}   \nend`);
+      assert.equal(output.status, 1);
+      assert.equal(output.stdout, "");
+      if (json)
+        assert.deepEqual(JSON.parse(output.stderr), {
+          error: {
+            code: "INVALID_CHARACTER_LIST",
+            message: "A character list cannot end with a comma.",
+            line: 2,
+            column,
+          },
+        });
+      else
+        assert.equal(
+          output.stderr,
+          `Line 2, column ${column}: A character list cannot end with a comma.\n`,
+        );
+    }
+    const repaired = run(["--json", "-"], `start\n${line.slice(0, -1)}\nend`);
+    assert.equal(repaired.status, 0, repaired.stderr);
+  }
+});
+
 test("CLI counted sequence errors offer repairs in plain text and JSON", () => {
   for (const [sequence, item, hint] of [
     ["any text", "any character", "Use counts with `any character`, such as `3 any character`."],

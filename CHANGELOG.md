@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Locate trailing character-list comma errors at the separator itself so workshop error navigation selects the character to remove.
+
 - Check documentation link destinations independently of optional titles, keeping query handling, encoded filenames and actionable missing-link diagnostics.
 
 - Redirect local preview directory URLs to their trailing-slash form, preserving encoded paths and query strings while retaining symlink confinement and missing-file behavior.
