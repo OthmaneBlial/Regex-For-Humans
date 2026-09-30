@@ -12,7 +12,7 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 
 1. **Validate a prefixed identifier.** Rules: `start "ABC"` / `3 digits` / `end`. Expected source `^ABC\d{3}$`, flags `u`. Positive: `ABC123`. Negative: `ABC12`, `ABC1234`, `abc123`.
 2. **Exclude characters.** Rules: `start` / `text without: a, b, c, d` / `end`. Expected source `^[^abcd]*$`, flags `u`. Positive: `xyz`, empty string. Negative: `cab`.
-3. **Read a line rule.** Rules: `line start` / `any text` / `3 digits` / `line end`. Expected source `^.*\d{3}$`, flags `mu`, search mode. Positive: `item 123`, `note\nitem 123`. Negative: `item 12`. The trace must state that `.*` greedily matches text up to the next rule, `m` enables line anchors, and the prefix can have any length.
+3. **Read a line rule.** Rules: `line start` / `any text` / `3 digits` / `line end`. Expected source `^.*\d{3}$`, flags `mu`, search mode. Positive: `item 123`, `note\nitem 123`, `item 1234`. Negative: `item 12`. The trace must state that `.*` greedily matches text up to the next rule, `m` enables line anchors, and the prefix can have any length. Because the prefix can also contain digits, the line can end in more than three digits.
 
 4. **Match a date shape.** Rules: `start` / `4 digits` / `"-"` / `2 digits` / `"-"` / `2 digits` / `end`. Expected source `^\d{4}-\d{2}-\d{2}$`, flags `u`. Positive: `2026-09-27`, `2000-01-01`, `2026-02-31` (the impossible day still matches). Negative: `2026-9-27`, `27-09-2026`, `2026/09/27`. This checks the `YYYY-MM-DD` shape.
 
@@ -21,6 +21,8 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 6. **Match a hex color.** Rules: `start "#"` / `6 hex digits` / `end`. Expected source `^#[0-9A-Fa-f]{6}$`, flags `u`. Positive: `#12aBcF`, `#000000`, `#FFFFFF`. Negative: `#123`, `#12345678`, `#G00000`, `123456`, a color followed by a newline. This teaches an exact count of ASCII hexadecimal digits in either letter case. It accepts only the six-digit `#RRGGBB` notation; shorthand, alpha components, named colors and other CSS color forms are outside this recipe.
 
 The recipes use compact syntax for prefixes, exclusions, line matching, a fixed date shape, variable-length version components and an exact hexadecimal character count.
+
+Each fixture includes a short note about its meaning and limits. The workshop shows that note beside the selected rules, includes it in the editor's accessible description, and hides it when manual rules differ from the recipe. The homepage demo uses the same note.
 
 ## Evidence plan
 

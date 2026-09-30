@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Show shared recipe notes in the workshop and homepage, including date, version and color validation limits; clarify that the line recipe accepts four or more trailing digits.
+
 - Clear homepage copy confirmations when switching demo recipes and ignore clipboard results for a previous recipe.
 
 - Treat an empty workshop editor as a neutral input prompt for examples, while keeping malformed and over-limit rules in the error state.

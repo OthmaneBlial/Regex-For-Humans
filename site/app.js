@@ -12,11 +12,6 @@ function testSample() {
 input.addEventListener("input", testSample);
 testSample();
 
-const notes = {
-  "hex-color": "Six hex digits, either letter case. Just the #RRGGBB form.",
-  "prefixed-identifier": "ABC + exactly three digits. Letter case matters.",
-  "version-shape": "Three numeric parts. Leading zeros are allowed; this isn't full SemVer.",
-};
 const sampleInputs = {
   "hex-color": "#ff6b6b",
   "prefixed-identifier": "ABC123",
@@ -57,7 +52,9 @@ for (const control of copyControls) {
 }
 
 try {
-  const response = await fetch("./workshop/test/fixtures/product-scenarios.json");
+  const recipeUrl = new URL("./workshop/test/fixtures/product-scenarios.json", import.meta.url);
+  recipeUrl.search = new URL(import.meta.url).search;
+  const response = await fetch(recipeUrl);
   if (!response.ok) throw new Error("Recipes unavailable");
   const recipes = await response.json();
   for (const button of document.querySelectorAll("[data-recipe]")) {
@@ -74,7 +71,7 @@ try {
       }
       document.getElementById("rules-code").textContent = recipe.rules;
       document.getElementById("regex-code").textContent = `/${compiled.source}/${compiled.flags}`;
-      document.getElementById("demo-note").textContent = notes[recipe.id];
+      document.getElementById("demo-note").textContent = recipe.note;
       document.getElementById("demo-open").href = `./workshop/?example=${recipe.id}`;
       for (const other of document.querySelectorAll("[data-recipe]")) {
         other.setAttribute("aria-pressed", String(other === button));

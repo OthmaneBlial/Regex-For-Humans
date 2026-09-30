@@ -3,7 +3,7 @@ import { splitLines } from "../src/parser.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestCase} TestCase */
-/** @typedef {{id: string, title: string, rules: string, source: string, flags: string, matchMode: "full" | "search", positive: string[], negative: string[]}} ProductScenario */
+/** @typedef {{id: string, title: string, note: string, rules: string, source: string, flags: string, matchMode: "full" | "search", positive: string[], negative: string[]}} ProductScenario */
 /** @typedef {"success" | "neutral" | "error"} CompileState */
 
 /**
@@ -21,6 +21,7 @@ function requiredElement(id, type) {
 const ui = {
   examples: requiredElement("example-list", HTMLElement),
   recipeCount: requiredElement("recipe-count", HTMLSpanElement),
+  recipeNote: requiredElement("recipe-note", HTMLParagraphElement),
   rules: requiredElement("rules-input", HTMLTextAreaElement),
   ruleCount: requiredElement("rule-count", HTMLSpanElement),
   ignoreCase: requiredElement("ignore-case", HTMLInputElement),
@@ -293,6 +294,8 @@ function compileRules() {
 
 /** @param {string|null} id */
 function setScenarioSelection(id) {
+  ui.recipeNote.textContent = scenarios.find((scenario) => scenario.id === id)?.note ?? "";
+  ui.recipeNote.hidden = !ui.recipeNote.textContent;
   for (const button of ui.examples.querySelectorAll("button")) {
     button.setAttribute("aria-current", String(button.dataset.scenario === id));
   }

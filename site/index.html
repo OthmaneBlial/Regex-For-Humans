@@ -10,7 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css?v=playful-1">
   <link rel="preload" href="./assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <script type="module" src="./app.js?v=playful-3"></script>
+  <script type="module" src="./app.js?v=playful-4"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -37,7 +37,7 @@ end</code></pre></div>
         <div class="code-block regex-block"><div class="code-label"><span>02 / THE REGEX BIT</span><button type="button" data-copy="regex-code">Copy regex</button></div><pre><code id="regex-code">/^#[0-9A-Fa-f]{6}$/u</code></pre></div>
         <div id="demo-samples" class="sample-chips"><span>✓ <code>#12aBcF</code></span><span class="no-match">× <code>#123</code></span></div>
         <div class="try-sample"><label for="demo-input">Your turn. Does it match?</label><div><input id="demo-input" type="text" value="#ff6b6b" maxlength="80" autocomplete="off" spellcheck="false" aria-describedby="demo-result"><output id="demo-result" for="demo-input" aria-live="polite">✓ Match</output></div></div>
-        <p id="demo-note">Six hex digits, either letter case. Just the #RRGGBB form.</p>
+        <p id="demo-note">Six hex digits after #, in either letter case. Only #RRGGBB; no shorthand, alpha or other CSS color forms.</p>
         <a id="demo-open" class="demo-open" href="./workshop/?example=hex-color">Edit this in the workshop ↗</a>
       </section>
     </section>
@@ -54,7 +54,7 @@ end</code></pre></div>
         <a class="recipe-card" href="./workshop/?example=date-shape"><span aria-hidden="true">📅</span><h3>Check a date shape</h3><code>2026-09-30</code><p>YYYY-MM-DD. Calendar checks are separate.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
         <a class="recipe-card" href="./workshop/?example=version-shape"><span aria-hidden="true">📦</span><h3>Spot a version shape</h3><code>1.2.3</code><p>Three numeric parts. Not full SemVer.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
         <a class="recipe-card" href="./workshop/?example=excluded-characters"><span aria-hidden="true">🚧</span><h3>Keep characters out</h3><code>text without: a, b</code><p>Choose which characters to exclude.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
-        <a class="recipe-card" href="./workshop/?example=line-rule"><span aria-hidden="true">📝</span><h3>Read between lines</h3><code>item 123</code><p>A line ending in three digits.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=line-rule"><span aria-hidden="true">📝</span><h3>Read between lines</h3><code>item 123</code><p>A line ending in at least three digits.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
       </div>
     </section>
     <section class="workshop-section section" aria-labelledby="workshop-title">

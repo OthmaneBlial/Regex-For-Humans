@@ -351,6 +351,12 @@ a {
   outline: 3px solid #f1bf3980;
   outline-offset: 2px;
 }
+.recipe-note {
+  margin: 0 0 16px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.5;
+}
 .editor-footer {
   display: flex;
   justify-content: space-between;

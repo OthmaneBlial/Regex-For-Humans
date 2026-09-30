@@ -20,6 +20,7 @@ test("landing recipes compile with the real library and copy the current rules a
     const compiled = compile(recipe.rules);
     const literal = `/${compiled.source}/${compiled.flags}`;
     await expect(page.locator("#rules-code")).toHaveText(recipe.rules);
+    await expect(page.locator("#demo-note")).toHaveText(recipe.note);
     await expect(page.locator("#regex-code")).toHaveText(literal);
     await expect(page.locator("#demo-result")).toHaveText("✓ Match");
     await page.locator("#demo-input").fill(recipe.negative[0]);
@@ -91,7 +92,7 @@ test("landing is accessible at desktop, mobile and 320px, with working workshop 
 });
 
 test("the initial hex demo still works when extra recipes cannot load", async ({ page }) => {
-  await page.route("**/product-scenarios.json", (route) => route.abort());
+  await page.route("**/product-scenarios.json*", (route) => route.abort());
   await page.goto("/");
   await expect(page.locator("#demo-note")).toContainText("Extra recipes couldn't load");
   await page.locator("#demo-input").fill("#xyzxyz");
@@ -190,7 +191,7 @@ test("copy and the initial demo remain usable while extra recipes are still load
   page,
 }) => {
   let pendingRecipe;
-  await page.route("**/product-scenarios.json", (route) => {
+  await page.route("**/product-scenarios.json*", (route) => {
     pendingRecipe = route;
   });
   await page.addInitScript(() => {
@@ -206,7 +207,16 @@ test("copy and the initial demo remain usable while extra recipes are still load
   });
   await page.goto("/", { waitUntil: "commit" });
   await expect.poll(() => Boolean(pendingRecipe)).toBe(true);
+  const appUrl = new URL(
+    await page.locator('script[type="module"]').getAttribute("src"),
+    page.url(),
+  );
+  expect(appUrl.searchParams.has("v")).toBe(true);
+  expect(new URL(pendingRecipe.request().url()).search).toBe(appUrl.search);
   await expect(page.locator('[data-recipe="hex-color"]')).toBeDisabled();
+  await expect(page.locator("#demo-note")).toHaveText(
+    recipes.find((recipe) => recipe.id === "hex-color").note,
+  );
   await page.locator("#demo-input").fill("#123");
   await expect(page.locator("#demo-result")).toHaveText("× No match");
   for (const [target, text] of [

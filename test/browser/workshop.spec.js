@@ -30,6 +30,11 @@ for (const scenario of scenarios) {
     await page.goto(`/?example=${scenario.id}`);
     await expect(page.locator(".local-indicator")).toHaveText("Rules stay local");
     await expect(page.locator("#rules-input")).toHaveValue(scenario.rules);
+    await expect(page.locator("#recipe-note")).toBeVisible();
+    await expect(page.locator("#recipe-note")).toHaveText(scenario.note);
+    await expect(page.locator("#rules-input")).toHaveAccessibleDescription(
+      `A controlled language, not a free-form prompt. Read the syntax ↗ ${scenario.note}`,
+    );
     await expect(page.locator("#recipe-count")).toHaveText(
       `01—${String(scenarios.length).padStart(2, "0")}`,
     );
@@ -61,6 +66,11 @@ for (const scenario of scenarios) {
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);
+    await page.setViewportSize({ width: 320, height: page.viewportSize().height });
+    await expect(page.locator("#recipe-note")).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
     expect(browserErrors).toEqual([]);
     expect(failedResponses).toEqual([]);
     expect(remoteRequests).toEqual([]);
@@ -84,7 +94,7 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
   await editor.fill("digit\n  unsupported words");
   await expect(editor).toHaveAttribute("aria-invalid", "true");
-  await expect(editor).toHaveAttribute("aria-describedby", "rules-help diagnostic");
+  await expect(editor).toHaveAttribute("aria-describedby", "rules-help recipe-note diagnostic");
   await expect(page.locator("#diagnostic")).toContainText("Line 2, column 3");
   await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
   await expect(page.getByRole("button", { name: /Copy regex/ })).toBeDisabled();
@@ -133,9 +143,13 @@ test("manual edits clear the recipe highlight and reselecting restores its short
   await expect(recipe).toHaveAttribute("aria-current", "true");
   await editor.fill("at the beginning of a line, I am looking for any character");
   await expect(recipe).toHaveAttribute("aria-current", "false");
+  await expect(page.locator("#recipe-note")).toBeHidden();
+  await expect(page.locator("#recipe-note")).toBeEmpty();
   await recipe.click();
   await expect(recipe).toHaveAttribute("aria-current", "true");
   await expect(editor).toHaveValue("line start\nany text\n3 digits\nline end");
+  await expect(page.locator("#recipe-note")).toBeVisible();
+  await expect(page.locator("#recipe-note")).toContainText("Entire string mode");
 });
 
 test("switching a recipe starts one worker for its current pattern and examples", async ({
@@ -189,6 +203,7 @@ test("late recipes preserve edits made while loading", async ({ page }) => {
   await expect(page.locator("#test-list textarea")).toHaveValue("custom");
   await expect(page.locator("#test-summary")).toHaveText("1 of 1 examples behave as expected");
   await expect(page.locator('#example-list button[aria-current="true"]')).toHaveCount(0);
+  await expect(page.locator("#recipe-note")).toBeHidden();
 });
 
 test("failed recipes leave compiler diagnostics and manual editing available", async ({ page }) => {
@@ -276,9 +291,9 @@ test("line-mode sample keeps its newline and changes under full-match mode", asy
   await page.goto("/?example=line-rule");
   await expect(page.locator("#test-list textarea").nth(1)).toHaveValue("note\nitem 123");
   await page.locator("#match-mode").selectOption("full");
-  await expect(page.locator("#test-summary")).toHaveText("2 of 3 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
   await page.locator("#match-mode").selectOption("search");
-  await expect(page.locator("#test-summary")).toHaveText("3 of 3 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
 });
 
 test("Unicode literals and dot-all behavior are visible in example results", async ({ page }) => {

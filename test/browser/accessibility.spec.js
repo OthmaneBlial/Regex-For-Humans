@@ -18,7 +18,7 @@ for (const state of ["ready", "error"]) {
       const editor = page.getByRole("textbox", { name: "Write your rules" });
       await editor.fill("unknown rule");
       await expect(editor).toHaveAttribute("aria-invalid", "true");
-      await expect(editor).toHaveAttribute("aria-describedby", "rules-help diagnostic");
+      await expect(editor).toHaveAttribute("aria-describedby", "rules-help recipe-note diagnostic");
       await expect(page.locator("#diagnostic")).toBeVisible();
     }
     const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();

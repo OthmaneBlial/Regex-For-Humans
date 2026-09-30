@@ -2,6 +2,7 @@
   {
     "id": "prefixed-identifier",
     "title": "Validate a prefixed identifier",
+    "note": "ABC followed by exactly three digits. Ignore case also permits abc123.",
     "rules": "start \"ABC\"\n3 digits\nend",
     "source": "^ABC\\d{3}$",
     "flags": "u",
@@ -12,6 +13,7 @@
   {
     "id": "excluded-characters",
     "title": "Exclude characters",
+    "note": "Empty strings are allowed. The recipe excludes a, b, c and d; Ignore case also excludes A, B, C and D.",
     "rules": "start\ntext without: a, b, c, d\nend",
     "source": "^[^abcd]*$",
     "flags": "u",
@@ -22,16 +24,18 @@
   {
     "id": "line-rule",
     "title": "Read a line rule",
+    "note": "Search mode finds a line ending with at least three digits; the prefix may include more digits. Entire string mode requires the match to cover the whole example.",
     "rules": "line start\nany text\n3 digits\nline end",
     "source": "^.*\\d{3}$",
     "flags": "mu",
     "matchMode": "search",
-    "positive": ["item 123", "note\nitem 123"],
+    "positive": ["item 123", "note\nitem 123", "item 1234"],
     "negative": ["item 12"]
   },
   {
     "id": "date-shape",
     "title": "Match a date shape",
+    "note": "YYYY-MM-DD shape only. Impossible dates such as 2026-02-31 also match; validate calendar values separately.",
     "rules": "start\n4 digits\n\"-\"\n2 digits\n\"-\"\n2 digits\nend",
     "source": "^\\d{4}-\\d{2}-\\d{2}$",
     "flags": "u",
@@ -42,6 +46,7 @@
   {
     "id": "version-shape",
     "title": "Match a version shape",
+    "note": "Three numeric parts with literal dots. Leading zeros are allowed, and prerelease suffixes are rejected. This is not full SemVer.",
     "rules": "start\ndigits\n\".\"\ndigits\n\".\"\ndigits\nend",
     "source": "^\\d+\\.\\d+\\.\\d+$",
     "flags": "u",
@@ -52,6 +57,7 @@
   {
     "id": "hex-color",
     "title": "Match a hex color",
+    "note": "Six hex digits after #, in either letter case. Only #RRGGBB; no shorthand, alpha or other CSS color forms.",
     "rules": "start \"#\"\n6 hex digits\nend",
     "source": "^#[0-9A-Fa-f]{6}$",
     "flags": "u",
