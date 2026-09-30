@@ -169,6 +169,30 @@ test("CLI reports usage errors as JSON when requested in any option position", (
   }
 });
 
+test("CLI flushes large diagnostics before exiting", () => {
+  const input = "\0".repeat(16_000);
+  const message = `Unsupported rule: ${JSON.stringify(input)}.`;
+  const hint = "Try `line start`, `any text` or `3 digits`.";
+  const structured = run(["--json", "-"], input);
+  assert.equal(structured.status, 1);
+  assert.equal(structured.stdout, "");
+  assert.deepEqual(JSON.parse(structured.stderr), {
+    error: { code: "UNKNOWN_RULE", message, line: 1, column: 1, hint },
+  });
+  const plain = run(["-"], input);
+  assert.equal(plain.status, 1);
+  assert.equal(plain.stdout, "");
+  assert.equal(plain.stderr, `Line 1, column 1: ${message}\n${hint}\n`);
+
+  const option = `--${"\u0001".repeat(16_000)}`;
+  const usage = run(["--json", option], "");
+  assert.equal(usage.status, 2);
+  assert.equal(usage.stdout, "");
+  assert.deepEqual(JSON.parse(usage.stderr), {
+    error: { code: "CLI_USAGE", message: `Unknown option: ${option}` },
+  });
+});
+
 test("CLI enforces the source limit while reading stdin and files", () => {
   const lineLimit = run(["-"], "\n".repeat(LIMITS.lines + 1));
   assert.equal(lineLimit.status, 1);
