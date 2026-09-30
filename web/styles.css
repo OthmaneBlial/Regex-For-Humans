@@ -331,7 +331,7 @@ a {
 }
 #rules-input {
   width: 100%;
-  flex: 1;
+  flex: 1 0 auto;
   min-height: 275px;
   padding: 18px 18px 18px 20px;
   resize: vertical;

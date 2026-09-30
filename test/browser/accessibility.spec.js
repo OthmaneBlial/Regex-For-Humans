@@ -308,6 +308,78 @@ test("source navigation reveals its destination in the page viewport", async ({ 
   }
 });
 
+test("native resize grip enlarges the editor and retains its height through edits and recipes", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+  });
+  const editor = page.locator("#rules-input");
+  const original = await editor.inputValue();
+  const viewport = page.viewportSize();
+  async function resizeBy(delta) {
+    await editor.evaluate((input) =>
+      window.scrollBy({
+        top: input.getBoundingClientRect().top - 50,
+        behavior: "instant",
+      }),
+    );
+    const box = await editor.boundingBox();
+    const x = box.x + box.width - 8;
+    const y = box.y + box.height - 8;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x, y + delta, { steps: 10 });
+    await page.mouse.up();
+  }
+  for (const width of [viewport.width, 320]) {
+    await page.setViewportSize({ width, height: viewport.height });
+    const before = await editor.evaluate((input) => ({
+      height: input.clientHeight,
+      width: input.clientWidth,
+    }));
+    await resizeBy(150);
+    await expect
+      .poll(() => editor.evaluate((input) => input.clientHeight))
+      .toBeGreaterThan(before.height + 100);
+    const enlarged = await editor.evaluate((input) => input.clientHeight);
+    await expect(editor).toHaveValue(original);
+    await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+    await editor.fill(original.replace("3 digits", "2 digits"));
+    await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{2}$/u");
+    await expect
+      .poll(() => editor.evaluate((input) => input.clientHeight))
+      .toBeGreaterThanOrEqual(enlarged - 1);
+    await page.locator('[data-scenario="time-shape"]').click();
+    await expect(page.locator("#regex-output")).toHaveText("/^\\d{2}:\\d{2}$/u");
+    await expect(page.locator("#test-summary")).toHaveText("13 of 13 examples behave as expected");
+    await expect
+      .poll(() => editor.evaluate((input) => input.clientHeight))
+      .toBeGreaterThanOrEqual(enlarged - 1);
+    await page.locator('[data-scenario="prefixed-identifier"]').click();
+    await expect(editor).toHaveValue(original);
+    await resizeBy(-300);
+    await expect
+      .poll(() => editor.evaluate((input) => input.clientHeight))
+      .toBeLessThanOrEqual(before.height + 2);
+    expect(
+      await editor.evaluate((input) => {
+        const style = getComputedStyle(input);
+        const border =
+          Number.parseFloat(style.borderTopWidth) + Number.parseFloat(style.borderBottomWidth);
+        return input.clientHeight + border >= Number.parseFloat(style.minHeight);
+      }),
+    ).toBe(true);
+    expect(await editor.evaluate((input) => input.clientWidth)).toBe(before.width);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  }
+});
+
 test("skip link focuses the workshop without resetting edited rules", async ({ page }) => {
   await page.goto("/?example=line-rule");
   const editor = page.getByRole("textbox", { name: "Write your rules" });

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Allow native rule-editor enlargement by retaining its requested height in the flex layout, including after edits and recipe changes.
+
 - Reveal error and trace destinations in the page viewport as well as inside the workshop editor, including stacked mobile layouts and editors taller than the window.
 
 - Add an HH:MM time-shape recipe with ASCII digits, whole-input anchors and explicit examples of out-of-range clock values that still match.
