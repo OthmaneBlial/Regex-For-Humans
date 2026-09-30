@@ -55,6 +55,58 @@ test("exact counts stay before one rule and validate their limit", () => {
   assert.throws(() => parse(`${LIMITS.repetition + 1} digit`), {
     code: "REPETITION_LIMIT",
   });
+  for (const [count, min] of [
+    ["0", 0],
+    ["0003", 3],
+    ["1000", 1000],
+  ]) {
+    assert.deepEqual(parse(`${count} digits`).nodes[0].repetition, { kind: "exact", min });
+  }
+  assert.equal(parse('"1.5"').nodes[0].value, "1.5");
+  assert.deepEqual(parse("one of: ٣, 3").nodes[0].value, ["٣", "3"]);
+});
+
+test("malformed numeric count tokens share positioned exact and bounded diagnostics", () => {
+  for (const token of ["-1", "+3", "1.5", ".5", "1e2", "0x10", "1_000", "٣", "𝟛"]) {
+    for (const line of [
+      `  start ${token} digits`,
+      `between ${token} and 4 digits`,
+      `between 2 and ${token} digits`,
+    ]) {
+      assert.throws(
+        () => parse(`\n${line}`),
+        {
+          code: "INVALID_REPETITION",
+          message: "Counts must be nonnegative integers.",
+          line: 2,
+          column: line.indexOf(token) + 1,
+          hint: "Write counts with digits 0–9 only, such as `3`.",
+        },
+        line,
+      );
+    }
+  }
+});
+
+test("an exact count without an item reports its own location and a repair hint", () => {
+  for (const [rules, line, column] of [
+    ["3", 1, 1],
+    ["start 3", 1, 7],
+    ["digit\n  3", 2, 3],
+    ["  line start, 03", 1, 15],
+  ]) {
+    assert.throws(
+      () => parse(rules),
+      {
+        code: "INVALID_REPETITION",
+        message: "A count needs an item.",
+        line,
+        column,
+        hint: "Use `3 digits`, with the count before the item.",
+      },
+      rules,
+    );
+  }
 });
 
 test("bounded counts apply to one atom and retain the original location", () => {
@@ -146,15 +198,23 @@ test("an excessive repetition count points to the count", () => {
 });
 
 test("a second count points to its own column", () => {
-  const rules = "3 4 digits";
-  assert.throws(
-    () => parse(rules),
-    (error) =>
-      error instanceof CompileError &&
-      error.code === "DUPLICATE_REPETITION" &&
-      error.line === 1 &&
-      error.column === 3,
-  );
+  for (const [rules, marker] of [
+    ["3 4 digits", "4"],
+    ["3 +2 digits", "+2"],
+    ["3 1.5 digits", "1.5"],
+    ["between 2 and 4 ٣ digits", "٣"],
+    ["3 4", "4"],
+  ]) {
+    assert.throws(
+      () => parse(rules),
+      {
+        code: "DUPLICATE_REPETITION",
+        line: 1,
+        column: rules.indexOf(marker) + 1,
+      },
+      rules,
+    );
+  }
 });
 
 test("counted instruction errors point past the count", () => {

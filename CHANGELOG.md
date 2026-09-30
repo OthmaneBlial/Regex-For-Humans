@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Report malformed numeric exact counts and counts without an item as positioned `INVALID_REPETITION` errors with repair hints; recognize malformed second count tokens as `DUPLICATE_REPETITION`. Valid count syntax and matching stay unchanged.
+
 - Show honest homepage loading and failure states, enable matching only after the compiler is ready, and keep static pattern copying available while the compiler loads or fails.
 
 - Keep workshop copy feedback tied to the latest request even when the rules are unchanged, clear old confirmation on retry, and cancel clipboard timeout timers after completion.

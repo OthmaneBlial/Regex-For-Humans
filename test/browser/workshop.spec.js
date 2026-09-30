@@ -139,6 +139,46 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
 });
 
+test("numeric count errors focus their token and recover after a valid edit", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const editor = page.locator("#rules-input");
+  for (const token of ["-1", "1.5", "1e2", "٣"]) {
+    await editor.fill(`start ${token} digits\nend`);
+    await expect(page.locator("#diagnostic")).toContainText(
+      "Line 1, column 7: Counts must be nonnegative integers.",
+    );
+    await expect(page.locator("#diagnostic")).toContainText("Write counts with digits 0–9 only");
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#copy-button")).toBeDisabled();
+    await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
+  }
+  await page.getByRole("button", { name: "Go to error" }).click();
+  await expect(editor).toBeFocused();
+  expect(await editor.evaluate((element) => element.selectionStart)).toBe(6);
+  expect(
+    await editor.evaluate((element) =>
+      element.value.slice(element.selectionStart, element.selectionEnd),
+    ),
+  ).toBe("٣");
+  await editor.fill("start 3");
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Line 1, column 7: A count needs an item.",
+  );
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Use `3 digits`, with the count before the item.",
+  );
+  await editor.fill("start 3 +2 digits\nend");
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Line 1, column 9: Put one exact count before the instruction.",
+  );
+  await editor.fill('start "ABC"\n3 digits\nend');
+  await expect(editor).toHaveAttribute("aria-invalid", "false");
+  await expect(page.locator("#diagnostic")).toBeHidden();
+  await expect(page.locator("#copy-button")).toBeEnabled();
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+});
+
 test("manual edits clear the recipe highlight and reselecting restores its short rules", async ({
   page,
 }) => {

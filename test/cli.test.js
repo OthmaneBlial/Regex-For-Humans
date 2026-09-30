@@ -268,6 +268,47 @@ test("CLI reports an unknown rule with position and nonzero status", () => {
   assert.equal(run(["--bogus"]).status, 2);
 });
 
+test("CLI reports malformed and incomplete exact counts with structured repair hints", () => {
+  for (const [rules, message, hint, line, column] of [
+    [
+      "start 1.5 digits",
+      "Counts must be nonnegative integers.",
+      "Write counts with digits 0–9 only, such as `3`.",
+      1,
+      7,
+    ],
+    [
+      "start\n  -1 digits",
+      "Counts must be nonnegative integers.",
+      "Write counts with digits 0–9 only, such as `3`.",
+      2,
+      3,
+    ],
+    [
+      "٣ digits",
+      "Counts must be nonnegative integers.",
+      "Write counts with digits 0–9 only, such as `3`.",
+      1,
+      1,
+    ],
+    ["start 3", "A count needs an item.", "Use `3 digits`, with the count before the item.", 1, 7],
+  ]) {
+    const result = run(["--json", "-"], rules);
+    assert.equal(result.status, 1, rules);
+    assert.equal(result.stdout, "", rules);
+    assert.deepEqual(
+      JSON.parse(result.stderr).error,
+      { code: "INVALID_REPETITION", message, line, column, hint },
+      rules,
+    );
+  }
+  const text = run(["-"], "-1 digits");
+  assert.equal(text.status, 1);
+  assert.equal(text.stdout, "");
+  assert.match(text.stderr, /Line 1, column 1: Counts must be nonnegative integers\./u);
+  assert.match(text.stderr, /Write counts with digits 0–9 only/u);
+});
+
 test("CLI reports usage errors as JSON when requested in any option position", () => {
   for (const args of [
     ["--json", "--bogus"],

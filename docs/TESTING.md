@@ -45,6 +45,8 @@ Entire-string regressions verify that a partial greedy match can backtrack to co
 
 Worker-controller regressions cover startup failures as rejected `WORKER_ERROR` promises, cancellation of a previous run, recovery and request-ID ownership. Real-worker browser checks verify that extra top-level payload IDs do not cause false timeouts and that example IDs remain intact.
 
+Count-diagnostic regressions cover signed, fractional, scientific, hexadecimal, separated and localized numeric tokens in exact and bounded forms, missing items and duplicate tokens. They preserve zero, leading zeros, the upper limit and numeric characters used as quoted or character-list data. CLI checks verify structured errors, exit status and repair hints; workshop checks verify disabled copy, error-token focus and recovery.
+
 Workshop clipboard regressions cover overlapping requests for unchanged rules in both success/failure orders, ignore outdated replies before attempting the legacy fallback, and retain the latest confirmation timer. A stalled request clears previous confirmation, reaches the manual-copy fallback after one second, preserves keyboard focus and allows a later successful retry. Rule edits still protect newer diagnostics from old copy results.
 
 `npm run build:pages` versions the homepage app from its source and the workshop build fingerprint. Its compiler entry and recipe request follow that version, so changes to the homepage or compiler do not reuse an obsolete cached module. A temporary build regression verifies that unchanged builds keep the same URL, both inputs change it, and an unversioned workshop build fails explicitly.

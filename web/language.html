@@ -75,6 +75,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
           <tr><td><code>between 2 and 4 &lt;item&gt;</code></td><td><code>{2,4}</code></td><td>Two, three or four; both bounds included</td></tr>
         </tbody></table></div>
         <p>Both counts must be integers from 0 to 1,000, with the upper count at least the lower. <code>between 0 and 1 "-"</code> allows an optional hyphen. A multi-character literal stays together: <code>between 2 and 4 "AB"</code> generates <code>(?:AB){2,4}</code>.</p>
+        <p>Write counts with digits <code>0</code>–<code>9</code>; leading zeros are allowed. A sign, fraction, scientific notation or localized digit produces a count error. Every count needs an item: use <code>3 digits</code>, rather than <code>3</code> alone.</p>
         <p>Ranges try the largest count first, then backtrack if the next rule needs it. Add <code>start</code> and <code>end</code> to validate the entire string; an unanchored range can find part of a longer string.</p>
       </section>
 
