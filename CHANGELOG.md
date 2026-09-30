@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added a hex-color recipe that teaches exact character-list repetition and accepts only six-digit `#RRGGBB` notation.
 - CLI stdout write failures now use the regular diagnostic format, including JSON errors; failed stderr writes preserve a nonzero exit status.
 - Long rule diagnostics now wrap within the workshop viewport.
 - Workshop compilation errors now offer a Go to error button that focuses the reported source position and works from the keyboard.
