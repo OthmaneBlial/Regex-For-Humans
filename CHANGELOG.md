@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Delayed clipboard results no longer clear newer compiler errors or describe an edited pattern as copied.
 - Workshop rule counts and trace selection now recognize the compiler's Unicode line separators and quoted values.
 - CLI diagnostics now finish writing before exit, preserving large JSON errors when piped.
 - Escaped lone UTF-16 surrogates so CLI output and copied regex preserve them; separate surrogate items no longer merge inside character sets.

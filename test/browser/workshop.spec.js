@@ -226,6 +226,50 @@ test("copy button places the real generated regex on the clipboard", async ({ pa
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("/^\\u{d800}$/u");
 });
 
+for (const success of [true, false]) {
+  test(`${success ? "resolved" : "rejected"} clipboard request preserves newer rule errors`, async ({
+    page,
+  }) => {
+    await page.addInitScript((success) => {
+      Object.defineProperty(navigator, "clipboard", {
+        value: {
+          writeText: () =>
+            new Promise((resolve, reject) => {
+              window.finishCopy = () =>
+                success ? resolve() : reject(new Error("Clipboard access blocked"));
+            }),
+        },
+      });
+      document.execCommand = () => false;
+    }, success);
+    await page.goto("/");
+    await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+    await page.locator("#copy-button").click();
+    const editor = page.locator("#rules-input");
+    await editor.fill("invalid rule");
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await page.evaluate(async () => {
+      window.finishCopy();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    await expect(page.locator("#diagnostic")).toBeVisible();
+    await expect(page.locator("#diagnostic")).toContainText('Unsupported rule: "invalid rule".');
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#copy-button")).toBeDisabled();
+
+    await editor.fill("start 2 digits\nend");
+    await page.locator("#copy-button").click();
+    await editor.fill("start 4 digits\nend");
+    await page.evaluate(async () => {
+      window.finishCopy();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    await expect(page.locator("#regex-output")).toHaveText("/^\\d{4}$/u");
+    await expect(page.locator("#diagnostic")).toBeHidden();
+    await expect(page.locator("#copy-button")).toContainText("Copy regex");
+  });
+}
+
 test("syntax link opens the local rendered guide", async ({ page, context }) => {
   await page.goto("/");
   const [guide] = await Promise.all([

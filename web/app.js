@@ -326,7 +326,8 @@ ui.addExample.addEventListener("click", () => {
 });
 ui.copy.addEventListener("click", async () => {
   if (!compiled) return;
-  const text = `/${compiled.source}/${compiled.flags}`;
+  const result = compiled;
+  const text = `/${result.source}/${result.flags}`;
   try {
     if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable");
     await Promise.race([
@@ -336,6 +337,7 @@ ui.copy.addEventListener("click", async () => {
       ),
     ]);
   } catch {
+    if (compiled !== result) return;
     const helper = make("textarea");
     helper.value = text;
     helper.setAttribute("aria-hidden", "true");
@@ -368,6 +370,7 @@ ui.copy.addEventListener("click", async () => {
       return;
     }
   }
+  if (compiled !== result) return;
   setDiagnostic("");
   ui.copy.textContent = "Copied ✓";
   window.setTimeout(() => {
