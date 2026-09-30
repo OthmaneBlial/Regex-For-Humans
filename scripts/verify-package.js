@@ -68,6 +68,8 @@ if (!toRegExp(result).test("ABC123") || toRegExp(result).test("ABC12")) throw ne
 if (result.segments.length !== 4 || !result.segments[2].explanation) throw new Error("Missing trace");
 const excluded = compile("start\\ntext without: a, b\\nend");
 if (excluded.source !== "^[^ab]*$" || !toRegExp(excluded).test("xyz") || toRegExp(excluded).test("cab")) throw new Error("Wrong text-exclusion behavior");
+const hex = compile("2 hex digits");
+if (hex.source !== "[0-9A-Fa-f]{2}" || !toRegExp(hex).test("0F") || toRegExp(hex).test("0G")) throw new Error("Wrong hexadecimal behavior");
 try { compile("unsupported words"); throw new Error("Unknown rule accepted"); }
 catch (error) { if (!(error instanceof CompileError)) throw error; }
 `,

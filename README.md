@@ -57,6 +57,7 @@ Put one rule on each line. `start` can prefix the first rule. Quote exact text; 
 | Line bounds | `line start` · `line end` | `^` · `$` with `m` |
 | Character | `digit` · `not digit` | `\d` · `\D` |
 | Repeated digits | `3 digits` · `digits` | `\d{3}` · `\d+` |
+| Hexadecimal digits | `hex digit` · `6 hex digits` | `[0-9A-Fa-f]` · `[0-9A-Fa-f]{6}` |
 | Any text | `any text` | `.*` |
 | Exact text | `"ABC"` | `ABC` |
 | Character set | `one of: a, b` | `[ab]` |
@@ -72,7 +73,7 @@ This compiles to `^\d{4}-\d{2}-\d{2}$`. It checks the YYYY-MM-DD shape; it does 
 
 The workshop also has a version-shape recipe: `start` / `digits` / `"."` / `digits` / `"."` / `digits` / `end`. Its `^\d+\.\d+\.\d+$` matches three numeric components such as `1.2.3`, allows leading zeros and rejects prerelease suffixes. Full Semantic Versioning rules require separate validation.
 
-The hex-color recipe applies an exact count to an explicit character list. It matches six-digit `#RRGGBB` colors with either letter case; shorthand, alpha components and other CSS color forms are outside this recipe.
+The hex-color recipe uses `start "#"` / `6 hex digits` / `end`. It matches six-digit `#RRGGBB` colors with either letter case; shorthand, alpha components and other CSS color forms are outside this recipe.
 
 ## Use it from JavaScript
 

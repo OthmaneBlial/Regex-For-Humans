@@ -52,8 +52,8 @@
   {
     "id": "hex-color",
     "title": "Match a hex color",
-    "rules": "start \"#\"\n6 one of: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d, e, f, A, B, C, D, E, F\nend",
-    "source": "^#[0123456789abcdefABCDEF]{6}$",
+    "rules": "start \"#\"\n6 hex digits\nend",
+    "source": "^#[0-9A-Fa-f]{6}$",
     "flags": "u",
     "matchMode": "full",
     "positive": ["#12aBcF", "#000000", "#FFFFFF"],

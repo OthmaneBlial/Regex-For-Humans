@@ -44,6 +44,11 @@ for (const scenario of scenarios) {
       );
       await expect(page.locator("#trace-list")).toContainText("Exactly 3 digits (0–9).");
     }
+    if (scenario.id === "hex-color") {
+      await expect(page.locator("#trace-list")).toContainText(
+        "Exactly 6 hexadecimal digits (0–9, A–F, a–f).",
+      );
+    }
     await expect(page.locator("#regex-output")).toHaveText(`/${scenario.source}/${scenario.flags}`);
     await expect(page.locator("#test-summary")).toHaveText(
       `${scenario.positive.length + scenario.negative.length} of ${scenario.positive.length + scenario.negative.length} examples behave as expected`,
@@ -297,6 +302,32 @@ test("ignore-case option explains case-insensitive character sets", async ({ pag
   await page.getByRole("textbox", { name: "Write your rules" }).fill("one of: K");
   await page.locator("#ignore-case").check();
   await expect(page.locator("#trace-list")).toContainText('One of "K", ignoring case (i).');
+});
+
+test("hex rules explain single digits, sequences and exact counts in the workshop", async ({
+  page,
+}) => {
+  await page.goto("/?example=hex-color");
+  const editor = page.locator("#rules-input");
+  const sample = page.locator("#test-list textarea").first();
+  for (const [rule, source, text, explanation] of [
+    ["hex digit", "[0-9A-Fa-f]", "F", "One hexadecimal digit"],
+    ["hex digits", "[0-9A-Fa-f]+", "09aF", "One or more hexadecimal digits"],
+    ["2 hex digits", "[0-9A-Fa-f]{2}", "0F", "Exactly 2 hexadecimal digits"],
+  ]) {
+    await editor.fill(`start\n${rule}\nend`);
+    await expect(page.locator("#regex-output")).toHaveText(`/^${source}$/u`);
+    await expect(page.locator("#trace-list")).toContainText(explanation);
+    await sample.fill(text);
+    await expect(page.locator(".test-row").first()).toHaveAttribute("data-result", "pass");
+    await expect(page.locator(".test-result").first()).toHaveText(`✓ Matched "${text}" at 0`);
+  }
+  await editor.fill("6 hex characters");
+  await expect(page.locator("#diagnostic")).toContainText("Line 1, column 3: Unsupported rule");
+  await expect(page.locator("#diagnostic")).toContainText(
+    "Use `hex digit` for one character or `hex digits` for one or more.",
+  );
+  await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
 });
 
 test("copy button places the real generated regex on the clipboard", async ({ page, context }) => {

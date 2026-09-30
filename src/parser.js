@@ -66,6 +66,8 @@ const SHORTHANDS = new Map([
   ["not word", "\\W"],
   ["not digit", "\\D"],
   ["digit", "\\d"],
+  ["hex digit", "[0-9A-Fa-f]"],
+  ["hex digits", "[0-9A-Fa-f]"],
   ["not space", "\\S"],
   ["space", "\\s"],
   ["digits", "\\d"],
@@ -221,7 +223,8 @@ function parseAtom(text, location, originalText) {
     return atom("wildcard", ".", repetition, location, originalText);
   for (const [phrase, token] of SHORTHANDS) {
     if (remaining.toLowerCase() === phrase) {
-      if (phrase === "digits" && !repetition) repetition = { kind: "oneOrMore" };
+      if ((phrase === "digits" || phrase === "hex digits") && !repetition)
+        repetition = { kind: "oneOrMore" };
       return atom("shorthand", token, repetition, location, originalText);
     }
   }
@@ -269,7 +272,9 @@ function parseAtom(text, location, originalText) {
     "UNKNOWN_RULE",
     `Unsupported rule: ${JSON.stringify(originalText)}.`,
     { line: location.line, column: location.column + offset },
-    "Try `line start`, `any text` or `3 digits`.",
+    /^hex(?:\s|$)/i.test(remaining)
+      ? "Use `hex digit` for one character or `hex digits` for one or more."
+      : "Try `line start`, `any text` or `3 digits`.",
   );
 }
 

@@ -158,15 +158,32 @@ test("syntax guide is readable without horizontal overflow or detectable WCAG A/
   await expect(page.locator(".guide-table").first()).toContainText(
     "Longest text up to the next rule. s includes line breaks.",
   );
+  await expect(page.locator(".guide-table").first()).toContainText(
+    "One ASCII hexadecimal digit, in either letter case",
+  );
+  await expect(page.locator(".guide-table").first()).toContainText(
+    "One or more hexadecimal digits; no prefix or separators",
+  );
   await expect(page.getByRole("link", { name: /Back to the workshop/ }).last()).toHaveAttribute(
     "href",
     "../",
   );
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
-    true,
-  );
-  const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
-  expect(results.violations.map((violation) => violation.id)).toEqual([]);
+  const viewport = page.viewportSize();
+  for (const width of [viewport.width, 320]) {
+    await page.setViewportSize({ width, height: viewport.height });
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+    expect(
+      await page
+        .locator(".guide-table-wrap")
+        .evaluateAll((tables) =>
+          tables.every((element) => element.scrollWidth <= element.clientWidth),
+        ),
+    ).toBe(true);
+    const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
+    expect(results.violations.map((violation) => violation.id)).toEqual([]);
+  }
   expect(failedResponses).toEqual([]);
 });
 

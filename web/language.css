@@ -145,4 +145,11 @@
   .guide-panel {
     padding: 18px;
   }
+  .guide-table th,
+  .guide-table td {
+    overflow-wrap: anywhere;
+  }
+  .guide-table td:nth-child(2) {
+    white-space: normal;
+  }
 }

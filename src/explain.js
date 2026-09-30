@@ -33,12 +33,15 @@ export function explainNode(node, flags, hasFollowingRule = false) {
     }
   }
 
-  if (node.atomType === "shorthand" && node.value === "\\d") {
-    if (node.repetition?.kind === "oneOrMore") return "One or more digits (0–9).";
+  if (node.atomType === "shorthand" && ["\\d", "[0-9A-Fa-f]"].includes(node.value)) {
+    const digit = node.value === "\\d" ? "digit" : "hexadecimal digit";
+    const range = node.value === "\\d" ? "0–9" : "0–9, A–F, a–f";
+    if (node.repetition?.kind === "oneOrMore") return `One or more ${digit}s (${range}).`;
     if (node.repetition?.kind === "exact") {
-      const digits = node.repetition.min === 1 ? "digit" : "digits";
-      return `Exactly ${node.repetition.min} ${digits} (0–9).`;
+      const digits = node.repetition.min === 1 ? digit : `${digit}s`;
+      return `Exactly ${node.repetition.min} ${digits} (${range}).`;
     }
+    return `One ${digit} (${range}).`;
   }
 
   let meaning;
@@ -56,7 +59,6 @@ export function explainNode(node, flags, hasFollowingRule = false) {
         "\\W": flags.includes("i")
           ? "Any non-word character; i treats a few Unicode equivalents as words."
           : "Any non-word character.",
-        "\\d": "One digit (0–9).",
         "\\D": "Any character except 0–9.",
         "\\s": "Whitespace, including line breaks.",
         "\\S": "Any non-whitespace character.",

@@ -18,7 +18,7 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 
 5. **Match a version shape.** Rules: `start` / `digits` / `"."` / `digits` / `"."` / `digits` / `end`. Expected source `^\d+\.\d+\.\d+$`, flags `u`. Positive: `1.2.3`, `10.20.300`, `01.2.3`. Negative: `1.2`, `1.2.3.4`, `v1.2.3`, `1x2x3`, `1.2.3-beta`. This teaches one-or-more digits and escaped literal dots. It checks only three numeric components, accepts leading zeros and rejects prerelease suffixes; use separate validation for full Semantic Versioning rules.
 
-6. **Match a hex color.** Rules: `start "#"` / `6 one of: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d, e, f, A, B, C, D, E, F` / `end`. Expected source `^#[0123456789abcdefABCDEF]{6}$`, flags `u`. Positive: `#12aBcF`, `#000000`, `#FFFFFF`. Negative: `#123`, `#12345678`, `#G00000`, `123456`, a color followed by a newline. This teaches an exact count applied to an explicit character list. It accepts only the six-digit `#RRGGBB` notation; shorthand, alpha components, named colors and other CSS color forms are outside this recipe.
+6. **Match a hex color.** Rules: `start "#"` / `6 hex digits` / `end`. Expected source `^#[0-9A-Fa-f]{6}$`, flags `u`. Positive: `#12aBcF`, `#000000`, `#FFFFFF`. Negative: `#123`, `#12345678`, `#G00000`, `123456`, a color followed by a newline. This teaches an exact count of ASCII hexadecimal digits in either letter case. It accepts only the six-digit `#RRGGBB` notation; shorthand, alpha components, named colors and other CSS color forms are outside this recipe.
 
 The recipes use compact syntax for prefixes, exclusions, line matching, a fixed date shape, variable-length version components and an exact hexadecimal character count.
 

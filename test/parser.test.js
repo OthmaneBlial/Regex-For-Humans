@@ -23,6 +23,29 @@ test("negative shorthands use their exact names", () => {
   assert.equal(parse("not space").nodes[0].value, "\\S");
 });
 
+test("hex rules have explicit repetition and positioned malformed-input errors", () => {
+  assert.equal(parse("hex digit").nodes[0].value, "[0-9A-Fa-f]");
+  assert.equal(parse("hex digit").nodes[0].repetition, null);
+  assert.deepEqual(parse("hex digits").nodes[0].repetition, { kind: "oneOrMore" });
+  const counted = parse("  start 6 HEX DIGITS\nend").nodes[1];
+  assert.equal(counted.atomType, "shorthand");
+  assert.equal(counted.value, "[0-9A-Fa-f]");
+  assert.deepEqual(counted.repetition, { kind: "exact", min: 6 });
+  assert.deepEqual(counted.location, { line: 1, column: 9 });
+  assert.throws(() => parse("hex characters"), {
+    code: "UNKNOWN_RULE",
+    hint: "Use `hex digit` for one character or `hex digits` for one or more.",
+  });
+  for (const [rules, code, column] of [
+    ["2 hex characters", "UNKNOWN_RULE", 3],
+    ["2 3 hex digits", "DUPLICATE_REPETITION", 3],
+    ["1001 hex digits", "REPETITION_LIMIT", 1],
+    ["hex digits 3 times", "UNKNOWN_RULE", 1],
+  ]) {
+    assert.throws(() => parse(rules), { code, line: 1, column }, rules);
+  }
+});
+
 test("exact counts stay before one rule and validate their limit", () => {
   assert.deepEqual(parse("3 digit").nodes[0].repetition, { kind: "exact", min: 3 });
   assert.deepEqual(parse("digits").nodes[0].repetition, { kind: "oneOrMore" });

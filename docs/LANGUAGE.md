@@ -20,6 +20,8 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 | `not word` | `\W` | `-`, `é` | `A`, `_` |
 | `digit` | `\d` | `3` | `A`, `٣` |
 | `not digit` | `\D` | `A`, `٣` | `3` |
+| `hex digit` | `[0-9A-Fa-f]` | `0`, `9`, `a`, `F` | `g`, `٣`, `Ｆ` |
+| `hex digits` | `[0-9A-Fa-f]+` | `09aF` | empty string, `0xFF` with `start` and `end` |
 | `space` | `\s` | a space, tab or newline | `A` |
 | `not space` | `\S` | `A` | a space |
 | `digits` | `\d+` | `3`, `123` | `A` |
@@ -30,6 +32,8 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 
 `word`/`not word` use JavaScript's `\w`/`\W`; `digit`/`not digit` use `\d`/`\D`. These classes are ASCII-oriented with `u`; `i` plus `u` adds a few Unicode case-folding matches to `\w`. `\w` includes `_` but excludes `é`. The misleading `alphanumeric character` aliases are rejected.
 
+`hex digit` matches one ASCII hexadecimal digit in either letter case. `hex digits` matches one or more; an exact count replaces that default, as in `6 hex digits`. They do not include a `0x` prefix, separators or non-ASCII digits. Add quoted literals for a required prefix, and anchors to validate the whole string.
+
 A literal is a JSON-style double-quoted string. Escape `"` and `\\`; the compiler escapes regex metacharacters. Character-list items must each be one Unicode code point. Quote punctuation, commas, spaces and backslashes, as in `"]", "-", ",", "\\"`. Empty literals and lists are errors.
 
 JSON strings may contain lone UTF-16 surrogates, such as `"\ud800"`. The compiler emits them as `\u{d800}` so copying a pattern or writing it as UTF-8 preserves the value. Separate surrogate items in a character list remain separate; a paired surrogate inside one quoted item represents one astral character.
@@ -38,7 +42,7 @@ JSON strings may contain lone UTF-16 surrogates, such as `"\ud800"`. The compile
 
 ## Repetition
 
-A count applies to the next item. Put it first (`3 digits`). The compiler keeps a multi-character literal together. `digits` means one or more digits; `any text` and `text without` already match sequences. Other repetition wording is not supported.
+A count applies to the next item. Put it first (`3 digits`). The compiler keeps a multi-character literal together. `digits` and `hex digits` mean one or more of their respective characters; `any text` and `text without` already match sequences. Other repetition wording is not supported.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |

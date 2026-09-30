@@ -56,6 +56,8 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
           <tr><td><code>any text</code></td><td><code>.*</code></td><td>Longest text up to the next rule. <code>s</code> includes line breaks.</td></tr>
           <tr><td><code>word</code> / <code>not word</code></td><td><code>\w</code> / <code>\W</code></td><td>ASCII letters, digits, underscore / everything else</td></tr>
           <tr><td><code>digit</code> / <code>not digit</code></td><td><code>\d</code> / <code>\D</code></td><td>ASCII digit / anything else</td></tr>
+          <tr><td><code>hex digit</code></td><td><code>[0-9A-Fa-f]</code></td><td>One ASCII hexadecimal digit, in either letter case</td></tr>
+          <tr><td><code>hex digits</code></td><td><code>[0-9A-Fa-f]+</code></td><td>One or more hexadecimal digits; no prefix or separators</td></tr>
           <tr><td><code>space</code> / <code>not space</code></td><td><code>\s</code> / <code>\S</code></td><td>JavaScript whitespace / anything else</td></tr>
           <tr><td><code>digits</code></td><td><code>\d+</code></td><td>One or more digits</td></tr>
           <tr><td><code>"ABC"</code></td><td><code>ABC</code></td><td>Exact quoted text; regex punctuation is escaped</td></tr>
@@ -67,7 +69,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
 
       <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">
         <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one thing</h2></div></div>
-        <p>Put exact counts first: <code>3 digits</code> generates <code>\d{3}</code>. <code>digits</code> means one or more digits. <code>any text</code> and <code>text without</code> already match sequences.</p>
+        <p>Put exact counts first: <code>3 digits</code> generates <code>\d{3}</code>, and <code>6 hex digits</code> generates <code>[0-9A-Fa-f]{6}</code>. <code>digits</code> and <code>hex digits</code> mean one or more of their characters. <code>any text</code> and <code>text without</code> already match sequences.</p>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Form</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
           <tr><td><code>3 &lt;item&gt;</code> (for example, <code>3 digits</code>)</td><td><code>{3}</code></td><td>Exactly three</td></tr>
         </tbody></table></div>

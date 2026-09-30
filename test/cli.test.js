@@ -199,6 +199,10 @@ test("CLI exposes flags, help and version", () => {
   const explained = run(["--explain", "-"], "digit");
   assert.equal(explained.status, 0, explained.stderr);
   assert.match(explained.stdout, /1:1 {2}\\d {2}One digit/u);
+  assert.equal(
+    run(["--explain", "-"], "hex digits").stdout,
+    "/[0-9A-Fa-f]+/u\n1:1  [0-9A-Fa-f]+  One or more hexadecimal digits (0–9, A–F, a–f).\n",
+  );
 });
 
 test("CLI reports an unknown rule with position and nonzero status", () => {

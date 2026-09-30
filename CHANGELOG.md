@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `hex digit` and `hex digits` for ASCII hexadecimal characters, with exact counts, explanations and a shorter hex-color recipe.
 - Repeated copies now restart the Copied feedback timer so an older copy cannot clear a newer confirmation.
 - The isolated example worker now rejects non-string flags instead of coercing an array such as `["u"]` into a valid flag string.
 - The JavaScript API now rejects `flags: null` as `UNSUPPORTED_FLAGS`, consistently with other non-string flag values; omitted and undefined flags keep their defaults.

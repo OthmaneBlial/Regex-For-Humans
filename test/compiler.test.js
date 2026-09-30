@@ -211,3 +211,41 @@ test("API options reject non-string flags while preserving omitted defaults", ()
     assert.equal(compile("digit", options).flags, "u");
   }
 });
+
+test("hex rules match exactly the ASCII hexadecimal characters and explain counts", () => {
+  const characters = [
+    ...Array.from({ length: 128 }, (_, index) => String.fromCodePoint(index)),
+    "٣",
+    "Ｆ",
+    "K",
+    "ſ",
+    "😀",
+  ];
+  for (const flags of ["", "i", "s", "is"]) {
+    const single = compile("start\nhex digit\nend", { flags });
+    assert.equal(single.source, "^[0-9A-Fa-f]$");
+    assert.equal(single.segments[1].explanation, "One hexadecimal digit (0–9, A–F, a–f).");
+    for (const character of characters) {
+      assert.equal(
+        toRegExp(single).test(character),
+        "0123456789abcdefABCDEF".includes(character),
+        `${JSON.stringify(character)} with flags ${flags}`,
+      );
+    }
+  }
+  const plural = compile("start\nhex digits\nend");
+  assert.equal(plural.source, "^[0-9A-Fa-f]+$");
+  assert.equal(plural.segments[1].explanation, "One or more hexadecimal digits (0–9, A–F, a–f).");
+  assert.equal(toRegExp(plural).test("09aF"), true);
+  for (const value of ["", "0xFF", "ag", "F\n"]) assert.equal(toRegExp(plural).test(value), false);
+  for (const count of [0, 1, 3, 1000]) {
+    const counted = compile(`start ${count} hex digits\nend`);
+    assert.equal(counted.source, `^[0-9A-Fa-f]{${count}}$`);
+    assert.equal(toRegExp(counted).test("f".repeat(count)), true);
+    assert.equal(toRegExp(counted).test("f".repeat(count + 1)), false);
+    assert.equal(
+      counted.segments[1].explanation,
+      `Exactly ${count} hexadecimal ${count === 1 ? "digit" : "digits"} (0–9, A–F, a–f).`,
+    );
+  }
+});
