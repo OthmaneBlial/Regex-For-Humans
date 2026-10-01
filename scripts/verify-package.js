@@ -94,6 +94,21 @@ if (!toRegExp(foldedLetter).test("K") || !foldedLetter.segments[1].explanation
 const bounded = compile(${JSON.stringify(boundedRules)});
 if (bounded.source !== ${JSON.stringify(boundedSource)} || !toRegExp(bounded).test("12") || !toRegExp(bounded).test("1234") || toRegExp(bounded).test("1") || toRegExp(bounded).test("12345")) throw new Error("Wrong bounded repetition behavior");
 if (bounded.segments[1].repetition?.kind !== "range" || bounded.segments[1].repetition.min !== 2 || bounded.segments[1].repetition.max !== 4) throw new Error("Missing range metadata");
+const optional = compile("start\\noptional \\"-\\"\\nend");
+const optionalPattern = toRegExp(optional);
+if (
+  optional.source !== "^-{0,1}$" ||
+  !optionalPattern.test("") ||
+  !optionalPattern.test("-") ||
+  optionalPattern.test("--")
+)
+  throw new Error("Wrong optional repetition behavior");
+if (
+  optional.segments[1].repetition?.kind !== "range" ||
+  optional.segments[1].repetition.min !== 0 ||
+  optional.segments[1].repetition.max !== 1
+)
+  throw new Error("Missing optional range metadata");
 const directional = compile(${JSON.stringify(directionRules)});
 if (directional.source !== ${JSON.stringify(directionSource)} || !toRegExp(directional).test(${JSON.stringify(directionText)}) || directional.segments[0].text !== ${JSON.stringify(directionRules)}) throw new Error("Wrong direction-control behavior");
 const controlled = compile(${JSON.stringify(controlRules)});
