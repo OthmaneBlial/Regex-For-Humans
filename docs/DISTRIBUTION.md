@@ -18,6 +18,10 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Complete artifact-manifest recipe
+
+The manifest recipe was synchronized into the existing project folder at Pages commit `e793735`, whose build completed on 1 October 2026. Live desktop/mobile checks followed its homepage card and verified the exact 19 rules, all explanation fragments and all nine preloaded inputs and outcomes. The path explanation selected its source line, the actual clipboard contained the generated regex, and Ctrl + Enter translated it back with correct focus and matching. A project name of 32 emoji matched; 33 did not. Reselecting the recipe restored the original rules and cases. There was no overflow at 320px or page error. Thirteen served website, workshop, fixture and documentation files returned HTTP 200 and matched local SHA-256 values.
+
 ### Explicit word-character names
 
 The explicit word-character names and readable identifier examples were synchronized into the existing project folder at Pages commit `ef3c9d5`, whose build completed on 1 October 2026. Live desktop/mobile checks imported the served API and compared eight repetition forms across all eight supported flag combinations. All 1,152 native match-array/index comparisons per viewport agreed, including Unicode case-folding equivalents, emoji and lone surrogates. The username recipe displayed the new wording with every example behaving as expected. Interactive checks verified case folding, rejected spaces, hyphens, `é` and emoji, exposed a useful `words` repair hint and recovered the copy action. The existing `word`, `not word` and reverse output stayed compatible. There was no overflow at 320px or page error. Thirteen served website, workshop, fixture and documentation files returned HTTP 200 and matched local SHA-256 values. All four complex examples also compiled, explained and translated correctly, with 34 browser-compatible input cases per viewport and captured-group rejection preserved.
