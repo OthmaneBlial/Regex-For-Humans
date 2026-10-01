@@ -19,8 +19,9 @@ const missing = [];
 
 for (const file of files) {
   const content = readFileSync(resolve(root, file), "utf8");
-  for (const match of content.matchAll(/\]\(([^)]+)\)/g)) {
-    const destination = match[1].trim().split(/\s+(?=["'(])/u, 1)[0];
+  // ponytail: scan inline links only; use a Markdown parser if reference links are needed.
+  for (const match of content.matchAll(/\]\(\s*(?:<([^<>\r\n]*)>[^)]*|([^)]+))\)/g)) {
+    const destination = match[1] ?? match[2].trim().split(/\s+(?=["'(])/u, 1)[0];
     const target = destination.split(/[?#]/u, 1)[0];
     if (!target || /^(?:https?:|mailto:)/u.test(target)) continue;
     checked += 1;

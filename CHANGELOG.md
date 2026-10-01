@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Resolve angle-bracket Markdown link destinations in local documentation checks, including spaces, parentheses, optional titles and external URLs.
+
 - Explain positive character lists repeated with `*` as membership instead of exclusion across the library, CLI and workshop, including reverse-translated rules.
 
 - Report unsupported alternation at its pipe operator with a separate-alternative hint, including inside literal groups, while preserving literal pipes and anchor diagnostics.

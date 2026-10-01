@@ -6,6 +6,61 @@ import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
+test("documentation checks unwrap angle-bracket destinations before resolving links", () => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-angle-"));
+  try {
+    mkdirSync(join(root, "docs"));
+    for (const name of [
+      "guide.md",
+      "space name.md",
+      "review(1).md",
+      "review(1.md",
+      "hash#name.md",
+    ]) {
+      writeFileSync(join(root, "docs", name), "# Guide\n");
+    }
+    const links =
+      "[Guide](<docs/guide.md>)\n" +
+      '[Space](<docs/space name.md> "Read (v1)")\n' +
+      "[Parentheses]( <docs/review(1).md> 'Review')\n" +
+      "[Unbalanced](<docs/review(1.md>)\n" +
+      "[Encoded hash](<docs/hash%23name.md?view=1#intro>)\n" +
+      "[Empty](<>)\n[Section](<#intro>)\n[Query](<?view=1>)\n" +
+      "[External](<https://example.com/(guide)?bad=%ZZ>)\n" +
+      "[HTTP](<http://example.com>)\n[Email](<mailto:hello@example.com>)\n";
+    const check = () =>
+      spawnSync(
+        process.execPath,
+        [fileURLToPath(new URL("../scripts/check-doc-links.js", import.meta.url)), root],
+        { encoding: "utf8" },
+      );
+    writeFileSync(join(root, "README.md"), links);
+    const valid = check();
+    assert.equal(valid.status, 0, valid.stderr);
+    assert.equal(valid.stderr, "");
+    assert.equal(valid.stdout, "Checked 5 local Markdown links in 6 files.\n");
+    writeFileSync(
+      join(root, "README.md"),
+      links +
+        '[Missing](<docs/missing (1).md?view=1#intro> "Optional title")\n' +
+        "[Bad escape](<docs/%ZZ.md> 'Broken')\n",
+    );
+    const invalid = check();
+    assert.equal(invalid.status, 1);
+    assert.equal(invalid.stdout, "");
+    assert.equal(
+      invalid.stderr,
+      "Missing local Markdown links:\n" +
+        "README.md: docs/missing (1).md?view=1#intro\n" +
+        "README.md: docs/%ZZ.md (invalid URL escape)\n",
+    );
+    writeFileSync(join(root, "README.md"), links);
+    assert.equal(check().status, 0);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("documentation checks resolve destinations separately from optional link titles", () => {
   const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-titles-"));
   try {
