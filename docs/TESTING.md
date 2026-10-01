@@ -51,7 +51,7 @@ npm exec -- playwright install chromium firefox webkit
 CI=1 npm run verify
 ```
 
-Run `npm ci` first on a fresh checkout. `CI=1` selects Chromium and one test worker locally; it does not enable GitHub Actions. Use the same prefix for individual browser commands: `CI=1 npm run test:browser` and `CI=1 npm run test:site`.
+Run `npm ci` first on a fresh checkout. `CI=1` selects Chromium and one worker for the desktop/mobile suites; the Firefox/WebKit smoke tests retain their two-worker limit. This environment variable does not enable GitHub Actions. Use the same prefix for individual browser commands: `CI=1 npm run test:browser` and `CI=1 npm run test:site`.
 
 Setup regressions compare the README, contributing guide and testing instructions with all three Playwright configurations. The installed-Chrome and bundled-Chromium examples must install their required engines before starting `npm run verify`.
 
