@@ -20,6 +20,12 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Worker flag compatibility
+
+Source commit `f79de8f` was synchronized into the existing project folder at Pages commit `7dc64a1`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including both changed documentation files. All thirty-three non-Markdown website files matched the previous deployed build byte for byte. Other project folders and the published npm preview were preserved.
+
+Live Chrome checks at 1280/390px and Firefox/WebKit checks at 1280px ran the same shared worker-flag check. Each run verified 160 case/line/dot-all/astral outcomes across eight canonical flag combinations and Full/Search modes. Twenty-six malformed flag values, including a 1,048,576-unit string, retained `WORKER_ERROR` with `Invalid regex test request.`; matching recovered after every rejection. Valid requests reused one worker, while recovery after errors started fresh workers. The product deadline remains 1,200 ms. There was no overflow at 320px or page error. This documentation/test update keeps the existing site runtime; earlier complex-record and interactive validation is recorded below.
+
 ### Validated compile-result metadata
 
 Source commit `3b7bc99` was synchronized into the existing project folder at Pages commit `3f6897f`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all seventeen changed project files. Other project folders and the published npm preview were preserved.
