@@ -2,7 +2,7 @@
 
 GitHub Actions is disabled for this repository. All current quality checks run locally with `npm run verify`; pushes and pull requests do not trigger CI. The archived CI compatibility matrix below is historical.
 
-Full local verification passed on 1 October 2026 at source commit `d1d6a7d` with Node 22.0.0/npm 10.9.9 and Node 25.9.0/npm 11.12.1. Both runs passed 127 Node tests, 166 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 54 homepage tests, a clean consumer package install, and `npm audit` with zero vulnerabilities. Biome 2.5.15, the declared Node 22.0.0 minimum, and Node 25.9.0 were included in these runs. `npm run verify` also regenerates the 1200 × 630 social preview before checking its metadata and image response. These runs cover the named Node versions on macOS; the older hosted multi-platform results below remain historical. See [DISTRIBUTION.md](DISTRIBUTION.md) for the deployment record.
+Full local verification passed on 1 October 2026 at source commit `9df9367` with Node 22.0.0/npm 10.9.9 and Node 25.9.0/npm 11.12.1. Both runs passed 127 Node tests, 168 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 54 homepage tests, a clean consumer package install, and `npm audit` with zero vulnerabilities. Biome 2.5.15, the declared Node 22.0.0 minimum, and Node 25.9.0 were included in these runs. `npm run verify` also regenerates the 1200 × 630 social preview before checking its metadata and image response. These runs cover the named Node versions on macOS; the older hosted multi-platform results below remain historical. See [DISTRIBUTION.md](DISTRIBUTION.md) for the deployment record.
 
 The package declares Node.js `>=22`. These results passed on 28 September 2026:
 
