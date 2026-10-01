@@ -18,6 +18,12 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Shared reverse reader and CLI instructions
+
+Source commit `c3245c7` was synchronized into the existing project folder at Pages commit `1a19276`, whose build completed on 1 October 2026. The workshop now loads the shared regex-literal reader, and its served README includes the source-checkout CLI reverse instructions with their explicit unreleased status. Twenty-seven resources returned HTTP 200 and matched local SHA-256 values, including all nineteen changed Pages files. Other project folders were preserved; the published npm preview is unchanged.
+
+Live desktop/mobile Chrome rechecked all three complex records, 100 explanation fragments, 26 exact inputs, source selection, real clipboard, reverse translation, focus and scroll reset, retained reading positions, optional values, case folding and the 32/33-emoji boundary. Six regex crops were inspected; there was no overflow at 320px or page error. Live worker checks also passed in Chrome at 1280/390px and Firefox/WebKit at 1280px: settled checks reused one worker, invalid rules discarded it, and recovery started fresh. Each flow recovered after three adversarial requests timed out in already loaded workers, with all workers terminated by timeout or final cleanup. Those adversarial checks use a 150 ms test budget; the product's 1,200 ms deadline is unchanged.
+
 ### Completed example workers
 
 Source commit `6e2d969` was synchronized into the existing project folder at Pages commit `8b4fdda`, whose build completed on 1 October 2026. Live Chrome checks at 1280/390px and Firefox/WebKit checks at 1280px each required one worker across settled example edits, i/s option changes and the complete manifest recipe. Invalid rules terminated it, and valid rules recovered with a fresh worker. In each browser flow, three pathological/compiler-generated requests ran in already loaded workers, timed out and recovered through the same controller; all four workers were terminated by timeout or final cleanup. These adversarial checks use a 150 ms test budget; the product's 1,200 ms deadline is unchanged.
