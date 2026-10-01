@@ -133,6 +133,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--ignore-case` | Add flag `i` |
 | `--dot-all` | Add flag `s` |
 | `--help` | Show usage |
+| `--version` | Show the package version |
 
 Read UTF-8 rules from a file or stdin. Use `--` before a filename starting with `-`.
 

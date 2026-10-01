@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { compile, toRegExp } from "../index.js";
 
 const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+const cli = fileURLToPath(new URL("../bin/regex-for-humans.js", import.meta.url));
 const recipes = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
@@ -15,6 +18,18 @@ test("README links every shared recipe exactly once", () => {
     ),
   ].map(([, id]) => id);
   assert.deepEqual(ids.sort(), recipes.map(({ id }) => id).sort());
+});
+
+test("README documents every CLI option shown by --help", () => {
+  const help = spawnSync(process.execPath, [cli, "--help"], { encoding: "utf8" });
+  assert.equal(help.status, 0, help.stderr);
+  const options = [...help.stdout.matchAll(/^ {2}(--[a-z-]*)(?=\s)/gmu)].map(
+    ([, option]) => option,
+  );
+  assert.ok(options.length > 0, "CLI help lists its options");
+  for (const option of options) {
+    assert.ok(readme.includes(`\`${option}\``), `README omits ${option}`);
+  }
 });
 
 test("README's lead demo and optional shortcut match the compiler", () => {
