@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Bring the rendered syntax guide and architecture reference in line with reverse translation and all supported repetition forms.
+
 - Preserve Unicode surrogate-pair atoms when reverse-translating repetition and character classes; keep separate surrogate atoms separate and reject literal groups whose boundaries cannot be expressed.
 
 - Translate supported Unicode JavaScript regexes into editable rules in the library and workshop; add `zero or more`, `one or more` and `at least N` rule forms, and reject syntax that cannot be preserved.

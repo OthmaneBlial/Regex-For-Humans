@@ -23,6 +23,12 @@ The browser imports the same `index.js` from the static build. `web/app.js` hand
 
 The internal `TestRunner.run(payload)` reports worker construction and message-send failures through rejected `WORKER_ERROR` promises. Starting a run cancels the previous one, including when the new worker cannot start; later attempts remain available. The controller assigns the request ID after copying payload fields so an extra caller-supplied `id` cannot interfere with reply routing. Example IDs inside `cases` are preserved separately.
 
+## Reverse translation
+
+The public `regexToRules(regex)` delegates to `src/regex-to-rules.js`. It reads a bounded subset of Unicode JavaScript `RegExp` syntax and returns `{ rules, flags }`; `flags` contains the `i`/`s` compiler options, while multiline behavior is represented by line-anchor rules. The emitted rules are checked by the existing parser. Unsupported operators and flags fail with positioned `CompileError` diagnostics instead of returning approximate or partial rules.
+
+The reader preserves Unicode atom boundaries, including fixed-width surrogate pairs in repetition and character classes. Separate lone-surrogate atoms remain separate rules; a literal group whose boundaries cannot be represented fails explicitly. Translation does not execute the input regex. The workshop parses a slash-delimited literal with the native `RegExp` constructor, calls this same public API, then uses its existing compiler and isolated example worker.
+
 ## Diagnostics and changes to the language
 
 `CompileError` carries a stable machine-readable `code`, a human message and one-based `line`/`column`; columns count UTF-16 code units, matching JavaScript string indices. An optional `hint` gives recovery advice. Invalid input must fail before returning a compile result. CLI JSON rule errors use `error.toJSON()`; invalid arguments use `CLI_USAGE`, and file/runtime errors use `CLI_ERROR`. New rule errors need a distinct code, a location test and readable wording. When a line contains a prefix or comma-separated anchor, verify that the reported column points to the relevant remaining instruction.

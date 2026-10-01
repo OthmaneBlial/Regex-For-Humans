@@ -37,11 +37,12 @@
         <div class="brand-name">regex<br><strong>for humans</strong></div>
       </div>
       <p class="sidebar-intro">Small vocabulary.<br>Exact meaning.<br>Useful defaults.</p>
-      <div class="sidebar-section-label"><span>ON THIS PAGE</span><span>01—04</span></div>
+      <div class="sidebar-section-label"><span>ON THIS PAGE</span><span>01—05</span></div>
       <nav class="docs-nav" aria-label="Syntax sections">
         <a href="#start">Start</a>
         <a href="#atoms">Atoms</a>
         <a href="#repetition">Repetition</a>
+        <a href="#reverse">Regex → rules</a>
         <a href="#flags">Flags &amp; limits</a>
       </nav>
       <div class="sidebar-bottom">
@@ -95,25 +96,40 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
 
       <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">
         <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one thing</h2></div></div>
-        <p>Put a count, range or <code>optional</code> before one item: <code>3 digits</code> generates <code>\d{3}</code>, and <code>between 2 and 4 digits</code> generates <code>\d{2,4}</code>. <code>optional "-"</code> is the same as <code>between 0 and 1 "-"</code>. <code>digits</code>, <code>hex digits</code>, <code>letters</code> and <code>spaces</code> mean one or more unless a count or range replaces that default. <code>any text</code> and <code>text without</code> already match sequences.</p>
+        <p>Put a repetition modifier before one item: <code>3 digits</code> generates <code>\d{3}</code>, and <code>between 2 and 4 digits</code> generates <code>\d{2,4}</code>. <code>optional "-"</code> is the same as <code>between 0 and 1 "-"</code>. Use <code>zero or more digit</code>, <code>one or more digit</code> or <code>at least 3 digit</code> for repetition without an upper limit. <code>digits</code>, <code>hex digits</code>, <code>letters</code> and <code>spaces</code> mean one or more unless a modifier replaces that default. <code>any text</code> and <code>text without</code> already match sequences.</p>
         <p>To set their length, use countable items: <code>3 any character</code> or <code>between 2 and 4 none of: a, b</code>. Counted sequence errors suggest these replacements. <code>any character</code> excludes line breaks unless <code>s</code> is enabled; <code>none of:</code> excludes only the listed characters.</p>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Form</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
           <tr><td><code>3 &lt;item&gt;</code> (for example, <code>3 digits</code>)</td><td><code>{3}</code></td><td>Exactly three</td></tr>
           <tr><td><code>between 2 and 4 &lt;item&gt;</code></td><td><code>{2,4}</code></td><td>Two, three or four; both bounds included</td></tr>
           <tr><td><code>optional &lt;item&gt;</code></td><td><code>{0,1}</code></td><td>Zero or one</td></tr>
+          <tr><td><code>zero or more &lt;item&gt;</code></td><td><code>*</code></td><td>Zero or more, with no upper limit</td></tr>
+          <tr><td><code>one or more &lt;item&gt;</code></td><td><code>+</code></td><td>One or more, with no upper limit</td></tr>
+          <tr><td><code>at least 3 &lt;item&gt;</code></td><td><code>{3,}</code></td><td>Three or more, with no upper limit</td></tr>
         </tbody></table></div>
-        <p>Both counts must be integers from 0 to 1,000, with the upper count at least the lower. <code>between 0 and 1 "-"</code> and <code>optional "-"</code> allow zero or one hyphen. A multi-character literal stays together: <code>between 2 and 4 "AB"</code> generates <code>(?:AB){2,4}</code>.</p>
+        <p>Numeric counts must be integers from 0 to 1,000, including the minimum in <code>at least</code>. In a range, the upper count must be at least the lower. <code>between 0 and 1 "-"</code> and <code>optional "-"</code> allow zero or one hyphen. A multi-character literal stays together: <code>between 2 and 4 "AB"</code> generates <code>(?:AB){2,4}</code>.</p>
         <p>Write counts with digits <code>0</code>–<code>9</code>; leading zeros are allowed. A sign, fraction, scientific notation or localized digit produces a count error. Every count needs an item: use <code>3 digits</code>, rather than <code>3</code> alone.</p>
         <p>The workshop’s Entire string mode requires a complete match; Search anywhere shows the first match, including an empty one if the pattern permits it. Search positions start at 0 and count UTF-16 code units: a match after <code>😀</code> starts at 2. These modes do not change the copied regex.</p>
         <p>Ranges try the largest count first, then backtrack if the next rule needs it. Add <code>start</code> and <code>end</code> to validate the entire string; an unanchored range can find part of a longer string.</p>
       </section>
 
+      <section id="reverse" class="panel guide-panel" aria-labelledby="reverse-title">
+        <div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">THE OTHER WAY 🔄</p><h2 id="reverse-title">Translate an existing regex</h2></div></div>
+        <div class="guide-example"><div><span>TRANSLATE FROM</span><code>/^[A-Z]{2}-\d{4}$/u</code><p>Open <strong>Already have a regex?</strong> in the <a href="../">workshop</a>, paste the literal, then choose <strong>Translate to rules</strong>.</p></div><pre><code>start
+2 uppercase letter
+"-"
+4 digit
+end</code></pre></div>
+        <p>The translator accepts literals, edge anchors, common digit/letter/hex classes, simple character lists, greedy repetition and non-capturing groups containing literal text. It requires <code>u</code>; <code>i</code> and <code>s</code> become workshop options, while <code>m</code> becomes <code>line start</code> and <code>line end</code>. Review the resulting rules and test your examples.</p>
+        <p>Alternation, captures, lookaround, backreferences, word boundaries, lazy quantifiers and unknown ranges are rejected with a diagnostic. Translation errors leave your current rules intact. In the library, use <code>regexToRules(regex)</code> and pass its returned <code>flags</code> to <code>compile(rules, { flags })</code>.</p>
+        <p>A fixed-width Unicode escape pair such as <code>\uD83D\uDE00</code> is one emoji atom, including inside a character class or before a repetition modifier. Separate surrogate atoms stay separate; literal groups whose surrogate boundaries cannot be represented are rejected. See the <a href="../docs/LANGUAGE.md">full language contract</a> for exact limits.</p>
+      </section>
+
       <section id="flags" class="panel guide-panel" aria-labelledby="flags-title">
-        <div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">BOUNDARIES</p><h2 id="flags-title">Flags and limits</h2></div></div>
+        <div class="panel-heading"><span class="step-number">05</span><div><p class="kicker">BOUNDARIES</p><h2 id="flags-title">Flags and limits</h2></div></div>
         <div class="guide-facts"><div><strong><code>u</code> always</strong><p>Unicode regex mode is always enabled.</p></div><div><strong><code>i</code> and <code>s</code> optional</strong><p>Choose ignore case or dot matches newlines in the workshop or CLI.</p></div><div><strong><code>m</code> from line anchors</strong><p>Line anchors enable multiline behavior automatically.</p></div></div>
         <p>Rules are limited to 16,384 UTF-16 code units, 200 lines and numeric repetition counts up to 1,000. The workshop limits example strings and runs matching in a time-limited worker. These limits do not guarantee that a copied regex is fast in another program.</p>
         <p>A missing closing quote points to the actual line end, including trailing spaces. Raw control characters inside unfinished quotes still report their own position. Whitespace after a closed quoted value is ignored.</p>
-        <p>Groups, alternation, lookaround, raw regex injection and other regex engines are outside this language version. Read the <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">full language contract ↗</a>, or the <a href="../docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">local Markdown source ↗</a> when offline.</p>
+        <p>Groups and raw regex are not rule-language syntax; the reverse translator accepts the documented subset as input. Alternation, lookaround, backreferences and other regex engines remain unsupported. Read the <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">full language contract ↗</a>, or the <a href="../docs/LANGUAGE.md" target="_blank" rel="noopener noreferrer">local Markdown source ↗</a> when offline.</p>
       </section>
 
       <footer class="footer"><span>Every supported phrase has tests and an explanation.</span><a href="../">← Back to the workshop</a></footer>

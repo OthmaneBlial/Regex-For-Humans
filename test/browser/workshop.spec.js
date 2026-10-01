@@ -1740,6 +1740,25 @@ test("syntax link opens the local rendered guide", async ({ page, context }) => 
   await expect(guide.locator("#repetition tbody tr").nth(1)).toContainText(
     "between 2 and 4 <item>",
   );
+  for (const [form, source] of [
+    ["zero or more <item>", "*"],
+    ["one or more <item>", "+"],
+    ["at least 3 <item>", "{3,}"],
+  ]) {
+    await expect(guide.getByRole("row").filter({ hasText: form })).toContainText(source);
+  }
+  await guide.getByRole("link", { name: "Regex → rules", exact: true }).click();
+  await expect(
+    guide.getByRole("heading", { name: "Translate an existing regex", exact: true }),
+  ).toBeInViewport();
+  const reverseRules = await guide.locator("#reverse pre code").textContent();
+  const reversePattern = compile(reverseRules);
+  await expect(guide.locator("#reverse .guide-example > div > code")).toHaveText(
+    `/${reversePattern.source}/${reversePattern.flags}`,
+  );
+  await expect(guide.locator("#reverse")).toContainText(
+    "Translation errors leave your current rules intact.",
+  );
   await guide.close();
 });
 
