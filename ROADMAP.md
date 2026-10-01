@@ -14,7 +14,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [x] 1.2 Parseur déterministe et diagnostics — AST, erreurs ligne/colonne, phrases inconnues rejetées ; tests parseur et CLI verts
 - [x] 1.3 Sémantique et échappement — 4 fixtures positives/négatives, régressions et caractères spéciaux vérifiés ; tarball installé proprement
 - [ ] 2.1 Explications traçables — implémentées et testées localement ; revue des 4 scénarios par une personne extérieure encore requise
-- [x] 2.2 Atelier web local — build statique avec ressources versionnées par contenu, 4 recettes, copie réelle, diagnostics, console et requêtes locales vérifiés ; tests navigateur bureau/mobile verts
+- [x] 2.2 Atelier web local — build statique avec ressources versionnées par contenu, 14 recettes partagées, copie réelle, diagnostics, console et requêtes locales vérifiés ; tests navigateur bureau/mobile verts
 - [x] 2.3 Tests positifs et négatifs — 16 tests navigateur verts : ancres, Unicode, saut de ligne, modes, édition et écarts ; isolation contre exécution longue suivie en 3.2
 - [ ] 2.4 Interface et accessibilité — rendu et clavier vérifiés, 14 tests axe/Playwright verts localement le 27 septembre ; lecteur d'écran réel et 3 nouvelles personnes encore requis
 - [x] 3.1 Tests et compatibilité — porte locale passée au commit `3347541` sur Node 25.9.0/npm 11.12.1 le 1 octobre 2026 : 132 tests Node, 174 tests atelier Chromium bureau/mobile, 2 smoke tests Firefox/WebKit et 54 tests site ; la porte précédente sous Node 22.23.3 est documentée dans `docs/TESTING.md`

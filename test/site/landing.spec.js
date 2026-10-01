@@ -98,6 +98,7 @@ test("homepage uses the current, dimensioned workshop screenshot", async ({ page
   );
   await expect(image).toHaveAttribute("width", String(workshopPreviewWidth));
   await expect(image).toHaveAttribute("height", String(workshopPreviewHeight));
+  await expect(image).toHaveAttribute("alt", /recipe list/u);
   await image.scrollIntoViewIfNeeded();
   await expect
     .poll(() => image.evaluate((element) => element.naturalWidth))
