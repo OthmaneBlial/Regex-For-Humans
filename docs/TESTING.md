@@ -28,18 +28,15 @@ The complete-title checker update passed local `npm run check`, all 162 Node tes
 
 ## Reproduce locally
 
-From a fresh checkout with a supported Node, npm and installed Google Chrome:
+From a fresh checkout with a supported Node, npm and installed Google Chrome, install the Firefox and WebKit engines before running the full gate:
 
 ```sh
 npm ci
+npm exec -- playwright install firefox webkit
 npm run verify
 ```
 
-The full gate also runs one editor-and-matching smoke test in Firefox and WebKit. Install those engines first:
-
-```sh
-npm exec -- playwright install firefox webkit
-```
+The full gate runs the desktop/mobile suites in installed Chrome and one editor-and-matching smoke test in each of Firefox and WebKit.
 
 To repeat the full verification with Node 22 on macOS, clear the package-selection settings inherited from `npm exec` before starting npm. The clean-consumer package check runs a nested offline `npm exec`:
 
@@ -55,6 +52,8 @@ CI=1 npm run verify
 ```
 
 Run `npm ci` first on a fresh checkout. `CI=1` selects Chromium and one test worker locally; it does not enable GitHub Actions. Use the same prefix for individual browser commands: `CI=1 npm run test:browser` and `CI=1 npm run test:site`.
+
+Setup regressions compare the README, contributing guide and testing instructions with all three Playwright configurations. The installed-Chrome and bundled-Chromium examples must install their required engines before starting `npm run verify`.
 
 Or run the individual checks:
 

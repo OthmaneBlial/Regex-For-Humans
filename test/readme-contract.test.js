@@ -4,6 +4,9 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { compile, regexToRules, toRegExp } from "../index.js";
+import compatibility from "../playwright.compat.config.js";
+import workshop from "../playwright.config.js";
+import homepage from "../playwright.site.config.js";
 
 const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 const cli = fileURLToPath(new URL("../bin/regex-for-humans.js", import.meta.url));
@@ -29,6 +32,31 @@ test("README documents every CLI option shown by --help", () => {
   assert.ok(options.length > 0, "CLI help lists its options");
   for (const option of options) {
     assert.ok(readme.includes(`\`${option}\``), `README omits ${option}`);
+  }
+});
+
+test("local verification instructions install every configured browser before running the gate", () => {
+  const browsers = [
+    ...new Set([
+      workshop.use.browserName,
+      homepage.use.browserName,
+      ...compatibility.projects.map(({ use }) => use.browserName),
+    ]),
+  ].sort();
+  for (const file of ["README.md", "CONTRIBUTING.md", "docs/TESTING.md"]) {
+    const content = readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
+    const blocks = [...content.matchAll(/```sh\n([\s\S]*?)\n```/gu)].map(([, code]) => code);
+    for (const [command, required] of [
+      ["npm run verify", browsers.filter((browser) => browser !== "chromium")],
+      ["CI=1 npm run verify", browsers],
+    ]) {
+      const setup = blocks.find((code) => code.split("\n").includes(command));
+      assert.ok(setup, `${file} needs a runnable ${command} example`);
+      const install = /^npm exec -- playwright install ([a-z ]+)$/mu.exec(setup);
+      assert.ok(install, `${file} needs its browser installation command`);
+      assert.ok(install.index < setup.indexOf(command), `${file} installs engines before testing`);
+      assert.deepEqual(install[1].split(" ").sort(), required, `${file}: ${command}`);
+    }
   }
 });
 

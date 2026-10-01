@@ -4,14 +4,24 @@ Thanks for helping make the controlled language accurate and easy to use. The cu
 
 ## Local setup
 
-Use Node.js 22 or newer and npm. From a fresh clone:
+Use Node.js 22 or newer, npm and installed Google Chrome. From a fresh clone, install the Firefox and WebKit engines required by the compatibility checks before running the full gate:
 
 ```sh
 npm ci
+npm exec -- playwright install firefox webkit
 npm run verify
 ```
 
-GitHub Actions is disabled; checks run locally. `npm run verify` runs formatting, lint, types, docs, Node tests, the static build, the clean-consumer package test, workshop and homepage browser tests, and the dependency audit. Playwright uses installed Chrome by default. If Chrome is unavailable, run `npx playwright install chromium` and use `CI=1 npm run verify` to select Chromium locally. See [testing and compatibility](docs/TESTING.md) for the exact scope of each check. Include the command and result when reporting a failure.
+GitHub Actions is disabled; checks run locally. `npm run verify` runs formatting, lint, types, docs, Node tests, the static build, the clean-consumer package test, workshop and homepage browser tests, Firefox/WebKit compatibility smoke tests, and the dependency audit.
+
+If Chrome is unavailable, install all three Playwright engines after `npm ci` and select bundled Chromium locally:
+
+```sh
+npm exec -- playwright install chromium firefox webkit
+CI=1 npm run verify
+```
+
+`CI=1` selects Chromium and one worker for the desktop/mobile suites; it does not enable GitHub Actions. See [testing and compatibility](docs/TESTING.md) for the exact scope of each check. Include the command and result when reporting a failure.
 
 ## Adding or changing a language rule
 
