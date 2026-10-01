@@ -79,7 +79,8 @@ test("regex literal input budgets apply before native construction and support s
   assert.equal(parseRegexLiteral(literal).source.length, literal.length - 3);
   const expected = {
     name: "Error",
-    message: "Regex input cannot exceed 16384 code units, plus its delimiters and flags.",
+    message:
+      "Regex input cannot exceed 16392 UTF-16 code units, including delimiters, flags and outer whitespace.",
   };
   assert.throws(() => parseRegexLiteral(literal.replace("/u", "a/u")), expected);
   assert.throws(() => parseRegexLiteral(` ${literal}\n`), expected);
@@ -91,7 +92,8 @@ test("regex literal input budgets count outer whitespace before trimming", () =>
   const padding = REGEX_LITERAL_INPUT_LIMIT - literal.length;
   const expected = {
     name: "Error",
-    message: "Regex input cannot exceed 16384 code units, plus its delimiters and flags.",
+    message:
+      "Regex input cannot exceed 16392 UTF-16 code units, including delimiters, flags and outer whitespace.",
   };
   for (const input of [
     `${" ".repeat(padding)}${literal}`,

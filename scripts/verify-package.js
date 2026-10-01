@@ -341,12 +341,15 @@ void [regex, segment, source, line, max];
     input: ` ${paddedLiteral}`,
     encoding: "utf8",
   });
+  const paddedError = JSON.parse(paddedFailure.stderr).error;
   if (
     paddedFailure.status !== 1 ||
     paddedFailure.stdout !== "" ||
-    JSON.parse(paddedFailure.stderr).error.code !== "CLI_ERROR"
+    paddedError.code !== "CLI_ERROR" ||
+    paddedError.message !==
+      "Regex input cannot exceed 16392 UTF-16 code units, including delimiters, flags and outer whitespace."
   ) {
-    throw new Error("Installed CLI did not reject the first excess padding unit.");
+    throw new Error("Installed CLI did not reject excess padding with the complete input limit.");
   }
   const boundedCli = JSON.parse(
     run([...cliArgs, "--json", "-"], { cwd: consumer, input: boundedRules }),

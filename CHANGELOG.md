@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- State the complete 16,392-unit UTF-16 literal budget in workshop and CLI errors, including delimiters, flags and outer whitespace. Preserve the limits, error codes and existing rules on rejection.
+
 - Count outer whitespace toward the shared workshop/CLI regex-literal input budget before trimming. Show the whole-input limit beside the reverse field, preserve current rules on oversized input and retain boundary-sized translation.
 
 - Validate compiler option flags against their five exact allowed values, avoiding scans and temporary sets for oversized invalid strings while preserving normalization, matching and diagnostics.

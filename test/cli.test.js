@@ -1018,7 +1018,8 @@ test("CLI reverse retains the regex source ceiling and enforces its streamed inp
     assert.deepEqual(JSON.parse(output.stderr), {
       error: {
         code: "CLI_ERROR",
-        message: "Regex input cannot exceed 16384 code units, plus its delimiters and flags.",
+        message:
+          "Regex input cannot exceed 16392 UTF-16 code units, including delimiters, flags and outer whitespace.",
       },
     });
   }
@@ -1027,6 +1028,27 @@ test("CLI reverse retains the regex source ceiling and enforces its streamed inp
   const translated = run(["--reverse", "--json", "-"], boundary);
   assert.equal(translated.status, 0, translated.stderr);
   assert.deepEqual(JSON.parse(translated.stdout), { rules: 'start\n"😀"\nend', flags: "" });
+});
+
+test("CLI reverse file input reports the complete literal limit in text and JSON", () => {
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  const path = join(directory, "padded.regex");
+  const message =
+    "Regex input cannot exceed 16392 UTF-16 code units, including delimiters, flags and outer whitespace.";
+  try {
+    writeFileSync(path, " ".repeat(LIMITS.sourceLength + 9));
+    for (const json of [false, true]) {
+      const output = run(["--reverse", ...(json ? ["--json"] : []), path]);
+      assert.equal(output.status, 1);
+      assert.equal(output.stdout, "");
+      if (json)
+        assert.deepEqual(JSON.parse(output.stderr), { error: { code: "CLI_ERROR", message } });
+      else assert.equal(output.stderr, `Error: ${message}\n`);
+    }
+  } finally {
+    unlinkSync(path);
+    rmdirSync(directory);
+  }
 });
 
 test("CLI reverse rejects malformed UTF-8 before interpreting a literal", () => {

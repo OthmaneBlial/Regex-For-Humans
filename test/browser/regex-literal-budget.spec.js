@@ -27,7 +27,7 @@ test("outer whitespace counts toward the reverse input budget without replacing 
     await reverse.fill(input);
     await reverse.press("Control+Enter");
     await expect(feedback).toHaveText(
-      "Regex input cannot exceed 16384 code units, plus its delimiters and flags.",
+      "Regex input cannot exceed 16392 UTF-16 code units, including delimiters, flags and outer whitespace.",
     );
     await expect(reverse).toHaveValue(input);
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
