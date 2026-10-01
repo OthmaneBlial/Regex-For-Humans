@@ -30,7 +30,9 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 
 11. **Match a .txt filename shape.** Whole-input anchors surround a `between 1 and 64 none of:` character list and the literal `".txt"`. The list excludes slash, backslash, NUL, LF, CR, U+2028 and U+2029. The bound counts Unicode code points, so an astral emoji counts as one stem character. Positive examples include `report.txt`, `résumé 2026.txt`, `📄.txt`, `.notes.txt`, `notes:2026.txt` and a 64-character stem. Negative examples include an empty stem, the wrong or uppercase extension, directory separators, excluded controls, a trailing newline or suffix and a 65-character stem. Spaces, dots and punctuation are deliberately allowed; the recipe does not establish filesystem validity, path safety or file existence. Check those separately.
 
-The recipes use compact syntax for prefixes, exclusions, line matching, fixed date and time shapes, variable-length version components, an exact hexadecimal character count, an inclusive digit range, an alphabetic username prefix, an optional phone prefix and bounded character exclusions for a text filename.
+12. **Match a MAC address shape.** Six exact pairs of ASCII hexadecimal digits are separated by literal colons. Positive examples include `00:1A:2B:3C:4D:5E`, `AA:BB:CC:DD:EE:FF` and `00:00:00:00:00:00`. Negative examples cover hyphens, missing or extra digits, invalid hex characters, extra groups and localized digits. This checks text shape only; it does not confirm address allocation or device type.
+
+The recipes use compact syntax for prefixes, exclusions, line matching, fixed date and time shapes, variable-length version components, an exact hexadecimal character count, an inclusive digit range, an alphabetic username prefix, an optional phone prefix, bounded filename characters and colon-separated hexadecimal pairs.
 
 Each fixture includes a short note about its meaning and limits. The workshop shows that note beside the selected rules, includes it in the editor's accessible description, and hides it when manual rules differ from the recipe. The homepage demo uses the same note.
 

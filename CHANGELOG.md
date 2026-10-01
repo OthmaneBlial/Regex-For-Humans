@@ -4,6 +4,8 @@
 
 - Add a branded 1200 × 630 share image and page-specific sharing metadata to the homepage, workshop and syntax guide.
 
+- Add a shape-only MAC-address recipe that teaches exact hex pairs and literal separators.
+
 - Reject noncanonical worker flags and malformed example IDs with stable errors before matching.
 
 - Add `optional <item>` as a zero-to-one repetition modifier, with positioned diagnostics and phone-shape coverage.

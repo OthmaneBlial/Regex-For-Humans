@@ -66,6 +66,25 @@
     "negative": ["#123", "#12345678", "#G00000", "123456", "#123456\n"]
   },
   {
+    "id": "mac-address-shape",
+    "title": "Match a MAC address shape",
+    "note": "Six colon-separated pairs of ASCII hexadecimal digits. Shape only; check address allocation separately.",
+    "rules": "start\n2 hex digits\n\":\"\n2 hex digits\n\":\"\n2 hex digits\n\":\"\n2 hex digits\n\":\"\n2 hex digits\n\":\"\n2 hex digits\nend",
+    "source": "^[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["00:1A:2B:3C:4D:5E", "AA:BB:CC:DD:EE:FF", "00:00:00:00:00:00"],
+    "negative": [
+      "00-1A-2B-3C-4D-5E",
+      "0:1A:2B:3C:4D:5E",
+      "00:1A:2B:3C:4D",
+      "GG:1A:2B:3C:4D:5E",
+      "001A:2B:3C:4D:5E",
+      "00:1A:2B:3C:4D:5E:6F",
+      "٠٠:1A:2B:3C:4D:5E"
+    ]
+  },
+  {
     "id": "invoice-number",
     "title": "Match an invoice ID shape",
     "note": "INV- followed by 2–6 ASCII digits. Leading zeros are allowed; verify invoice records separately.",

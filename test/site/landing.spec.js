@@ -496,6 +496,7 @@ test("recipe cards cover every shared recipe and open editable shapes", async ({
   for (const id of [
     "invoice-number",
     "username-shape",
+    "mac-address-shape",
     "time-shape",
     "phone-shape",
     "filename-shape",
