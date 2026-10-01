@@ -18,6 +18,10 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Translation confirmation
+
+The feedback fix was synchronized into the existing project folder at Pages commit `bccee28`, whose build completed on 1 October 2026. Live desktop/mobile Chrome checks verified confirmation clearing after rule edits, both i/s option changes and switching recipes. Editing examples, changing match mode and copying the regex retained the confirmation. An unsupported capture kept its error, accessible description and exact source selection after invalid rule edits, option changes and recipe reloading; a supported retry recovered. The manifest retained its 19 explanation fragments and nine passing outcomes, working clipboard, source-line selection and first-rule caret/scroll. Screenshots were captured and inspected, with no overflow at 320px or page errors. Thirteen served files returned HTTP 200 and matched local SHA-256 values.
+
 ### First-rule editor view
 
 The editor view fix was synchronized into the existing project folder at Pages commit `3c751c6`, whose build completed on 1 October 2026. Live desktop/mobile Chrome checks verified that initial loading, reverse translation and keyboard recipe reloading leave the caret and scroll at the beginning of the rules. Translation focuses the editor; recipe reloading retains button focus. The manifest still showed all 19 explanation fragments and nine passing outcomes, with working clipboard copying, source-line selection and the 32/33-emoji boundary. Screenshots were captured and inspected. There was no overflow at 320px or page error. Thirteen served files returned HTTP 200 and matched local SHA-256 values.
