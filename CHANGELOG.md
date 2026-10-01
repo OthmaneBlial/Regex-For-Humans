@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.0-dev (1 October 2026)
+
+- Prepare the first npm development preview with library, CLI and TypeScript installation examples, an explicit `preview` distribution tag and local publication checks.
+
 - Show the beginning of the generated regex when loading a recipe or successfully translating a pattern, preserving its horizontal reading position during valid rule edits, option changes and failed translations.
 
 - Start the explanation list at the first rule when loading a recipe or successfully translating a regex, while keeping its scroll position during valid rule edits, option changes and failed translations.

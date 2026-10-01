@@ -44,7 +44,21 @@ end
 
 A small, **fixed vocabulary**, with an exact meaning for every instruction. The library, CLI, and workshop use the same deterministic compiler. Unknown phrases get a line, column, and helpful diagnostic.
 
-> 🌱 **Development preview:** local use needs **Node.js 22+**. The package is **not published on npm yet**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation.
+> 🌱 **Development preview (`0.1.0-dev`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
+
+## 📦 Install the preview
+
+```sh
+npm install regex-for-humans@preview
+```
+
+Use the CLI without a global install:
+
+```sh
+printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
+```
+
+This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1.0-dev`. There are no runtime dependencies or standalone OS executables.
 
 ## 🎮 Play with a pattern
 
@@ -242,7 +256,14 @@ Put one instruction on each line. Quote literal text. Add anchors to check the w
 
 ## 💻 Bring it to your terminal
 
-From a clone, with Node.js 22+:
+With Node.js 22+, install the preview globally if you want the command on your PATH:
+
+```sh
+npm install --global regex-for-humans@preview
+printf 'start "ABC"\n3 digits\nend\n' | regex-for-humans
+```
+
+Or run directly from a clone:
 
 ```sh
 git clone https://github.com/OthmaneBlial/Regex-For-Humans.git
@@ -280,10 +301,10 @@ Control characters and Unicode line separators from rules, arguments and filenam
 
 ## 📦 Use the JavaScript library
 
-Import from the checkout. TypeScript declarations are included.
+After `npm install regex-for-humans@preview`, import the package in an ES module (`.mjs`, or a project with `"type": "module"`). TypeScript declarations are included. From a source checkout, use `./index.js` instead.
 
 ```js
-import { compile, regexToRules, toRegExp } from './index.js';
+import { compile, regexToRules, toRegExp } from 'regex-for-humans';
 
 const result = compile('start 3 digits\nend');
 console.log(result.source);                // ^\d{3}$

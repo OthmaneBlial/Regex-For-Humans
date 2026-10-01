@@ -78,7 +78,7 @@ This is a checked development deployment, not a stable release.
 
 ## Registry and release status
 
-On 1 October 2026, the public npm registry returned 404 for `regex-for-humans`, and the GitHub tags and releases APIs returned empty lists. GitHub Actions was disabled. This records the checked state only; it does not reserve the npm name. The package remains `0.1.0-dev` and requires Node.js rather than providing a standalone executable. Recheck external publication state before a release.
+On 1 October 2026, `npm view regex-for-humans` returned 404 from the public registry and `npm whoami` confirmed `othmaneblial`. The maintainer authorized publication of the first development preview, `0.1.0-dev`, using the `preview` distribution tag. The candidate is being prepared; public publication and fresh registry installation remain unverified until recorded here. GitHub Actions remains disabled. The package requires Node.js 22+ rather than providing a standalone executable; human review and stable-release gates remain open.
 
 The target release route is a versioned npm package containing the library and `regex-for-humans` CLI, plus the static browser workshop. The current hosted site is a development preview, not a stable release. The package requires Node.js 22 or newer. GitHub Actions is disabled for this repository. Local verification can preserve the exact tested tarball with `PACK_OUTPUT_DIR=artifacts npm run test:package`; that tarball is not a substitute for a published registry version.
 

@@ -4,6 +4,19 @@ This is a runbook for a future stable release, not a record of publication. The 
 
 GitHub Actions is disabled for this repository. Quality checks and release candidate verification run locally. The manual release workflow files remain inactive templates. The release route below uses locally verified artifacts and the existing owner Pages repository; publishing a release does not authorize enabling this project's CI.
 
+## Development preview publication
+
+The maintainer authorized the first npm preview on 1 October 2026. Keep `0.1.0-dev` on the explicit `preview` distribution tag and keep the human review tasks open. The stable-release gates below still apply before a stable version bump.
+
+Run the local checks and retain the exact clean-consumer-tested candidate:
+
+```sh
+PACK_OUTPUT_DIR=artifacts npm run test:package
+npm publish artifacts/regex-for-humans-0.1.0-dev.tgz --tag preview --access public --registry https://registry.npmjs.org/
+```
+
+Push the candidate's source commit to `main` before publication and record its tarball SHA-256. Confirm the npm account and name availability immediately before publishing. After publication, compare the public registry tarball with the retained candidate, install `regex-for-humans@preview` in a fresh directory and run the README CLI and library examples. Record actual registry and hosted-site results in [DISTRIBUTION.md](DISTRIBUTION.md); a prepared candidate is not a published version.
+
 ## Gates before a version bump
 
 1. Complete the open human reviews in [USABILITY-STUDY.md](USABILITY-STUDY.md): explanation accuracy, three first-use sessions, a real screen reader session, a novice README review, and an external contribution review. Record observed problems and fixes; keep the corresponding [roadmap](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/ROADMAP.md) tasks open until verified.

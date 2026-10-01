@@ -45,6 +45,16 @@ try {
 
   const installed = join(consumer, "node_modules", ...packageInfo.name.split("/"));
   run([join(root, "scripts", "check-doc-links.js"), installed], { cwd: consumer });
+  const readme = readFileSync(join(installed, "README.md"), "utf8");
+  const libraryExample = /## 📦 Use the JavaScript library[\s\S]*?```js\n([\s\S]*?)\n```/u.exec(
+    readme,
+  );
+  if (!libraryExample) throw new Error("The installed README is missing its library example.");
+  const readmeSmoke = join(consumer, "readme-smoke.mjs");
+  writeFileSync(readmeSmoke, libraryExample[1]);
+  if (!run([readmeSmoke], { cwd: consumer }).startsWith("^\\d{3}$\ntrue\n")) {
+    throw new Error("The installed README library example did not produce its documented result.");
+  }
   const manifest = JSON.parse(readFileSync(join(installed, "package.json"), "utf8"));
   const expectedKeywords = [
     "javascript",
