@@ -2,7 +2,7 @@
 
 GitHub Actions is disabled for this repository. All current quality checks run locally with `npm run verify`; pushes and pull requests do not trigger CI. The compatibility evidence below is historical, not a check of the latest commit.
 
-The latest full local verification passed at source commit `8ca1893` on 1 October 2026 under Node 22.0.0/npm 10.9.9 and Node 25.9.0/npm 11.12.1. Both runs passed 127 Node tests, 166 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 50 homepage tests, a clean consumer package install, and `npm audit` with zero vulnerabilities. These runs cover Node 22 on macOS; the older hosted multi-platform results below remain historical. See [DISTRIBUTION.md](DISTRIBUTION.md) for the deployment record.
+The latest full local verification passed at source commit `8051e0d` on 1 October 2026 under Node 22.0.0/npm 10.9.9 and Node 25.9.0/npm 11.12.1. Both runs passed 127 Node tests, 166 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 50 homepage tests, a clean consumer package install, and `npm audit` with zero vulnerabilities. These runs cover Node 22 on macOS; the older hosted multi-platform results below remain historical. See [DISTRIBUTION.md](DISTRIBUTION.md) for the deployment record.
 
 The package declares Node.js `>=22`. These results passed on 28 September 2026:
 
