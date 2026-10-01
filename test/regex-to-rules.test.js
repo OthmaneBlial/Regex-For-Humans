@@ -370,6 +370,49 @@ test("escapes literal punctuation and decodes Unicode escapes", () => {
   }
 });
 
+test("code-point escapes with leading zeros preserve literals, lists, groups and limits", () => {
+  for (const point of [0, 10, 0x41, 0x7f, 0xd83d, 0xde00, 0x10000, 0x1f600, 0x10ffff]) {
+    const value = String.fromCodePoint(point);
+    for (const padding of [7, 12, 32]) {
+      const escaped = `\\u{${point.toString(16).padStart(padding, "0")}}`;
+      for (const source of [
+        `^${escaped}$`,
+        `^${escaped}{2}$`,
+        `^[${escaped}X]{1,2}$`,
+        `^[^${escaped}X]+$`,
+        `^(?:${escaped}A){2}$`,
+      ]) {
+        for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+          const original = new RegExp(source, flags);
+          const translated = regexToRules(original);
+          const result = compile(translated.rules, { flags: translated.flags });
+          assert.equal(result.flags, original.flags);
+          const rebuilt = toRegExp(result);
+          for (const sample of [
+            "",
+            value,
+            value.repeat(2),
+            `${value}A${value}A`,
+            "X",
+            "XX",
+            "a",
+            "😀",
+            "\n",
+            `\n${value}\n`,
+          ]) {
+            assert.deepEqual(rebuilt.exec(sample), original.exec(sample), String(original));
+          }
+        }
+      }
+    }
+  }
+  const limit = new RegExp(`^\\u{${"0".repeat(16_384 - 8)}41}$`, "u");
+  assert.equal(limit.source.length, 16_384);
+  assert.deepEqual(regexToRules(limit), { rules: 'start\n"A"\nend', flags: "" });
+  const tooLong = new RegExp(`^\\u{${"0".repeat(16_384 - 7)}41}$`, "u");
+  assert.throws(() => regexToRules(tooLong), { code: "REGEX_SOURCE_LIMIT", column: 16_385 });
+});
+
 test("ASCII control-letter escapes preserve matching in literals, lists and literal groups", () => {
   assert.equal(regexToRules(/^\cJ$/u).rules, 'start\n"\\n"\nend');
   assert.equal(regexToRules(/^(?:\cM\cj){2}$/u).rules, 'start\n2 "\\r\\n"\nend');

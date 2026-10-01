@@ -28,6 +28,58 @@ test("supported JavaScript regexes translate into editable rules and keep their 
   await expect(page.locator("#rules-input")).toBeFocused();
 });
 
+test("leading-zero code-point escapes translate and match in the workshop", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const editor = page.locator("#rules-input");
+  const sample = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  for (const [literal, rules, output, mode, positive, detail, negative] of [
+    [
+      String.raw`/^\u{00000041}$/u`,
+      'start\n"A"\nend',
+      "/^A$/u",
+      "full",
+      "A",
+      '✓ Matched "A" at 0',
+      "B",
+    ],
+    [
+      String.raw`/^[\u{00000041}X]{2}$/isu`,
+      'start\n2 one of: "A", "X"\nend',
+      "/^[AX]{2}$/isu",
+      "full",
+      "ax",
+      '✓ Matched "ax" at 0',
+      "AB",
+    ],
+    [
+      String.raw`/^(?:\u{0001f600}A){2}$/imu`,
+      'line start\n2 "😀A"\nline end',
+      "/^(?:😀A){2}$/imu",
+      "search",
+      "\n😀a😀a\n",
+      '✓ Matched "😀a😀a" at 1',
+      "😀A",
+    ],
+  ]) {
+    await reverse.fill(literal);
+    await page.locator("#reverse-button").click();
+    await expect(reverse).toHaveValue(literal);
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(editor).toHaveValue(rules);
+    await expect(editor).toBeFocused();
+    await expect(page.locator("#regex-output")).toHaveText(output);
+    await page.locator("#match-mode").selectOption(mode);
+    await sample.fill(positive);
+    await expect(result).toHaveText(detail);
+    await sample.fill(negative);
+    await expect(result).toHaveText("! No match");
+  }
+});
+
 test("the browser API accepts a genuine regex from an iframe without changing its state", async ({
   page,
 }) => {

@@ -116,6 +116,9 @@ for (const [body, canonical, sample] of [["a-zA-Z", "A-Za-z", "Ab"], ["0-9a-fA-F
 const emojiReverse = regexToRules(new RegExp(${JSON.stringify(unicodePairSource)}, "u"));
 const emojiPattern = toRegExp(compile(emojiReverse.rules, { flags: emojiReverse.flags }));
 if (!emojiPattern.test("😀😀") || emojiPattern.test("😀")) throw new Error("Reverse translation split a Unicode surrogate pair");
+const padded = regexToRules(new RegExp("^(?:\\\\u{0001f600}A){2}$", "isu"));
+const paddedPattern = toRegExp(compile(padded.rules, { flags: padded.flags }));
+if (padded.rules !== 'start\\n2 "😀A"\\nend' || !paddedPattern.test("😀a😀a") || paddedPattern.test("😀A")) throw new Error("Leading-zero code-point escape translation changed matching");
 const controlReverse = regexToRules(new RegExp(${JSON.stringify(controlLetterSource)}, "u"));
 const controlPattern = toRegExp(compile(controlReverse.rules, { flags: controlReverse.flags }));
 if (!controlPattern.test(${JSON.stringify("\n\n")}) || !controlPattern.test("XX") || controlPattern.test(${JSON.stringify("\n")}) || controlPattern.test("jj") || /[\\u0000-\\u0009\\u000b-\\u001f]/u.test(controlReverse.rules)) throw new Error("Reverse translation changed control-letter matching or display");

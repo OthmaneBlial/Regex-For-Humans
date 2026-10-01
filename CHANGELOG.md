@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Translate valid Unicode code-point escapes with extra leading zeros in literals, character lists and literal groups while preserving the existing source-size limit.
+
 - Copy native regex data without invoking custom matching-protocol getters during reverse translation, preserving flags, diagnostics and input state.
 
 - Serve local preview assets with their known content types regardless of extension case, so uppercase JavaScript modules and mixed-case stylesheets load correctly.

@@ -193,6 +193,8 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 `regexToRules()` also accepts genuine regexes from other JavaScript contexts, such as iframes or Node's `vm`, and leaves their `lastIndex` unchanged. It translates the stored native pattern and flags; subclass or own-property metadata overrides do not change the translation. Matching methods and custom `Symbol.match` getters are not called.
 
+Unicode escapes can include leading zeros: `/^\u{00000041}$/u` translates to `start`, `"A"`, `end` on separate lines. The same escapes work in character lists and literal groups; the regex source still has a 16,384-code-unit limit.
+
 ## 🛠️ Make yourself at home
 
 Run the workshop locally:

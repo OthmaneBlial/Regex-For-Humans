@@ -70,8 +70,8 @@ function readEscape(source, index, inClass = false) {
       const close = source.indexOf("}", index + 3);
       if (close < 0) unsupported("The Unicode code-point escape is incomplete.", index);
       const digits = source.slice(index + 3, close);
-      if (!/^[0-9a-f]{1,6}$/iu.test(digits)) {
-        unsupported("Use one to six hexadecimal digits in a Unicode code-point escape.", index);
+      if (!/^[0-9a-f]+$/iu.test(digits)) {
+        unsupported("Use hexadecimal digits in a Unicode code-point escape.", index);
       }
       const point = Number.parseInt(digits, 16);
       if (point > 0x10ffff) unsupported("The Unicode code point is out of range.", index);

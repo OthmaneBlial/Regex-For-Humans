@@ -83,6 +83,13 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "" at 0');
   await firstExample.fill("x");
   await expect(firstResult).toContainText("not the entire string");
+  await reverse.fill(String.raw`/^(?:\u{0001f600}A){2}$/isu`);
+  await page.locator("#reverse-button").click();
+  await expect(output).toHaveText("/^(?:😀A){2}$/isu");
+  await firstExample.fill("😀a😀a");
+  await expect(firstResult).toHaveText('✓ Matched "😀a😀a" at 0');
+  await firstExample.fill("😀A");
+  await expect(firstResult).toHaveText("! No match");
   const foreign = await page.evaluate(async () => {
     const { regexToRules } = await import("/index.js");
     const frame = document.createElement("iframe");
