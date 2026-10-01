@@ -18,6 +18,23 @@ const workshopPreviewVersion = createHash("sha256")
 const workshopPreviewWidth = workshopPreview.readUInt32BE(16);
 const workshopPreviewHeight = workshopPreview.readUInt32BE(20);
 
+test("homepage points readers to the complete complex examples included in the workshop", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const link = page.getByRole("link", { name: "Explore four complex examples ↗", exact: true });
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute(
+    "href",
+    "https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md",
+  );
+  const response = await page.request.get("/workshop/docs/COMPLEX-EXAMPLES.md");
+  expect(response.status()).toBe(200);
+  expect(await response.text()).toBe(
+    readFileSync(new URL("../../docs/COMPLEX-EXAMPLES.md", import.meta.url), "utf8"),
+  );
+});
+
 test("homepage requests its current stylesheet and bypasses an obsolete cached style", async ({
   page,
 }) => {

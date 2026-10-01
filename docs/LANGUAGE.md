@@ -8,6 +8,10 @@ Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 
 When using both anchor edges, pair `start` with `end`, or `line start` with `line end`. Mixing them reports `MIXED_ANCHORS` at the end anchor and suggests these compatible pairs. A single anchor can still be used alone.
 
+## 🏗️ Larger worked examples
+
+The [complex-examples guide](COMPLEX-EXAMPLES.md) combines these atoms into an access log, structured event, artifact manifest and multiline order. It includes complete regexes, every generated explanation, accepted/rejected inputs and exact diagnostics for unsupported captures and nesting.
+
 ## Instructions
 
 | Instruction | Generated source | Matches | Does not match |

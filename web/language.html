@@ -65,6 +65,7 @@
 end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>Matches</strong> ABC123<br><strong>Rejects</strong> ABC12, ABC1234</p></div></div>
         <p>Use <code>line start</code> and <code>line end</code> for line-based matching. Line anchors add JavaScript's <code>m</code> flag. Input and line anchors cannot be mixed. When both edges are present, pair <code>start</code> with <code>end</code>, or <code>line start</code> with <code>line end</code>; the error suggests these repairs at the end anchor. A single anchor can still be used alone.</p>
         <p>Without <code>m</code>, <code>start</code> and <code>end</code> match only the true input edges. They reject a final line break; <code>m</code> makes line anchors match each line.</p>
+        <p>🏗️ Put the atoms together: <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md" target="_blank" rel="noopener noreferrer">four complex examples with complete explanations ↗</a> cover access logs, telemetry, artifact manifests and multiline documents. The <a href="../docs/COMPLEX-EXAMPLES.md">Markdown guide</a> is included for offline reading.</p>
       </section>
 
       <section id="atoms" class="panel guide-panel" aria-labelledby="atoms-title">
@@ -115,7 +116,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
 
       <section id="reverse" class="panel guide-panel" aria-labelledby="reverse-title">
         <div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">THE OTHER WAY 🔄</p><h2 id="reverse-title">Translate an existing regex</h2></div></div>
-        <div class="guide-example"><div><span>TRANSLATE FROM</span><code>/^[A-Z]{2}-\d{4}$/u</code><p>Open <strong>Already have a regex?</strong> in the <a href="../">workshop</a>, paste the literal, then choose <strong>Translate to rules</strong>.</p></div><pre><code>start
+        <div class="guide-example"><div><span>TRANSLATE FROM</span><code>/^[A-Z]{2}-\d{4}$/u</code><p>Open <strong>Already have a regex?</strong> in the <a href="../">workshop</a>, paste the literal, then press <strong>Ctrl/Cmd + Enter</strong> or choose <strong>Translate to rules</strong>.</p></div><pre><code>start
 2 uppercase letter
 "-"
 4 digit

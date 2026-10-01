@@ -984,7 +984,7 @@ for (const scenario of scenarios) {
     await expect(page.locator("#recipe-note")).toBeVisible();
     await expect(page.locator("#recipe-note")).toHaveText(scenario.note);
     await expect(page.locator("#rules-input")).toHaveAccessibleDescription(
-      `A controlled language, not a free-form prompt. Read the syntax ↗ ${scenario.note}`,
+      `A controlled language, not a free-form prompt. Read the syntax ↗ · Complex examples ↗ ${scenario.note}`,
     );
     await expect(page.locator("#recipe-count")).toHaveText(
       `01—${String(scenarios.length).padStart(2, "0")}`,
@@ -2614,11 +2614,32 @@ for (const success of [true, false]) {
 
 test("syntax link opens the local rendered guide", async ({ page, context }) => {
   await page.goto("/");
+  const complexUrl =
+    "https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md";
+  await expect(page.getByRole("link", { name: "Complex examples ↗", exact: true })).toHaveAttribute(
+    "href",
+    complexUrl,
+  );
   const [guide] = await Promise.all([
     context.waitForEvent("page"),
     page.getByRole("link", { name: /Read the syntax/ }).click(),
   ]);
   await guide.waitForLoadState();
+  await expect(
+    guide.getByRole("link", {
+      name: "four complex examples with complete explanations ↗",
+      exact: true,
+    }),
+  ).toHaveAttribute("href", complexUrl);
+  const markdown = guide.getByRole("link", { name: "Markdown guide", exact: true });
+  await expect(markdown).toHaveAttribute("href", "../docs/COMPLEX-EXAMPLES.md");
+  const response = await guide.request.get(
+    new URL(await markdown.getAttribute("href"), guide.url()).href,
+  );
+  expect(response.status()).toBe(200);
+  expect(await response.text()).toBe(
+    readFileSync(new URL("../../docs/COMPLEX-EXAMPLES.md", import.meta.url), "utf8"),
+  );
   await expect(guide).toHaveURL(/\/web\/language\.html\?v=[\da-f]{12}$/u);
   await expect(guide.getByRole("heading", { name: "Match one thing" })).toBeVisible();
   await expect(guide.locator("#atoms")).toContainText("[A-Za-z]");

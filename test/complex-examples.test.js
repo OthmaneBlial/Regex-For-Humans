@@ -31,7 +31,7 @@ test("README includes two complete complex examples synchronized with the full g
     const detailed = examples.find(([, key]) => key === id)?.[2];
     assert.ok(detailed, "README example has a full walkthrough");
     for (const language of ["text", "js"]) {
-      const block = new RegExp("```" + language + "\\n([\\s\\S]*?)\\n```", "u");
+      const block = new RegExp(`\`\`\`${language}\\n([\\s\\S]*?)\\n\`\`\``, "u");
       const shown = block.exec(section)?.[1];
       assert.ok(shown && detailed.includes(shown), `${id}: ${language} block stays in sync`);
     }
