@@ -55,4 +55,11 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "abba" at 0');
   await firstExample.fill("x");
   await expect(firstResult).toHaveText("! No match");
+  await reverse.fill("/(?:)+/u");
+  await page.locator("#reverse-button").click();
+  await expect(output).toHaveText("/.{0}/u");
+  await firstExample.fill("");
+  await expect(firstResult).toHaveText('✓ Matched "" at 0');
+  await firstExample.fill("x");
+  await expect(firstResult).toContainText("not the entire string");
 });

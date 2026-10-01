@@ -77,6 +77,8 @@ Separator lists such as `[._-]` and `[-._]` translate too: a hyphen at either en
 
 Alternation errors point to `|` and suggest translating each alternative separately. Literal pipes such as `\|` or `[|]` remain supported.
 
+Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. Search mode finds an empty match at position 0, including in nonempty input; Entire string mode accepts only blank input for this pattern.
+
 [![Real desktop workshop showing editable rules, generated regex, explanations, and passing example checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 <details>

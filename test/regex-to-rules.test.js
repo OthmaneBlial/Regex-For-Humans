@@ -34,6 +34,79 @@ test("translates literal groups, generic repetition and open-ended counts", () =
   }
 });
 
+test("empty non-capturing groups translate to zero-count rules with equivalent matching", () => {
+  for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+    for (const [source, rules] of [
+      ["", "0 any character"],
+      ["(?:)", "0 any character"],
+      ["(?:)*", "0 any character"],
+      ["(?:)+", "0 any character"],
+      ["(?:)?", "0 any character"],
+      ["(?:){0}", "0 any character"],
+      ["(?:){3}", "0 any character"],
+      ["(?:){1000}", "0 any character"],
+      ["(?:){0,1}", "0 any character"],
+      ["(?:){0,4}", "0 any character"],
+      ["(?:){2,4}", "0 any character"],
+      ["(?:){2,}", "0 any character"],
+      ["a(?:)b", '"a"\n0 any character\n"b"'],
+      ["😀(?:)+", '"😀"\n0 any character'],
+      [
+        String.raw`\uD83D(?:)\uDE00`,
+        `${JSON.stringify("\ud83d")}\n0 any character\n${JSON.stringify("\ude00")}`,
+      ],
+      ["^(?:)$", "start\n0 any character\nend"],
+      ["^K(?:){3}$", 'start\n"K"\n0 any character\nend'],
+    ]) {
+      const regex = new RegExp(source, flags);
+      const translated = regexToRules(regex);
+      assert.equal(translated.flags, `${regex.ignoreCase ? "i" : ""}${regex.dotAll ? "s" : ""}`);
+      assert.equal(
+        translated.rules,
+        flags.includes("m")
+          ? rules.replace(/^start\n/u, "line start\n").replace(/\nend$/u, "\nline end")
+          : rules,
+      );
+      const rebuilt = compile(translated.rules, { flags: translated.flags });
+      const pattern = toRegExp(rebuilt);
+      assert.match(rebuilt.source, /\.\{0\}/u);
+      for (const sample of [
+        "",
+        "x",
+        "\n",
+        "😀",
+        "😀😀",
+        "ab",
+        "AabB",
+        "K",
+        "k",
+        "K",
+        "\nK\n",
+        "\ud83d",
+        "\ude00",
+      ]) {
+        const expected = regex.exec(sample);
+        const actual = pattern.exec(sample);
+        assert.equal(actual?.[0], expected?.[0], `${regex}: ${JSON.stringify(sample)}`);
+        assert.equal(actual?.index, expected?.index, `${regex}: ${JSON.stringify(sample)}`);
+      }
+    }
+  }
+  for (const [source, column] of [
+    ["(?:)*?", 6],
+    ["(?:){1001}", 5],
+    ["()", 1],
+    ["(?:(?:))", 4],
+    ["[]", 1],
+  ]) {
+    assert.throws(() => regexToRules(new RegExp(source, "u")), {
+      code: "UNSUPPORTED_REGEX",
+      line: 1,
+      column,
+    });
+  }
+});
+
 test("maps multiline anchors and matching flags without changing their meaning", () => {
   const original = /^a.*$/imsu;
   const translated = regexToRules(original);

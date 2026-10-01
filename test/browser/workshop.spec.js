@@ -1863,6 +1863,113 @@ test("letter rules show counts, alphabetic matching and Unicode case-folding beh
   await expect(page.locator("#copy-button")).toBeEnabled();
 });
 
+test("empty non-capturing groups preserve zero-count matching in full and search modes", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: new URL(page.url()).origin,
+  });
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const editor = page.locator("#rules-input");
+  const sample = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  const output = page.locator("#regex-output");
+  for (const [
+    literal,
+    rules,
+    source,
+    positive,
+    negative,
+    negativeResult,
+    search,
+    matched,
+    index,
+  ] of [
+    [
+      "/(?:)/u",
+      "0 any character",
+      "/.{0}/u",
+      "",
+      "a",
+      '! Found "", not the entire string',
+      "😀text",
+      "",
+      0,
+    ],
+    [
+      "/^(?:)*$/mu",
+      "line start\n0 any character\nline end",
+      "/^.{0}$/mu",
+      "",
+      "\n",
+      '! Found "", not the entire string',
+      "\n",
+      "",
+      0,
+    ],
+    [
+      "/K(?:)+/isu",
+      '"K"\n0 any character',
+      "/K.{0}/isu",
+      "K",
+      "x",
+      "! No match",
+      "😀zKtail",
+      "K",
+      3,
+    ],
+    [
+      "/^a(?:)?b$/u",
+      'start\n"a"\n0 any character\n"b"\nend',
+      "/^a.{0}b$/u",
+      "ab",
+      "a",
+      "! No match",
+      "ab",
+      "ab",
+      0,
+    ],
+  ]) {
+    await page.locator("#match-mode").selectOption("full");
+    await reverse.fill(literal);
+    await page.locator("#reverse-button").press("Enter");
+    await expect(editor).toHaveValue(rules);
+    await expect(editor).toBeFocused();
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(output).toHaveText(source);
+    await expect(page.locator("#ignore-case")).toBeChecked({ checked: literal.endsWith("isu") });
+    await expect(page.locator("#dot-all")).toBeChecked({ checked: literal.endsWith("isu") });
+    await expect(
+      page.locator("#trace-list button").filter({ hasText: "Exactly 0 times." }),
+    ).toHaveCount(1);
+    await sample.fill(positive);
+    await expect(result).toHaveText(`✓ Matched ${JSON.stringify(positive)} at 0`);
+    await sample.fill(negative);
+    await expect(result).toHaveText(negativeResult);
+    await page.locator("#match-mode").selectOption("search");
+    await sample.fill(search);
+    await expect(result).toHaveText(`✓ Matched ${JSON.stringify(matched)} at ${index}`);
+    await page.locator("#copy-button").click();
+    await expect(page.locator("#copy-button")).toContainText("Copied");
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(source);
+  }
+  await reverse.fill("/(?:)*?/u");
+  await page.locator("#reverse-button").press("Enter");
+  await expect(reverse).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#reverse-feedback")).toContainText("Column 6: Lazy quantifiers");
+  await expect(output).toHaveText("/^a.{0}b$/u");
+  await expect(page.locator("#copy-button")).toBeEnabled();
+  await reverse.fill("/(?:){0,4}/u");
+  await page.locator("#reverse-button").press("Enter");
+  await expect(editor).toHaveValue("0 any character");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(output).toHaveText("/.{0}/u");
+});
+
 test("bounded counts show inclusive matches, literal grouping and positioned errors", async ({
   page,
 }) => {

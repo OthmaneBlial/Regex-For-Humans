@@ -39,7 +39,7 @@ const UNSUPPORTED_HINT =
 const ALTERNATION_MESSAGE = "Alternation (`|`) cannot be translated.";
 const ALTERNATION_HINT = "Translate each alternative as a separate regex.";
 
-/** @typedef {{end: number, literal?: string, phrase?: string, category?: string, set?: {values: string[], negative: boolean}}} AtomToken */
+/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, category?: string, set?: {values: string[], negative: boolean}}} AtomToken */
 /** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number}} QuantifierToken */
 /** @typedef {AtomToken & QuantifierToken & {index: number}} PositionedAtom */
 
@@ -202,7 +202,7 @@ function readLiteralGroup(source, start) {
     const atomStart = index;
     const character = source[index];
     if (character === ")") {
-      if (!value) unsupported("An empty group has no rule-language equivalent.", start);
+      if (!value) return { end: index + 1, phrase: "any character", empty: true };
       return { end: index + 1, literal: value };
     }
     if (character === "|") unsupported(ALTERNATION_MESSAGE, index, ALTERNATION_HINT);
@@ -336,11 +336,12 @@ export function regexToRules(regex) {
     }
     cursor = atom.end;
 
-    const quantifier = readQuantifier(source, cursor);
+    let quantifier = readQuantifier(source, cursor);
     cursor = quantifier.end;
     if (source[cursor] === "?") {
       unsupported("Lazy quantifiers are not supported by the rule language.", cursor);
     }
+    if (atom.empty) quantifier = { end: cursor, kind: "exact", min: 0 };
     atoms.push({ ...atom, ...quantifier, index });
   }
 
