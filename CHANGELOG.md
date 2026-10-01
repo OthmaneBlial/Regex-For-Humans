@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject physical line breaks inside workshop regex literals with an escape hint, preserving escaped newline matching and current editor data on failure.
+
 - Distinguish oversized translated rules from oversized regex input, preserve limit codes and report the global translation error at the start of the regex with a repair hint.
 
 - Diagnose incomplete unbounded repetition modifiers at their source position, with repair examples shared by the library, CLI and workshop.

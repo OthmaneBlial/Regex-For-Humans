@@ -90,6 +90,9 @@ function parseRegexLiteral(input) {
   let closingSlash = -1;
   for (let index = 1; index < literal.length; index += 1) {
     const character = literal[index];
+    if ("\n\r\u2028\u2029".includes(character)) {
+      throw new Error("Escape line breaks inside a regex literal, such as `\\n`.");
+    }
     if (escaped) escaped = false;
     else if (character === "\\") escaped = true;
     else if (character === "[" && !inClass) inClass = true;

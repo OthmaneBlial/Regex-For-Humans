@@ -96,6 +96,51 @@ test("reverse output limits explain the expansion, preserve edits and recover", 
   await expect(result).toHaveText("! No match");
 });
 
+test("regex literals require escaped line breaks and recover without losing edits", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const editor = page.locator("#rules-input");
+  await editor.fill("start\n3 digits\nend");
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const feedback = page.locator("#reverse-feedback");
+  const message = "Escape line breaks inside a regex literal, such as `\\n`.";
+  for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"]) {
+    for (const source of [`a${separator}b`, `[a${separator}b]`, `a\\${separator}b`]) {
+      await reverse.fill(`/${source}/u`);
+      const original = await reverse.inputValue();
+      await page.locator("#reverse-button").click();
+      await expect(feedback).toHaveText(message);
+      await expect(reverse).toHaveAccessibleDescription(
+        /Escape line breaks inside a regex literal/,
+      );
+      await expect(reverse).toHaveValue(original);
+      await expect(editor).toHaveValue("start\n3 digits\nend");
+      await expect(page.locator("#regex-output")).toHaveText("/^\\d{3}$/u");
+      await expect(page.locator("#copy-button")).toBeEnabled();
+    }
+  }
+  const example = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  for (const [literal, rules, sample] of [
+    [String.raw`/^a\nb$/u`, 'start\n"a\\nb"\nend', "a\nb"],
+    [String.raw`/^[a\nb]$/u`, 'start\none of: "a", "\\n", "b"\nend', "\n"],
+    [String.raw`/^a\u2028b$/u`, 'start\n"a\\u2028b"\nend', "a\u2028b"],
+    [String.raw`/^a\u2029b$/u`, 'start\n"a\\u2029b"\nend', "a\u2029b"],
+  ]) {
+    await reverse.fill(`\n ${literal} \n`);
+    await page.locator("#reverse-button").click();
+    await expect(feedback).toHaveText("Translated. Review the rules and test your examples.");
+    await expect(editor).toHaveValue(rules);
+    await example.fill(sample);
+    await expect(result).toContainText("✓ Matched");
+    await example.fill("ab");
+    await expect(result).toHaveText("! No match");
+  }
+});
+
 test("reverse translation keeps escaped emoji whole while testing examples", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
