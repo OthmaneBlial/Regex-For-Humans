@@ -124,6 +124,8 @@ An alternation diagnostic points to its `|` operator, including inside a non-cap
 
 Capturing groups such as `(AB)` or `(?<letters>AB)`, lookahead assertions `(?=AB)` / `(?!AB)` and lookbehind assertions `(?<=A)` / `(?<!A)` report distinct messages at their opening `(`, with the same `UNSUPPORTED_REGEX` code. For example, `/^😀(AB)/u` points to column 4. Literal parentheses such as `\(` or `[()]` remain supported. These errors do not suggest removing captures or assertions, which could change the regex's behavior; only the documented non-capturing literal or empty groups translate.
 
+For positioned unsupported-syntax errors, the workshop's **Go to regex error** action focuses the regex field, selects the source character and brings it into view, including wrapped patterns and enlarged fields. Selection includes the opening slash and any leading whitespace when converting the pattern's UTF-16 column into the pasted field's position. Editing the field clears the stale action; a successful translation focuses the rules editor.
+
 The regex source and the translated rules are each limited to 16,384 UTF-16 code units; translated rules also have the 200-line limit. Escaping and separate atoms can expand a short regex beyond those output limits. These errors retain `SOURCE_LIMIT` or `LINE_LIMIT`, explicitly name the translated rules and point to line 1, column 1 for the whole regex, with a simplification hint. Syntax columns refer to `regex.source`, excluding slash delimiters and flags. An oversized regex source still reports `REGEX_SOURCE_LIMIT` at its first code unit beyond the input limit. Translation errors leave existing workshop rules and options intact.
 
 ## Errors and future syntax

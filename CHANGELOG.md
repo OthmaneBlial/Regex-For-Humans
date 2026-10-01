@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add keyboard navigation from reverse-translation syntax errors to the source character, preserving edits and revealing selections in wrapped or enlarged regex fields through the existing editor-scrolling helper.
+
 - Consume complete Markdown link titles when checking documentation, preserving quoted parentheses, escaped delimiters and adjacent links without interpreting title text as another destination.
 
 - Identify unsupported capturing groups, lookahead and lookbehind with distinct reverse-translation messages at their opening parenthesis, preserving error codes, source columns and existing workshop data.

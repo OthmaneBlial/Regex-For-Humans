@@ -1927,6 +1927,86 @@ test("unsupported group errors identify the feature and preserve edited rules be
   await expect(result).toHaveText("! No match");
 });
 
+test("reverse syntax errors select their source character and reveal wrapped or enlarged inputs", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const jump = page.getByRole("button", { name: "Go to regex error", exact: true });
+  const editor = page.locator("#rules-input");
+  const original = await editor.inputValue();
+  await expect(jump).toBeHidden();
+  for (const [literal, character] of [
+    ["/^😀a|b$/u", "|"],
+    [" \r\n\t/^😀(?<letters>AB)$/u \n", "("],
+    ["/^(?:😀(?=AB)AB)$/u", "("],
+    ["/^[a-c]+$/u", "-"],
+    ["/^(?:😀)*?$/u", "?"],
+    [` \n\t/^${"A".repeat(700)}😀|B$/u \n`, "|"],
+  ]) {
+    await reverse.fill(literal);
+    await expect(jump).toBeHidden();
+    await page.locator("#reverse-button").press("Enter");
+    await expect(jump).toBeVisible();
+    await expect(jump).toHaveAttribute("aria-controls", "reverse-regex");
+    await expect(reverse).toHaveAttribute("aria-invalid", "true");
+    await expect(editor).toHaveValue(original);
+    await jump.focus();
+    await jump.press("Enter");
+    await expect(reverse).toBeFocused();
+    const position = (await reverse.inputValue()).lastIndexOf(character);
+    expect(
+      await reverse.evaluate((field) => [
+        field.selectionStart,
+        field.selectionEnd,
+        field.value.slice(field.selectionStart, field.selectionEnd),
+      ]),
+    ).toEqual([position, position + 1, character]);
+    await expect(editor).toHaveValue(original);
+    await expect(page.locator("#copy-button")).toBeEnabled();
+    if (literal.includes("A".repeat(700))) {
+      expect(await reverse.evaluate((field) => field.scrollTop)).toBeGreaterThan(0);
+    }
+  }
+  await reverse.evaluate((field) => {
+    field.style.height = "1400px";
+  });
+  await reverse.fill("/^😀a|b$/u");
+  await page.locator("#reverse-button").press("Enter");
+  await jump.focus();
+  await jump.press("Enter");
+  await expect(reverse).toBeFocused();
+  expect(
+    await reverse.evaluate((field) => {
+      const style = getComputedStyle(field);
+      const top = field.getBoundingClientRect().top + Number.parseFloat(style.paddingTop);
+      return top >= 0 && top + Number.parseFloat(style.lineHeight) <= innerHeight;
+    }),
+  ).toBe(true);
+  await reverse.evaluate((field) => field.style.removeProperty("height"));
+  const accessibility = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+  expect(accessibility.violations.map((violation) => violation.id)).toEqual([]);
+  for (const literal of ["not a regex", "/^a$/gu", "/^a$/", `/^${String.raw`\d`.repeat(201)}$/u`]) {
+    await reverse.fill(literal);
+    await expect(jump).toBeHidden();
+    await page.locator("#reverse-button").press("Enter");
+    await expect(reverse).toHaveAttribute("aria-invalid", "true");
+    await expect(jump).toBeHidden();
+    await expect(editor).toHaveValue(original);
+  }
+  await reverse.fill("/^😀AB$/u");
+  await page.locator("#reverse-button").press("Enter");
+  await expect(jump).toBeHidden();
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(editor).toHaveValue('start\n"😀AB"\nend');
+  await expect(editor).toBeFocused();
+  await expect(page.locator("#regex-output")).toHaveText("/^😀AB$/u");
+});
+
 test("empty non-capturing groups preserve zero-count matching in full and search modes", async ({
   page,
   context,

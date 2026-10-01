@@ -39,8 +39,16 @@ test("the workshop compiles rules and reports example results", async ({ page })
     await expect(page.locator("#reverse-feedback")).toContainText(diagnostic);
     await expect(reverse).toHaveAccessibleDescription(/non-capturing literal or empty groups/);
     await expect(output).toHaveText("/^Hello$/u");
+    await page.getByRole("button", { name: "Go to regex error", exact: true }).press("Enter");
+    await expect(reverse).toBeFocused();
+    const position = literal.lastIndexOf("(");
+    expect(await reverse.evaluate((field) => [field.selectionStart, field.selectionEnd])).toEqual([
+      position,
+      position + 1,
+    ]);
   }
   await reverse.fill("/^[a-zA-Z]{2}$/u");
+  await expect(page.locator("#reverse-error")).toBeHidden();
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
   await page.locator("#reverse-button").click();
   await expect(reverse).toHaveAttribute("aria-invalid", "false");

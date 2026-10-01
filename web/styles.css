@@ -415,7 +415,8 @@ a {
   outline: 3px solid #f1bf3980;
   outline-offset: 2px;
 }
-#reverse-button {
+#reverse-button,
+#reverse-error {
   margin-top: 10px;
 }
 #reverse-feedback {

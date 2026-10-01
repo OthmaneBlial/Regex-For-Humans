@@ -77,7 +77,7 @@ Separator lists such as `[._-]` and `[-._]` translate too: a hyphen at either en
 
 Alternation errors point to `|` and suggest translating each alternative separately. Literal pipes such as `\|` or `[|]` remain supported.
 
-Capturing groups, including named captures, lookahead and lookbehind each get a specific error at their opening `(`. Failed translation preserves your current rules and options.
+Capturing groups, including named captures, lookahead and lookbehind each get a specific error at their opening `(`. Use **Go to regex error** to select that character in your pasted pattern and bring it into view. Failed translation preserves your current rules and options.
 
 Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. Search mode finds an empty match at position 0, including in nonempty input; Entire string mode accepts only blank input for this pattern.
 
