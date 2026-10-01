@@ -18,6 +18,14 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Exact literal-limit errors
+
+Source commit `fa5a2f9` was synchronized into the existing project folder at Pages commit `af3bf6b`, whose build completed on 2 October 2026 (Europe/Paris). Twenty-eight resources returned HTTP 200 and matched local SHA-256 values, including all sixteen changed project files. Other project folders and the published npm preview were preserved.
+
+Live Chrome checks at 1280/390px and Firefox/WebKit checks at 1280px each verified the exact error naming the 16,392-unit UTF-16 budget, including delimiters, flags and outer whitespace. Three excessive inputs retained their pasted text, rules, i/s flags, copied regex and matching examples. An emoji literal padded to exactly the limit translated successfully, cleared the error, reset the flags and focused the rules. Four reverse-panel screenshots were inspected; the message wrapped cleanly, with no overflow at 320px or page error.
+
+Live desktop/mobile Chrome also rechecked the three complex records, 100 fragments, 26 exact inputs, source selection, real clipboard, reverse translation, focus, scroll reset/retention and the 32/33-emoji boundary. Six regex crops were inspected. Worker reuse, complete-batch validation, stable errors, recovery, 100-example/2,048-code-unit boundaries and interruption of valid expensive batches passed again in Chrome, Firefox and WebKit. The deliberate timeout checks use a 150 ms test budget; the product deadline remains 1,200 ms.
+
 ### Complete regex-literal input budget
 
 Source commit `070a78f` was synchronized into the existing project folder at Pages commit `8ede10f`, whose build completed on 2 October 2026 (Europe/Paris). Twenty-eight resources returned HTTP 200 and matched local SHA-256 values, including all nineteen changed project files. Other project folders and the published npm preview were preserved.
