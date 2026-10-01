@@ -113,7 +113,8 @@ test("filename-shape bounds Unicode stem length and excludes separators under ev
     const result = compile(scenario.rules, { flags });
     assert.equal(result.source, source);
     assert.deepEqual(result.segments[1].repetition, { kind: "range", min: 1, max: 64 });
-    assert.equal(result.segments[1].negative, true);
+    assert.equal(result.segments[1].atomType, "shorthand");
+    assert.match(result.segments[1].explanation, /Path segment character/u);
     const regex = toRegExp(result);
     for (const item of ["a", "é", "📄"]) {
       for (let count = 0; count <= 65; count += 1) {

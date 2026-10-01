@@ -20,6 +20,8 @@ test("path segment characters have singular/plural defaults and ordinary repetit
     ["at least 2 path segment characters", { kind: "atLeast", min: 2 }, "{2,}"],
   ]) {
     const node = parse(rule).nodes[0];
+    assert.equal(node.atomType, "shorthand");
+    assert.equal(node.value, source);
     assert.deepEqual(node.repetition, repetition);
     assert.equal(compile(rule).source, source + suffix);
     assert.match(
