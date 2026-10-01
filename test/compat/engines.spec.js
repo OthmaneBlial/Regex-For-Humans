@@ -83,4 +83,20 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "" at 0');
   await firstExample.fill("x");
   await expect(firstResult).toContainText("not the entire string");
+  const foreign = await page.evaluate(async () => {
+    const { regexToRules } = await import("/index.js");
+    const frame = document.createElement("iframe");
+    frame.hidden = true;
+    document.body.append(frame);
+    try {
+      const regex = new frame.contentWindow.RegExp("^😀[A-Z]{2}$", "isu");
+      return { localInstance: regex instanceof RegExp, translated: regexToRules(regex) };
+    } finally {
+      frame.remove();
+    }
+  });
+  expect(foreign).toEqual({
+    localInstance: false,
+    translated: { rules: 'start\n"😀"\n2 uppercase letter\nend', flags: "is" },
+  });
 });

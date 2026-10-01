@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 import { CompileError, compile, regexToRules, toRegExp } from "../index.js";
 
 const scenarios = JSON.parse(
@@ -16,6 +17,82 @@ test("every shared recipe translates back to rules with the same regex and flags
     assert.equal(rebuilt.flags, original.flags, scenario.id);
     for (const sample of scenario.positive) assert.equal(toRegExp(rebuilt).test(sample), true);
     for (const sample of scenario.negative) assert.equal(toRegExp(rebuilt).test(sample), false);
+  }
+});
+
+test("genuine regexes from another context translate with the same rules, flags and diagnostics", () => {
+  for (const source of [
+    "^😀[A-Z]{2}$",
+    "^(?:AB){2}$",
+    "^(?:)$",
+    String.raw`^\d{2,}$`,
+    "^[._-]+$",
+  ]) {
+    for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+      const original = runInNewContext("new RegExp(source, flags)", { source, flags });
+      assert.equal(original instanceof RegExp, false);
+      original.lastIndex = 7;
+      const translated = regexToRules(original);
+      assert.deepEqual(translated, regexToRules(new RegExp(source, flags)));
+      assert.equal(original.lastIndex, 7);
+      const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+      for (const sample of [
+        "",
+        "😀AB",
+        "😀ab",
+        "\n😀AB\n",
+        "ABAB",
+        "abab",
+        "1",
+        "12",
+        "123",
+        "._-",
+      ]) {
+        const expected = original.exec(sample);
+        const actual = rebuilt.exec(sample);
+        assert.equal(actual?.[0], expected?.[0]);
+        assert.equal(actual?.index, expected?.index);
+      }
+    }
+  }
+  for (const [source, flags] of [
+    ["a", ""],
+    ["a", "gu"],
+    ["^😀(AB)$", "u"],
+    ["a".repeat(16_385), "u"],
+  ]) {
+    let expected;
+    try {
+      regexToRules(new RegExp(source, flags));
+      assert.fail("Unsupported input accepted");
+    } catch (error) {
+      assert.ok(error instanceof CompileError);
+      expected = error.toJSON();
+    }
+    assert.throws(
+      () => regexToRules(runInNewContext("new RegExp(source, flags)", { source, flags })),
+      (error) => {
+        assert.ok(error instanceof CompileError);
+        assert.deepEqual(error.toJSON(), expected);
+        return true;
+      },
+    );
+  }
+  for (const input of [
+    "a",
+    null,
+    undefined,
+    42,
+    [],
+    {},
+    RegExp.prototype,
+    Object.create(RegExp.prototype),
+    { source: "a", flags: "u", unicode: true, [Symbol.toStringTag]: "RegExp" },
+  ]) {
+    assert.throws(() => regexToRules(input), {
+      name: "TypeError",
+      message: "Expected a JavaScript RegExp.",
+    });
   }
 });
 

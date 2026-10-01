@@ -281,7 +281,12 @@ function readQuantifier(source, index) {
  * @param {RegExp} regex
  */
 export function regexToRules(regex) {
-  if (!(regex instanceof RegExp)) throw new TypeError("Expected a JavaScript RegExp.");
+  try {
+    // The native getter checks the RegExp brand across contexts without running the pattern.
+    if (typeof Reflect.get(RegExp.prototype, "global", regex) !== "boolean") throw new TypeError();
+  } catch {
+    throw new TypeError("Expected a JavaScript RegExp.");
+  }
   if (/[^imsu]/u.test(regex.flags)) {
     fail("UNSUPPORTED_REGEX_FLAGS", "Only the i, s, m and u flags can be translated.", {
       line: 1,

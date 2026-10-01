@@ -28,6 +28,54 @@ test("supported JavaScript regexes translate into editable rules and keep their 
   await expect(page.locator("#rules-input")).toBeFocused();
 });
 
+test("the browser API accepts a genuine regex from an iframe without changing its state", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  const results = await page.evaluate(async () => {
+    const { compile, regexToRules, toRegExp } = await import("/index.js");
+    const frame = document.createElement("iframe");
+    frame.hidden = true;
+    document.body.append(frame);
+    try {
+      const original = new frame.contentWindow.RegExp("^😀[A-Z]{2}$", "imsu");
+      original.lastIndex = 7;
+      const translated = regexToRules(original);
+      const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+      let rejectedLookalike = false;
+      try {
+        regexToRules({ source: "a", flags: "u", unicode: true, [Symbol.toStringTag]: "RegExp" });
+      } catch (error) {
+        rejectedLookalike = error instanceof TypeError;
+      }
+      return {
+        localInstance: original instanceof RegExp,
+        lastIndex: original.lastIndex,
+        translated,
+        source: rebuilt.source,
+        flags: rebuilt.flags,
+        positive: rebuilt.exec("\n😀ab\n")?.[0],
+        negative: rebuilt.test("😀A"),
+        rejectedLookalike,
+      };
+    } finally {
+      frame.remove();
+    }
+  });
+  expect(results).toEqual({
+    localInstance: false,
+    lastIndex: 7,
+    translated: { rules: 'line start\n"😀"\n2 uppercase letter\nline end', flags: "is" },
+    source: "^😀[A-Z]{2}$",
+    flags: "imsu",
+    positive: "😀ab",
+    negative: false,
+    rejectedLookalike: true,
+  });
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+});
+
 test("equivalent letter and hex range orders become editable rules with the same matching", async ({
   page,
 }) => {

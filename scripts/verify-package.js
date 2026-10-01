@@ -95,7 +95,12 @@ try {
   writeFileSync(
     smoke,
     `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
+import { runInNewContext } from "node:vm";
 const result = compile(${JSON.stringify(rules)});
+const foreign = runInNewContext("/^😀[A-Z]{2}$/isu");
+const foreignTranslation = regexToRules(foreign);
+const foreignPattern = toRegExp(compile(foreignTranslation.rules, { flags: foreignTranslation.flags }));
+if (foreign instanceof RegExp || foreignTranslation.rules !== 'start\\n"😀"\\n2 uppercase letter\\nend' || foreignTranslation.flags !== "is" || !foreignPattern.test("😀ab") || foreignPattern.test("😀A")) throw new Error("Wrong cross-context regex translation");
 const reverse = regexToRules(/^[A-Z]{2}-\\d{4}$/u);
 if (reverse.rules !== 'start\\n2 uppercase letter\\n"-"\\n4 digit\\nend' || reverse.flags !== "") throw new Error("Wrong reverse-translation behavior");
 if (compile(reverse.rules, { flags: reverse.flags }).source !== "^[A-Z]{2}-\\\\d{4}$") throw new Error("Reverse translation did not round-trip");
