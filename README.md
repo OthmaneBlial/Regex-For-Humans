@@ -55,12 +55,12 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 Your rules and examples stay in the browser. No account, AI interpretation, or application backend.
 
-[![Real desktop workshop showing editable rules, generated regex, explanations, and passing example checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=0aa7a9f27078)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![Real desktop workshop showing editable rules, generated regex, explanations, and passing example checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 <details>
 <summary>📱 See the mobile workshop</summary>
 
-![Mobile view of the Regex For Humans workshop](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-mobile-dev.png?v=68866e560029)
+![Mobile view of the Regex For Humans workshop](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-mobile-dev.png?v=8f26739ed284)
 
 </details>
 

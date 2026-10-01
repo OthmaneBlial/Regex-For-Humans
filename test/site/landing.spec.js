@@ -8,6 +8,15 @@ const stylesheetVersion = createHash("sha256")
   .update(readFileSync(new URL("../../site/styles.css", import.meta.url)))
   .digest("hex")
   .slice(0, 12);
+const workshopPreview = readFileSync(
+  new URL("../../site/assets/workshop-preview.png", import.meta.url),
+);
+const workshopPreviewVersion = createHash("sha256")
+  .update(workshopPreview)
+  .digest("hex")
+  .slice(0, 12);
+const workshopPreviewWidth = workshopPreview.readUInt32BE(16);
+const workshopPreviewHeight = workshopPreview.readUInt32BE(20);
 
 test("homepage requests its current stylesheet and bypasses an obsolete cached style", async ({
   page,
@@ -78,6 +87,24 @@ test("homepage exposes a working, dimensioned social preview", async ({ page }) 
   const bytes = await imageResponse.body();
   expect(bytes.readUInt32BE(16)).toBe(1200);
   expect(bytes.readUInt32BE(20)).toBe(630);
+});
+
+test("homepage uses the current, dimensioned workshop screenshot", async ({ page }) => {
+  await page.goto("/");
+  const image = page.locator(".workshop-preview img");
+  await expect(image).toHaveAttribute(
+    "src",
+    `./assets/workshop-preview.png?v=${workshopPreviewVersion}`,
+  );
+  await expect(image).toHaveAttribute("width", String(workshopPreviewWidth));
+  await expect(image).toHaveAttribute("height", String(workshopPreviewHeight));
+  await image.scrollIntoViewIfNeeded();
+  await expect
+    .poll(() => image.evaluate((element) => element.naturalWidth))
+    .toBe(workshopPreviewWidth);
+  await expect
+    .poll(() => image.evaluate((element) => element.naturalHeight))
+    .toBe(workshopPreviewHeight);
 });
 
 test("workshop and syntax guide expose their own canonical social previews", async ({ page }) => {
