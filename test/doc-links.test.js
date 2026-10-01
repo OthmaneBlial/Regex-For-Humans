@@ -70,6 +70,64 @@ test("documentation checks resolve balanced and escaped destination parentheses 
   }
 });
 
+test("documentation checks consume complete titles without treating their text as links", () => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-title-end-"));
+  try {
+    mkdirSync(join(root, "docs"));
+    for (const name of ["guide.md", "next.md"]) {
+      writeFileSync(join(root, "docs", name), "# Guide\n");
+    }
+    const titles = [
+      '"Read ) and ](ghost.md)"',
+      "'Read ) and ](ghost.md)'",
+      String.raw`"Read \"quote\" ) and ](ghost.md)"`,
+      String.raw`'Read \'quote\' ) and ](ghost.md)'`,
+      String.raw`(Read \) and ]\(ghost.md\))`,
+      String.raw`"Read \\) and ](ghost.md)"`,
+      '"Read )\ncontinued ](ghost.md)"',
+      '""',
+      "''",
+      "()",
+    ];
+    const links = titles
+      .flatMap((title) => [
+        `[Guide](docs/guide.md ${title})[Next](docs/next.md)`,
+        `![Image](<docs/guide.md> ${title})[Next](docs/next.md)`,
+      ])
+      .join("\n");
+    const check = () =>
+      spawnSync(
+        process.execPath,
+        [fileURLToPath(new URL("../scripts/check-doc-links.js", import.meta.url)), root],
+        { encoding: "utf8" },
+      );
+    writeFileSync(join(root, "README.md"), links);
+    const valid = check();
+    assert.equal(valid.status, 0, valid.stderr);
+    assert.equal(valid.stderr, "");
+    assert.equal(valid.stdout, "Checked 40 local Markdown links in 3 files.\n");
+    writeFileSync(
+      join(root, "README.md"),
+      `${links}\n` +
+        '[Missing](docs/missing.md?view=1#intro "Read ) and ](ghost.md)")\n' +
+        "[Bad escape](<docs/%ZZ.md> 'Read ) and ](ghost.md)')\n",
+    );
+    const invalid = check();
+    assert.equal(invalid.status, 1);
+    assert.equal(invalid.stdout, "");
+    assert.equal(
+      invalid.stderr,
+      "Missing local Markdown links:\n" +
+        "README.md: docs/missing.md?view=1#intro\n" +
+        "README.md: docs/%ZZ.md (invalid URL escape)\n",
+    );
+    writeFileSync(join(root, "README.md"), links);
+    assert.equal(check().status, 0);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("documentation checks ignore ASCII scheme case without ignoring Unicode lookalikes", () => {
   const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-scheme-"));
   try {

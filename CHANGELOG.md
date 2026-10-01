@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Consume complete Markdown link titles when checking documentation, preserving quoted parentheses, escaped delimiters and adjacent links without interpreting title text as another destination.
+
 - Identify unsupported capturing groups, lookahead and lookbehind with distinct reverse-translation messages at their opening parenthesis, preserving error codes, source columns and existing workshop data.
 
 - Translate empty non-capturing groups and their supported greedy repetitions into zero-count rules, preserving empty matches, flags and surrounding atom boundaries.

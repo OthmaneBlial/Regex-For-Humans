@@ -20,9 +20,11 @@ Bare destinations preserve balanced and nested parentheses, including twelve lev
 
 Angle-bracket destinations are unwrapped before resolving local files or ignoring external URLs, including literal spaces, unbalanced parentheses, encoded filename characters and empty/current-page links. Optional link titles in double quotes, single quotes or parentheses are separated from the destination, including title punctuation. Queries and fragments are removed before decoding the file path, preserving encoded filename characters such as `%23`; query-only references stay on the current page.
 
+The checker consumes a complete optional title before scanning the next link. Quoted parentheses and link-like text inside a title do not create extra destinations. Regression fixtures cover both destination forms, double/single quotes, escaped quote and parenthesis delimiters, escaped backslashes, multiline and empty titles, images and immediately adjacent links, plus real missing targets and malformed URL escapes. Title delimiters follow the supported forms in [CommonMark link titles](https://spec.commonmark.org/0.31.2/#link-title); the checker remains an inline scanner rather than a full Markdown renderer.
+
 HTTP, HTTPS and mailto schemes accept uppercase and mixed ASCII case, consistent with [RFC 3986 section 3.1](https://www.rfc-editor.org/rfc/rfc3986.html#section-3.1). A Unicode long-s lookalike still receives a missing-local-link diagnostic.
 
-The documentation-link checker updates passed local `npm run check`, all 159 Node tests, `npm run build:pages` and the clean-consumer package check on 1 October 2026 with Node 25.9.0/npm 11.12.1. All six documentation-link regressions also passed on Node 22.23.3. The full browser-verification snapshot above remains separately recorded.
+The complete-title checker update passed local `npm run check`, all 162 Node tests, `npm run build:pages` and the clean-consumer package check on 1 October 2026 with Node 25.9.0/npm 11.12.1. All seven documentation-link regressions also passed on Node 22.23.3. This focused tooling verification is separate from the full browser-verification snapshot above.
 
 ## Reproduce locally
 

@@ -2,6 +2,9 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+const PUNCTUATION = /[\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e]/u;
+const WHITESPACE = /[ \t\r\n]/u;
+
 const root = process.argv[2]
   ? resolve(process.argv[2])
   : fileURLToPath(new URL("../", import.meta.url));
@@ -25,7 +28,7 @@ function readDestination(content, start) {
   for (; index < content.length; index += 1) {
     const character = content[index];
     const escaped = content[index + 1] ?? "";
-    if (character === "\\" && /[\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e]/u.test(escaped)) {
+    if (character === "\\" && PUNCTUATION.test(escaped)) {
       destination += escaped;
       index += 1;
       continue;
@@ -44,8 +47,21 @@ function readDestination(content, start) {
     destination += character;
   }
   if (index === content.length || depth !== 0) return null;
-  const end = content.indexOf(")", index + Number(angle));
-  return end < 0 ? null : { destination, end: end + 1 };
+  index += Number(angle);
+  while (WHITESPACE.test(content[index] ?? "")) index += 1;
+  const opening = content[index];
+  if (opening === '"' || opening === "'" || opening === "(") {
+    const closing = opening === "(" ? ")" : opening;
+    for (index += 1; index < content.length; index += 1) {
+      if (content[index] === "\\" && PUNCTUATION.test(content[index + 1] ?? "")) index += 1;
+      else if (content[index] === closing) {
+        index += 1;
+        break;
+      } else if (opening === "(" && content[index] === "(") return null;
+    }
+    while (WHITESPACE.test(content[index] ?? "")) index += 1;
+  }
+  return content[index] === ")" ? { destination, end: index + 1 } : null;
 }
 
 for (const file of files) {
