@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Construct native regexes from the same source and flags validated by `toRegExp()`, reading each field once. Preserve source-before-flags validation, the metadata `TypeError` and native syntax errors.
+
 - Describe malformed UTF-8 repairs for both rules and reverse-mode regex input. Preserve strict decoding, exit status, empty stdout and the JSON `CLI_ERROR` code; share the file/stdin regression cases across both modes.
 
 - State the complete 16,392-unit UTF-16 literal budget in workshop and CLI errors, including delimiters, flags and outer whitespace. Preserve the limits, error codes and existing rules on rejection.

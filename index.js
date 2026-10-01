@@ -20,10 +20,12 @@ export function regexMatchingThroughLines(lines) {
  * @param {ReturnType<typeof compile>} result
  */
 export function toRegExp(result) {
-  if (!result || typeof result.source !== "string" || typeof result.flags !== "string") {
+  const source = result ? result.source : undefined;
+  const flags = typeof source === "string" ? result.flags : undefined;
+  if (typeof source !== "string" || typeof flags !== "string") {
     throw new TypeError("Expected a compile result with source and flags.");
   }
-  return new RegExp(result.source, result.flags);
+  return new RegExp(source, flags);
 }
 
 export { CompileError } from "./src/diagnostics.js";

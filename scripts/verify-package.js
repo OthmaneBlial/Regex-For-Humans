@@ -111,6 +111,12 @@ try {
     `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
 import { runInNewContext } from "node:vm";
 const result = compile(${JSON.stringify(rules)});
+let sourceReads = 0, flagReads = 0;
+const snapshot = toRegExp({
+  get source() { return ++sourceReads === 1 ? "^A.😀$" : "^CHANGED$"; },
+  get flags() { return ++flagReads === 1 ? "isu" : "g"; }
+});
+if (sourceReads !== 1 || flagReads !== 1 || snapshot.source !== "^A.😀$" || snapshot.flags !== "isu" || !snapshot.test(${JSON.stringify("a\n😀")}) || snapshot.test("CHANGED")) throw new Error("Installed helper did not construct from its validated metadata");
 for (const [flags, expected] of [["", "u"], ["i", "iu"], ["s", "su"], ["is", "isu"], ["si", "isu"]]) {
   if (compile("digit", { flags }).flags !== expected) throw new Error("Wrong option flag normalization");
 }

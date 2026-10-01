@@ -552,6 +552,61 @@ test("invalid input fails explicitly rather than returning partial output", () =
   assert.throws(() => toRegExp({ source: 1, flags: "u" }), TypeError);
 });
 
+test("toRegExp constructs from the metadata values it validated once", () => {
+  for (const throwOnRepeat of [false, true]) {
+    let sourceReads = 0;
+    let flagReads = 0;
+    const result = {
+      get source() {
+        sourceReads += 1;
+        if (sourceReads === 1) return "^A.😀$";
+        if (throwOnRepeat) throw new Error("Source was read again.");
+        return "^CHANGED$";
+      },
+      get flags() {
+        flagReads += 1;
+        if (flagReads === 1) return "isu";
+        if (throwOnRepeat) throw new Error("Flags were read again.");
+        return "g";
+      },
+    };
+    const regex = toRegExp(result);
+    assert.equal(regex.source, "^A.😀$");
+    assert.equal(regex.flags, "isu");
+    assert.equal(regex.test("a\n😀"), true);
+    assert.equal(regex.test("CHANGED"), false);
+    assert.deepEqual([sourceReads, flagReads], [1, 1]);
+  }
+});
+
+test("toRegExp preserves field validation order and native syntax errors", () => {
+  const expected = {
+    name: "TypeError",
+    message: "Expected a compile result with source and flags.",
+  };
+  for (const result of [undefined, null, false, 0, NaN, "", "a", 1, {}]) {
+    assert.throws(() => toRegExp(result), expected);
+  }
+  for (const source of [undefined, null, 0, false, [], {}, Symbol("source")]) {
+    let flagReads = 0;
+    const result = {
+      source,
+      get flags() {
+        flagReads += 1;
+        throw new Error("Invalid source must be rejected before reading flags.");
+      },
+    };
+    assert.throws(() => toRegExp(result), expected);
+    assert.equal(flagReads, 0);
+  }
+  for (const flags of [undefined, null, 0, false, [], {}, Symbol("flags")]) {
+    assert.throws(() => toRegExp({ source: "a", flags }), expected);
+  }
+  assert.throws(() => toRegExp({ source: "[", flags: "u" }), SyntaxError);
+  assert.throws(() => toRegExp({ source: "a", flags: "uu" }), SyntaxError);
+  assert.equal(toRegExp({ source: "a", flags: "" }).flags, "");
+});
+
 test("API options reject non-string flags while preserving omitted defaults", () => {
   for (const options of [null, [], "i", 1, false]) {
     assert.throws(() => compile("digit", options), {
