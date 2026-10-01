@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Explain positive character lists repeated with `*` as membership instead of exclusion across the library, CLI and workshop, including reverse-translated rules.
+
 - Report unsupported alternation at its pipe operator with a separate-alternative hint, including inside literal groups, while preserving literal pipes and anchor diagnostics.
 
 - Translate literal hyphens at either end of simple character lists, preserving negation, repetition and matching while continuing to reject unsupported ranges.

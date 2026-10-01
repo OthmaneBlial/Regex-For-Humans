@@ -129,6 +129,8 @@ Literal-hyphen checks cover both list edges, a lone or duplicated hyphen, escape
 
 Alternation regressions check the complete diagnostic for top-level and grouped alternatives, empty alternatives, astral prefixes and literal pipes before an actual operator. Escaped and character-class pipes still round-trip with equivalent matching, and misplaced anchors retain their message. Desktop/mobile keyboard and accessibility checks verify the operator column, specific hint, preserved rules/options/copy availability and recovery to matching literal-pipe rules. Firefox/WebKit and clean-consumer checks verify both alternation paths too.
 
+Repeated-list explanation checks distinguish positive membership from negative exclusion for `*`, in direct and reverse compilation under all four compiler option combinations. They preserve source, flags and matching, including empty input, controls, astral items and case folding. CLI text and JSON use the same explanation. Desktop/mobile checks compare trace text and matching before and after reverse translation; Firefox/WebKit and clean-consumer checks also exercise the positive-list explanation.
+
 Each recipe's trace buttons use the shared compiler's complete explanations in their accessible names, followed by the source-selection instruction. Exact-name checks cover anchors, literals, shorthands and repetition without duplicate punctuation.
 
 Match-mode guidance is visible and describes the focused selector. Browser checks verify whole-string rejection and first-match search positions after an astral emoji and combining mark, position zero, empty search matches, and empty-input full matches. They retain the same accessible description after mode and input changes.

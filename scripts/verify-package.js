@@ -116,6 +116,10 @@ for (const [source, column] of [["a|b", 2], ["^(?:a|b)$", 6]]) {
 const literalPipe = regexToRules(new RegExp("^[|]{2}$", "u"));
 const pipePattern = toRegExp(compile(literalPipe.rules, { flags: literalPipe.flags }));
 if (!pipePattern.test("||") || pipePattern.test("|b")) throw new Error("Literal pipe rejected or changed");
+const positiveList = compile("start\\nzero or more one of: a, b\\nend");
+const positiveReverse = regexToRules(toRegExp(positiveList));
+const positiveRebuilt = compile(positiveReverse.rules, { flags: positiveReverse.flags });
+if (positiveList.source !== "^[ab]*$" || positiveList.segments[1].explanation !== ${JSON.stringify('One of "a", "b". Zero or more times.')} || positiveRebuilt.segments[1].explanation !== positiveList.segments[1].explanation || !toRegExp(positiveRebuilt).test("abba") || toRegExp(positiveRebuilt).test("x")) throw new Error("Positive repeated list explained as exclusion");
 for (const [source, code, message] of ${JSON.stringify(reverseLimitCases)}) {
   try { regexToRules(new RegExp(source, "u")); throw new Error("Oversized translated rules accepted"); }
   catch (error) { if (!(error instanceof CompileError) || error.code !== code || error.message !== message || error.line !== 1 || error.column !== 1 || error.hint !== ${JSON.stringify("Simplify the regex so its translated rules fit these limits.")}) throw error; }

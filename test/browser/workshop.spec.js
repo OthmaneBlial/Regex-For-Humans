@@ -1725,6 +1725,68 @@ test("Unicode literals and dot-all behavior are visible in example results", asy
   await expect(page.locator(".test-row").first()).toHaveAttribute("data-result", "pass");
 });
 
+test("zero-or-more list explanations agree with direct and reverse matching", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  const editor = page.locator("#rules-input");
+  const sample = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  const trace = page.locator("#trace-list button").nth(1);
+  await page.locator("#reverse-translator summary").click();
+  for (const [rule, literal, source, explanation, positive, negative] of [
+    [
+      "zero or more one of: a, b",
+      "/^[ab]*$/u",
+      "/^[ab]*$/u",
+      'One of "a", "b". Zero or more times.',
+      "abba",
+      "x",
+    ],
+    [
+      "zero or more none of: a, b",
+      "/^[^ab]*$/u",
+      "/^[^ab]*$/u",
+      'Longest text without "a", "b".',
+      "xyz",
+      "ab",
+    ],
+    [
+      'zero or more one of: K, "😀"',
+      "/^[K😀]*$/iu",
+      "/^[K😀]*$/iu",
+      'One of "K", "😀", ignoring case (i). Zero or more times.',
+      "Kk😀",
+      "x",
+    ],
+    [
+      'zero or more one of: "\\n", "😀"',
+      String.raw`/^[\n😀]*$/u`,
+      String.raw`/^[\u{a}😀]*$/u`,
+      'One of "\\n", "😀". Zero or more times.',
+      "\n😀",
+      "x",
+    ],
+  ]) {
+    await editor.fill(`start\n${rule}\nend`);
+    await page.locator("#ignore-case").setChecked(literal.endsWith("iu"));
+    for (const reverse of [false, true]) {
+      if (reverse) {
+        await page.locator("#reverse-regex").fill(literal);
+        await page.locator("#reverse-button").press("Enter");
+        await expect(page.locator("#reverse-regex")).toHaveAttribute("aria-invalid", "false");
+      }
+      await expect(page.locator("#regex-output")).toHaveText(source);
+      await expect(trace).toContainText(explanation);
+      for (const value of ["", positive]) {
+        await sample.fill(value);
+        await expect(result).toHaveText(`✓ Matched ${JSON.stringify(value)} at 0`);
+      }
+      await sample.fill(negative);
+      await expect(result).toHaveText("! No match");
+    }
+  }
+});
+
 test("ignore-case option explains case-insensitive character sets", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("textbox", { name: "Write your rules" }).fill("one of: K");

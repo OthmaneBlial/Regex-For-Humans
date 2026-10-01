@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { CompileError, compile, regexMatchingThroughLines, toRegExp } from "../index.js";
+import {
+  CompileError,
+  compile,
+  regexMatchingThroughLines,
+  regexToRules,
+  toRegExp,
+} from "../index.js";
 
 const scenarios = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
@@ -473,6 +479,37 @@ test("explanations reflect JavaScript flags, greedy matching and shorthand limit
     "Word character: ASCII letter, digit or underscore. With i, a few Unicode equivalents match.",
   );
   assert.equal(compile("not word").segments[0].explanation, "Any non-word character.");
+});
+
+test("zero-or-more character lists explain membership and exclusion in direct and reverse compilation", () => {
+  for (const flags of ["", "i", "s", "is"]) {
+    const note = flags.includes("i") ? ", ignoring case (i)" : "";
+    for (const [items, source, quoted, positive, negative] of [
+      ['"a", "b"', "ab", '"a", "b"', "abba", "c"],
+      ['"K", "\\n", "😀"', String.raw`K\u{a}😀`, '"K", "\\n", "😀"', "K\n😀", "x"],
+    ]) {
+      for (const excluded of [false, true]) {
+        const rules = `start\nzero or more ${excluded ? "none" : "one"} of: ${items}\nend`;
+        const result = compile(rules, { flags });
+        assert.equal(result.source, `^[${excluded ? "^" : ""}${source}]*$`);
+        const explanation = excluded
+          ? `Longest text without ${quoted}${note}.`
+          : `One of ${quoted}${note}. Zero or more times.`;
+        assert.equal(result.segments[1].explanation, explanation);
+        const regex = toRegExp(result);
+        assert.equal(regex.test(""), true);
+        assert.equal(regex.test(positive), !excluded);
+        assert.equal(regex.test(negative), excluded);
+        const translated = regexToRules(regex);
+        const rebuilt = compile(translated.rules, { flags: translated.flags });
+        assert.equal(rebuilt.source, result.source);
+        assert.equal(rebuilt.flags, result.flags);
+        assert.equal(rebuilt.segments[1].explanation, explanation);
+      }
+    }
+    const folded = toRegExp(compile("start\nzero or more one of: K\nend", { flags }));
+    assert.equal(folded.test("Kk"), flags.includes("i"));
+  }
 });
 
 test("case-insensitive class explanations include JavaScript Unicode folding", () => {

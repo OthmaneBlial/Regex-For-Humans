@@ -46,7 +46,7 @@ export function explainNode(node, flags, hasFollowingRule = false) {
         ? `Longest text${context}, including line breaks.`
         : `Longest text${context}, excluding line breaks.`;
     }
-    if (node.atomType === "charSet") {
+    if (node.atomType === "charSet" && node.negative) {
       const characters = node.value.map(quoteText).join(", ");
       return `Longest text without ${characters}${caseNote}.`;
     }

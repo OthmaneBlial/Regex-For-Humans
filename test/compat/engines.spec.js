@@ -48,4 +48,11 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "-_" at 0');
   await firstExample.fill(".a");
   await expect(firstResult).toHaveText("! No match");
+  await reverse.fill("/^[ab]*$/u");
+  await page.locator("#reverse-button").click();
+  await expect(page.locator("#trace-list")).toContainText('One of "a", "b". Zero or more times.');
+  await firstExample.fill("abba");
+  await expect(firstResult).toHaveText('✓ Matched "abba" at 0');
+  await firstExample.fill("x");
+  await expect(firstResult).toHaveText("! No match");
 });

@@ -110,6 +110,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
         <p>Write counts with digits <code>0</code>–<code>9</code>; leading zeros are allowed. A sign, fraction, scientific notation or localized digit produces a count error. Every modifier needs an item: use <code>3 digits</code>, rather than <code>3</code> alone. <code>at least</code> also needs a minimum count. Incomplete modifiers report their position and offer a complete example, such as <code>at least 3 digits</code> or <code>zero or more digit</code>.</p>
         <p>The workshop’s Entire string mode requires a complete match; Search anywhere shows the first match, including an empty one if the pattern permits it. Search positions start at 0 and count UTF-16 code units: a match after <code>😀</code> starts at 2. These modes do not change the copied regex.</p>
         <p>Ranges try the largest count first, then backtrack if the next rule needs it. Add <code>start</code> and <code>end</code> to validate the entire string; an unanchored range can find part of a longer string.</p>
+        <p><code>zero or more one of: a, b</code> generates <code>[ab]*</code>: listed characters can repeat, including zero times. <code>zero or more none of: a, b</code> generates <code>[^ab]*</code>: it excludes those characters. The explanations keep membership and exclusion distinct, including after reverse translation.</p>
       </section>
 
       <section id="reverse" class="panel guide-panel" aria-labelledby="reverse-title">

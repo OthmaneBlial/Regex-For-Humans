@@ -565,6 +565,31 @@ test("CLI exposes flags, help and version", () => {
   );
 });
 
+test("CLI explains zero-or-more positive and negative lists in text and JSON", () => {
+  for (const flags of [[], ["--ignore-case"], ["--dot-all"], ["--ignore-case", "--dot-all"]]) {
+    const note = flags.includes("--ignore-case") ? ", ignoring case (i)" : "";
+    for (const excluded of [false, true]) {
+      const rules = `start\nzero or more ${excluded ? "none" : "one"} of: a, b\nend`;
+      const atom = `[${excluded ? "^" : ""}ab]*`;
+      const explanation = excluded
+        ? `Longest text without "a", "b"${note}.`
+        : `One of "a", "b"${note}. Zero or more times.`;
+      const explained = run([...flags, "--explain", "-"], rules);
+      assert.equal(explained.status, 0, explained.stderr);
+      assert.equal(explained.stderr, "");
+      assert.equal(explained.stdout.split("\n")[2], `2:1  ${atom}  ${explanation}`);
+      const json = run([...flags, "--json", "-"], rules);
+      assert.equal(json.status, 0, json.stderr);
+      assert.equal(json.stderr, "");
+      const result = JSON.parse(json.stdout);
+      assert.equal(result.source, `^${atom}$`);
+      assert.equal(result.segments[1].explanation, explanation);
+      assert.equal(new RegExp(result.source, result.flags).test("ab"), !excluded);
+      assert.equal(new RegExp(result.source, result.flags).test("x"), excluded);
+    }
+  }
+});
+
 test("CLI compiles letter sequences, counts and case-folding explanations", () => {
   for (const [rule, source] of [
     ["letter", "[A-Za-z]"],
