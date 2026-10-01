@@ -2,7 +2,7 @@
 
 ## Local verification
 
-**Latest full local verification (1 October 2026):** `npm run verify` passed at source commit `55be6da` on Node 25.9.0/npm 11.12.1, with Biome 2.5.15: 179 Node tests, 222 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 58 homepage tests, a clean consumer package installation (74,005-byte tarball), and `npm audit` with zero vulnerabilities. Earlier full runs passed at `a2dfe34` on Node 25.9.0/npm 11.12.1, at `4d35165` on Node 22.23.3/npm 11.12.1 and at `f4febbe` and `d91edbd` on Node 25.9.0/npm 11.12.1. These runs verify macOS only; see [TESTING.md](TESTING.md) for historical compatibility evidence.
+**Latest full local verification (1 October 2026):** `npm run verify` passed at source commit `19c3b25` on Node 25.9.0/npm 11.12.1, with Biome 2.5.15: 181 Node tests, 222 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 58 homepage tests, a clean consumer package installation (74,761-byte tarball), and `npm audit` with zero vulnerabilities. This includes reverse translation of equivalent path exclusion classes. The 13 focused path and complex-example tests also passed on Node 22.23.3. Earlier full runs passed at `55be6da` and `a2dfe34` on Node 25.9.0/npm 11.12.1, at `4d35165` on Node 22.23.3/npm 11.12.1 and at `f4febbe` and `d91edbd` on Node 25.9.0/npm 11.12.1. These runs verify macOS only; see [TESTING.md](TESTING.md) for historical compatibility evidence.
 
 ### Preview server
 
@@ -15,6 +15,10 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 ## Hosted development preview
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
+
+### Complex examples and readable paths
+
+Four complete format examples and the readable path rule were synchronized into the existing project folder at Pages commit `35cd517`, whose build completed on 1 October 2026. Live desktop/mobile checks compiled every example, verified its explanation fragments and translated it back through Ctrl + Enter with correct focus. All 34 browser-compatible accepted/rejected cases per viewport passed; the exact CRLF rejection remains covered by Node because textareas normalize line endings. Named captures still reported their unsupported-feature diagnostic through Meta + Enter. The simplified filename recipe showed the readable rule and friendly explanation, accepted a Unicode filename and rejected a slash separator. Nine served website, workshop and documentation files returned HTTP 200 and matched local SHA-256 values.
 
 ### Leading-zero Unicode escapes
 
