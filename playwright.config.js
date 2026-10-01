@@ -6,7 +6,7 @@ const channel = process.env.CI ? "chromium" : "chrome";
 export default defineConfig({
   testDir: "./test/browser",
   fullyParallel: false,
-  workers: process.env.CI ? 1 : 2,
+  workers: 1,
   reporter: "list",
   use: {
     baseURL,
