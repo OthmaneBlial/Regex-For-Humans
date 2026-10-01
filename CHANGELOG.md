@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Redirect encoded forward slashes in existing preview URLs to literal path separators, keeping relative assets in their directory, queries and Unicode escapes intact, same-origin locations and outside-target rejection.
+
 - Add explicit `word character` / `word characters` names with ordinary count overrides, preserving the existing `word` rule, Unicode case-folding behavior and reverse output; simplify identifier examples with the readable wording.
 
 - Recognize equivalent path-segment exclusion classes by decoded membership, so reordered, duplicate and differently escaped exclusions produce the same readable reverse translation while different sets remain explicit.

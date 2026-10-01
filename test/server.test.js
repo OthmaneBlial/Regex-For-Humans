@@ -116,6 +116,69 @@ test("the local server classifies known asset extensions regardless of case", {
   }
 });
 
+test("the local server redirects encoded forward slashes before resolving relative assets", {
+  timeout: 10000,
+}, async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-server-encoded-slash-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const content = '<script src="./app.js"></script>';
+  const script = "export const ready = true;\n";
+  for (const name of ["nested", "résumé notes", "example.com", "literal%2Fname"]) {
+    mkdirSync(join(root, name));
+    writeFileSync(join(root, name, "index.html"), content);
+    writeFileSync(join(root, name, "app.js"), script);
+  }
+  writeFileSync(join(root, "index.html"), content);
+  writeFileSync(join(root, "app.js"), script);
+  const address = await startServer(t, root);
+  const query = "?example=hex-color&text=a%2Fb%20c";
+  for (const [path, canonical] of [
+    ["nested%2F", "nested/"],
+    ["nested%2findex.html", "nested/index.html"],
+    ["nested%2Fapp.js", "nested/app.js"],
+    ["r%C3%A9sum%C3%A9%20notes%2F", "r%C3%A9sum%C3%A9%20notes/"],
+    ["r%C3%A9sum%C3%A9%20notes%2findex.html", "r%C3%A9sum%C3%A9%20notes/index.html"],
+    ["%2Fexample.com", "example.com/"],
+    ["%2F%2Fexample.com%2Findex.html", "example.com/index.html"],
+    ["%2F", ""],
+  ]) {
+    for (const method of ["GET", "HEAD"]) {
+      const redirected = await fetch(`${address}${path}${query}`, {
+        method,
+        redirect: "manual",
+        signal: t.signal,
+      });
+      assert.equal(redirected.status, 308, `${method} ${path}`);
+      assert.equal(redirected.headers.get("location"), `/${canonical}${query}`);
+      assert.equal(await redirected.text(), "");
+      const followed = await fetch(`${address}${path}${query}`, { method, signal: t.signal });
+      assert.equal(followed.status, 200);
+      assert.equal(followed.url, `${address}${canonical}${query}`);
+      const body = canonical.endsWith("app.js") ? script : content;
+      assert.equal(await followed.text(), method === "GET" ? body : "");
+      const asset = await fetch(new URL("./app.js", followed.url), { signal: t.signal });
+      assert.equal(asset.status, 200);
+      assert.equal(await asset.text(), script);
+    }
+  }
+  const literal = await fetch(`${address}literal%252Fname/index.html${query}`, {
+    redirect: "manual",
+    signal: t.signal,
+  });
+  assert.equal(literal.status, 200, "Double-encoded percent text stays filename data");
+  assert.equal(literal.headers.get("location"), null);
+  assert.equal(await literal.text(), content);
+  for (const path of ["missing%2Findex.html", "nested%2Fapp.js%2Fchild", "missing%2F"]) {
+    const missing = await fetch(`${address}${path}${query}`, {
+      redirect: "manual",
+      signal: t.signal,
+    });
+    assert.equal(missing.status, 404);
+    assert.equal(missing.headers.get("location"), null);
+    assert.equal(await missing.text(), "");
+  }
+});
+
 test("the local server redirects directory URLs while preserving encoded paths and queries", {
   timeout: 10000,
 }, async (t) => {
@@ -181,11 +244,20 @@ test("the local server confines symlink targets to its selected root", {
     "outside",
     "outside/",
     "outside/index.html",
+    "outside%2Findex.html",
+    "%2Foutside%2Findex.html",
     "%2e%2e%2fsite-outside/index.html",
   ]) {
-    const response = await fetch(new URL(path, address), { signal: t.signal });
-    assert.equal(response.status, 403, path);
-    assert.equal(await response.text(), "", path);
+    for (const method of ["GET", "HEAD"]) {
+      const response = await fetch(new URL(path, address), {
+        method,
+        redirect: "manual",
+        signal: t.signal,
+      });
+      assert.equal(response.status, 403, `${method} ${path}`);
+      assert.equal(response.headers.get("location"), null);
+      assert.equal(await response.text(), "", path);
+    }
   }
   for (const path of ["inside", "root%20alias"]) {
     for (const method of ["GET", "HEAD"]) {

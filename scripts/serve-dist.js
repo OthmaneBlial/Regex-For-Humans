@@ -32,8 +32,11 @@ const server = createServer(async (request, response) => {
       response.writeHead(403).end();
       return;
     }
-    if (!pathname.endsWith("/") && (await stat(target)).isDirectory()) {
-      response.writeHead(308, { location: `${url.pathname}/${url.search}` }).end();
+    const directory = !pathname.endsWith("/") && (await stat(target)).isDirectory();
+    const canonicalPath = url.pathname.replace(/%2f/giu, "/").replace(/^\/+/u, "/");
+    const redirectPath = `${canonicalPath}${directory ? "/" : ""}`;
+    if (redirectPath !== url.pathname) {
+      response.writeHead(308, { location: `${redirectPath}${url.search}` }).end();
       return;
     }
     const data = await readFile(target);
