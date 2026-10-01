@@ -14,4 +14,19 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "Hello" at 0');
   await firstExample.fill("Hello!");
   await expect(firstResult).toHaveText("! No match");
+
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  await reverse.fill("/^Hi|Hello$/u");
+  await page.locator("#reverse-button").click();
+  await expect(reverse).toHaveAttribute("aria-invalid", "true");
+  await expect(reverse).toHaveAccessibleDescription(/Only a start anchor/);
+  await expect(output).toHaveText("/^Hello$/u");
+  await reverse.fill("/^Hi$/u");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await page.locator("#reverse-button").click();
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(output).toHaveText("/^Hi$/u");
+  await firstExample.fill("Hi");
+  await expect(firstResult).toHaveText('✓ Matched "Hi" at 0');
 });

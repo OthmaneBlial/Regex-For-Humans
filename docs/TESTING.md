@@ -119,6 +119,8 @@ Workshop startup regressions hold the app module while rules, options and regex 
 
 The numbered example-label check holds the recipe response, confirms the initial empty state, then releases the response and waits for the complete accessible-label snapshot. It verifies every label without racing asynchronous recipe rendering.
 
+Reverse-translation accessibility checks verify the regex field's invalid state and described error for malformed literals, unsupported syntax and unsupported flags. Edits clear the stale state and error description; a successful keyboard retry restores editable rules and moves focus to them. Output-limit and physical-line-break regressions verify the same invalid state without replacing the current rules. Automated WCAG A/AA checks cover the reverse error state. Firefox/WebKit smoke checks also exercise reverse failure, repair and matching. These are browser checks; a real screen-reader session remains unverified.
+
 Each recipe's trace buttons use the shared compiler's complete explanations in their accessible names, followed by the source-selection instruction. Exact-name checks cover anchors, literals, shorthands and repetition without duplicate punctuation.
 
 Match-mode guidance is visible and describes the focused selector. Browser checks verify whole-string rejection and first-match search positions after an astral emoji and combining mark, position zero, empty search matches, and empty-input full matches. They retain the same accessible description after mode and input changes.

@@ -67,7 +67,9 @@ test("reverse output limits explain the expansion, preserve edits and recover", 
     const literal = `/${source}/u`;
     await reverse.fill(literal);
     await expect(feedback).toBeHidden();
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
     await page.locator("#reverse-button").click();
+    await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(feedback).toHaveText(
       `Column 1: Translated rules cannot exceed ${limit}. Simplify the regex so its translated rules fit these limits.`,
     );
@@ -84,6 +86,7 @@ test("reverse output limits explain the expansion, preserve edits and recover", 
   await reverse.fill(String.raw`/^\d{2}$/u`);
   await page.locator("#reverse-button").click();
   await expect(feedback).toHaveText("Translated. Review the rules and test your examples.");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
   await expect(editor).toHaveValue("start\n2 digit\nend");
   await expect(editor).toBeFocused();
   await expect(page.locator("#ignore-case")).not.toBeChecked();
@@ -113,6 +116,7 @@ test("regex literals require escaped line breaks and recover without losing edit
       const original = await reverse.inputValue();
       await page.locator("#reverse-button").click();
       await expect(feedback).toHaveText(message);
+      await expect(reverse).toHaveAttribute("aria-invalid", "true");
       await expect(reverse).toHaveAccessibleDescription(
         /Escape line breaks inside a regex literal/,
       );
@@ -133,6 +137,7 @@ test("regex literals require escaped line breaks and recover without losing edit
     await reverse.fill(`\n ${literal} \n`);
     await page.locator("#reverse-button").click();
     await expect(feedback).toHaveText("Translated. Review the rules and test your examples.");
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
     await expect(editor).toHaveValue(rules);
     await example.fill(sample);
     await expect(result).toContainText("✓ Matched");

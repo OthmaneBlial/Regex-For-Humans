@@ -35,6 +35,54 @@ for (const state of ["ready", "error"]) {
   });
 }
 
+test("reverse translation exposes invalid input and clears stale errors on edit and success", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.getByRole("textbox", { name: "JavaScript regex literal", exact: true });
+  const button = page.locator("#reverse-button");
+  const feedback = page.locator("#reverse-feedback");
+  const rules = page.locator("#rules-input");
+  const original = await rules.inputValue();
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  for (const [literal, message] of [
+    ["not a regex", "Paste a slash-delimited JavaScript regex literal"],
+    ["/^a|b$/u", "Column 3:"],
+    [String.raw`/^\d+$/gu`, "Only the i, s, m and u flags can be translated."],
+  ]) {
+    await reverse.fill(literal);
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(feedback).toBeHidden();
+    await expect(reverse).not.toHaveAccessibleDescription(new RegExp(message));
+    await button.focus();
+    await button.press("Enter");
+    await expect(reverse).toHaveAttribute("aria-invalid", "true");
+    await expect(reverse).toHaveAccessibleDescription(new RegExp(message));
+    await expect(feedback).toBeVisible();
+    await expect(button).toBeFocused();
+    await expect(reverse).toHaveValue(literal);
+    await expect(rules).toHaveValue(original);
+    await expect(rules).toHaveAttribute("aria-invalid", "false");
+    await expect(page.locator("#copy-button")).toBeEnabled();
+  }
+  const invalid = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
+  expect(invalid.violations.map((violation) => violation.id)).toEqual([]);
+  await reverse.fill(String.raw`/^\d{2}$/u`);
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(feedback).toBeHidden();
+  await expect(reverse).not.toHaveAccessibleDescription(/Only the i, s, m and u flags/);
+  await button.focus();
+  await button.press("Enter");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(reverse).toHaveAccessibleDescription(
+    /Translated\. Review the rules and test your examples\./,
+  );
+  await expect(rules).toHaveValue("start\n2 digit\nend");
+  await expect(rules).toBeFocused();
+});
+
 test("workshop reduces toggle motion for reduced-motion preference", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");

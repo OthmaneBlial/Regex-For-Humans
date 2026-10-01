@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Expose reverse-translation errors through the regex field's invalid state, clearing stale validation feedback on edits and successful retries.
+
 - Enable workshop reverse translation only after its handler loads, preserving pasted regexes and translated rules while startup and recipe requests finish.
 
 - Reject physical line breaks inside workshop regex literals with an escape hint, preserving escaped newline matching and current editor data on failure.

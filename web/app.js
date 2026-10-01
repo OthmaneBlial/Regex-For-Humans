@@ -478,6 +478,7 @@ ui.rules.addEventListener("input", () => {
 ui.ignoreCase.addEventListener("change", compileRules);
 ui.dotAll.addEventListener("change", compileRules);
 ui.reverseRegex.addEventListener("input", () => {
+  ui.reverseRegex.setAttribute("aria-invalid", "false");
   ui.reverseFeedback.hidden = true;
   ui.reverseFeedback.textContent = "";
 });
@@ -490,6 +491,7 @@ ui.reverseButton.addEventListener("click", () => {
     setScenarioSelection(null);
     hasEdits = true;
     compileRules();
+    ui.reverseRegex.setAttribute("aria-invalid", "false");
     ui.reverseFeedback.dataset.state = "success";
     ui.reverseFeedback.textContent = "Translated. Review the rules and test your examples.";
     ui.reverseFeedback.hidden = false;
@@ -497,6 +499,7 @@ ui.reverseButton.addEventListener("click", () => {
   } catch (error) {
     const location = error instanceof CompileError ? `Column ${error.column}: ` : "";
     const hint = error instanceof CompileError && error.hint ? ` ${error.hint}` : "";
+    ui.reverseRegex.setAttribute("aria-invalid", "true");
     ui.reverseFeedback.dataset.state = "error";
     ui.reverseFeedback.textContent = `${location}${error instanceof Error ? error.message : String(error)}${hint}`;
     ui.reverseFeedback.hidden = false;
