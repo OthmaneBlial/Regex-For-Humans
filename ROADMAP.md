@@ -24,7 +24,7 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 - [ ] 4.2 Captures réelles — captures bureau/mobile du build local `0.1.0-dev` ajoutées au README avec provenance et SHA-256 ; captures de la version publiée à refaire après 2.4
 - [x] 4.3 Contribution et présentation GitHub — politiques et modèles d'issues/PR présents ; le signalement privé, la description, la page d'accueil et les 12 topics sont confirmés par API ; README et About vérifiés dans Chrome le 28 septembre 2026, captures bureau/mobile en HTTP 200 ; démo publique disponible
 - [x] 5.1 Portes locales vérifiées — `npm run verify` passé sur `9c2404f` avec Node 25.9.0/npm 11.12.1 et Node 22.0.0/npm 10.9.9 : 126 tests Node, 164 Chromium, 2 Firefox/WebKit, 48 site ; installation propre du tarball et audit sans vulnérabilité ; GitHub Actions désactivée, détails et preuves historiques dans `docs/TESTING.md` et `docs/DISTRIBUTION.md`
-- [ ] 5.2 Package publié et atelier déployé — Pages commit `5d4de30` vérifié en ligne le 1 octobre 2026 : HTTP 200, 11 recettes et atelier à jour ; publication du package stable encore ouverte selon `docs/DISTRIBUTION.md`
+- [ ] 5.2 Package publié et atelier déployé — Pages a construit le commit `6bc7706` depuis `master` le 1 octobre 2026 : homepage HTTP 200, guide de syntaxe en ligne à jour et 11 recettes vérifiées en navigateur local ; publication du package stable encore ouverte selon `docs/DISTRIBUTION.md`
 - [ ] 5.3 Décision et validation des binaires — voie npm/Node retenue provisoirement dans `docs/DISTRIBUTION.md` ; besoin de binaire à mesurer dans les séances utilisateurs avant décision finale
 - [ ] 5.4 Release publiée et vérifiée
 - [ ] 6.1 Capture et montage réel

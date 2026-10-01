@@ -95,6 +95,7 @@ Put one instruction on each line. Quote literal text. Add anchors to check the w
 | `digit` · `not digit` | `\d` · `\D` | One digit / one non-digit |
 | `3 digits` · `digits` | `\d{3}` · `\d+` | Exactly three / one or more |
 | `between 2 and 4 digits` | `\d{2,4}` | Two to four digits, inclusive |
+| `optional "-"` | `-{0,1}` | Zero or one hyphen |
 | `hex digit` · `6 hex digits` | `[0-9A-Fa-f]` · `[0-9A-Fa-f]{6}` | ASCII hexadecimal digits |
 | `letter` · `letters` | `[A-Za-z]` · `[A-Za-z]+` | One ASCII letter / one or more |
 | `space` · `spaces` | `\s` · `\s+` | One whitespace character / one or more, including line breaks |
