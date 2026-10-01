@@ -29,7 +29,9 @@ The public `regexToRules(regex)` delegates to `src/regex-to-rules.js`. It reads 
 
 The parser also owns the output size and line limits. Reverse translation preserves its limit codes but reports that the translated rules are too large, at the start of the whole regex. Other parser errors propagate unchanged. The workshop applies rules and options only after translation succeeds, so a rejected translation preserves the current editor and matching output.
 
-The reader preserves Unicode atom boundaries, including fixed-width surrogate pairs in repetition and character classes. Separate lone-surrogate atoms remain separate rules; a literal group whose boundaries cannot be represented fails explicitly. Translation does not execute the input regex. The workshop parses a slash-delimited literal with the native `RegExp` constructor, calls this same public API, then uses its existing compiler and isolated example worker.
+The reader preserves Unicode atom boundaries, including fixed-width surrogate pairs in repetition and character classes. Separate lone-surrogate atoms remain separate rules; a literal group whose boundaries cannot be represented fails explicitly. Translation does not execute the input regex. The workshop and CLI's `--reverse` mode use the same internal `src/regex-literal.js` reader for slash delimiters, escapes, character classes, flags and native syntax validation. Both call the public reverse API; the workshop then uses its existing compiler and isolated example worker.
+
+CLI reverse mode reads a UTF-8 file or stdin. JSON returns the API's `{ rules, flags }`; plain output contains reusable rules and writes any required i/s compiler options to stderr. Forward-only options are rejected before reading reverse input. This additive CLI option is currently unreleased on `main`; the published npm preview is recorded separately in [DISTRIBUTION.md](DISTRIBUTION.md).
 
 ## Diagnostics and changes to the language
 
