@@ -13,10 +13,13 @@ for (const [id, cases] of [
   ["access-log", 8],
   ["structured-event", 9],
 ]) {
-  test(`loading ${id} starts the editor and explanation at the first rule`, async ({ page }) => {
+  test(`loading ${id} starts the rules, explanation and regex at the beginning`, async ({
+    page,
+  }) => {
     await page.goto(`/?example=${id}`);
     const editor = page.locator("#rules-input");
     const trace = page.locator("#trace-list");
+    const pattern = page.locator(".pattern-box");
     await expect(page.locator("#test-summary")).toHaveText(
       `${cases} of ${cases} examples behave as expected`,
     );
@@ -30,6 +33,10 @@ for (const [id, cases] of [
         list.scrollTop = list.scrollHeight;
       });
       expect(await trace.evaluate((list) => list.scrollTop)).toBeGreaterThan(0);
+      await pattern.evaluate((box) => {
+        box.scrollLeft = box.scrollWidth;
+      });
+      expect(await pattern.evaluate((box) => box.scrollLeft)).toBeGreaterThan(0);
       if (action === "recipe") {
         const recipe = page.locator(`[data-scenario="${id}"]`);
         await recipe.press("Enter");
@@ -50,27 +57,38 @@ for (const [id, cases] of [
         ]),
       ).toEqual([0, 0, 0]);
       await expect.poll(() => trace.evaluate((list) => list.scrollTop)).toBe(0);
+      await expect.poll(() => pattern.evaluate((box) => box.scrollLeft)).toBe(0);
       await expect(trace.locator(".trace-text").first()).toHaveText("1:1 start");
       await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(cases);
     }
   });
 }
 
-test("editing and failed translation retain the explanation scroll position", async ({ page }) => {
+test("editing and failed translation retain regex and explanation scroll positions", async ({
+  page,
+}) => {
   await page.goto("/?example=access-log");
   const editor = page.locator("#rules-input");
   const trace = page.locator("#trace-list");
+  const pattern = page.locator(".pattern-box");
   await expect(trace.locator("button")).toHaveCount(43);
   await trace.evaluate((list) => {
     list.scrollTop = list.scrollHeight / 2;
   });
   const previous = await trace.evaluate((list) => list.scrollTop);
   expect(previous).toBeGreaterThan(0);
+  await pattern.evaluate((box) => {
+    box.scrollLeft = box.scrollWidth / 2;
+  });
+  const previousPattern = await pattern.evaluate((box) => box.scrollLeft);
+  expect(previousPattern).toBeGreaterThan(0);
   await editor.fill(`${await editor.inputValue()}\n`);
   expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
+  expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(previousPattern);
   for (const option of ["#ignore-case", "#dot-all"]) {
     await page.locator(option).check();
     expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
+    expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(previousPattern);
   }
   const rules = await editor.inputValue();
   const output = await page.locator("#regex-output").textContent();
@@ -83,6 +101,7 @@ test("editing and failed translation retain the explanation scroll position", as
   await expect(editor).toHaveValue(rules);
   await expect(page.locator("#regex-output")).toHaveText(output);
   expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
+  expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(previousPattern);
 });
 
 for (const [, id, section] of examples) {

@@ -463,6 +463,7 @@ function useScenario(scenario) {
   renderTests();
   compileRules();
   ui.trace.scrollTop = 0;
+  ui.output.parentElement?.scrollTo({ left: 0, behavior: "instant" });
 }
 
 function renderScenarioButtons() {
@@ -527,6 +528,7 @@ ui.reverseButton.addEventListener("click", () => {
     hasEdits = true;
     compileRules();
     ui.trace.scrollTop = 0;
+    ui.output.parentElement?.scrollTo({ left: 0, behavior: "instant" });
     ui.reverseRegex.setAttribute("aria-invalid", "false");
     ui.reverseFeedback.dataset.state = "success";
     ui.reverseFeedback.textContent = "Translated. Review the rules and test your examples.";

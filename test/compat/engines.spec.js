@@ -180,7 +180,7 @@ test("path rules and foreign native regexes retain their documented semantics", 
   });
 });
 
-test("long recipes retain matching and focus while resetting the editor and explanation", async ({
+test("long recipes retain matching and focus while resetting rules, explanation and regex views", async ({
   page,
 }) => {
   await page.goto("/?example=artifact-manifest");
@@ -195,6 +195,7 @@ test("long recipes retain matching and focus while resetting the editor and expl
   await expect(page.locator("#test-list textarea").nth(2)).toHaveValue(/Équipe 😀/u);
   const editor = page.locator("#rules-input");
   const trace = page.locator("#trace-list");
+  const pattern = page.locator(".pattern-box");
   await editor.evaluate((field) => {
     field.setSelectionRange(field.value.length, field.value.length);
     field.scrollTop = field.scrollHeight;
@@ -203,6 +204,10 @@ test("long recipes retain matching and focus while resetting the editor and expl
     list.scrollTop = list.scrollHeight;
   });
   expect(await trace.evaluate((list) => list.scrollTop)).toBeGreaterThan(0);
+  await pattern.evaluate((box) => {
+    box.scrollLeft = box.scrollWidth;
+  });
+  expect(await pattern.evaluate((box) => box.scrollLeft)).toBeGreaterThan(0);
   const recipe = page.getByRole("button", { name: "Read a complex artifact manifest" });
   await recipe.press("Enter");
   await expect(recipe).toBeFocused();
@@ -210,8 +215,12 @@ test("long recipes retain matching and focus while resetting the editor and expl
     await editor.evaluate((field) => [field.selectionStart, field.selectionEnd, field.scrollTop]),
   ).toEqual([0, 0, 0]);
   expect(await trace.evaluate((list) => list.scrollTop)).toBe(0);
+  expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(0);
   await trace.evaluate((list) => {
     list.scrollTop = list.scrollHeight;
+  });
+  await pattern.evaluate((box) => {
+    box.scrollLeft = box.scrollWidth;
   });
   await page.locator("#reverse-translator summary").click();
   await reverse.fill(await output.textContent());
@@ -221,6 +230,7 @@ test("long recipes retain matching and focus while resetting the editor and expl
     await editor.evaluate((field) => [field.selectionStart, field.selectionEnd, field.scrollTop]),
   ).toEqual([0, 0, 0]);
   expect(await trace.evaluate((list) => list.scrollTop)).toBe(0);
+  expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(0);
   await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
   await expect(page.locator("#reverse-feedback")).toBeVisible();
   await recipe.press("Enter");
@@ -251,23 +261,36 @@ test("long recipes retain matching and focus while resetting the editor and expl
     });
     const previous = await trace.evaluate((list) => list.scrollTop);
     expect(previous).toBeGreaterThan(0);
+    await pattern.evaluate((box) => {
+      box.scrollLeft = box.scrollWidth / 2;
+    });
+    const previousPattern = await pattern.evaluate((box) => box.scrollLeft);
+    expect(previousPattern).toBeGreaterThan(0);
     await editor.fill(`${await editor.inputValue()}\n`);
     expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
+    expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(previousPattern);
     await page.locator("#ignore-case").check();
     expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
+    expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(previousPattern);
     await page.locator("#ignore-case").uncheck();
     expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
+    expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(previousPattern);
     await page.locator("#reverse-translator summary").click();
     await reverse.fill(await output.textContent());
     await reverse.press("Control+Enter");
     await expect(editor).toBeFocused();
     expect(await trace.evaluate((list) => list.scrollTop)).toBe(0);
+    expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(0);
     await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(cases);
     await trace.evaluate((list) => {
       list.scrollTop = list.scrollHeight;
     });
+    await pattern.evaluate((box) => {
+      box.scrollLeft = box.scrollWidth;
+    });
     await page.locator(`[data-scenario="${id}"]`).press("Enter");
     expect(await trace.evaluate((list) => list.scrollTop)).toBe(0);
+    expect(await pattern.evaluate((box) => box.scrollLeft)).toBe(0);
     await expect(page.locator("#reverse-feedback")).toBeHidden();
     await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(cases);
   }
