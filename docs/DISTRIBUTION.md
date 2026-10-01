@@ -16,6 +16,10 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Equivalent path exclusions
+
+Equivalent path-class translation was synchronized into the existing project folder at Pages commit `019c2f9`, whose build completed on 1 October 2026. Live desktop/mobile checks imported the served API and translated three ordinary, reordered/duplicated and padded-escape spellings across all eight supported flag combinations. All 432 native match-array/index comparisons per viewport agreed with rebuilt regexes; flags and input `lastIndex` stayed unchanged. Each spelling also produced the readable rule through the actual workshop, with correct focus, friendly explanation, Unicode matching and separator rejection. An unsupported capture still preserved the current rules. There was no overflow at 320px or page error. Eleven served website, workshop, translator and documentation files returned HTTP 200 and matched local SHA-256 values. All four complex examples also compiled, explained and translated correctly on the live site, with 34 browser-compatible input cases per viewport and captured-group rejection preserved.
+
 ### Complex examples and readable paths
 
 Four complete format examples and the readable path rule were synchronized into the existing project folder at Pages commit `35cd517`, whose build completed on 1 October 2026. Live desktop/mobile checks compiled every example, verified its explanation fragments and translated it back through Ctrl + Enter with correct focus. All 34 browser-compatible accepted/rejected cases per viewport passed; the exact CRLF rejection remains covered by Node because textareas normalize line endings. Named captures still reported their unsupported-feature diagnostic through Meta + Enter. The simplified filename recipe showed the readable rule and friendly explanation, accepted a Unicode filename and rejected a slash separator. Nine served website, workshop and documentation files returned HTTP 200 and matched local SHA-256 values.
