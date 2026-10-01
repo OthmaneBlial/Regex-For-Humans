@@ -425,6 +425,58 @@ test("alternation reports its operator and repair hint while literal pipes still
   });
 });
 
+test("unsupported groups identify captures and lookaround at their opening parenthesis", () => {
+  for (const [source, message] of [
+    ["()", "Capturing groups cannot be translated."],
+    ["(AB)", "Capturing groups cannot be translated."],
+    ["(?<letters>AB)", "Capturing groups cannot be translated."],
+    ["(?=AB)AB", "Lookahead assertions cannot be translated."],
+    ["(?!AB)CD", "Lookahead assertions cannot be translated."],
+    ["(?<=A)B", "Lookbehind assertions cannot be translated."],
+    ["(?<!A)B", "Lookbehind assertions cannot be translated."],
+  ]) {
+    for (const [prefix, suffix] of [
+      ["", ""],
+      ["^", ""],
+      ["^😀", ""],
+      [String.raw`\(`, ""],
+      ["[(]", ""],
+      ["(?:X", ")"],
+      ["(?:😀", ")"],
+    ]) {
+      for (const flags of ["u", "imsu"]) {
+        assert.throws(
+          () => regexToRules(new RegExp(`${prefix}${source}${suffix}`, flags)),
+          (error) => {
+            assert.ok(error instanceof CompileError);
+            assert.deepEqual(error.toJSON(), {
+              code: "UNSUPPORTED_REGEX",
+              message,
+              line: 1,
+              column: prefix.length + 1,
+              hint: "Supported syntax includes literals, anchors, common character classes, repetition, non-capturing literal or empty groups and i/s/u/m flags. Capturing or complex groups, alternation, lookaround and backreferences are not supported.",
+            });
+            return true;
+          },
+        );
+      }
+    }
+  }
+  for (const regex of [/^\(AB\)$/u, /^[()]$/u, /^(?:AB){2}$/iu, /^(?:)$/u]) {
+    const translated = regexToRules(regex);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const sample of ["(AB)", "(", ")", "ABAB", "abab", "", "😀AB"]) {
+      assert.deepEqual(rebuilt.exec(sample), regex.exec(sample));
+    }
+  }
+  assert.throws(() => regexToRules(/^(?:a+)$/u), {
+    code: "UNSUPPORTED_REGEX",
+    message: "Groups can contain literal text only.",
+    line: 1,
+    column: 6,
+  });
+});
+
 test("rejects features it cannot preserve and non-Unicode matching", () => {
   for (const [regex, column] of [
     [/^a|b$/u, 3],

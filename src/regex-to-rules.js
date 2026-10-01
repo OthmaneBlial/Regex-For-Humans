@@ -35,7 +35,7 @@ const CONTROL_ESCAPES = new Map([
 ]);
 
 const UNSUPPORTED_HINT =
-  "Supported syntax includes literals, anchors, common character classes, repetition, non-capturing literal groups and i/s/u/m flags. Capturing or complex groups, alternation, lookaround and backreferences are not supported.";
+  "Supported syntax includes literals, anchors, common character classes, repetition, non-capturing literal or empty groups and i/s/u/m flags. Capturing or complex groups, alternation, lookaround and backreferences are not supported.";
 const ALTERNATION_MESSAGE = "Alternation (`|`) cannot be translated.";
 const ALTERNATION_HINT = "Translate each alternative as a separate regex.";
 
@@ -192,11 +192,24 @@ function swapClassCategory(category) {
   return { d: "D", D: "d", w: "W", W: "w", s: "S", S: "s" }[category] ?? category;
 }
 
+/** @param {string} source @param {number} start */
+function checkGroupSyntax(source, start) {
+  if (source.startsWith("(?:", start)) return;
+  if (source.startsWith("(?=", start) || source.startsWith("(?!", start)) {
+    unsupported("Lookahead assertions cannot be translated.", start);
+  }
+  if (source.startsWith("(?<=", start) || source.startsWith("(?<!", start)) {
+    unsupported("Lookbehind assertions cannot be translated.", start);
+  }
+  if (source[start + 1] !== "?" || source.startsWith("(?<", start)) {
+    unsupported("Capturing groups cannot be translated.", start);
+  }
+  unsupported("Only non-capturing literal or empty groups can be translated.", start);
+}
+
 /** @param {string} source @param {number} start @returns {AtomToken} */
 function readLiteralGroup(source, start) {
-  if (!source.startsWith("(?:", start)) {
-    unsupported("Only non-capturing groups containing literal text can be translated.", start);
-  }
+  checkGroupSyntax(source, start);
   let value = "";
   for (let index = start + 3; index < source.length; ) {
     const atomStart = index;
@@ -215,6 +228,7 @@ function readLiteralGroup(source, start) {
       literal = escapeResult.literal;
       index = escapeResult.end;
     } else if (".^$*+?()[]{}".includes(character)) {
+      if (character === "(") checkGroupSyntax(source, index);
       unsupported("Groups can contain literal text only.", index);
     } else {
       const point = source.codePointAt(index);

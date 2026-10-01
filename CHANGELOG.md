@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Identify unsupported capturing groups, lookahead and lookbehind with distinct reverse-translation messages at their opening parenthesis, preserving error codes, source columns and existing workshop data.
+
 - Translate empty non-capturing groups and their supported greedy repetitions into zero-count rules, preserving empty matches, flags and surrounding atom boundaries.
 
 - Preserve balanced and nested parentheses and Markdown punctuation escapes in documentation link destinations, keeping complete filenames and error reports.

@@ -27,6 +27,19 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
   await expect(reverse).toHaveAccessibleDescription(/Column 7: Alternation/);
   await expect(output).toHaveText("/^Hello$/u");
+  for (const [literal, diagnostic] of [
+    ["/^😀(AB)/u", "Column 4: Capturing groups cannot be translated."],
+    ["/^(?<letters>AB)/u", "Column 2: Capturing groups cannot be translated."],
+    ["/^😀(?=AB)AB/u", "Column 4: Lookahead assertions cannot be translated."],
+    ["/😀(?<!A)B/u", "Column 3: Lookbehind assertions cannot be translated."],
+  ]) {
+    await reverse.fill(literal);
+    await page.locator("#reverse-button").press("Enter");
+    await expect(reverse).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#reverse-feedback")).toContainText(diagnostic);
+    await expect(reverse).toHaveAccessibleDescription(/non-capturing literal or empty groups/);
+    await expect(output).toHaveText("/^Hello$/u");
+  }
   await reverse.fill("/^[a-zA-Z]{2}$/u");
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
   await page.locator("#reverse-button").click();

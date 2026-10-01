@@ -77,6 +77,12 @@ try {
   const controlRules = JSON.stringify(controlText);
   const unicodePairSource = String.raw`^[\uD83D\uDE00]{2}$`;
   const controlLetterSource = String.raw`^[\cjX]{2}$`;
+  const reverseGroupCases = [
+    ["^😀(AB)", 4, "Capturing groups cannot be translated."],
+    ["^(?<letters>AB)", 2, "Capturing groups cannot be translated."],
+    ["^😀(?=AB)AB", 4, "Lookahead assertions cannot be translated."],
+    ["😀(?<!A)B", 3, "Lookbehind assertions cannot be translated."],
+  ];
   const reverseLimitCases = [
     [String.raw`\d`.repeat(201), "LINE_LIMIT", "Translated rules cannot exceed 200 lines."],
     [
@@ -123,6 +129,10 @@ if (positiveList.source !== "^[ab]*$" || positiveList.segments[1].explanation !=
 const emptyGroup = regexToRules(new RegExp("(?:)+", "u"));
 const emptyGroupPattern = toRegExp(compile(emptyGroup.rules, { flags: emptyGroup.flags }));
 if (emptyGroup.rules !== "0 any character" || emptyGroup.flags !== "" || emptyGroupPattern.source !== ".{0}" || emptyGroupPattern.exec("😀text")?.[0] !== "" || emptyGroupPattern.exec("😀text")?.index !== 0) throw new Error("Empty group translation changed");
+for (const [source, column, message] of ${JSON.stringify(reverseGroupCases)}) {
+  try { regexToRules(new RegExp(source, "u")); throw new Error("Unsupported group accepted"); }
+  catch (error) { if (!(error instanceof CompileError) || error.code !== "UNSUPPORTED_REGEX" || error.message !== message || error.line !== 1 || error.column !== column || !error.hint?.includes("non-capturing literal or empty groups")) throw error; }
+}
 for (const [source, code, message] of ${JSON.stringify(reverseLimitCases)}) {
   try { regexToRules(new RegExp(source, "u")); throw new Error("Oversized translated rules accepted"); }
   catch (error) { if (!(error instanceof CompileError) || error.code !== code || error.message !== message || error.line !== 1 || error.column !== 1 || error.hint !== ${JSON.stringify("Simplify the regex so its translated rules fit these limits.")}) throw error; }

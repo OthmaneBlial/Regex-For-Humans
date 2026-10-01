@@ -1863,6 +1863,70 @@ test("letter rules show counts, alphabetic matching and Unicode case-folding beh
   await expect(page.locator("#copy-button")).toBeEnabled();
 });
 
+test("unsupported group errors identify the feature and preserve edited rules before recovery", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: new URL(page.url()).origin,
+  });
+  const editor = page.locator("#rules-input");
+  const rules = 'start\n"Saved"\nend';
+  await editor.fill(rules);
+  await page.locator("#ignore-case").check();
+  await page.locator("#dot-all").check();
+  const output = page.locator("#regex-output");
+  await expect(output).toHaveText("/^Saved$/isu");
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const help = await page.locator("#reverse-help").innerText();
+  for (const [literal, column, message] of [
+    ["/()/u", 1, "Capturing groups cannot be translated."],
+    ["/^😀(AB)/u", 4, "Capturing groups cannot be translated."],
+    ["/^(?<letters>AB)/u", 2, "Capturing groups cannot be translated."],
+    ["/^😀(?=AB)AB/u", 4, "Lookahead assertions cannot be translated."],
+    ["/^(?!AB)CD/u", 2, "Lookahead assertions cannot be translated."],
+    ["/😀(?<=A)B/u", 3, "Lookbehind assertions cannot be translated."],
+    ["/(?<!A)B/u", 1, "Lookbehind assertions cannot be translated."],
+    ["/^(?:😀(AB))/u", 7, "Capturing groups cannot be translated."],
+    ["/^(?:😀(?<=A)B)/u", 7, "Lookbehind assertions cannot be translated."],
+  ]) {
+    await reverse.fill(literal);
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(page.locator("#reverse-feedback")).toBeHidden();
+    await page.locator("#reverse-button").press("Enter");
+    await expect(reverse).toHaveAttribute("aria-invalid", "true");
+    await expect(reverse).toHaveAccessibleDescription(
+      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, repetition, non-capturing literal or empty groups and i/s/u/m flags. Capturing or complex groups, alternation, lookaround and backreferences are not supported.`,
+    );
+    await expect(editor).toHaveValue(rules);
+    await expect(output).toHaveText("/^Saved$/isu");
+    await expect(page.locator("#ignore-case")).toBeChecked();
+    await expect(page.locator("#dot-all")).toBeChecked();
+    await page.locator("#copy-button").click();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("/^Saved$/isu");
+  }
+  await reverse.fill("/^(?:AB){2}$/u");
+  await page.locator("#reverse-button").press("Enter");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(editor).toHaveValue('start\n2 "AB"\nend');
+  await expect(editor).toBeFocused();
+  await expect(page.locator("#reverse-feedback")).toHaveText(
+    "Translated. Review the rules and test your examples.",
+  );
+  await expect(page.locator("#ignore-case")).not.toBeChecked();
+  await expect(page.locator("#dot-all")).not.toBeChecked();
+  await expect(output).toHaveText("/^(?:AB){2}$/u");
+  const sample = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  await sample.fill("ABAB");
+  await expect(result).toHaveText('✓ Matched "ABAB" at 0');
+  await sample.fill("AB");
+  await expect(result).toHaveText("! No match");
+});
+
 test("empty non-capturing groups preserve zero-count matching in full and search modes", async ({
   page,
   context,
