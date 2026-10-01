@@ -572,6 +572,61 @@ test("API options reject non-string flags while preserving omitted defaults", ()
   }
 });
 
+test("API option flags accept exactly the documented values without changing matching", () => {
+  for (const [flags, expected] of [
+    ["", "u"],
+    ["i", "iu"],
+    ["s", "su"],
+    ["is", "isu"],
+    ["si", "isu"],
+  ]) {
+    const result = compile('start\n"A"\nany character\nend', { flags });
+    assert.equal(result.source, "^A.$");
+    assert.equal(result.flags, expected);
+    const regex = toRegExp(result);
+    assert.equal(regex.test("A😀"), true);
+    assert.equal(regex.test("a😀"), flags.includes("i"));
+    assert.equal(regex.test("A\n"), flags.includes("s"));
+    assert.equal(regex.test("a\n"), flags.includes("i") && flags.includes("s"));
+  }
+  for (const flags of [
+    "ii",
+    "ss",
+    "iis",
+    "iss",
+    "isi",
+    "sis",
+    "sii",
+    "isg",
+    "u",
+    "m",
+    "y",
+    "d",
+    "v",
+    "I",
+    "S",
+    "i s",
+    "is\n",
+    "\nis",
+    "is\r",
+    "is\u2028",
+    "is\u2029",
+    "is\0",
+    "😀",
+    "is".repeat(524_288),
+    "i".repeat(1_048_576),
+  ]) {
+    assert.throws(() => compile("digit", { flags }), {
+      name: "CompileError",
+      code: "UNSUPPORTED_FLAGS",
+      message:
+        "Version 1 accepts only unique i and s option flags; u is always enabled and m is controlled by line anchors.",
+      line: 1,
+      column: 1,
+    });
+  }
+});
+
 test("hex rules match exactly the ASCII hexadecimal characters and explain counts", () => {
   const characters = [
     ...Array.from({ length: 128 }, (_, index) => String.fromCodePoint(index)),

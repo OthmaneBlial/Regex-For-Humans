@@ -110,6 +110,13 @@ try {
     `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
 import { runInNewContext } from "node:vm";
 const result = compile(${JSON.stringify(rules)});
+for (const [flags, expected] of [["", "u"], ["i", "iu"], ["s", "su"], ["is", "isu"], ["si", "isu"]]) {
+  if (compile("digit", { flags }).flags !== expected) throw new Error("Wrong option flag normalization");
+}
+for (const flags of ["ii", "is\\n", "is".repeat(524288)]) {
+  try { compile("digit", { flags }); throw new Error("Invalid option flags were accepted"); }
+  catch (error) { if (!(error instanceof CompileError) || error.code !== "UNSUPPORTED_FLAGS" || error.line !== 1 || error.column !== 1) throw error; }
+}
 const foreign = runInNewContext("/^😀[A-Z]{2}$/isu");
 const foreignTranslation = regexToRules(foreign);
 const foreignPattern = toRegExp(compile(foreignTranslation.rules, { flags: foreignTranslation.flags }));

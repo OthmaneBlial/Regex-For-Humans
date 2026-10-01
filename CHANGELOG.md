@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Validate compiler option flags against their five exact allowed values, avoiding scans and temporary sets for oversized invalid strings while preserving normalization, matching and diagnostics.
+
 - Read native regex metadata without cloning the supplied pattern before validation. Preserve foreign-context inputs, overridden-property bypass, diagnostic priority and `lastIndex`.
 
 - Validate the entire example batch before constructing or running worker regexes. Reject malformed later entries and sparse arrays with the existing error, so expensive earlier examples cannot hide invalid input behind a timeout.

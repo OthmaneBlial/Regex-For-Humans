@@ -82,11 +82,7 @@ function normalizeOptions(options) {
   }
   let requested = "flags" in options ? options.flags : "";
   if (requested === undefined) requested = "";
-  if (
-    typeof requested !== "string" ||
-    /[^is]/u.test(requested) ||
-    new Set(requested).size !== requested.length
-  ) {
+  if (typeof requested !== "string" || !["", "i", "s", "is", "si"].includes(requested)) {
     fail(
       "UNSUPPORTED_FLAGS",
       "Version 1 accepts only unique i and s option flags; u is always enabled and m is controlled by line anchors.",

@@ -23,6 +23,8 @@ The browser imports the same `index.js` from the static build. `web/app.js` hand
 
 The internal `TestRunner.run(payload)` reports worker construction and message-send failures through rejected `WORKER_ERROR` promises. Starting a run cancels the previous one, including when the new worker cannot start; later attempts remain available. The controller assigns the request ID after copying payload fields so an extra caller-supplied `id` cannot interfere with reply routing. Example IDs inside `cases` are preserved separately.
 
+Compiler option validation compares the requested flags with the five exact allowed values (`""`, `"i"`, `"s"`, `"is"`, `"si"`). It avoids scanning or deduplicating arbitrarily long option strings while preserving the existing error and canonical flag order.
+
 ## Reverse translation
 
 The public `regexToRules(regex)` delegates to `src/regex-to-rules.js`. It reads a bounded subset of Unicode JavaScript `RegExp` syntax and returns `{ rules, flags }`; `flags` contains the `i`/`s` compiler options, while multiline behavior is represented by line-anchor rules. The emitted rules are checked by the existing parser. Unsupported operators and flags fail with positioned `CompileError` diagnostics instead of returning approximate or partial rules.
