@@ -2,7 +2,7 @@
 
 ## Local verification
 
-**Latest full local verification (1 October 2026):** `npm run verify` passed at source commit `19c3b25` on Node 25.9.0/npm 11.12.1, with Biome 2.5.15: 181 Node tests, 222 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 58 homepage tests, a clean consumer package installation (74,761-byte tarball), and `npm audit` with zero vulnerabilities. This includes reverse translation of equivalent path exclusion classes. The 13 focused path and complex-example tests also passed on Node 22.23.3. Earlier full runs passed at `55be6da` and `a2dfe34` on Node 25.9.0/npm 11.12.1, at `4d35165` on Node 22.23.3/npm 11.12.1 and at `f4febbe` and `d91edbd` on Node 25.9.0/npm 11.12.1. These runs verify macOS only; see [TESTING.md](TESTING.md) for historical compatibility evidence.
+**Latest full local verification (1 October 2026):** `npm run verify` passed at source commit `0e77c45` on Node 25.9.0/npm 11.12.1, with Biome 2.5.15: 185 Node tests, 224 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 58 homepage tests, a clean consumer package installation (75,851-byte tarball), and `npm audit` with zero vulnerabilities. This includes explicit word-character names and simplified identifier examples with existing matching and reverse output preserved. The 11 focused word-character and complex-example tests also passed on Node 22.23.3. Earlier full runs passed at `19c3b25`, `55be6da` and `a2dfe34` on Node 25.9.0/npm 11.12.1, at `4d35165` on Node 22.23.3/npm 11.12.1 and at `f4febbe` and `d91edbd` on Node 25.9.0/npm 11.12.1. These runs verify macOS only; see [TESTING.md](TESTING.md) for historical compatibility evidence.
 
 ### Preview server
 
