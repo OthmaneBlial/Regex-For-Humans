@@ -28,7 +28,7 @@ const server = createServer(async (request, response) => {
       return;
     }
     const target = await realpath(path);
-    if (!target.startsWith(`${root}${sep}`)) {
+    if (target !== root && !target.startsWith(`${root}${sep}`)) {
       response.writeHead(403).end();
       return;
     }

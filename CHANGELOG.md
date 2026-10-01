@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Redirect local preview directory links back to the selected root, preserving encoded paths and queries while continuing to reject outside targets.
+
 - Translate the stored native regex pattern and flags even when subclasses or own properties override metadata, preserving input state and unsupported-feature diagnostics.
 
 - Accept genuine regexes created in another JavaScript context through the reverse API, preserving flags, diagnostics and state while rejecting lookalike objects without executing the input pattern.

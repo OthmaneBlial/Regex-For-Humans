@@ -108,6 +108,7 @@ test("the local server confines symlink targets to its selected root", {
   writeFileSync(join(root, "nested", "index.html"), "<h1>Inside root</h1>");
   writeFileSync(join(outside, "index.html"), "Outside root sentinel");
   symlinkSync(root, alias, "junction");
+  symlinkSync(root, join(root, "root alias"), "junction");
   symlinkSync(join(root, "nested"), join(root, "inside"), "junction");
   symlinkSync(outside, join(root, "outside"), "junction");
   const address = await startServer(t, alias);
@@ -121,14 +122,22 @@ test("the local server confines symlink targets to its selected root", {
     assert.equal(response.status, 403, path);
     assert.equal(await response.text(), "", path);
   }
-  const redirect = await fetch(new URL("inside?example=hex-color", address), {
-    redirect: "manual",
-    signal: t.signal,
-  });
-  assert.equal(redirect.status, 308);
-  assert.equal(redirect.headers.get("location"), "/inside/?example=hex-color");
+  for (const path of ["inside", "root%20alias"]) {
+    for (const method of ["GET", "HEAD"]) {
+      const redirect = await fetch(new URL(`${path}?example=hex-color`, address), {
+        method,
+        redirect: "manual",
+        signal: t.signal,
+      });
+      assert.equal(redirect.status, 308, `${method} ${path}`);
+      assert.equal(redirect.headers.get("location"), `/${path}/?example=hex-color`);
+      assert.equal(await redirect.text(), "");
+    }
+  }
   for (const [path, content] of [
     ["", "<h1>Selected root</h1>"],
+    ["root%20alias/", "<h1>Selected root</h1>"],
+    ["root%20alias/index.html", "<h1>Selected root</h1>"],
     ["inside/", "<h1>Inside root</h1>"],
     ["inside/index.html", "<h1>Inside root</h1>"],
   ]) {
