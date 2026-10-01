@@ -27,6 +27,8 @@ The internal `TestRunner.run(payload)` reports worker construction and message-s
 
 The public `regexToRules(regex)` delegates to `src/regex-to-rules.js`. It reads a bounded subset of Unicode JavaScript `RegExp` syntax and returns `{ rules, flags }`; `flags` contains the `i`/`s` compiler options, while multiline behavior is represented by line-anchor rules. The emitted rules are checked by the existing parser. Unsupported operators and flags fail with positioned `CompileError` diagnostics instead of returning approximate or partial rules.
 
+The parser also owns the output size and line limits. Reverse translation preserves its limit codes but reports that the translated rules are too large, at the start of the whole regex. Other parser errors propagate unchanged. The workshop applies rules and options only after translation succeeds, so a rejected translation preserves the current editor and matching output.
+
 The reader preserves Unicode atom boundaries, including fixed-width surrogate pairs in repetition and character classes. Separate lone-surrogate atoms remain separate rules; a literal group whose boundaries cannot be represented fails explicitly. Translation does not execute the input regex. The workshop parses a slash-delimited literal with the native `RegExp` constructor, calls this same public API, then uses its existing compiler and isolated example worker.
 
 ## Diagnostics and changes to the language

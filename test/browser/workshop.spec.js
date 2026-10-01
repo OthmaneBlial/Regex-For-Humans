@@ -47,8 +47,58 @@ test("unsupported regex syntax reports its location without replacing the curren
   );
 });
 
+test("reverse output limits explain the expansion, preserve edits and recover", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const editor = page.locator("#rules-input");
+  await editor.fill("start\n3 digits\nend");
+  await page.locator("#ignore-case").check();
+  await page.locator("#dot-all").check();
+  await expect(page.locator("#regex-output")).toHaveText("/^\\d{3}$/isu");
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const feedback = page.locator("#reverse-feedback");
+  for (const [source, limit] of [
+    [String.raw`\d`.repeat(201), "200 lines"],
+    [`${"A\u202e".repeat(2340)}BCD`, "16384 UTF-16 code units"],
+  ]) {
+    const literal = `/${source}/u`;
+    await reverse.fill(literal);
+    await expect(feedback).toBeHidden();
+    await page.locator("#reverse-button").click();
+    await expect(feedback).toHaveText(
+      `Column 1: Translated rules cannot exceed ${limit}. Simplify the regex so its translated rules fit these limits.`,
+    );
+    await expect(reverse).toHaveAccessibleDescription(
+      new RegExp(`Translated rules cannot exceed ${limit}`),
+    );
+    await expect(reverse).toHaveValue(literal);
+    await expect(editor).toHaveValue("start\n3 digits\nend");
+    await expect(page.locator("#ignore-case")).toBeChecked();
+    await expect(page.locator("#dot-all")).toBeChecked();
+    await expect(page.locator("#regex-output")).toHaveText("/^\\d{3}$/isu");
+    await expect(page.locator("#copy-button")).toBeEnabled();
+  }
+  await reverse.fill(String.raw`/^\d{2}$/u`);
+  await page.locator("#reverse-button").click();
+  await expect(feedback).toHaveText("Translated. Review the rules and test your examples.");
+  await expect(editor).toHaveValue("start\n2 digit\nend");
+  await expect(editor).toBeFocused();
+  await expect(page.locator("#ignore-case")).not.toBeChecked();
+  await expect(page.locator("#dot-all")).not.toBeChecked();
+  const example = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  await example.fill("12");
+  await expect(result).toHaveText('✓ Matched "12" at 0');
+  await example.fill("1");
+  await expect(result).toHaveText("! No match");
+});
+
 test("reverse translation keeps escaped emoji whole while testing examples", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
   await page.locator("#reverse-translator summary").click();
   await page
     .getByRole("textbox", { name: "JavaScript regex literal", exact: true })

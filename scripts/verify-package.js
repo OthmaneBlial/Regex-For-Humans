@@ -76,6 +76,14 @@ try {
   const controlText = `A${String.fromCodePoint(0, 0x1b, 0x7f, 0x9b, 0x9d, 0x2028, 0x2029)}B`;
   const controlRules = JSON.stringify(controlText);
   const unicodePairSource = String.raw`^[\uD83D\uDE00]{2}$`;
+  const reverseLimitCases = [
+    [String.raw`\d`.repeat(201), "LINE_LIMIT", "Translated rules cannot exceed 200 lines."],
+    [
+      `${"A\u202e".repeat(2340)}BCD`,
+      "SOURCE_LIMIT",
+      "Translated rules cannot exceed 16384 UTF-16 code units.",
+    ],
+  ];
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
@@ -87,6 +95,10 @@ if (compile(reverse.rules, { flags: reverse.flags }).source !== "^[A-Z]{2}-\\\\d
 const emojiReverse = regexToRules(new RegExp(${JSON.stringify(unicodePairSource)}, "u"));
 const emojiPattern = toRegExp(compile(emojiReverse.rules, { flags: emojiReverse.flags }));
 if (!emojiPattern.test("😀😀") || emojiPattern.test("😀")) throw new Error("Reverse translation split a Unicode surrogate pair");
+for (const [source, code, message] of ${JSON.stringify(reverseLimitCases)}) {
+  try { regexToRules(new RegExp(source, "u")); throw new Error("Oversized translated rules accepted"); }
+  catch (error) { if (!(error instanceof CompileError) || error.code !== code || error.message !== message || error.line !== 1 || error.column !== 1 || error.hint !== ${JSON.stringify("Simplify the regex so its translated rules fit these limits.")}) throw error; }
+}
 try { compile("start at least"); throw new Error("Incomplete minimum accepted"); }
 catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_REPETITION" || error.column !== 7 || error.hint !== ${JSON.stringify("Use `at least 3 digits`, with the minimum count before the item.")}) throw error; }
 const trailingList = ${JSON.stringify('one of: "😀", ",",')};

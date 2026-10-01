@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { compile, regexToRules, toRegExp } from "../index.js";
+import { CompileError, compile, regexToRules, toRegExp } from "../index.js";
 
 const scenarios = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
@@ -95,6 +95,60 @@ test("literal groups reject separate surrogate atoms that one literal rule canno
     code: "UNSUPPORTED_REGEX",
     line: 1,
     column: 13,
+  });
+});
+
+test("translated line limits describe the whole regex rather than a generated line", () => {
+  const atLimit = new RegExp(String.raw`\d`.repeat(200), "u");
+  const translated = regexToRules(atLimit);
+  assert.equal(translated.rules.split("\n").length, 200);
+  assert.equal(compile(translated.rules, { flags: translated.flags }).source, atLimit.source);
+  for (const source of [String.raw`\d`.repeat(201), `^${String.raw`\d`.repeat(199)}$`]) {
+    assert.throws(
+      () => regexToRules(new RegExp(source, "u")),
+      (error) => {
+        assert.ok(error instanceof CompileError);
+        assert.deepEqual(error.toJSON(), {
+          code: "LINE_LIMIT",
+          message: "Translated rules cannot exceed 200 lines.",
+          line: 1,
+          column: 1,
+          hint: "Simplify the regex so its translated rules fit these limits.",
+        });
+        return true;
+      },
+    );
+  }
+});
+
+test("translated length limits account for escaping and retain the accepted boundary", () => {
+  // Each direction control expands to six visible code units in the rules.
+  const value = `${"A\u202e".repeat(2340)}BC`;
+  const translated = regexToRules(new RegExp(value, "u"));
+  assert.equal(translated.rules.length, 16_384);
+  assert.equal(toRegExp(compile(translated.rules)).exec(value)?.[0], value);
+  assert.throws(
+    () => regexToRules(new RegExp(`${value}D`, "u")),
+    (error) => {
+      assert.ok(error instanceof CompileError);
+      assert.deepEqual(error.toJSON(), {
+        code: "SOURCE_LIMIT",
+        message: "Translated rules cannot exceed 16384 UTF-16 code units.",
+        line: 1,
+        column: 1,
+        hint: "Simplify the regex so its translated rules fit these limits.",
+      });
+      return true;
+    },
+  );
+});
+
+test("oversized regex input keeps its own source-limit code and position", () => {
+  assert.throws(() => regexToRules(new RegExp("a".repeat(16_385), "u")), {
+    code: "REGEX_SOURCE_LIMIT",
+    message: "Regex source cannot exceed 16384 UTF-16 code units.",
+    line: 1,
+    column: 16_385,
   });
 });
 
