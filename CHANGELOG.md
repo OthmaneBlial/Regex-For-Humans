@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Read native regex metadata without cloning the supplied pattern before validation. Preserve foreign-context inputs, overridden-property bypass, diagnostic priority and `lastIndex`.
+
 - Validate the entire example batch before constructing or running worker regexes. Reject malformed later entries and sparse arrays with the existing error, so expensive earlier examples cannot hide invalid input behind a timeout.
 
 - Add CLI `--reverse` for the existing regex-to-rules translator, with file/stdin input, JSON `{ rules, flags }`, plain-output flag guidance, positioned errors and bounded UTF-8 reads. The CLI and workshop share literal parsing; the published npm preview remains unchanged.

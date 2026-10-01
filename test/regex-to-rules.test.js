@@ -156,6 +156,49 @@ test("translation uses the stored native pattern and flags instead of overridden
   }
 });
 
+test("reverse validation reads native metadata without cloning the pattern", () => {
+  const clone = globalThis.structuredClone;
+  let cloneCalls = 0;
+  globalThis.structuredClone = () => {
+    cloneCalls += 1;
+    throw new Error("Regex serialization must not run during metadata validation.");
+  };
+  try {
+    const source = "a".repeat(16_385);
+    for (const [flags, code, column] of [
+      ["u", "REGEX_SOURCE_LIMIT", 16_385],
+      ["", "UNICODE_FLAG_REQUIRED", 1],
+      ["du", "UNSUPPORTED_REGEX_FLAGS", 1],
+      ["gu", "UNSUPPORTED_REGEX_FLAGS", 1],
+      ["yu", "UNSUPPORTED_REGEX_FLAGS", 1],
+      ["v", "UNSUPPORTED_REGEX_FLAGS", 1],
+      ["dgv", "UNSUPPORTED_REGEX_FLAGS", 1],
+    ]) {
+      const regex = new RegExp(source, flags);
+      regex.lastIndex = 7;
+      assert.throws(() => regexToRules(regex), { code, line: 1, column });
+      assert.equal(regex.lastIndex, 7);
+    }
+    assert.deepEqual(regexToRules(/^A.$/isu), {
+      rules: 'start\n"A"\nany character\nend',
+      flags: "is",
+    });
+    const foreign = runInNewContext('new RegExp("^A.$", "imsu")');
+    Object.defineProperty(foreign, "flags", {
+      get() {
+        assert.fail("Overridden metadata was read");
+      },
+    });
+    assert.deepEqual(regexToRules(foreign), {
+      rules: 'line start\n"A"\nany character\nline end',
+      flags: "is",
+    });
+    assert.equal(cloneCalls, 0);
+  } finally {
+    globalThis.structuredClone = clone;
+  }
+});
+
 test("translates literal groups, generic repetition and open-ended counts", () => {
   for (const [regex, rules] of [
     [/^(?:a\.b){2,4}$/u, 'start\nbetween 2 and 4 "a.b"\nend'],

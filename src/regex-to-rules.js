@@ -290,21 +290,27 @@ function readQuantifier(source, index) {
  * @param {RegExp} regex
  */
 export function regexToRules(regex) {
+  /** @param {PropertyKey} property */
+  const nativeValue = (property) => Reflect.get(RegExp.prototype, property, regex);
   try {
     // The native getter checks the RegExp brand across contexts without running the pattern.
-    if (typeof Reflect.get(RegExp.prototype, "global", regex) !== "boolean") throw new TypeError();
+    if (typeof nativeValue("global") !== "boolean") throw new TypeError();
   } catch {
     throw new TypeError("Expected a JavaScript RegExp.");
   }
-  // Copy stored RegExp data without consulting metadata or matching protocols.
-  regex = structuredClone(regex);
-  if (/[^imsu]/u.test(regex.flags)) {
+  // The flags accessor reads properties; route them to native getters, not instance overrides.
+  const nativeFlags = Reflect.get(
+    RegExp.prototype,
+    "flags",
+    new Proxy({}, { get: (_target, property) => nativeValue(property) }),
+  );
+  if (/[^imsu]/u.test(nativeFlags)) {
     fail("UNSUPPORTED_REGEX_FLAGS", "Only the i, s, m and u flags can be translated.", {
       line: 1,
       column: 1,
     });
   }
-  if (!regex.unicode) {
+  if (!nativeValue("unicode")) {
     fail(
       "UNICODE_FLAG_REQUIRED",
       "Add the `u` flag before translating. The rule language always uses Unicode matching.",
@@ -312,7 +318,8 @@ export function regexToRules(regex) {
     );
   }
 
-  const source = regex.source;
+  /** @type {string} */
+  const source = nativeValue("source");
   if (source.length > LIMITS.sourceLength) {
     fail(
       "REGEX_SOURCE_LIMIT",
@@ -323,7 +330,7 @@ export function regexToRules(regex) {
 
   /** @type {PositionedAtom[]} */
   const atoms = [];
-  const multiline = regex.multiline;
+  const multiline = nativeValue("multiline");
   let cursor = 0;
   if (source[cursor] === "^") {
     atoms.push({
@@ -455,6 +462,6 @@ export function regexToRules(regex) {
   }
   return {
     rules: translated,
-    flags: `${regex.ignoreCase ? "i" : ""}${regex.dotAll ? "s" : ""}`,
+    flags: `${nativeValue("ignoreCase") ? "i" : ""}${nativeValue("dotAll") ? "s" : ""}`,
   };
 }

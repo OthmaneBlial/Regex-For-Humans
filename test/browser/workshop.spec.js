@@ -224,6 +224,10 @@ test("the browser API accepts a genuine regex from an iframe without changing it
     const frame = document.createElement("iframe");
     frame.hidden = true;
     document.body.append(frame);
+    const clone = window.structuredClone;
+    window.structuredClone = () => {
+      throw new Error("Regex serialization must not run during translation");
+    };
     try {
       const original = new frame.contentWindow.RegExp("^😀[A-Z]{2}$", "imsu");
       original.lastIndex = 7;
@@ -264,6 +268,7 @@ test("the browser API accepts a genuine regex from an iframe without changing it
         rejectedLookalike,
       };
     } finally {
+      window.structuredClone = clone;
       frame.remove();
     }
   });

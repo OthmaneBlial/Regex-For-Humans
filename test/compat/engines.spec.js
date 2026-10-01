@@ -152,6 +152,10 @@ test("path rules and foreign native regexes retain their documented semantics", 
     const frame = document.createElement("iframe");
     frame.hidden = true;
     document.body.append(frame);
+    const clone = window.structuredClone;
+    window.structuredClone = () => {
+      throw new Error("Regex serialization must not run during translation");
+    };
     try {
       const regex = new frame.contentWindow.RegExp("^😀[A-Z]{2}$", "isu");
       for (const name of [
@@ -171,6 +175,7 @@ test("path rules and foreign native regexes retain their documented semantics", 
       }
       return { localInstance: regex instanceof RegExp, translated: regexToRules(regex) };
     } finally {
+      window.structuredClone = clone;
       frame.remove();
     }
   });
