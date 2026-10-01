@@ -4,6 +4,18 @@ import test from "node:test";
 import { compile, toRegExp } from "../index.js";
 
 const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+const recipes = JSON.parse(
+  readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
+);
+
+test("README links every shared recipe exactly once", () => {
+  const ids = [
+    ...readme.matchAll(
+      /^\| \[[^\]]+\]\(https:\/\/othmaneblial\.github\.io\/Regex-For-Humans\/workshop\/\?example=([a-z0-9-]+)\) \|/gmu,
+    ),
+  ].map(([, id]) => id);
+  assert.deepEqual(ids.sort(), recipes.map(({ id }) => id).sort());
+});
 
 test("README's lead demo and optional shortcut match the compiler", () => {
   const demo =

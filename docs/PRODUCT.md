@@ -32,7 +32,9 @@ These fixtures define the product walkthrough. Their expected regex sources and 
 
 12. **Match a MAC address shape.** Six exact pairs of ASCII hexadecimal digits are separated by literal colons. Positive examples include `00:1A:2B:3C:4D:5E`, `AA:BB:CC:DD:EE:FF` and `00:00:00:00:00:00`. Negative examples cover hyphens, missing or extra digits, invalid hex characters, extra groups and localized digits. This checks text shape only; it does not confirm address allocation or device type.
 
-The recipes use compact syntax for prefixes, exclusions, line matching, fixed date and time shapes, variable-length version components, an exact hexadecimal character count, an inclusive digit range, an alphabetic username prefix, an optional phone prefix, bounded filename characters and colon-separated hexadecimal pairs.
+13. **Match a case-sensitive product-code shape.** Rules require two uppercase ASCII letters, a hyphen, three lowercase ASCII letters, another hyphen and four ASCII digits, all anchored. `AB-rgb-0420` matches; mixed case, wrong counts, non-ASCII digits, the Unicode Kelvin sign and underscores do not. The `i` option deliberately removes the case distinction and enables JavaScript's Unicode case folding. This checks a shape only; verify actual product records separately.
+
+The recipes use compact syntax for prefixes, exclusions, line matching, fixed date and time shapes, variable-length version components, an exact hexadecimal character count, an inclusive digit range, an alphabetic username prefix, case-specific ASCII letters, an optional phone prefix, bounded filename characters and colon-separated hexadecimal pairs.
 
 Each fixture includes a short note about its meaning and limits. The workshop shows that note beside the selected rules, includes it in the editor's accessible description, and hides it when manual rules differ from the recipe. The homepage demo uses the same note.
 

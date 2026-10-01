@@ -6,6 +6,8 @@
 
 - Add a shape-only MAC-address recipe that teaches exact hex pairs and literal separators.
 
+- Add explicit ASCII lowercase and uppercase letter rules, with case-folding behavior explained when `i` is enabled.
+
 - Reject noncanonical worker flags and malformed example IDs with stable errors before matching.
 
 - Add `optional <item>` as a zero-to-one repetition modifier, with positioned diagnostics and phone-shape coverage.

@@ -493,10 +493,12 @@ test("recipe cards cover every shared recipe and open editable shapes", async ({
   expect(ids.sort()).toEqual(recipes.map((recipe) => recipe.id).sort());
   await expect(page.locator(".syntax-list")).toContainText("between 2 and 6 digits");
   await expect(page.locator(".syntax-list")).toContainText("letters");
+  await expect(page.locator(".syntax-list")).toContainText("lowercase letters");
   for (const id of [
     "invoice-number",
     "username-shape",
     "mac-address-shape",
+    "product-code-shape",
     "time-shape",
     "phone-shape",
     "filename-shape",

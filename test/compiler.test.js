@@ -608,3 +608,68 @@ test("letter rules match ASCII letters and explain Unicode case folding and coun
     "Between 2 and 4 ASCII letters (A–Z, a–z), inclusive.",
   );
 });
+
+test("lowercase and uppercase rules are ASCII shorthands with explicit i-flag effects", () => {
+  const cases = [
+    {
+      rule: "lowercase letter",
+      source: "[a-z]",
+      opposite: "A",
+      explanation: "One lowercase ASCII letter (a–z).",
+      ignoreCaseExplanation:
+        "One lowercase ASCII letter (a–z). With i, uppercase ASCII letters and a few Unicode equivalents also match.",
+    },
+    {
+      rule: "uppercase letter",
+      source: "[A-Z]",
+      opposite: "a",
+      explanation: "One uppercase ASCII letter (A–Z).",
+      ignoreCaseExplanation:
+        "One uppercase ASCII letter (A–Z). With i, lowercase ASCII letters and a few Unicode equivalents also match.",
+    },
+  ];
+  for (const item of cases) {
+    for (const flags of ["", "i"]) {
+      const result = compile(
+        `start
+${item.rule}
+end`,
+        { flags },
+      );
+      assert.equal(result.source, `^${item.source}$`);
+      assert.equal(
+        result.segments[1].explanation,
+        flags ? item.ignoreCaseExplanation : item.explanation,
+      );
+      const regex = toRegExp(result);
+      assert.equal(regex.test(item.rule.startsWith("lowercase") ? "z" : "Z"), true);
+      assert.equal(regex.test(item.opposite), flags === "i");
+      for (const equivalent of ["K", "ſ"]) assert.equal(regex.test(equivalent), flags === "i");
+    }
+  }
+
+  const lowercaseSequence = compile("start\nlowercase letters\nend");
+  assert.equal(lowercaseSequence.source, "^[a-z]+$");
+  assert.equal(
+    lowercaseSequence.segments[1].explanation,
+    "One or more lowercase ASCII letters (a–z).",
+  );
+  assert.equal(toRegExp(lowercaseSequence).test("alpha"), true);
+  assert.equal(toRegExp(lowercaseSequence).test("Alpha"), false);
+
+  const countedUppercase = compile("3 uppercase letters");
+  assert.equal(countedUppercase.source, "[A-Z]{3}");
+  assert.equal(
+    countedUppercase.segments[0].explanation,
+    "Exactly 3 uppercase ASCII letters (A–Z).",
+  );
+  assert.equal(toRegExp(countedUppercase).test("ABC"), true);
+  assert.equal(toRegExp(countedUppercase).test("AbC"), false);
+
+  const boundedLowercase = compile("between 2 and 4 lowercase letters");
+  assert.equal(boundedLowercase.source, "[a-z]{2,4}");
+  assert.equal(
+    boundedLowercase.segments[0].explanation,
+    "Between 2 and 4 lowercase ASCII letters (a–z), inclusive.",
+  );
+});

@@ -85,6 +85,25 @@
     ]
   },
   {
+    "id": "product-code-shape",
+    "title": "Match a case-sensitive product-code shape",
+    "note": "Two uppercase ASCII letters, three lowercase ASCII letters and four digits. JavaScript's i option ignores case; verify product records separately.",
+    "rules": "start\n2 uppercase letters\n\"-\"\n3 lowercase letters\n\"-\"\n4 digits\nend",
+    "source": "^[A-Z]{2}-[a-z]{3}-\\d{4}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["AB-rgb-0420", "XY-bcd-9876", "ZZ-sku-0000"],
+    "negative": [
+      "Ab-rgb-0420",
+      "AB-Rgb-0420",
+      "A-rgb-0420",
+      "AB-rgb-420",
+      "AB-rgb-٠٤٢٠",
+      "KB-rgb-0420",
+      "AB_rgb_0420"
+    ]
+  },
+  {
     "id": "invoice-number",
     "title": "Match an invoice ID shape",
     "note": "INV- followed by 2–6 ASCII digits. Leading zeros are allowed; verify invoice records separately.",

@@ -69,6 +69,10 @@ const SHORTHANDS = new Map([
   ["digit", "\\d"],
   ["letter", "[A-Za-z]"],
   ["letters", "[A-Za-z]"],
+  ["lowercase letter", "[a-z]"],
+  ["lowercase letters", "[a-z]"],
+  ["uppercase letter", "[A-Z]"],
+  ["uppercase letters", "[A-Z]"],
   ["hex digit", "[0-9A-Fa-f]"],
   ["hex digits", "[0-9A-Fa-f]"],
   ["not space", "\\S"],
@@ -309,7 +313,17 @@ function parseAtom(text, location, rawLine) {
   if (/^any character$/i.test(remaining)) return atom("wildcard", ".", repetition, location, text);
   for (const [phrase, token] of SHORTHANDS) {
     if (remaining.toLowerCase() === phrase) {
-      if (["digits", "hex digits", "letters", "spaces"].includes(phrase) && !repetition)
+      if (
+        [
+          "digits",
+          "hex digits",
+          "letters",
+          "lowercase letters",
+          "uppercase letters",
+          "spaces",
+        ].includes(phrase) &&
+        !repetition
+      )
         repetition = { kind: "oneOrMore" };
       return atom("shorthand", token, repetition, location, text);
     }
@@ -367,11 +381,15 @@ function parseAtom(text, location, rawLine) {
       ? QUOTE_HINT
       : /^hex(?:\s|$)/i.test(remaining)
         ? "Use `hex digit` for one character or `hex digits` for one or more."
-        : /^letters?(?:\s|$)/i.test(remaining)
-          ? "Use `letter` for one ASCII letter or `letters` for one or more."
-          : /^spaces?(?:\s|$)/i.test(remaining)
-            ? "Use `space` for one whitespace character or `spaces` for one or more, including line breaks."
-            : "Try `line start`, `any text` or `3 digits`.",
+        : /^lowercase(?:\s|$)/i.test(remaining)
+          ? "Use `lowercase letter` for one ASCII lowercase letter or `lowercase letters` for one or more."
+          : /^uppercase(?:\s|$)/i.test(remaining)
+            ? "Use `uppercase letter` for one ASCII uppercase letter or `uppercase letters` for one or more."
+            : /^letters?(?:\s|$)/i.test(remaining)
+              ? "Use `letter` for one ASCII letter or `letters` for one or more."
+              : /^spaces?(?:\s|$)/i.test(remaining)
+                ? "Use `space` for one whitespace character or `spaces` for one or more, including line breaks."
+                : "Try `line start`, `any text` or `3 digits`.",
   );
 }
 

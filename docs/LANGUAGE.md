@@ -24,6 +24,10 @@ When using both anchor edges, pair `start` with `end`, or `line start` with `lin
 | `not digit` | `\D` | `A`, `٣` | `3` |
 | `letter` | `[A-Za-z]` | `A`, `z` | `3`, `_`, `é` |
 | `letters` | `[A-Za-z]+` | `aBc` | empty string, `A3` with `start` and `end` |
+| `lowercase letter` | `[a-z]` | `a`, `z` | `A` |
+| `lowercase letters` | `[a-z]+` | `abc` | empty string, `ABC` |
+| `uppercase letter` | `[A-Z]` | `A`, `Z` | `a` |
+| `uppercase letters` | `[A-Z]+` | `ABC` | empty string, `abc` |
 | `hex digit` | `[0-9A-Fa-f]` | `0`, `9`, `a`, `F` | `g`, `٣`, `Ｆ` |
 | `hex digits` | `[0-9A-Fa-f]+` | `09aF` | empty string, `0xFF` with `start` and `end` |
 | `space` | `\s` | a space, tab or newline | `A` |
@@ -38,6 +42,8 @@ When using both anchor edges, pair `start` with `end`, or `line start` with `lin
 `word`/`not word` use JavaScript's `\w`/`\W`; `digit`/`not digit` use `\d`/`\D`. These classes are ASCII-oriented with `u`; `i` plus `u` adds a few Unicode case-folding matches to `\w`. `\w` includes `_` but excludes `é`. The misleading `alphanumeric character` aliases are rejected.
 
 `letter` matches one ASCII letter, and `letters` matches one or more. They exclude digits, underscores and accented or other non-ASCII letters by default. They are not a Unicode alphabetic class. The optional `i` flag follows JavaScript case folding: equivalents such as the Kelvin sign `K` and long s `ſ` also match `[A-Za-z]` with `iu`. The explanation reports this when `i` is enabled. Counts and ranges replace the sequence default, as in `3 letters` or `between 2 and 4 letters`. Anchor the pattern to validate the whole string. Forms such as `letter characters`, `letter 3 times` and `not letter` are unsupported.
+
+`lowercase letter(s)` and `uppercase letter(s)` match ASCII `[a-z]` and `[A-Z]` respectively. Without `i`, the opposite case does not match. With `i`, JavaScript ignores that distinction and also matches its Unicode case-folding equivalents; the workshop explanation makes the change explicit. These are still ASCII classes, not general Unicode lowercase or uppercase properties.
 
 `space` matches one JavaScript whitespace character; `spaces` matches one or more. Both include tabs and line breaks, including Unicode line separators and nonbreaking spaces. Counts replace the plural default: `3 spaces` means exactly three whitespace characters, and `between 0 and 2 spaces` permits empty input. For ordinary U+0020 spaces only, use a quoted literal such as `3 " "`. Forms such as `spaces 3 times` and `not spaces` are unsupported; use `not space` for one non-whitespace character.
 
@@ -63,7 +69,7 @@ C0/C1 control characters, DEL and Unicode line separators are also displayed as 
 
 ## Repetition
 
-A count, range or `optional` modifier applies to the next item. Put it first (`3 digits`, `between 2 and 4 digits` or `optional "-"`). `optional <item>` is the same as `between 0 and 1 <item>` and generates `{0,1}`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters` and `spaces` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another count, range or optional modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters. Other repetition wording, such as `at least 3 times`, is not supported.
+A count, range or `optional` modifier applies to the next item. Put it first (`3 digits`, `between 2 and 4 digits` or `optional "-"`). `optional <item>` is the same as `between 0 and 1 <item>` and generates `{0,1}`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters`, `lowercase letters`, `uppercase letters` and `spaces` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another count, range or optional modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters. Other repetition wording, such as `at least 3 times`, is not supported.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |

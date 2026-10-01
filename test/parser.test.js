@@ -110,6 +110,34 @@ test("letter rules have explicit sequence defaults, counts and positioned errors
   assert.throws(() => parse("not letter"), { code: "UNKNOWN_RULE" });
 });
 
+test("lowercase and uppercase letter rules have explicit ASCII classes and count defaults", () => {
+  for (const [rules, value, repetition] of [
+    ["lowercase letter", "[a-z]", null],
+    ["lowercase letters", "[a-z]", { kind: "oneOrMore" }],
+    ["3 lowercase letters", "[a-z]", { kind: "exact", min: 3 }],
+    ["uppercase letter", "[A-Z]", null],
+    ["uppercase letters", "[A-Z]", { kind: "oneOrMore" }],
+    ["between 2 and 4 uppercase letters", "[A-Z]", { kind: "range", min: 2, max: 4 }],
+  ]) {
+    const node = parse(rules).nodes[0];
+    assert.equal(node.atomType, "shorthand");
+    assert.equal(node.value, value, rules);
+    assert.deepEqual(node.repetition, repetition, rules);
+  }
+  for (const [rules, hint] of [
+    [
+      "2 lowercase characters",
+      "Use `lowercase letter` for one ASCII lowercase letter or `lowercase letters` for one or more.",
+    ],
+    [
+      "3 uppercase characters",
+      "Use `uppercase letter` for one ASCII uppercase letter or `uppercase letters` for one or more.",
+    ],
+  ]) {
+    assert.throws(() => parse(rules), { code: "UNKNOWN_RULE", hint }, rules);
+  }
+});
+
 test("hex rules have explicit repetition and positioned malformed-input errors", () => {
   assert.equal(parse("hex digit").nodes[0].value, "[0-9A-Fa-f]");
   assert.equal(parse("hex digit").nodes[0].repetition, null);

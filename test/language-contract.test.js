@@ -14,6 +14,8 @@ const constructions = [
   ["not digit", "not digit", "A", "3", "non-digit character"],
   ["letter", "letter", "A", "3", "alphabetic character"],
   ["letters", "letters", "aBc", "3", "letters extra"],
+  ["lowercase letter", "lowercase letter", "z", "A", "lowercase characters"],
+  ["uppercase letter", "uppercase letter", "Z", "a", "uppercase characters"],
   ["hex digit", "hex digit", "f", "g", "hex character"],
   ["hex digits", "hex digits", "09aF", "g", "hex digits extra"],
   ["space", "space", "\n", "A", "any whitespace"],
