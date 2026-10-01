@@ -76,11 +76,40 @@ test("regex literal input budgets apply before native construction and support s
   const literal = `/${"a".repeat(REGEX_LITERAL_INPUT_LIMIT - 3)}/u`;
   assert.equal(literal.length, REGEX_LITERAL_INPUT_LIMIT);
   assert.doesNotThrow(() => validateRegexLiteralLength(literal));
-  assert.equal(parseRegexLiteral(` ${literal}\n`).source.length, literal.length - 3);
+  assert.equal(parseRegexLiteral(literal).source.length, literal.length - 3);
   const expected = {
     name: "Error",
     message: "Regex input cannot exceed 16384 code units, plus its delimiters and flags.",
   };
   assert.throws(() => parseRegexLiteral(literal.replace("/u", "a/u")), expected);
+  assert.throws(() => parseRegexLiteral(` ${literal}\n`), expected);
   assert.throws(() => validateRegexLiteralLength(` ${literal}`), expected);
+});
+
+test("regex literal input budgets count outer whitespace before trimming", () => {
+  const literal = "/^😀$/u";
+  const padding = REGEX_LITERAL_INPUT_LIMIT - literal.length;
+  const expected = {
+    name: "Error",
+    message: "Regex input cannot exceed 16384 code units, plus its delimiters and flags.",
+  };
+  for (const input of [
+    `${" ".repeat(padding)}${literal}`,
+    `${literal}${"\u00a0".repeat(padding)}`,
+    `\ufeff\n${"\t".repeat(padding - 4)}${literal}\r\n`,
+  ]) {
+    assert.equal(input.length, REGEX_LITERAL_INPUT_LIMIT);
+    const regex = parseRegexLiteral(input);
+    assert.equal(regex.source, "^😀$");
+    assert.equal(regex.flags, "u");
+    assert.equal(regex.test("😀"), true);
+    assert.equal(regex.test("😀😀"), false);
+    assert.throws(() => parseRegexLiteral(` ${input}`), expected);
+  }
+  for (const input of [
+    " ".repeat(REGEX_LITERAL_INPUT_LIMIT + 1),
+    `${" ".repeat(1_048_576)}${literal}`,
+  ]) {
+    assert.throws(() => parseRegexLiteral(input), expected);
+  }
 });

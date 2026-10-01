@@ -77,7 +77,7 @@
           </fieldset>
           <details id="reverse-translator" class="reverse-translator">
             <summary>Already have a regex? Translate it ↙</summary>
-            <p id="reverse-help">Paste a JavaScript regex literal with <code>u</code>, such as <code>/^[A-Z]{2}-\d{4}$/u</code>. Supported patterns become editable rules; unsupported syntax is explained. Press Ctrl/Cmd + Enter in this field to translate.</p>
+            <p id="reverse-help">Paste a JavaScript regex literal with <code>u</code>, such as <code>/^[A-Z]{2}-\d{4}$/u</code>. Supported patterns become editable rules; unsupported syntax is explained. Limit: 16,392 UTF-16 code units, including outer whitespace. Press Ctrl/Cmd + Enter in this field to translate.</p>
             <label for="reverse-regex" class="field-label">JavaScript regex literal</label>
             <textarea id="reverse-regex" rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-invalid="false" aria-describedby="reverse-help reverse-feedback" placeholder="/^#[0-9A-Fa-f]{6}$/u"></textarea>
             <button id="reverse-button" class="secondary-button" type="button" aria-keyshortcuts="Control+Enter Meta+Enter" disabled>Translate to rules</button>

@@ -13,8 +13,8 @@ export function validateRegexLiteralLength(input) {
 
 /** @param {string} input */
 export function parseRegexLiteral(input) {
+  validateRegexLiteralLength(input);
   const literal = input.trim();
-  validateRegexLiteralLength(literal);
   if (!literal.startsWith("/")) {
     throw new Error("Paste a slash-delimited JavaScript regex literal, such as `/\\d+/u`.");
   }

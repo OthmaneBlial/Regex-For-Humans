@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { REGEX_LITERAL_INPUT_LIMIT } from "../src/regex-literal.js";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const npmCli = process.env.npm_execpath;
@@ -326,6 +327,26 @@ void [regex, segment, source, line, max];
   );
   if (reverseCli.rules !== 'start\n"A"\nany character\nend' || reverseCli.flags !== "is") {
     throw new Error("The installed CLI did not preserve reverse translation and its flags.");
+  }
+  const literalInput = "/^😀$/u";
+  const paddedLiteral = `${"\u00a0".repeat(REGEX_LITERAL_INPUT_LIMIT - literalInput.length)}${literalInput}`;
+  const paddedReverse = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: paddedLiteral }),
+  );
+  if (paddedReverse.rules !== 'start\n"😀"\nend' || paddedReverse.flags !== "") {
+    throw new Error("Installed CLI did not accept the exact padded input boundary.");
+  }
+  const paddedFailure = spawnSync(process.execPath, [...cliArgs, "--reverse", "--json", "-"], {
+    cwd: consumer,
+    input: ` ${paddedLiteral}`,
+    encoding: "utf8",
+  });
+  if (
+    paddedFailure.status !== 1 ||
+    paddedFailure.stdout !== "" ||
+    JSON.parse(paddedFailure.stderr).error.code !== "CLI_ERROR"
+  ) {
+    throw new Error("Installed CLI did not reject the first excess padding unit.");
   }
   const boundedCli = JSON.parse(
     run([...cliArgs, "--json", "-"], { cwd: consumer, input: boundedRules }),

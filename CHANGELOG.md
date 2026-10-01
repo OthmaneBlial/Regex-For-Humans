@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Count outer whitespace toward the shared workshop/CLI regex-literal input budget before trimming. Show the whole-input limit beside the reverse field, preserve current rules on oversized input and retain boundary-sized translation.
+
 - Validate compiler option flags against their five exact allowed values, avoiding scans and temporary sets for oversized invalid strings while preserving normalization, matching and diagnostics.
 
 - Read native regex metadata without cloning the supplied pattern before validation. Preserve foreign-context inputs, overridden-property bypass, diagnostic priority and `lastIndex`.

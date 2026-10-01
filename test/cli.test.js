@@ -1009,6 +1009,8 @@ test("CLI reverse retains the regex source ceiling and enforces its streamed inp
   for (const input of [
     " ".repeat(LIMITS.sourceLength + 9),
     `/${"a".repeat(LIMITS.sourceLength + 9)}/u`,
+    `${" ".repeat(LIMITS.sourceLength + 2)}/^😀$/u`,
+    `/^😀$/u${"\u00a0".repeat(LIMITS.sourceLength + 2)}`,
   ]) {
     const output = run(["--reverse", "--json", "-"], input);
     assert.equal(output.status, 1);
@@ -1020,6 +1022,11 @@ test("CLI reverse retains the regex source ceiling and enforces its streamed inp
       },
     });
   }
+  const literal = "/^😀$/u";
+  const boundary = `${"\u00a0".repeat(LIMITS.sourceLength + 8 - literal.length)}${literal}`;
+  const translated = run(["--reverse", "--json", "-"], boundary);
+  assert.equal(translated.status, 0, translated.stderr);
+  assert.deepEqual(JSON.parse(translated.stdout), { rules: 'start\n"😀"\nend', flags: "" });
 });
 
 test("CLI reverse rejects malformed UTF-8 before interpreting a literal", () => {
