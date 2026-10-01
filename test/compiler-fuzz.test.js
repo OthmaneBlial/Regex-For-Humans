@@ -28,6 +28,7 @@ test("seeded arbitrary rules compile deterministically or fail with a valid loca
     "text without: a, b",
     "start\n2 hex digits\nend",
     "start between 2 and 4 digits\nend",
+    "start\noptional digit\nend",
   ];
   const cases = [...validRules];
 
