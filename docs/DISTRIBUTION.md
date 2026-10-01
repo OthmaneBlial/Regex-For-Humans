@@ -18,6 +18,10 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Complex record recipes
+
+The access-log and telemetry recipes were synchronized into the existing project folder at Pages commit `f4c3f14`, whose build completed on 1 October 2026. Live desktop/mobile Chrome checks followed all three complex record homepage cards and verified 100 explanation fragments, 26 exact preloaded inputs and their outcomes, recipe notes, source-line selection and actual clipboard contents. Reverse translation retained matching; keyboard reloading restored the original rules/cases, focused the recipe button and left the rule editor's caret/scroll at the beginning. Checks verified access-log case folding, all four telemetry optional-value combinations and lane rejection, plus the manifest's 32/33-emoji boundary. Unsupported captures preserved the rules, and a supported retry recovered. Access-log and telemetry screenshots were captured and inspected on both viewports. There was no overflow at 320px or page error. Thirteen served files returned HTTP 200 and matched local SHA-256 values.
+
 ### Translation confirmation
 
 The feedback fix was synchronized into the existing project folder at Pages commit `bccee28`, whose build completed on 1 October 2026. Live desktop/mobile Chrome checks verified confirmation clearing after rule edits, both i/s option changes and switching recipes. Editing examples, changing match mode and copying the regex retained the confirmation. An unsupported capture kept its error, accessible description and exact source selection after invalid rule edits, option changes and recipe reloading; a supported retry recovered. The manifest retained its 19 explanation fragments and nine passing outcomes, working clipboard, source-line selection and first-rule caret/scroll. Screenshots were captured and inspected, with no overflow at 320px or page errors. Thirteen served files returned HTTP 200 and matched local SHA-256 values.
