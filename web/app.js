@@ -1,6 +1,7 @@
 import { CompileError, compile, regexToRules } from "../index.js";
 import { escapeControls } from "../src/display.js";
-import { LIMITS, splitLines } from "../src/parser.js";
+import { splitLines } from "../src/parser.js";
+import { parseRegexLiteral } from "../src/regex-literal.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestCase} TestCase */
@@ -75,47 +76,6 @@ function make(tag, className = "", text) {
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
   return node;
-}
-
-/** @param {string} input */
-function parseRegexLiteral(input) {
-  const literal = input.trim();
-  if (literal.length > LIMITS.sourceLength + 8) {
-    throw new Error(
-      `Regex input cannot exceed ${LIMITS.sourceLength} code units, plus its delimiters and flags.`,
-    );
-  }
-  if (!literal.startsWith("/")) {
-    throw new Error("Paste a slash-delimited JavaScript regex literal, such as `/\\d+/u`.");
-  }
-  let inClass = false;
-  let escaped = false;
-  let closingSlash = -1;
-  for (let index = 1; index < literal.length; index += 1) {
-    const character = literal[index];
-    if ("\n\r\u2028\u2029".includes(character)) {
-      throw new Error("Escape line breaks inside a regex literal, such as `\\n`.");
-    }
-    if (escaped) escaped = false;
-    else if (character === "\\") escaped = true;
-    else if (character === "[" && !inClass) inClass = true;
-    else if (character === "]" && inClass) inClass = false;
-    else if (character === "/" && !inClass) {
-      closingSlash = index;
-      break;
-    }
-  }
-  if (closingSlash < 0) throw new Error("Add the closing `/` and any regex flags.");
-  const source = literal.slice(1, closingSlash);
-  const flags = literal.slice(closingSlash + 1);
-  if (!/^[dgimsuvy]*$/u.test(flags)) {
-    throw new Error("Put only JavaScript regex flags after the closing `/`.");
-  }
-  try {
-    return new RegExp(source, flags);
-  } catch {
-    throw new Error("That is not a valid JavaScript regex literal.");
-  }
 }
 
 /** @param {string} label @param {CompileState} state */
