@@ -1,3 +1,4 @@
+import { PATH_SEGMENT_SOURCE } from "./ast.js";
 import { CompileError, fail } from "./diagnostics.js";
 import { quoteText } from "./display.js";
 import { LIMITS, parse } from "./parser.js";
@@ -12,6 +13,7 @@ const ESCAPED_ATOMS = new Map([
 ]);
 
 const CLASS_ATOMS = new Map([
+  [PATH_SEGMENT_SOURCE.slice(1, -1), "path segment character"],
   ["0-9", "digit"],
   ["^0-9", "not digit"],
   ["A-Z", "uppercase letter"],

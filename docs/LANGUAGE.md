@@ -36,6 +36,8 @@ The [complex-examples guide](COMPLEX-EXAMPLES.md) combines these atoms into an a
 | `hex digits` | `[0-9A-Fa-f]+` | `09aF` | empty string, `0xFF` with `start` and `end` |
 | `space` | `\s` | a space, tab or newline | `A` |
 | `spaces` | `\s+` | one or more spaces, tabs or line breaks | empty string, `A` |
+| `path segment character` | `[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]` | `é`, `😀`, space, dot | slash, backslash, NUL, line break |
+| `path segment characters` | the same class with `+` | one or more characters within a path component | empty string or a separator |
 | `not space` | `\S` | `A` | a space |
 | `digits` | `\d+` | `3`, `123` | `A` |
 | `"ABC"` | `ABC` | `ABC` | `ABX` |
@@ -50,6 +52,8 @@ The [complex-examples guide](COMPLEX-EXAMPLES.md) combines these atoms into an a
 `lowercase letter(s)` and `uppercase letter(s)` match ASCII `[a-z]` and `[A-Z]` respectively. Without `i`, the opposite case does not match. With `i`, JavaScript ignores that distinction and also matches its Unicode case-folding equivalents; the workshop explanation makes the change explicit. These are still ASCII classes, not general Unicode lowercase or uppercase properties.
 
 `space` matches one JavaScript whitespace character; `spaces` matches one or more. Both include tabs and line breaks, including Unicode line separators and nonbreaking spaces. Counts replace the plural default: `3 spaces` means exactly three whitespace characters, and `between 0 and 2 spaces` permits empty input. For ordinary U+0020 spaces only, use a quoted literal such as `3 " "`. Forms such as `spaces 3 times` and `not spaces` are unsupported; use `not space` for one non-whitespace character.
+
+`path segment character` is a readable shortcut for one Unicode code point excluding slash, backslash, NUL and the four JavaScript line terminators (LF, CR, U+2028, U+2029). `path segment characters` means one or more; counts and ranges replace that default. For example, `between 1 and 32 path segment characters` replaces the explicit seven-item exclusion list without changing its generated regex. Optional, zero-count and open-ended repetition work normally. It accepts spaces, dots, punctuation and names such as `.` or `..`; it does not enforce filesystem policy, prevent path traversal or check file existence. Apply the destination platform and application rules separately. Reverse translation recognizes the canonical generated class as `path segment character`.
 
 `hex digit` matches one ASCII hexadecimal digit in either letter case. `hex digits` matches one or more; an exact count or bounded range replaces that default, as in `6 hex digits` or `between 2 and 4 hex digits`. They do not include a `0x` prefix, separators or non-ASCII digits. Add quoted literals for a required prefix, and anchors to validate the whole string.
 

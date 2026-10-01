@@ -1,4 +1,4 @@
-import { anchor, atom } from "./ast.js";
+import { anchor, atom, PATH_SEGMENT_SOURCE } from "./ast.js";
 import { fail } from "./diagnostics.js";
 import { quoteText } from "./display.js";
 
@@ -79,6 +79,8 @@ const SHORTHANDS = new Map([
   ["space", "\\s"],
   ["spaces", "\\s"],
   ["digits", "\\d"],
+  ["path segment character", PATH_SEGMENT_SOURCE],
+  ["path segment characters", PATH_SEGMENT_SOURCE],
 ]);
 
 const START_ANCHOR = /^(line start|start)(?:,\s*|\s+|$)/i;
@@ -367,6 +369,7 @@ function parseAtom(text, location, rawLine) {
           "lowercase letters",
           "uppercase letters",
           "spaces",
+          "path segment characters",
         ].includes(phrase) &&
         !repetition
       )
@@ -433,9 +436,11 @@ function parseAtom(text, location, rawLine) {
             ? "Use `uppercase letter` for one ASCII uppercase letter or `uppercase letters` for one or more."
             : /^letters?(?:\s|$)/i.test(remaining)
               ? "Use `letter` for one ASCII letter or `letters` for one or more."
-              : /^spaces?(?:\s|$)/i.test(remaining)
-                ? "Use `space` for one whitespace character or `spaces` for one or more, including line breaks."
-                : "Try `line start`, `any text` or `3 digits`.",
+              : /^path(?:\s|$)/i.test(remaining)
+                ? "Use `path segment character` for one character or `path segment characters` for one or more."
+                : /^spaces?(?:\s|$)/i.test(remaining)
+                  ? "Use `space` for one whitespace character or `spaces` for one or more, including line breaks."
+                  : "Try `line start`, `any text` or `3 digits`.",
   );
 }
 

@@ -1,3 +1,4 @@
+import { PATH_SEGMENT_SOURCE } from "./ast.js";
 import { quoteText } from "./display.js";
 
 /** @param {import('./ast.js').Repetition|null} repetition @param {boolean} optional */
@@ -112,6 +113,8 @@ export function explainNode(node, flags, hasFollowingRule = false) {
     case "shorthand": {
       /** @type {Record<string, string>} */
       const shorthandMeanings = {
+        [PATH_SEGMENT_SOURCE]:
+          "Path segment character: excludes slash, backslash, NUL and line breaks.",
         "\\w":
           "Word character: ASCII letter, digit or underscore. With i, a few Unicode equivalents match.",
         "\\W": flags.includes("i")

@@ -70,6 +70,8 @@ try {
   const rules = 'start "ABC"\n3 digits\nend';
   const boundedRules = "start between 2 and 4 digits\nend";
   const boundedSource = "^\\d{2,4}$";
+  const pathRules = "start\nbetween 1 and 32 path segment characters\nend";
+  const pathSource = String.raw`^[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}$`;
   const directionText = `A${String.fromCodePoint(0x202e)}B`;
   const directionRules = JSON.stringify(directionText);
   const directionSource = String.raw`A\u202eB`;
@@ -169,6 +171,9 @@ if (excluded.source !== "^[^ab]*$" || !toRegExp(excluded).test("xyz") || toRegEx
 const hex = compile("2 hex digits");
 if (hex.source !== "[0-9A-Fa-f]{2}" || !toRegExp(hex).test("0F") || toRegExp(hex).test("0G")) throw new Error("Wrong hexadecimal behavior");
 const letters = compile("start between 2 and 4 letters\\nend");
+const path = compile(${JSON.stringify(pathRules)});
+if (path.source !== ${JSON.stringify(pathSource)} || !toRegExp(path).test("Équipe 😀") || toRegExp(path).test("folder/name") || toRegExp(path).test("a\\nname") || !path.segments[1].explanation.includes("Path segment character")) throw new Error("Wrong readable path behavior");
+if (regexToRules(toRegExp(path)).rules !== "start\\nbetween 1 and 32 path segment character\\nend") throw new Error("Wrong readable path reverse translation");
 if (letters.source !== "^[A-Za-z]{2,4}$" || !toRegExp(letters).test("aBc") || toRegExp(letters).test("A3") || toRegExp(letters).test("éé")) throw new Error("Wrong alphabetic behavior");
 const foldedLetter = compile("start letter\\nend", { flags: "i" });
 if (!toRegExp(foldedLetter).test("K") || !foldedLetter.segments[1].explanation.includes("Unicode equivalents")) throw new Error("Wrong letter case-folding behavior");

@@ -1,3 +1,5 @@
+export const PATH_SEGMENT_SOURCE = String.raw`[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]`;
+
 /**
  * @typedef {{line: number, column: number}} Location
  * @typedef {{kind: 'exact', min: number}|{kind: 'range', min: number, max: number}|{kind: 'atLeast', min: number}|{kind: 'zeroOrMore'}|{kind: 'oneOrMore'}} Repetition
