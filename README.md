@@ -113,6 +113,104 @@ Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. S
 
 **Shapes have limits:** text filename shape allows spaces, dots and punctuation; check filesystem rules and file existence separately. phone-number shape allows leading zeros and excludes spaces and punctuation; check country rules and number validity separately. invoice IDs allow leading zeros; verify invoice records separately. Username shape does not check availability or a service's account rules. Date shape accepts impossible dates such as `2026-02-31`; validate calendar values separately. Time shape accepts `25:99`; validate hour and minute ranges separately. Version shape allows leading zeros and rejects prerelease suffixes; it isn't full SemVer. Hex color accepts `#RRGGBB`, not shorthand, alpha, or every CSS color form. Product-code shape accepts only its stated ASCII letter case and counts; adding `i` ignores case, and the pattern does not verify catalog records.
 
+## 🏗️ Bigger patterns, same readable rules
+
+A three-digit ID is only the starting point. The [full complex-examples guide](docs/COMPLEX-EXAMPLES.md) walks through four substantial formats, with **35 accepted/rejected cases** and the compiler's **complete explanation for every rule**:
+
+| Example | What it combines |
+| --- | --- |
+| 🌐 Access log | 43 rules for address, timestamp, request, status and quoted fields |
+| 🛰️ Structured event | 38 rules, trace/span IDs, bounded fields and independent optional values |
+| 📦 Artifact manifest | Optional directory, variable version/path parts, checksum shape and TSV separators |
+| 🧾 Multiline order | Unicode buyer, phone/amount shapes, optional approval value and complete optional priority line |
+
+<!-- complex:artifact-manifest -->
+
+### 📦 Example: an artifact manifest
+
+**Readable rules**
+
+```text
+start
+"incoming/"
+optional "nightly/"
+between 1 and 32 none of: "/", "\\", "\u0000", "\n", "\r", "\u2028", "\u2029"
+"/v"
+between 1 and 3 digits
+"."
+between 1 and 3 digits
+"."
+between 1 and 3 digits
+"/linux-arm64/widget_"
+8 digits
+"_"
+8 hex digits
+".tar.gz\t"
+64 hex digits
+"\t"
+between 1 and 12 digits
+end
+```
+
+**Exact generated JavaScript regex**
+
+```js
+/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+```
+
+<!-- /complex:artifact-manifest -->
+
+This synthetic schema accepts a path such as `incoming/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz`, followed by a tab, 64 hex digits, another tab and a 1–12 digit byte count. The whole `nightly/` directory is optional. Missing version parts, a non-hex token or spaces replacing the tabs are rejected. Check file existence, checksum contents and calendar/version semantics separately.
+
+<details>
+<summary>🧾 Second complete example: a multiline order</summary>
+
+<!-- complex:multiline-order -->
+
+### 🧾 Example: a multiline order
+
+**Readable rules**
+
+```text
+start
+"ORDER\nid=ORD-"
+8 hex digits
+"\nbuyer="
+between 1 and 60 none of: "\u0000", "\n", "\r", "\u2028", "\u2029"
+"\nphone="
+optional "+"
+between 7 and 15 digits
+"\nitems="
+between 1 and 4 digits
+"\ntotal="
+between 1 and 6 digits
+"."
+2 digits
+" EUR\nreference="
+16 hex digits
+"\napproval="
+optional one of: "A", "D"
+"\n"
+optional "priority=HIGH\n"
+"END"
+optional "\n"
+end
+```
+
+**Exact generated JavaScript regex**
+
+```js
+/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+```
+
+<!-- /complex:multiline-order -->
+
+`Zoë 😀` works as the buyer. The phone's `+`, approval's A/D value and whole `priority=HIGH\n` line are optional independently. A missing buyer, one decimal digit in the amount or an unsupported priority value fails. This schema uses explicit LF line endings; the library and CLI preserve that distinction, while browser textareas normalize pasted CRLF.
+
+</details>
+
+**Capture and nesting limits:** these examples validate complete shapes; they do not extract fields. Named/numbered captures and composite or nested groups remain unsupported and get positioned errors. Optional single atoms and whole fixed literals work today. See the [working examples and exact unsupported-pattern diagnostics](docs/COMPLEX-EXAMPLES.md#captures-and-nested-groups).
+
 ## 🧩 Your pocket cheat sheet
 
 Put one instruction on each line. Quote literal text. Add anchors to check the whole string.

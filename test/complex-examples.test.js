@@ -18,6 +18,32 @@ test("the complex guide contains four complete worked examples", () => {
   );
 });
 
+test("README includes two complete complex examples synchronized with the full guide", () => {
+  const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+  const worked = [
+    ...readme.matchAll(/<!-- complex:([a-z-]+) -->\n([\s\S]*?)\n<!-- \/complex:\1 -->/gu),
+  ];
+  assert.deepEqual(
+    worked.map(([, id]) => id),
+    ["artifact-manifest", "multiline-order"],
+  );
+  for (const [, id, section] of worked) {
+    const detailed = examples.find(([, key]) => key === id)?.[2];
+    assert.ok(detailed, "README example has a full walkthrough");
+    for (const language of ["text", "js"]) {
+      const block = new RegExp("```" + language + "\\n([\\s\\S]*?)\\n```", "u");
+      const shown = block.exec(section)?.[1];
+      assert.ok(shown && detailed.includes(shown), `${id}: ${language} block stays in sync`);
+    }
+  }
+  const cases = [...guide.matchAll(/^\| (?:✅ Match|❌ No match) \|/gmu)].length;
+  assert.ok(readme.includes(`**${cases} accepted/rejected cases**`));
+  assert.ok(readme.includes("(docs/COMPLEX-EXAMPLES.md)"));
+  assert.ok(
+    readme.includes("Named/numbered captures and composite or nested groups remain unsupported"),
+  );
+});
+
 for (const [, id, section] of examples) {
   test(`complex documentation: ${id}`, () => {
     const rules = /### Rules\n\n```text\n([\s\S]*?)\n```/u.exec(section)?.[1];
