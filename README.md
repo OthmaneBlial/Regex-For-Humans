@@ -66,7 +66,7 @@ Your rules and examples stay in the browser. No account, AI interpretation, or a
 
 [Real screenshot details and checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md).
 
-## 🍱 Fourteen recipes to start with
+## 🍱 Recipes to start with
 
 | Try this | Example | What it checks |
 | --- | --- | --- |
