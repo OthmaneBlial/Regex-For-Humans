@@ -96,6 +96,62 @@ test("genuine regexes from another context translate with the same rules, flags 
   }
 });
 
+test("translation uses the stored native pattern and flags instead of overridden metadata", () => {
+  class AnnotatedRegExp extends RegExp {
+    get source() {
+      return "^B$";
+    }
+  }
+  const annotated = new AnnotatedRegExp("^A$", "u");
+  assert.deepEqual(regexToRules(annotated), { rules: 'start\n"A"\nend', flags: "" });
+
+  for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+    for (const original of [
+      new RegExp("^😀[A-Z]{2}$", flags),
+      runInNewContext("new RegExp(source, flags)", { source: "^😀[A-Z]{2}$", flags }),
+    ]) {
+      const expected = new RegExp("^😀[A-Z]{2}$", flags);
+      const untouched = () => assert.fail("Overridden metadata or matching method was called");
+      for (const name of [
+        "source",
+        "flags",
+        "unicode",
+        "ignoreCase",
+        "multiline",
+        "dotAll",
+        "global",
+        "sticky",
+        "hasIndices",
+        "unicodeSets",
+      ]) {
+        Object.defineProperty(original, name, { get: untouched });
+      }
+      original.exec = untouched;
+      original.test = untouched;
+      original.lastIndex = 7;
+      Object.freeze(original);
+      const translated = regexToRules(original);
+      assert.deepEqual(translated, regexToRules(expected));
+      assert.equal(original.lastIndex, 7);
+      const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+      for (const sample of ["😀AB", "😀ab", "\n😀AB\n", "😀A", "", "😀ABC"]) {
+        assert.deepEqual(rebuilt.exec(sample), expected.exec(sample));
+      }
+    }
+  }
+  for (const [source, flags, code] of [
+    ["a", "", "UNICODE_FLAG_REQUIRED"],
+    ["a", "gu", "UNSUPPORTED_REGEX_FLAGS"],
+    ["(a)", "u", "UNSUPPORTED_REGEX"],
+    ["a".repeat(16_385), "u", "REGEX_SOURCE_LIMIT"],
+  ]) {
+    const original = new AnnotatedRegExp(source, flags);
+    Object.defineProperty(original, "flags", { value: "u" });
+    Object.defineProperty(original, "unicode", { value: true });
+    assert.throws(() => regexToRules(original), { code });
+  }
+});
+
 test("translates literal groups, generic repetition and open-ended counts", () => {
   for (const [regex, rules] of [
     [/^(?:a\.b){2,4}$/u, 'start\nbetween 2 and 4 "a.b"\nend'],

@@ -42,6 +42,15 @@ test("the browser API accepts a genuine regex from an iframe without changing it
       const original = new frame.contentWindow.RegExp("^😀[A-Z]{2}$", "imsu");
       original.lastIndex = 7;
       const translated = regexToRules(original);
+      for (const name of ["source", "flags", "unicode", "ignoreCase", "multiline", "dotAll"]) {
+        Object.defineProperty(original, name, {
+          get() {
+            throw new Error("Overridden metadata was read");
+          },
+        });
+      }
+      Object.freeze(original);
+      const translatedWithOverrides = regexToRules(original);
       const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
       let rejectedLookalike = false;
       try {
@@ -53,6 +62,7 @@ test("the browser API accepts a genuine regex from an iframe without changing it
         localInstance: original instanceof RegExp,
         lastIndex: original.lastIndex,
         translated,
+        translatedWithOverrides,
         source: rebuilt.source,
         flags: rebuilt.flags,
         positive: rebuilt.exec("\n😀ab\n")?.[0],
@@ -67,6 +77,10 @@ test("the browser API accepts a genuine regex from an iframe without changing it
     localInstance: false,
     lastIndex: 7,
     translated: { rules: 'line start\n"😀"\n2 uppercase letter\nline end', flags: "is" },
+    translatedWithOverrides: {
+      rules: 'line start\n"😀"\n2 uppercase letter\nline end',
+      flags: "is",
+    },
     source: "^😀[A-Z]{2}$",
     flags: "imsu",
     positive: "😀ab",

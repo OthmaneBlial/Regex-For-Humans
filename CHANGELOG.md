@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Translate the stored native regex pattern and flags even when subclasses or own properties override metadata, preserving input state and unsupported-feature diagnostics.
+
 - Accept genuine regexes created in another JavaScript context through the reverse API, preserving flags, diagnostics and state while rejecting lookalike objects without executing the input pattern.
 
 - Add keyboard navigation from reverse-translation syntax errors to the source character, preserving edits and revealing selections in wrapped or enlarged regex fields through the existing editor-scrolling helper.

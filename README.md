@@ -191,7 +191,7 @@ console.log(reverse.rules);                 // start\n2 uppercase letter\n"-"\n4
 console.log(reverse.flags);                 // Flags to pass back to compile()
 ```
 
-`regexToRules()` also accepts genuine regexes from other JavaScript contexts, such as iframes or Node's `vm`, and leaves their `lastIndex` unchanged.
+`regexToRules()` also accepts genuine regexes from other JavaScript contexts, such as iframes or Node's `vm`, and leaves their `lastIndex` unchanged. It translates the stored native pattern and flags; subclass or own-property metadata overrides do not change the translation.
 
 ## 🛠️ Make yourself at home
 
