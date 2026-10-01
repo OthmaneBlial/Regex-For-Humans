@@ -2233,13 +2233,15 @@ test("reverse syntax errors select their source character and reveal wrapped or 
   await jump.focus();
   await jump.press("Enter");
   await expect(reverse).toBeFocused();
-  expect(
-    await reverse.evaluate((field) => {
-      const style = getComputedStyle(field);
-      const top = field.getBoundingClientRect().top + Number.parseFloat(style.paddingTop);
-      return top >= 0 && top + Number.parseFloat(style.lineHeight) <= innerHeight;
-    }),
-  ).toBe(true);
+  await expect
+    .poll(() =>
+      reverse.evaluate((field) => {
+        const style = getComputedStyle(field);
+        const top = field.getBoundingClientRect().top + Number.parseFloat(style.paddingTop);
+        return top >= 0 && top + Number.parseFloat(style.lineHeight) <= innerHeight;
+      }),
+    )
+    .toBe(true);
   await reverse.evaluate((field) => field.style.removeProperty("height"));
   const accessibility = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
