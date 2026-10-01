@@ -103,6 +103,7 @@ const foreignPattern = toRegExp(compile(foreignTranslation.rules, { flags: forei
 if (foreign instanceof RegExp || foreignTranslation.rules !== 'start\\n"😀"\\n2 uppercase letter\\nend' || foreignTranslation.flags !== "is" || !foreignPattern.test("😀ab") || foreignPattern.test("😀A")) throw new Error("Wrong cross-context regex translation");
 Object.defineProperty(foreign, "source", { get() { throw new Error("Overridden source was read"); } });
 Object.defineProperty(foreign, "flags", { get() { throw new Error("Overridden flags were read"); } });
+Object.defineProperty(foreign, Symbol.match, { get() { throw new Error("Matching protocol was read"); } });
 if (JSON.stringify(regexToRules(foreign)) !== JSON.stringify(foreignTranslation)) throw new Error("Metadata overrides changed native regex translation");
 const reverse = regexToRules(/^[A-Z]{2}-\\d{4}$/u);
 if (reverse.rules !== 'start\\n2 uppercase letter\\n"-"\\n4 digit\\nend' || reverse.flags !== "") throw new Error("Wrong reverse-translation behavior");

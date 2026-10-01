@@ -101,6 +101,9 @@ test("translation uses the stored native pattern and flags instead of overridden
     get source() {
       return "^B$";
     }
+    get [Symbol.match]() {
+      throw new Error("The matching protocol getter was called");
+    }
   }
   const annotated = new AnnotatedRegExp("^A$", "u");
   assert.deepEqual(regexToRules(annotated), { rules: 'start\n"A"\nend', flags: "" });
@@ -123,6 +126,7 @@ test("translation uses the stored native pattern and flags instead of overridden
         "sticky",
         "hasIndices",
         "unicodeSets",
+        Symbol.match,
       ]) {
         Object.defineProperty(original, name, { get: untouched });
       }

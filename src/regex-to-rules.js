@@ -287,8 +287,8 @@ export function regexToRules(regex) {
   } catch {
     throw new TypeError("Expected a JavaScript RegExp.");
   }
-  // A native copy reads the stored pattern and flags, including for subclasses.
-  regex = new RegExp(regex);
+  // Copy stored RegExp data without consulting metadata or matching protocols.
+  regex = structuredClone(regex);
   if (/[^imsu]/u.test(regex.flags)) {
     fail("UNSUPPORTED_REGEX_FLAGS", "Only the i, s, m and u flags can be translated.", {
       line: 1,

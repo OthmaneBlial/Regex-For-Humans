@@ -90,7 +90,15 @@ test("the workshop compiles rules and reports example results", async ({ page })
     document.body.append(frame);
     try {
       const regex = new frame.contentWindow.RegExp("^😀[A-Z]{2}$", "isu");
-      for (const name of ["source", "flags", "unicode", "ignoreCase", "multiline", "dotAll"]) {
+      for (const name of [
+        "source",
+        "flags",
+        "unicode",
+        "ignoreCase",
+        "multiline",
+        "dotAll",
+        Symbol.match,
+      ]) {
         Object.defineProperty(regex, name, {
           get() {
             throw new Error("Overridden metadata was read");

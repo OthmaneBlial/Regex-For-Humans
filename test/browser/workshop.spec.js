@@ -42,7 +42,15 @@ test("the browser API accepts a genuine regex from an iframe without changing it
       const original = new frame.contentWindow.RegExp("^😀[A-Z]{2}$", "imsu");
       original.lastIndex = 7;
       const translated = regexToRules(original);
-      for (const name of ["source", "flags", "unicode", "ignoreCase", "multiline", "dotAll"]) {
+      for (const name of [
+        "source",
+        "flags",
+        "unicode",
+        "ignoreCase",
+        "multiline",
+        "dotAll",
+        Symbol.match,
+      ]) {
         Object.defineProperty(original, name, {
           get() {
             throw new Error("Overridden metadata was read");
