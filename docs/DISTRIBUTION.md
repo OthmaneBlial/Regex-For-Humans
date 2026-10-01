@@ -20,6 +20,10 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### CLI UTF-8 input guidance
+
+Source commit `4bf00cf` was synchronized into the existing project folder at Pages commit `f3ca5b1`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all four changed documentation files. The served README explains saving the input as UTF-8 in either CLI mode and retains the explicit unreleased status of checkout-only `--reverse`. All thirty-three non-Markdown website files matched the previous deployment byte for byte. Other project folders and the published npm preview were preserved. This publication updates documentation; local CLI validation is recorded above, and the earlier live workshop interaction checks remain recorded below.
+
 ### Exact literal-limit errors
 
 Source commit `fa5a2f9` was synchronized into the existing project folder at Pages commit `af3bf6b`, whose build completed on 2 October 2026 (Europe/Paris). Twenty-eight resources returned HTTP 200 and matched local SHA-256 values, including all sixteen changed project files. Other project folders and the published npm preview were preserved.
