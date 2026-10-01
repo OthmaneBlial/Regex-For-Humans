@@ -15,7 +15,7 @@ self.onmessage = (event) => {
       typeof source !== "string" ||
       source.length > LIMITS.regexSourceLength ||
       typeof flags !== "string" ||
-      !/^[ims]*u$/u.test(flags)
+      !/^(?:i)?(?:m)?(?:s)?u$/u.test(flags)
     ) {
       throw new Error("Invalid regex test request.");
     }

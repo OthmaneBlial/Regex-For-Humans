@@ -96,7 +96,7 @@ test("worker accepts regex source expanded by Unicode escaping", async ({ page }
   expect(outcome.oversizedRejected).toBe(true);
 });
 
-test("worker rejects non-string flags without coercing them", async ({ page }) => {
+test("worker rejects invalid flags without coercing them", async ({ page }) => {
   await page.goto("/");
   const outcome = await page.evaluate(async () => {
     const { TestRunner } = await import("/web/test-runner.js");
@@ -108,7 +108,7 @@ test("worker rejects non-string flags without coercing them", async ({ page }) =
       cases: [{ id: 1, text: "a", expected: true }],
     };
     const errors = [];
-    for (const flags of [["u"], null, 0, {}]) {
+    for (const flags of [["u"], null, 0, {}, "iuu", "gui", "miu"]) {
       try {
         await runner.run({ ...payload, flags });
         errors.push(null);
@@ -119,7 +119,7 @@ test("worker rejects non-string flags without coercing them", async ({ page }) =
     return { errors, recovered: await runner.run(payload) };
   });
   expect(outcome.errors).toEqual(
-    Array(4).fill({ code: "WORKER_ERROR", message: "Invalid regex test request." }),
+    Array(7).fill({ code: "WORKER_ERROR", message: "Invalid regex test request." }),
   );
   expect(outcome.recovered[0].pass).toBe(true);
 });
