@@ -18,6 +18,14 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Native metadata without regex serialization
+
+Source commit `70191d7` was synchronized into the existing project folder at Pages commit `9507789`, whose build completed on 1 October 2026. Twenty-seven resources returned HTTP 200 and matched local SHA-256 values, including all eighteen changed project files. Other project folders and the published npm preview were preserved.
+
+Live Chrome checks at 1280/390px and Firefox/WebKit checks at 1280px disabled `structuredClone` during reverse translation. Genuine iframe regexes, frozen metadata overrides, matching equivalence and unchanged `lastIndex` passed. Oversized inputs retained the flag/Unicode/source error priority and exact positions without serialization; lookalike objects were rejected. No page errors were recorded.
+
+Live desktop/mobile Chrome also rechecked the three complex records, 100 fragments, 26 exact inputs, source selection, real clipboard, reverse translation, focus, scroll reset/retention and the 32/33-emoji boundary. Six regex crops were inspected, with no overflow at 320px. Existing worker reuse, complete-batch validation, stable errors, recovery, 100-example/2,048-code-unit boundaries and interruption of valid expensive batches passed again in Chrome, Firefox and WebKit. The deliberate timeout checks use a 150 ms test budget; the product deadline remains 1,200 ms.
+
 ### Complete example batch validation
 
 Source commit `fb20fcc` was synchronized into the existing project folder at Pages commit `72d8157`. Its individual build reported an error; the subsequent Pages commit `3a14895` built successfully on 1 October 2026. GitHub's comparison confirms that the successful commit includes our update and only adds changes outside this project. Twenty-seven resources returned HTTP 200 and matched local SHA-256 values, including all seventeen changed project files. Other project folders and the published npm preview were preserved.
