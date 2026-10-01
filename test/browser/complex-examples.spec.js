@@ -8,33 +8,81 @@ const examples = [
   ...guide.matchAll(/<a id="([a-z-]+)"><\/a>\n([\s\S]*?)(?=\n<a id=|\n## Captures)/gu),
 ];
 
-test("loading long rules starts the editor at the first rule through either action", async ({
-  page,
-}) => {
-  await page.goto("/?example=artifact-manifest");
-  const editor = page.locator("#rules-input");
-  await expect(page.locator("#test-summary")).toHaveText("9 of 9 examples behave as expected");
-  for (const action of ["recipe", "reverse"]) {
-    await editor.evaluate((field) => {
-      field.setSelectionRange(field.value.length, field.value.length);
-      field.scrollTop = field.scrollHeight;
-    });
-    expect(await editor.evaluate((field) => field.scrollTop)).toBeGreaterThan(0);
-    if (action === "recipe") {
-      const recipe = page.getByRole("button", { name: "Read a complex artifact manifest" });
-      await recipe.press("Enter");
-      await expect(recipe).toBeFocused();
-    } else {
-      await page.locator("#reverse-translator summary").click();
-      await page.locator("#reverse-regex").fill(await page.locator("#regex-output").textContent());
-      await page.locator("#reverse-regex").press("Control+Enter");
-      await expect(editor).toBeFocused();
+for (const [id, cases] of [
+  ["artifact-manifest", 9],
+  ["access-log", 8],
+  ["structured-event", 9],
+]) {
+  test(`loading ${id} starts the editor and explanation at the first rule`, async ({ page }) => {
+    await page.goto(`/?example=${id}`);
+    const editor = page.locator("#rules-input");
+    const trace = page.locator("#trace-list");
+    await expect(page.locator("#test-summary")).toHaveText(
+      `${cases} of ${cases} examples behave as expected`,
+    );
+    for (const action of ["recipe", "reverse"]) {
+      await editor.evaluate((field) => {
+        field.setSelectionRange(field.value.length, field.value.length);
+        field.scrollTop = field.scrollHeight;
+      });
+      expect(await editor.evaluate((field) => field.scrollTop)).toBeGreaterThan(0);
+      await trace.evaluate((list) => {
+        list.scrollTop = list.scrollHeight;
+      });
+      expect(await trace.evaluate((list) => list.scrollTop)).toBeGreaterThan(0);
+      if (action === "recipe") {
+        const recipe = page.locator(`[data-scenario="${id}"]`);
+        await recipe.press("Enter");
+        await expect(recipe).toBeFocused();
+      } else {
+        await page.locator("#reverse-translator summary").click();
+        await page
+          .locator("#reverse-regex")
+          .fill(await page.locator("#regex-output").textContent());
+        await page.locator("#reverse-regex").press("Control+Enter");
+        await expect(editor).toBeFocused();
+      }
+      expect(
+        await editor.evaluate((field) => [
+          field.selectionStart,
+          field.selectionEnd,
+          field.scrollTop,
+        ]),
+      ).toEqual([0, 0, 0]);
+      await expect.poll(() => trace.evaluate((list) => list.scrollTop)).toBe(0);
+      await expect(trace.locator(".trace-text").first()).toHaveText("1:1 start");
+      await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(cases);
     }
-    expect(
-      await editor.evaluate((field) => [field.selectionStart, field.selectionEnd, field.scrollTop]),
-    ).toEqual([0, 0, 0]);
-    await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
+  });
+}
+
+test("editing and failed translation retain the explanation scroll position", async ({ page }) => {
+  await page.goto("/?example=access-log");
+  const editor = page.locator("#rules-input");
+  const trace = page.locator("#trace-list");
+  await expect(trace.locator("button")).toHaveCount(43);
+  await trace.evaluate((list) => {
+    list.scrollTop = list.scrollHeight / 2;
+  });
+  const previous = await trace.evaluate((list) => list.scrollTop);
+  expect(previous).toBeGreaterThan(0);
+  await editor.fill(`${await editor.inputValue()}\n`);
+  expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
+  for (const option of ["#ignore-case", "#dot-all"]) {
+    await page.locator(option).check();
+    expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
   }
+  const rules = await editor.inputValue();
+  const output = await page.locator("#regex-output").textContent();
+  await page.locator("#reverse-translator summary").click();
+  await page.locator("#reverse-regex").fill("/^(Hello)$/u");
+  await page.locator("#reverse-regex").press("Control+Enter");
+  await expect(page.locator("#reverse-feedback")).toContainText(
+    "Capturing groups cannot be translated",
+  );
+  await expect(editor).toHaveValue(rules);
+  await expect(page.locator("#regex-output")).toHaveText(output);
+  expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
 });
 
 for (const [, id, section] of examples) {

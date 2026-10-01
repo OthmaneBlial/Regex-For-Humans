@@ -55,6 +55,18 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(output).toHaveText("/^[A-Za-z]{2}$/u");
   await firstExample.fill("Hi");
   await expect(firstResult).toHaveText('✓ Matched "Hi" at 0');
+});
+
+test("reverse translation preserves character counts, Unicode and option flags", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const output = page.locator("#regex-output");
+  await expect(output).toHaveText("/^ABC\\d{3}$/u");
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const firstExample = page.locator("#test-list textarea").first();
+  const firstResult = page.locator("#test-list .test-result").first();
   await reverse.fill(String.raw`/^\cJ{2}$/u`);
   await page.locator("#reverse-button").click();
   await expect(output).toHaveText(String.raw`/^\u{a}{2}$/u`);
@@ -102,6 +114,19 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "Kſ" at 0');
   await firstExample.fill("a-b");
   await expect(firstResult).toHaveText("! No match");
+});
+
+test("path rules and foreign native regexes retain their documented semantics", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const firstExample = page.locator("#test-list textarea").first();
+  const firstResult = page.locator("#test-list .test-result").first();
+  await page.locator("#ignore-case").check();
+  await page.locator("#dot-all").check();
   await page.locator("#rules-input").fill("start\nbetween 1 and 32 path segment characters\nend");
   await expect(page.locator("#trace-list")).toContainText(
     "Path segment character: excludes slash, backslash, NUL and line breaks.",
@@ -153,7 +178,14 @@ test("the workshop compiles rules and reports example results", async ({ page })
     localInstance: false,
     translated: { rules: 'start\n"😀"\n2 uppercase letter\nend', flags: "is" },
   });
+});
+
+test("long recipes retain matching and focus while resetting the editor and explanation", async ({
+  page,
+}) => {
   await page.goto("/?example=artifact-manifest");
+  const output = page.locator("#regex-output");
+  const reverse = page.locator("#reverse-regex");
   await expect(page.locator("#rules-input")).toHaveValue(
     /between 1 and 32 path segment characters/u,
   );
@@ -162,16 +194,25 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(page.locator("#test-summary")).toHaveText("9 of 9 examples behave as expected");
   await expect(page.locator("#test-list textarea").nth(2)).toHaveValue(/Équipe 😀/u);
   const editor = page.locator("#rules-input");
+  const trace = page.locator("#trace-list");
   await editor.evaluate((field) => {
     field.setSelectionRange(field.value.length, field.value.length);
     field.scrollTop = field.scrollHeight;
   });
+  await trace.evaluate((list) => {
+    list.scrollTop = list.scrollHeight;
+  });
+  expect(await trace.evaluate((list) => list.scrollTop)).toBeGreaterThan(0);
   const recipe = page.getByRole("button", { name: "Read a complex artifact manifest" });
   await recipe.press("Enter");
   await expect(recipe).toBeFocused();
   expect(
     await editor.evaluate((field) => [field.selectionStart, field.selectionEnd, field.scrollTop]),
   ).toEqual([0, 0, 0]);
+  expect(await trace.evaluate((list) => list.scrollTop)).toBe(0);
+  await trace.evaluate((list) => {
+    list.scrollTop = list.scrollHeight;
+  });
   await page.locator("#reverse-translator summary").click();
   await reverse.fill(await output.textContent());
   await reverse.press("Control+Enter");
@@ -179,6 +220,7 @@ test("the workshop compiles rules and reports example results", async ({ page })
   expect(
     await editor.evaluate((field) => [field.selectionStart, field.selectionEnd, field.scrollTop]),
   ).toEqual([0, 0, 0]);
+  expect(await trace.evaluate((list) => list.scrollTop)).toBe(0);
   await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
   await expect(page.locator("#reverse-feedback")).toBeVisible();
   await recipe.press("Enter");
@@ -204,12 +246,28 @@ test("the workshop compiles rules and reports example results", async ({ page })
     await expect(page.locator("#test-summary")).toHaveText(
       `${cases} of ${cases} examples behave as expected`,
     );
+    await trace.evaluate((list) => {
+      list.scrollTop = list.scrollHeight / 2;
+    });
+    const previous = await trace.evaluate((list) => list.scrollTop);
+    expect(previous).toBeGreaterThan(0);
+    await editor.fill(`${await editor.inputValue()}\n`);
+    expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
+    await page.locator("#ignore-case").check();
+    expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
+    await page.locator("#ignore-case").uncheck();
+    expect(await trace.evaluate((list) => list.scrollTop)).toBe(previous);
     await page.locator("#reverse-translator summary").click();
     await reverse.fill(await output.textContent());
     await reverse.press("Control+Enter");
     await expect(editor).toBeFocused();
+    expect(await trace.evaluate((list) => list.scrollTop)).toBe(0);
     await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(cases);
+    await trace.evaluate((list) => {
+      list.scrollTop = list.scrollHeight;
+    });
     await page.locator(`[data-scenario="${id}"]`).press("Enter");
+    expect(await trace.evaluate((list) => list.scrollTop)).toBe(0);
     await expect(page.locator("#reverse-feedback")).toBeHidden();
     await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(cases);
   }

@@ -462,6 +462,7 @@ function useScenario(scenario) {
   window.history.replaceState(null, "", url);
   renderTests();
   compileRules();
+  ui.trace.scrollTop = 0;
 }
 
 function renderScenarioButtons() {
@@ -525,6 +526,7 @@ ui.reverseButton.addEventListener("click", () => {
     setScenarioSelection(null);
     hasEdits = true;
     compileRules();
+    ui.trace.scrollTop = 0;
     ui.reverseRegex.setAttribute("aria-invalid", "false");
     ui.reverseFeedback.dataset.state = "success";
     ui.reverseFeedback.textContent = "Translated. Review the rules and test your examples.";
