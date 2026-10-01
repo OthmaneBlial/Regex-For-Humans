@@ -18,6 +18,14 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Complete example batch validation
+
+Source commit `fb20fcc` was synchronized into the existing project folder at Pages commit `72d8157`. Its individual build reported an error; the subsequent Pages commit `3a14895` built successfully on 1 October 2026. GitHub's comparison confirms that the successful commit includes our update and only adds changes outside this project. Twenty-seven resources returned HTTP 200 and matched local SHA-256 values, including all seventeen changed project files. Other project folders and the published npm preview were preserved.
+
+Live Chrome checks at 1280/390px and Firefox/WebKit checks at 1280px each rejected four malformed Full/Search batches before an earlier pathological or compiler-generated example could time out. Null entries, duplicate IDs, oversized values and sparse entries retained the stable error; the same controller recovered and accepted 100 examples with 2,048-code-unit values and the expected IDs. Completed-worker reuse and recovery after three valid adversarial requests also passed. Those deliberate timeout checks use a 150 ms test budget; malformed-batch checks use the unchanged 1,200 ms product deadline.
+
+Live desktop/mobile Chrome also rechecked the three complex records, 100 fragments, 26 exact inputs, source selection, real clipboard, reverse translation, focus, scroll reset/retention and the 32/33-emoji boundary. Six regex crops were inspected, with no page errors or overflow at 320px.
+
 ### Shared reverse reader and CLI instructions
 
 Source commit `c3245c7` was synchronized into the existing project folder at Pages commit `1a19276`, whose build completed on 1 October 2026. The workshop now loads the shared regex-literal reader, and its served README includes the source-checkout CLI reverse instructions with their explicit unreleased status. Twenty-seven resources returned HTTP 200 and matched local SHA-256 values, including all nineteen changed Pages files. Other project folders were preserved; the published npm preview is unchanged.
