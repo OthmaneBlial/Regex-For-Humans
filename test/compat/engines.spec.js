@@ -102,6 +102,18 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "Équipe 😀" at 0');
   await firstExample.fill("folder/name");
   await expect(firstResult).toHaveText("! No match");
+  await reverse.fill(String.raw`/^[^\u2029\r\x00\/\u2028\n\\/]{1,32}$/u`);
+  await reverse.press("Control+Enter");
+  await expect(page.locator("#rules-input")).toHaveValue(
+    "start\nbetween 1 and 32 path segment character\nend",
+  );
+  await expect(page.locator("#trace-list")).toContainText(
+    "Path segment character: excludes slash, backslash, NUL and line breaks.",
+  );
+  await firstExample.fill("Équipe 😀");
+  await expect(firstResult).toHaveText('✓ Matched "Équipe 😀" at 0');
+  await firstExample.fill("folder/name");
+  await expect(firstResult).toHaveText("! No match");
   const foreign = await page.evaluate(async () => {
     const { regexToRules } = await import("/index.js");
     const frame = document.createElement("iframe");

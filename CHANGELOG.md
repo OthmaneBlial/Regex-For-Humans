@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Recognize equivalent path-segment exclusion classes by decoded membership, so reordered, duplicate and differently escaped exclusions produce the same readable reverse translation while different sets remain explicit.
+
 - Add countable `path segment character(s)` rules to replace long separator/control exclusion lists, with the same Unicode matching, friendly explanations and canonical reverse translation.
 
 - Add four substantial executable format examples, two complete README patterns, and website links to their complete explanations and accepted/rejected cases. Document capture and nesting limits with real diagnostics.

@@ -1,4 +1,13 @@
 export const PATH_SEGMENT_SOURCE = String.raw`[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]`;
+export const PATH_SEGMENT_EXCLUDED = Object.freeze([
+  "/",
+  "\\",
+  "\0",
+  "\n",
+  "\r",
+  "\u2028",
+  "\u2029",
+]);
 
 /**
  * @typedef {{line: number, column: number}} Location

@@ -90,6 +90,94 @@ test("malformed path character rules keep positioned diagnostics and a readable 
   });
 });
 
+test("equivalent path exclusion classes translate by decoded membership with every flag and repetition", () => {
+  const bodies = [
+    String.raw`^/\\\0\n\r\u2028\u2029`,
+    String.raw`^\u2029\r\x00\/\u2028\n\\`,
+    String.raw`^\u{00002029}\u{00002028}\u{0000000D}\u{0000000A}\u{00000000}\u{0000005C}\u{0000002F}`,
+    String.raw`^\u2028\cM\u2029\cJ\x5c\x2f\0`,
+    String.raw`^/\\\0\n\r\u2028\u2029/\x00\cJ`,
+    "^/\\\\\0\n\r\u2028\u2029",
+  ];
+  const samples = [
+    ...Array.from({ length: 256 }, (_, point) => String.fromCodePoint(point)),
+    "",
+    "é",
+    "😀",
+    "K",
+    "ſ",
+    "\ud800",
+    "\udfff",
+    "\u{10ffff}",
+    "Équipe 😀",
+    "a".repeat(32),
+    "a".repeat(33),
+    "a/b",
+    "a\\b",
+    "a\0b",
+    "a\nb",
+    "a\rb",
+    "a\u2028b",
+    "a\u2029b",
+    "\nabc\n",
+    "abc\r\n",
+  ];
+  for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+    for (const body of bodies) {
+      for (const [suffix, rule] of [
+        ["", "path segment character"],
+        ["?", "optional path segment character"],
+        ["*", "zero or more path segment character"],
+        ["+", "one or more path segment character"],
+        ["{0}", "0 path segment character"],
+        ["{3}", "3 path segment character"],
+        ["{1,32}", "between 1 and 32 path segment character"],
+        ["{2,}", "at least 2 path segment character"],
+      ]) {
+        const regex = new RegExp(`^[${body}]${suffix}$`, flags);
+        regex.lastIndex = 7;
+        const translated = regexToRules(regex);
+        const line = flags.includes("m") ? "line " : "";
+        assert.equal(translated.rules, `${line}start\n${rule}\n${line}end`, regex.source);
+        const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+        assert.equal(rebuilt.flags, regex.flags);
+        assert.equal(regex.lastIndex, 7);
+        for (const sample of samples)
+          assert.deepEqual(
+            rebuilt.exec(sample),
+            regex.exec(sample),
+            `${regex} ${JSON.stringify(sample)}`,
+          );
+      }
+    }
+  }
+});
+
+test("different path-like classes keep their explicit membership and positioned errors", () => {
+  for (const body of [
+    String.raw`^/\\\0\n\r\u2028`,
+    String.raw`^/\\\0\n\r\u2028\u2029\t`,
+    String.raw`^/\\\0\n\r\u2028\t`,
+    String.raw`/\\\0\n\r\u2028\u2029`,
+  ]) {
+    const regex = new RegExp(`^[${body}]{1,32}$`, "u");
+    const translated = regexToRules(regex);
+    assert.doesNotMatch(translated.rules, /path segment/u);
+    assert.match(translated.rules, body.startsWith("^") ? /none of:/u : /one of:/u);
+    const rebuilt = toRegExp(compile(translated.rules));
+    for (const sample of ["a", "/", "\\", "\0", "\n", "\r", "\u2028", "\u2029", "\t", "😀"])
+      assert.deepEqual(rebuilt.exec(sample), regex.exec(sample));
+  }
+  const body = String.raw`^/\\\0\n\r\u2028\u2029`;
+  const prefix = `^[${body}]`;
+  assert.throws(() => regexToRules(new RegExp(`${prefix}(x)$`, "u")), {
+    code: "UNSUPPORTED_REGEX",
+    line: 1,
+    column: prefix.length + 1,
+    message: "Capturing groups cannot be translated.",
+  });
+});
+
 test("CLI JSON and explanations expose the same readable path rule", () => {
   const rules = "start\nbetween 1 and 32 path segment characters\nend";
   const result = spawnSync(process.execPath, [cli, "--json", "-"], {

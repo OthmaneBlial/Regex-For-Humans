@@ -1,4 +1,4 @@
-import { PATH_SEGMENT_SOURCE } from "./ast.js";
+import { PATH_SEGMENT_EXCLUDED } from "./ast.js";
 import { CompileError, fail } from "./diagnostics.js";
 import { quoteText } from "./display.js";
 import { LIMITS, parse } from "./parser.js";
@@ -13,7 +13,6 @@ const ESCAPED_ATOMS = new Map([
 ]);
 
 const CLASS_ATOMS = new Map([
-  [PATH_SEGMENT_SOURCE.slice(1, -1), "path segment character"],
   ["0-9", "digit"],
   ["^0-9", "not digit"],
   ["A-Z", "uppercase letter"],
@@ -178,6 +177,14 @@ function readCharacterClass(source, start) {
 
   if (values.length === 0)
     unsupported("An empty character class has no rule-language equivalent.", start);
+  if (negative) {
+    const excluded = new Set(values);
+    if (
+      excluded.size === PATH_SEGMENT_EXCLUDED.length &&
+      PATH_SEGMENT_EXCLUDED.every((value) => excluded.has(value))
+    )
+      return { end: end + 1, phrase: "path segment character" };
+  }
   if (values.length === 1 && !negative) {
     return { end: end + 1, literal: values[0] };
   }
