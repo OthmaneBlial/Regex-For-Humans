@@ -302,6 +302,24 @@ void [regex, segment, source, line, max];
   if (cliResult.source !== "^ABC\\d{3}$" || cliResult.flags !== "u") {
     throw new Error("Installed CLI produced an unexpected expression.");
   }
+  const reverseExample =
+    /^printf '%s\\n' '([^']+)' \| node bin\/regex-for-humans\.js --reverse$/mu.exec(readme);
+  if (!reverseExample) throw new Error("The installed README is missing its CLI reverse example.");
+  const reverseRules = run([...cliArgs, "--reverse", "-"], {
+    cwd: consumer,
+    input: reverseExample[1],
+  });
+  if (reverseRules !== 'start\n2 uppercase letter\n"-"\n4 digit\nend') {
+    throw new Error(
+      "The installed README CLI reverse example did not produce its documented rules.",
+    );
+  }
+  const reverseCli = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: "/^A.$/isu" }),
+  );
+  if (reverseCli.rules !== 'start\n"A"\nany character\nend' || reverseCli.flags !== "is") {
+    throw new Error("The installed CLI did not preserve reverse translation and its flags.");
+  }
   const boundedCli = JSON.parse(
     run([...cliArgs, "--json", "-"], { cwd: consumer, input: boundedRules }),
   );

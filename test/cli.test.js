@@ -13,6 +13,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { compile, regexToRules, toRegExp } from "../index.js";
 import { LIMITS } from "../src/parser.js";
 
 const cli = fileURLToPath(new URL("../bin/regex-for-humans.js", import.meta.url));
@@ -436,9 +437,9 @@ test("CLI reports stdout write failures as JSON without an unhandled exception",
   writeFileSync(path, "sentinel");
   const descriptor = openSync(path, "r");
   try {
-    for (const args of [["-"], ["--help"], ["--version"]]) {
+    for (const args of [["-"], ["--help"], ["--version"], ["--reverse", "-"]]) {
       const result = spawnSync(process.execPath, [cli, "--json", ...args], {
-        input: "digit",
+        input: args.includes("--reverse") ? "/digit/u" : "digit",
         encoding: "utf8",
         stdio: ["pipe", descriptor, "pipe"],
       });
@@ -859,5 +860,199 @@ test("CLI enforces the source limit while reading stdin and files", () => {
   } finally {
     unlinkSync(path);
     rmdirSync(directory);
+  }
+});
+
+test("CLI reverses stdin into reusable rules or the library's JSON result", () => {
+  const literal = String.raw`/^ABC\d{3}$/u`;
+  const rules = 'start\n"ABC"\n3 digit\nend';
+  for (const args of [["--reverse"], ["--reverse", "-"], ["--reverse", "--reverse", "-"]]) {
+    const output = run(args, `${literal}\n`);
+    assert.equal(output.status, 0, output.stderr);
+    assert.equal(output.stderr, "");
+    assert.equal(output.stdout, `${rules}\n`);
+    assert.equal(toRegExp(compile(output.stdout)).test("ABC123"), true);
+  }
+  const json = run(["--reverse", "--json", "-"], literal);
+  assert.equal(json.status, 0, json.stderr);
+  assert.equal(json.stderr, "");
+  assert.deepEqual(JSON.parse(json.stdout), { rules, flags: "" });
+});
+
+test("CLI reverse preserves matching flags and explains plain-output compiler options", () => {
+  for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+    const regex = new RegExp("^A.$", flags);
+    const expected = regexToRules(regex);
+    const options = [
+      flags.includes("i") ? "--ignore-case" : "",
+      flags.includes("s") ? "--dot-all" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    for (const json of [false, true]) {
+      const output = run(["--reverse", ...(json ? ["--json"] : []), "-"], String(regex));
+      assert.equal(output.status, 0, output.stderr);
+      const result = json
+        ? JSON.parse(output.stdout)
+        : { rules: output.stdout.trim(), flags: expected.flags };
+      assert.deepEqual(result, expected);
+      assert.equal(
+        output.stderr,
+        json || !options
+          ? ""
+          : `Compile these rules with ${options} to preserve the regex flags, or use --json.\n`,
+      );
+      const rebuilt = toRegExp(compile(result.rules, { flags: result.flags }));
+      assert.equal(rebuilt.flags, regex.flags);
+      for (const sample of ["AB", "aB", "A\n", "a\n", "\nAB\n", "X", ""])
+        assert.deepEqual(rebuilt.exec(sample), regex.exec(sample));
+    }
+  }
+});
+
+test("CLI reverse uses the existing translator for every shared recipe", () => {
+  for (const scenario of scenarios) {
+    const regex = new RegExp(scenario.source, scenario.flags);
+    const output = run(["--json", "--reverse", "-"], String(regex));
+    assert.equal(output.status, 0, `${scenario.id}: ${output.stderr}`);
+    assert.equal(output.stderr, "");
+    const translated = JSON.parse(output.stdout);
+    assert.deepEqual(translated, regexToRules(regex), scenario.id);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const text of [...scenario.positive, ...scenario.negative])
+      assert.deepEqual(
+        rebuilt.exec(text),
+        regex.exec(text),
+        `${scenario.id}: ${JSON.stringify(text)}`,
+      );
+  }
+});
+
+test("CLI reverse reads UTF-8 files and accepts a leading-dash path after --", () => {
+  const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
+  const path = join(directory, "-😀.regex");
+  try {
+    writeFileSync(path, "\ufeff /^(?:😀A){2}$/isu\n");
+    const output = spawnSync(process.execPath, [cli, "--reverse", "--json", "--", "-😀.regex"], {
+      cwd: directory,
+      encoding: "utf8",
+    });
+    assert.equal(output.status, 0, output.stderr);
+    assert.equal(output.stderr, "");
+    assert.deepEqual(JSON.parse(output.stdout), { rules: 'start\n2 "😀A"\nend', flags: "is" });
+  } finally {
+    unlinkSync(path);
+    rmdirSync(directory);
+  }
+});
+
+test("CLI reverse rejects conflicting forward options before reading input", () => {
+  const message = "--reverse cannot be combined with --explain, --ignore-case or --dot-all.";
+  for (const flag of ["--explain", "--ignore-case", "--dot-all"]) {
+    for (const json of [false, true]) {
+      const output = run([flag, "--reverse", ...(json ? ["--json"] : []), "-"], "not a regex");
+      assert.equal(output.status, 2);
+      assert.equal(output.stdout, "");
+      if (json)
+        assert.deepEqual(JSON.parse(output.stderr), { error: { code: "CLI_USAGE", message } });
+      else assert.ok(output.stderr.startsWith(`${message}\nUsage:`));
+    }
+  }
+});
+
+test("CLI reverse preserves positioned translator errors and reports literal syntax failures", () => {
+  for (const [input, code, message, column] of [
+    ["/^😀(AB)/u", "UNSUPPORTED_REGEX", "Capturing groups cannot be translated.", 4],
+    [
+      "/^A$/",
+      "UNICODE_FLAG_REQUIRED",
+      "Add the `u` flag before translating. The rule language always uses Unicode matching.",
+      1,
+    ],
+    ["/a/gu", "UNSUPPORTED_REGEX_FLAGS", "Only the i, s, m and u flags can be translated.", 1],
+    ["a", "CLI_ERROR", "Paste a slash-delimited JavaScript regex literal, such as `/\\d+/u`."],
+    ["/a", "CLI_ERROR", "Add the closing `/` and any regex flags."],
+    ["/a/z", "CLI_ERROR", "Put only JavaScript regex flags after the closing `/`."],
+    ["/(/u", "CLI_ERROR", "That is not a valid JavaScript regex literal."],
+    ["/a\nb/u", "CLI_ERROR", "Escape line breaks inside a regex literal, such as `\\n`."],
+  ]) {
+    for (const json of [false, true]) {
+      const output = run(["--reverse", ...(json ? ["--json"] : []), "-"], input);
+      assert.equal(output.status, 1, input);
+      assert.equal(output.stdout, "", input);
+      if (json) {
+        const error = JSON.parse(output.stderr).error;
+        assert.equal(error.code, code);
+        assert.equal(error.message, message);
+        assert.equal(error.column, column);
+        assert.equal(error.line, column ? 1 : undefined);
+      } else assert.ok(output.stderr.includes(message), output.stderr);
+    }
+  }
+});
+
+test("CLI reverse retains the regex source ceiling and enforces its streamed input budget", () => {
+  const source = `^\\u{${"0".repeat(LIMITS.sourceLength - 8)}41}$`;
+  assert.equal(source.length, LIMITS.sourceLength);
+  const accepted = run(["--reverse", "--json", "-"], `/${source}/u\n`);
+  assert.equal(accepted.status, 0, accepted.stderr);
+  assert.deepEqual(JSON.parse(accepted.stdout), { rules: 'start\n"A"\nend', flags: "" });
+  const oversized = run(["--reverse", "--json", "-"], `/${source.replace("41", "041")}/u`);
+  assert.equal(oversized.status, 1);
+  assert.equal(oversized.stdout, "");
+  assert.deepEqual(JSON.parse(oversized.stderr).error, {
+    code: "REGEX_SOURCE_LIMIT",
+    message: "Regex source cannot exceed 16384 UTF-16 code units.",
+    line: 1,
+    column: LIMITS.sourceLength + 1,
+  });
+  for (const input of [
+    " ".repeat(LIMITS.sourceLength + 9),
+    `/${"a".repeat(LIMITS.sourceLength + 9)}/u`,
+  ]) {
+    const output = run(["--reverse", "--json", "-"], input);
+    assert.equal(output.status, 1);
+    assert.equal(output.stdout, "");
+    assert.deepEqual(JSON.parse(output.stderr), {
+      error: {
+        code: "CLI_ERROR",
+        message: "Regex input cannot exceed 16384 code units, plus its delimiters and flags.",
+      },
+    });
+  }
+});
+
+test("CLI reverse rejects malformed UTF-8 before interpreting a literal", () => {
+  for (const input of [Buffer.from([0x80]), Buffer.from([0xe2, 0x82])]) {
+    const output = run(["--reverse", "--json", "-"], input);
+    assert.equal(output.status, 1);
+    assert.equal(output.stdout, "");
+    assert.deepEqual(JSON.parse(output.stderr), {
+      error: {
+        code: "CLI_ERROR",
+        message: "Input must be valid UTF-8. Save the rules as UTF-8 and try again.",
+      },
+    });
+  }
+});
+
+test("CLI reverse exposes controls and preserves Unicode data through reusable rules", () => {
+  const text = `A\u001b\u009b\u202e😀\ud800B`;
+  const regex = new RegExp(`^${text.slice(0, -2)}\\uD800B$`, "u");
+  for (const json of [false, true]) {
+    const output = run(["--reverse", ...(json ? ["--json"] : []), "-"], String(regex));
+    assert.equal(output.status, 0, output.stderr);
+    assert.equal(output.stderr, "");
+    assert.equal(
+      /[\p{Bidi_Control}\p{Control}\u2028\u2029]/u.test(output.stdout.replaceAll("\n", "")),
+      false,
+    );
+    const translated = json
+      ? JSON.parse(output.stdout)
+      : { rules: output.stdout.trim(), flags: "" };
+    assert.deepEqual(translated, regexToRules(regex));
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    assert.equal(rebuilt.test(text), true);
+    assert.equal(rebuilt.test(text.replace("\ud800", "\ufffd")), false);
   }
 });

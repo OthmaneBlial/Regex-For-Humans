@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add CLI `--reverse` for the existing regex-to-rules translator, with file/stdin input, JSON `{ rules, flags }`, plain-output flag guidance, positioned errors and bounded UTF-8 reads. The CLI and workshop share literal parsing; the published npm preview remains unchanged.
+
 - Reuse a completed workshop example worker across edits, option changes and recipes, while pending checks, errors and timeouts still terminate it; preserve the 1,200 ms deadline and fresh per-request regex state.
 
 ## 0.1.0-dev (1 October 2026)

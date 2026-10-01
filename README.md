@@ -299,6 +299,24 @@ Control characters and Unicode line separators from rules, arguments and filenam
 
 </details>
 
+### 🔄 Reverse from a source checkout (unreleased)
+
+`--reverse` is available on `main`, and is not included in the published npm `0.1.0-dev` preview. From a clone, translate a slash-delimited JavaScript regex with the required `u` flag:
+
+```sh
+printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | node bin/regex-for-humans.js --reverse
+```
+
+```text
+start
+2 uppercase letter
+"-"
+4 digit
+end
+```
+
+Use `--reverse --json` for `{ rules, flags }`, matching `regexToRules()`. Pass the returned `flags` to `compile()` to preserve `i` and `s`; `m` is represented by line anchors and `u` is automatic. Plain output contains reusable rules, with the required forward compiler options on stderr when `i` or `s` is present. These notes accompany a successful exit code. Reverse mode accepts a file or stdin and cannot be combined with `--explain`, `--ignore-case` or `--dot-all`.
+
 ## 📦 Use the JavaScript library
 
 After `npm install regex-for-humans@preview`, import the package in an ES module (`.mjs`, or a project with `"type": "module"`). TypeScript declarations are included. From a source checkout, use `./index.js` instead.

@@ -3,17 +3,24 @@
 import { createReadStream, readFileSync } from "node:fs";
 import { stderr, stdin, stdout } from "node:process";
 import { fileURLToPath } from "node:url";
-import { CompileError, compile } from "../index.js";
+import { CompileError, compile, regexToRules } from "../index.js";
 import { escapeControls } from "../src/display.js";
 import { LIMITS, validateSourceLength } from "../src/parser.js";
+import {
+  parseRegexLiteral,
+  REGEX_LITERAL_INPUT_LIMIT,
+  validateRegexLiteralLength,
+} from "../src/regex-literal.js";
 
 const usage = String.raw`Usage: regex-for-humans [options] [--] [file|-]
 
 Compile controlled English into a JavaScript regex.
 Read a file or stdin; use - for stdin.
+Use --reverse to translate a slash-delimited regex back into rules.
 
 Options:
   --json         Print a result or error as JSON
+  --reverse      Translate a JavaScript regex literal into rules
   --explain      Explain each generated fragment
   --ignore-case  Add the JavaScript i flag
   --dot-all      Add the JavaScript s flag
@@ -42,6 +49,7 @@ async function main() {
     }
   }
   let explain = false;
+  let reverse = false;
   let flags = "";
   let optionsEnded = false;
   /** @type {string|undefined} */
@@ -113,6 +121,10 @@ async function main() {
       explain = true;
       continue;
     }
+    if (!optionsEnded && arg === "--reverse") {
+      reverse = true;
+      continue;
+    }
     if (!optionsEnded && arg === "--ignore-case") {
       if (!flags.includes("i")) flags += "i";
       continue;
@@ -130,8 +142,16 @@ async function main() {
     file = arg;
   }
 
+  if (reverse && (explain || flags)) {
+    return usageError("--reverse cannot be combined with --explain, --ignore-case or --dot-all.");
+  }
+
   if (file === undefined && stdin.isTTY) {
-    return usageError("Pass an input file or pipe rules to standard input.");
+    return usageError(
+      reverse
+        ? "Pass an input file or pipe a regex literal to standard input."
+        : "Pass an input file or pipe rules to standard input.",
+    );
   }
 
   /** @param {import("node:stream").Readable} stream */
@@ -139,14 +159,17 @@ async function main() {
     /** @type {string[]} */
     const chunks = [];
     let length = 0;
+    const inputLimit = reverse ? REGEX_LITERAL_INPUT_LIMIT : LIMITS.sourceLength;
     // Keep a leading BOM in source positions while rejecting malformed UTF-8.
     const decoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
     for await (const chunk of stream) {
       const text = decoder.decode(chunk, { stream: true });
       length += text.length;
-      if (length > LIMITS.sourceLength) {
+      if (length > inputLimit) {
         stream.destroy();
-        validateSourceLength(chunks.join("") + text);
+        const source = chunks.join("") + text;
+        if (reverse) validateRegexLiteralLength(source);
+        else validateSourceLength(source);
       }
       chunks.push(text);
     }
@@ -158,6 +181,22 @@ async function main() {
     const input = await readInput(
       file === undefined || file === "-" ? stdin : createReadStream(file),
     );
+    if (reverse) {
+      const translated = regexToRules(parseRegexLiteral(input));
+      if (json) stdout.write(`${escapeControls(JSON.stringify(translated))}\n`);
+      else {
+        stdout.write(`${translated.rules}\n`);
+        if (translated.flags) {
+          const options = [...translated.flags]
+            .map((flag) => (flag === "i" ? "--ignore-case" : "--dot-all"))
+            .join(" ");
+          stderr.write(
+            `Compile these rules with ${options} to preserve the regex flags, or use --json.\n`,
+          );
+        }
+      }
+      return;
+    }
     const result = compile(input, { flags });
     if (json) {
       stdout.write(`${escapeControls(JSON.stringify(result))}\n`);
