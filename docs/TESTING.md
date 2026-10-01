@@ -1,8 +1,8 @@
 # Testing and compatibility
 
-GitHub Actions is disabled for this repository. All current quality checks run locally with `npm run verify`; pushes and pull requests do not trigger CI. The compatibility evidence below is historical, not a check of the latest commit.
+GitHub Actions is disabled for this repository. All current quality checks run locally with `npm run verify`; pushes and pull requests do not trigger CI. The archived CI compatibility matrix below is historical.
 
-Full local verification passed on 1 October 2026 at source commit `8ca1893` with Node 25.9.0/npm 11.12.1, and at `8051e0d` with the declared Node 22.0.0/npm 10.9.9 minimum. Both runs passed 127 Node tests, 166 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 50 homepage tests, a clean consumer package install, and `npm audit` with zero vulnerabilities. These runs cover Node 22 on macOS; the older hosted multi-platform results below remain historical. See [DISTRIBUTION.md](DISTRIBUTION.md) for the deployment record.
+Full local verification passed on 1 October 2026 at source commit `7ff35eb` with Node 22.0.0/npm 10.9.9 and Node 25.9.0/npm 11.12.1. Both runs passed 127 Node tests, 166 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 50 homepage tests, a clean consumer package install, and `npm audit` with zero vulnerabilities. Biome 2.5.15, the declared Node 22.0.0 minimum, and Node 25.9.0 were included in these runs. They cover these Node versions on macOS; the older hosted multi-platform results below remain historical. See [DISTRIBUTION.md](DISTRIBUTION.md) for the deployment record.
 
 The package declares Node.js `>=22`. These results passed on 28 September 2026:
 
@@ -34,7 +34,7 @@ npm exec -- playwright install firefox webkit
 To repeat the full verification at the declared Node 22.0 minimum on macOS:
 
 ```sh
-npm exec --yes --package=node@22.0.0 --package=npm@10 -- sh -c 'node --version && npm --version && npm run verify'
+npm exec --yes --package=node@22.0.0 --package=npm@10.9.9 -- sh -c 'node --version && npm --version && npm run verify'
 ```
 
 For bundled Playwright Chromium, install and select it explicitly:
