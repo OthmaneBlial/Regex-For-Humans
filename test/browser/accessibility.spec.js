@@ -442,7 +442,9 @@ test("example resize heights follow their identities when adding and removing ro
       await expect(fields.nth(index + 1)).toHaveValue(text);
     }
     await page.locator("#test-list select").last().selectOption("false");
-    await expect(page.locator("#test-summary")).toHaveText("5 of 5 examples behave as expected");
+    await expect(page.locator("#test-summary")).toHaveText(
+      "5 of 5 examples behave as expected. Example 5 matches the expected result.",
+    );
     await page.getByRole("button", { name: "Remove example 1", exact: true }).click();
     await expect(fields).toHaveCount(4);
     await expect(fields.first()).toBeFocused();
@@ -451,14 +453,18 @@ test("example resize heights follow their identities when adding and removing ro
       await expect(fields.nth(index)).toHaveAccessibleName(`Example ${index + 1} string`);
       await expect(fields.nth(index)).toHaveValue(text);
     }
-    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+    await expect(page.locator("#test-summary")).toHaveText(
+      "4 of 4 examples behave as expected. Example 1 matches the expected result.",
+    );
     await page.getByRole("button", { name: "Remove example 1", exact: true }).click();
     expect(await fields.first().evaluate((input) => input.style.height)).toBe(heights[1]);
     await page.locator("#add-example").click();
     await fields.last().fill(text);
     await page.locator("#test-list select").last().selectOption("false");
     expect(await fields.last().evaluate((input) => input.style.height)).toBe("");
-    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+    await expect(page.locator("#test-summary")).toHaveText(
+      "4 of 4 examples behave as expected. Example 4 matches the expected result.",
+    );
     await page.locator('[data-scenario="time-shape"]').click();
     expect(
       await fields.evaluateAll((inputs) => inputs.every((input) => input.style.height === "")),
@@ -552,12 +558,18 @@ test("example descriptions follow matching results and rule repairs", async ({ p
   await expect(field).toHaveAccessibleDescription(`${limits} ✓ Matched "ABC123" at 0`);
   await expect(expected).toHaveAccessibleDescription('✓ Matched "ABC123" at 0');
   await field.fill("ABC12");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "3 of 4 examples behave as expected. Example 1 does not match the expected result.",
+  );
   await expect(field).toHaveAccessibleDescription(`${limits} ! No match`);
   await expect(expected).toHaveAccessibleDescription("! No match");
   await expected.focus();
   await expected.selectOption("false");
   await expect(expected).toHaveValue("false");
   await expect(expected).toBeFocused();
+  await expect(page.locator("#test-summary")).toHaveText(
+    "4 of 4 examples behave as expected. Example 1 matches the expected result.",
+  );
   await expect(field).toHaveAccessibleDescription(`${limits} ✓ No match`);
   await expect(expected).toHaveAccessibleDescription("✓ No match");
   const editor = page.locator("#rules-input");

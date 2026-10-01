@@ -251,7 +251,12 @@ async function updateTestResults() {
       row.dataset.result = evaluation.pass ? "pass" : "fail";
       setTestResult(row, `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`);
     });
-    ui.testSummary.textContent = `${passed} of ${testCases.length} examples behave as expected`;
+    const focusedRowIndex = rows.findIndex((row) => row.contains(document.activeElement));
+    const focusedResult = focusedRowIndex < 0 ? null : byId.get(testCases[focusedRowIndex].id);
+    const focusedFeedback = focusedResult
+      ? `. Example ${focusedRowIndex + 1} ${focusedResult.pass ? "matches" : "does not match"} the expected result.`
+      : "";
+    ui.testSummary.textContent = `${passed} of ${testCases.length} examples behave as expected${focusedFeedback}`;
     ui.testSummary.dataset.state = passed === testCases.length ? "success" : "error";
   } catch (error) {
     if (error instanceof TestRunError && error.code === "CANCELLED") return;

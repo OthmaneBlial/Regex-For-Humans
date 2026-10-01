@@ -363,7 +363,9 @@ test("empty literals explain how to match empty input and recover", async ({ pag
   await expect(editor).toHaveAttribute("aria-invalid", "false");
   await expect(page.locator("#copy-button")).toBeEnabled();
   await page.locator("#test-list textarea").first().fill("");
-  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "4 of 4 examples behave as expected. Example 1 matches the expected result.",
+  );
   await expect(page.locator("#test-list .test-result").first()).toHaveText('✓ Matched "" at 0');
   await page.locator("#test-list textarea").first().fill("\n");
   await expect(page.locator("#test-list .test-result").first()).toHaveText("! No match");
@@ -525,7 +527,7 @@ test("time shape explains its limits and supports editing, expectation changes a
   await expect(page.locator("#trace-list")).toContainText("Exactly 2 digits (0–9).");
   await page.locator("#test-list textarea").first().fill("25:99");
   await expect(page.locator("#test-summary")).toHaveText(
-    `${count} of ${count} examples behave as expected`,
+    `${count} of ${count} examples behave as expected. Example 1 matches the expected result.`,
   );
   await page.locator("#copy-button").click();
   await expect(page.locator("#copy-button")).toContainText("Copied");
@@ -759,7 +761,9 @@ test("rules and options entered before the workshop app loads stay intact", asyn
     await expect(page.locator("#add-example")).toBeEnabled();
     await page.locator("#add-example").click();
     await page.getByRole("textbox", { name: "Example 1 string", exact: true }).fill("custom");
-    await expect(page.locator("#test-summary")).toHaveText("1 of 1 examples behave as expected");
+    await expect(page.locator("#test-summary")).toHaveText(
+      "1 of 1 examples behave as expected. Example 1 matches the expected result.",
+    );
     await page.locator('[data-scenario="prefixed-identifier"]').click();
     await expect(editor).toHaveValue(scenarios[0].rules);
     await expect(page.locator("#ignore-case")).not.toBeChecked();
@@ -898,7 +902,9 @@ test("late recipes preserve edits made while loading", async ({ page }) => {
   await expect(page.locator("#match-mode")).toHaveValue("search");
   await expect(page.locator("#test-list textarea")).toHaveCount(1);
   await expect(page.locator("#test-list textarea")).toHaveValue("custom");
-  await expect(page.locator("#test-summary")).toHaveText("1 of 1 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "1 of 1 examples behave as expected. Example 1 matches the expected result.",
+  );
   await expect(page.locator('#example-list button[aria-current="true"]')).toHaveCount(0);
   await expect(page.locator("#recipe-note")).toBeHidden();
 });
@@ -927,7 +933,9 @@ test("failed recipes leave compiler diagnostics and manual editing available", a
   await expect(page.locator("#copy-button")).toBeEnabled();
   await page.locator("#add-example").click();
   await page.locator("#test-list textarea").fill("123");
-  await expect(page.locator("#test-summary")).toHaveText("1 of 1 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "1 of 1 examples behave as expected. Example 1 matches the expected result.",
+  );
   const accessibility = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
@@ -993,11 +1001,17 @@ test("rule and example inputs request literal text entry and preserve typed case
   await expect(page.locator("#test-list .test-row .test-result").first()).toContainText(
     `Matched ${JSON.stringify(text)} at 0`,
   );
-  await expect(page.locator("#test-summary")).toHaveText("5 of 5 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "5 of 5 examples behave as expected. Example 5 matches the expected result.",
+  );
   await first.fill("Teh.A_b/7");
-  await expect(page.locator("#test-summary")).toHaveText("4 of 5 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "4 of 5 examples behave as expected. Example 1 does not match the expected result.",
+  );
   await first.fill(text);
-  await expect(page.locator("#test-summary")).toHaveText("5 of 5 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "5 of 5 examples behave as expected. Example 1 matches the expected result.",
+  );
 });
 
 test("direction and C1 controls stay visible and surrogate boundaries follow Unicode matching", async ({
@@ -1129,7 +1143,9 @@ test("oversized examples stay intact and stop testing until repaired or removed"
       .nth(index)
       .selectOption(index < 2 ? "true" : "false");
   }
-  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "4 of 4 examples behave as expected. Example 4 matches the expected result.",
+  );
   const first = page.getByRole("textbox", { name: "Example 1 string", exact: true });
   await page.clock.install();
   // Hold a valid request so oversized input must cancel its pending timeout.
@@ -1173,7 +1189,9 @@ test("oversized examples stay intact and stop testing until repaired or removed"
   await expect(first).toHaveValue(oversized);
   await expect(first).toHaveAccessibleDescription(`${limits} ${error}`);
   await page.getByRole("button", { name: "Remove example 1", exact: true }).press("Enter");
-  await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "3 of 4 examples behave as expected. Example 1 matches the expected result.",
+  );
   const last = page.getByRole("textbox", { name: "Example 4 string", exact: true });
   const beforeEmoji = await page.evaluate(() => window.testRequests);
   await last.focus();
@@ -1191,7 +1209,9 @@ test("oversized examples stay intact and stop testing until repaired or removed"
   await expect(page.locator("#test-list .test-result").last()).toHaveText("! No match");
   expect(await page.evaluate(() => window.testRequests)).toBeGreaterThan(beforeEmoji);
   await last.fill(valid);
-  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "4 of 4 examples behave as expected. Example 4 matches the expected result.",
+  );
 });
 
 test("positive and negative examples expose a changed outcome", async ({ page }) => {
@@ -1201,18 +1221,24 @@ test("positive and negative examples expose a changed outcome", async ({ page })
     .getByRole("textbox", { name: /^Example \d+ string$/u })
     .first()
     .fill("ABC12");
-  await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "3 of 4 examples behave as expected. Example 1 does not match the expected result.",
+  );
   await page.getByRole("button", { name: "+ Add example" }).click();
   await page
     .getByRole("textbox", { name: /^Example \d+ string$/u })
     .last()
     .fill("ABC999");
-  await expect(page.locator("#test-summary")).toHaveText("4 of 5 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "4 of 5 examples behave as expected. Example 5 matches the expected result.",
+  );
   await page
     .getByRole("button", { name: /^Remove example \d+$/u })
     .last()
     .click();
-  await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "3 of 4 examples behave as expected. Example 4 matches the expected result.",
+  );
 });
 
 test("line-mode sample keeps its newline and changes under full-match mode", async ({ page }) => {
@@ -1362,9 +1388,13 @@ test("bounded counts show inclusive matches, literal grouping and positioned err
     await expect(page.locator("#regex-output")).toHaveText(`/^${source}$/u`);
     await expect(page.locator("#trace-list")).toContainText("inclusive");
     await sample.fill(positive);
-    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+    await expect(page.locator("#test-summary")).toHaveText(
+      "4 of 4 examples behave as expected. Example 1 matches the expected result.",
+    );
     await sample.fill(negative);
-    await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
+    await expect(page.locator("#test-summary")).toHaveText(
+      "3 of 4 examples behave as expected. Example 1 does not match the expected result.",
+    );
   }
   await editor.fill("start between 4 and 2 digits\nend");
   await expect(page.locator("#diagnostic")).toContainText(
@@ -1377,7 +1407,9 @@ test("bounded counts show inclusive matches, literal grouping and positioned err
   ).toBe("2");
   await editor.fill("start between 2 and 4 digits\nend");
   await sample.fill("12");
-  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  await expect(page.locator("#test-summary")).toHaveText(
+    "4 of 4 examples behave as expected. Example 1 matches the expected result.",
+  );
 });
 
 test("copy button places the real generated regex on the clipboard", async ({ page, context }) => {
