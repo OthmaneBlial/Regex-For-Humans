@@ -20,6 +20,14 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Validated compile-result metadata
+
+Source commit `3b7bc99` was synchronized into the existing project folder at Pages commit `3f6897f`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all seventeen changed project files. Other project folders and the published npm preview were preserved.
+
+Live Chrome checks at 1280/390px and Firefox/WebKit checks at 1280px verified the served `toRegExp` helper with changing source/flags getters. Each field was read once; the first values retained Unicode, case-insensitive and dot-all matching. An invalid source skipped the flags getter and retained the exact TypeError. There was no overflow at 320px or page error.
+
+Live desktop/mobile Chrome also rechecked the three complex records, 100 fragments, 26 exact inputs, source selection, real clipboard, reverse translation, focus, scroll reset/retention and the manifest's 32/33-emoji boundary. Six regex crops were inspected. Worker reuse, complete-batch validation, four stable errors, recovery, 100-example/2,048-code-unit boundaries and interruption of valid expensive batches passed again in Chrome, Firefox and WebKit. The deliberate timeout checks use a 150 ms test budget; the product deadline remains 1,200 ms.
+
 ### CLI UTF-8 input guidance
 
 Source commit `4bf00cf` was synchronized into the existing project folder at Pages commit `f3ca5b1`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all four changed documentation files. The served README explains saving the input as UTF-8 in either CLI mode and retains the explicit unreleased status of checkout-only `--reverse`. All thirty-three non-Markdown website files matched the previous deployment byte for byte. Other project folders and the published npm preview were preserved. This publication updates documentation; local CLI validation is recorded above, and the earlier live workshop interaction checks remain recorded below.
