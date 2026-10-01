@@ -1350,26 +1350,49 @@ test("manual edits clear the recipe highlight and reselecting restores its short
   await expect(page.locator("#recipe-note")).toContainText("Entire string mode");
 });
 
-test("switching a recipe starts one worker for its current pattern and examples", async ({
+test("completed checks reuse one worker across edits, options and recipes until rules become invalid", async ({
   page,
 }) => {
   await page.addInitScript(() => {
     const NativeWorker = window.Worker;
     window.workerStarts = 0;
+    window.workerStops = 0;
     window.Worker = class extends NativeWorker {
       constructor(...args) {
         super(...args);
         window.workerStarts += 1;
+      }
+      terminate() {
+        window.workerStops += 1;
+        super.terminate();
       }
     };
   });
   await page.goto("/");
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
   const initialStarts = await page.evaluate(() => window.workerStarts);
+  expect(initialStarts).toBe(1);
+  const input = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  await input.fill("ABC124");
+  await expect(result).toHaveText('✓ Matched "ABC124" at 0');
+  await input.fill("abc124");
+  await expect(result).toHaveText("! No match");
+  await page.locator("#ignore-case").check();
+  await expect(result).toHaveText('✓ Matched "abc124" at 0');
+  await page.locator("#dot-all").check();
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/isu");
+  await expect(result).toHaveText('✓ Matched "abc124" at 0');
   await page.locator('[data-scenario="excluded-characters"]').click();
   await expect(page.locator("#regex-output")).toHaveText("/^[^abcd]*$/u");
   await expect(page.locator("#test-summary")).toHaveText("3 of 3 examples behave as expected");
-  expect(await page.evaluate(() => window.workerStarts)).toBe(initialStarts + 1);
+  expect(await page.evaluate(() => [window.workerStarts, window.workerStops])).toEqual([1, 0]);
+  await page.locator("#rules-input").fill("unsupported instructions");
+  await expect(page.locator("#regex-output")).toHaveText("No pattern generated");
+  expect(await page.evaluate(() => [window.workerStarts, window.workerStops])).toEqual([1, 1]);
+  await page.locator('[data-scenario="excluded-characters"]').click();
+  await expect(page.locator("#test-summary")).toHaveText("3 of 3 examples behave as expected");
+  expect(await page.evaluate(() => [window.workerStarts, window.workerStops])).toEqual([2, 1]);
 });
 
 test("rules and options entered before the workshop app loads stay intact", async ({ page }) => {

@@ -11,15 +11,19 @@ test("pathological and compiler-generated bounded regexes time out without block
   );
   const outcome = await page.evaluate(async (boundedSource) => {
     const { TestRunner } = await import("/web/test-runner.js");
-    const makeRunner = (timeout) =>
-      new TestRunner(() => new Worker("/web/match-worker.js", { type: "module" }), timeout);
-    const normal = await makeRunner(1000).run({
+    let starts = 0;
+    const runner = new TestRunner(() => {
+      starts += 1;
+      return new Worker("/web/match-worker.js", { type: "module" });
+    }, 1000);
+    const normal = await runner.run({
       source: "^a+$",
       flags: "u",
       mode: "full",
       cases: [{ id: 1, text: "aaa", expected: true }],
     });
     const timedOut = [];
+    const recovered = [];
     for (const [source, text] of [
       ["^(a+)+$", `${"a".repeat(2047)}!`],
       ["(a+)+", `${"a".repeat(2047)}!`],
@@ -27,7 +31,8 @@ test("pathological and compiler-generated bounded regexes time out without block
     ]) {
       let stopped = false;
       try {
-        await makeRunner(150).run({
+        runner.timeoutMs = 150;
+        await runner.run({
           source,
           flags: "u",
           mode: "full",
@@ -37,18 +42,23 @@ test("pathological and compiler-generated bounded regexes time out without block
         stopped = error.code === "TIMEOUT";
       }
       timedOut.push(stopped);
+      runner.timeoutMs = 1000;
+      recovered.push(
+        await runner.run({
+          source: "^b+$",
+          flags: "u",
+          mode: "full",
+          cases: [{ id: 3, text: "bbb", expected: true }],
+        }),
+      );
     }
-    const recovered = await makeRunner(1000).run({
-      source: "^b+$",
-      flags: "u",
-      mode: "full",
-      cases: [{ id: 3, text: "bbb", expected: true }],
-    });
-    return { normal, timedOut, recovered };
+    runner.cancel();
+    return { normal, timedOut, recovered, starts };
   }, bounded.source);
   expect(outcome.normal[0].pass).toBe(true);
   expect(outcome.timedOut).toEqual([true, true, true]);
-  expect(outcome.recovered[0].pass).toBe(true);
+  expect(outcome.recovered.every((results) => results[0].pass)).toBe(true);
+  expect(outcome.starts).toBe(4);
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
 });
 

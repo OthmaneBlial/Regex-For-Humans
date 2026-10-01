@@ -19,24 +19,26 @@ export class TestRunner {
     this.factory = factory;
     this.timeoutMs = timeoutMs;
     this.active = null;
+    /** @type {Worker | null} */
+    this.worker = null;
     this.sequence = 0;
   }
 
   cancel() {
-    if (!this.active) return;
-    const { worker, timer, reject } = this.active;
+    const active = this.active;
     this.active = null;
-    clearTimeout(timer);
-    worker.terminate();
-    reject(new TestRunError("CANCELLED", "A newer example test replaced this one."));
+    if (active) clearTimeout(active.timer);
+    this.worker?.terminate();
+    this.worker = null;
+    active?.reject(new TestRunError("CANCELLED", "A newer example test replaced this one."));
   }
 
   /** @param {TestPayload} payload @returns {Promise<TestResult[]>} */
   run(payload) {
-    this.cancel();
+    if (this.active) this.cancel();
     let worker;
     try {
-      worker = this.factory();
+      worker = this.worker ??= this.factory();
     } catch (error) {
       return Promise.reject(
         new TestRunError("WORKER_ERROR", error instanceof Error ? error.message : String(error)),
@@ -48,16 +50,17 @@ export class TestRunner {
       const finish = (error, result = []) => {
         if (this.active?.id !== id) return;
         clearTimeout(this.active.timer);
-        worker.terminate();
         this.active = null;
-        if (error) reject(error);
-        else resolve(result);
+        if (error) {
+          this.cancel();
+          reject(error);
+        } else resolve(result);
       };
       const timer = setTimeout(
         () => finish(new TestRunError("TIMEOUT", "Example testing took too long and was stopped.")),
         this.timeoutMs,
       );
-      this.active = { id, worker, timer, reject };
+      this.active = { id, timer, reject };
       /** @param {MessageEvent<WorkerReply>} event */
       worker.onmessage = (event) => {
         if (event.data.id !== id) return;
@@ -66,7 +69,12 @@ export class TestRunner {
       };
       worker.onerror = (event) => {
         event.preventDefault?.();
-        finish(new TestRunError("WORKER_ERROR", "Example testing failed in its isolated worker."));
+        if (this.worker !== worker) return;
+        if (!this.active) this.cancel();
+        else
+          finish(
+            new TestRunError("WORKER_ERROR", "Example testing failed in its isolated worker."),
+          );
       };
       try {
         /** @type {TestRequest} */
