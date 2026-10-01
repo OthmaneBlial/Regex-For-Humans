@@ -46,6 +46,16 @@ try {
   const installed = join(consumer, "node_modules", ...packageInfo.name.split("/"));
   run([join(root, "scripts", "check-doc-links.js"), installed], { cwd: consumer });
   const manifest = JSON.parse(readFileSync(join(installed, "package.json"), "utf8"));
+  const expectedKeywords = [
+    "javascript",
+    "typescript",
+    "regex-compiler",
+    "regex-builder",
+    "pattern-matching",
+  ];
+  if (!expectedKeywords.every((keyword) => manifest.keywords?.includes(keyword))) {
+    throw new Error("The packed package is missing its JavaScript regex discovery keywords.");
+  }
   if (manifest.bin?.["regex-for-humans"] !== "./bin/regex-for-humans.js") {
     throw new Error("The installed package does not expose the expected CLI binary.");
   }
