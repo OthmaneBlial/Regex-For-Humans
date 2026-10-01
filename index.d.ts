@@ -6,6 +6,7 @@ export interface SourceLocation {
 export type Repetition =
   | { kind: "exact"; min: number }
   | { kind: "range"; min: number; max: number }
+  | { kind: "atLeast"; min: number }
   | { kind: "zeroOrMore" }
   | { kind: "oneOrMore" };
 
@@ -69,5 +70,10 @@ export class CompileError extends Error {
 }
 
 export function compile(source: string, options?: CompileOptions): CompileResult;
+export interface ReverseTranslation {
+  rules: string;
+  flags: string;
+}
+export function regexToRules(regex: RegExp): ReverseTranslation;
 export function regexMatchingThroughLines(lines: string): string;
 export function toRegExp(result: CompileResult): RegExp;

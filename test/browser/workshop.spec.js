@@ -7,6 +7,46 @@ const scenarios = JSON.parse(
   readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("supported JavaScript regexes translate into editable rules and keep their flags", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.getByRole("textbox", { name: "JavaScript regex literal", exact: true });
+  await reverse.fill("/^[A-Z]{2}-\\d{3,}$/isu");
+  await page.getByRole("button", { name: "Translate to rules", exact: true }).click();
+
+  await expect(page.locator("#rules-input")).toHaveValue(
+    'start\n2 uppercase letter\n"-"\nat least 3 digit\nend',
+  );
+  await expect(page.locator("#ignore-case")).toBeChecked();
+  await expect(page.locator("#dot-all")).toBeChecked();
+  await expect(page.locator("#regex-output")).toHaveText("/^[A-Z]{2}-\\d{3,}$/isu");
+  await expect(page.locator("#reverse-feedback")).toHaveText(
+    "Translated. Review the rules and test your examples.",
+  );
+  await expect(page.locator("#rules-input")).toBeFocused();
+});
+
+test("unsupported regex syntax reports its location without replacing the current rules", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const rules = page.locator("#rules-input");
+  await rules.fill("start\n3 digits\nend");
+  await page.locator("#reverse-translator summary").click();
+  await page
+    .getByRole("textbox", { name: "JavaScript regex literal", exact: true })
+    .fill("/^a|b$/u");
+  await page.getByRole("button", { name: "Translate to rules", exact: true }).click();
+
+  await expect(rules).toHaveValue("start\n3 digits\nend");
+  await expect(page.locator("#reverse-feedback")).toContainText("Column 3:");
+  await expect(page.locator("#reverse-feedback")).toContainText(
+    "Only a start anchor at the beginning",
+  );
+});
+
 async function openBeforeWorkshopAppLoads(page) {
   let release;
   await page.route("**/web/app.js*", async (route) => {

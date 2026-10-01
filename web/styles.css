@@ -379,6 +379,55 @@ a {
   flex: none;
   font: 11px var(--mono);
 }
+.reverse-translator {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #d8dfd8;
+}
+.reverse-translator summary {
+  color: var(--ink-deep);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+}
+.reverse-translator #reverse-help {
+  margin: 12px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.reverse-translator .field-label {
+  display: block;
+  margin: 14px 0 7px;
+}
+#reverse-regex {
+  width: 100%;
+  min-height: 68px;
+  padding: 10px;
+  resize: vertical;
+  border: 1px solid #b8c8c4;
+  border-radius: 7px;
+  background: #fffdf5;
+  color: var(--ink-deep);
+  font: 12px / 1.6 var(--mono);
+}
+#reverse-regex:focus {
+  outline: 3px solid #f1bf3980;
+  outline-offset: 2px;
+}
+#reverse-button {
+  margin-top: 10px;
+}
+#reverse-feedback {
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+#reverse-feedback[data-state="error"] {
+  color: #a23b2a;
+}
 .flag-controls {
   display: flex;
   flex-wrap: wrap;

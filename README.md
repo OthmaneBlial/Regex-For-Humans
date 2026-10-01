@@ -55,6 +55,20 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 Your rules and examples stay in the browser. No account, AI interpretation, or application backend.
 
+## 🔄 Already have a regex?
+
+Paste a supported JavaScript regex literal into **Already have a regex?** in the workshop and turn it into editable rules. For example, `/^[A-Z]{2}-\d{4}$/u` becomes:
+
+```text
+start
+2 uppercase letter
+"-"
+4 digit
+end
+```
+
+The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. It rejects syntax it cannot express, including alternation, lookaround, backreferences and lazy quantifiers; see the [language guide](docs/LANGUAGE.md) for its exact limits.
+
 [![Real desktop workshop showing editable rules, generated regex, explanations, and passing example checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 <details>
@@ -153,12 +167,16 @@ Control characters and Unicode line separators from rules, arguments and filenam
 Import from the checkout. TypeScript declarations are included.
 
 ```js
-import { compile, toRegExp } from './index.js';
+import { compile, regexToRules, toRegExp } from './index.js';
 
 const result = compile('start 3 digits\nend');
 console.log(result.source);                // ^\d{3}$
 console.log(toRegExp(result).test('123'));  // true
 console.log(result.segments);              // Each fragment + explanation
+
+const reverse = regexToRules(/^[A-Z]{2}-\d{4}$/u);
+console.log(reverse.rules);                 // start\n2 uppercase letter\n"-"\n4 digit\nend
+console.log(reverse.flags);                 // Flags to pass back to compile()
 ```
 
 ## 🛠️ Make yourself at home
@@ -185,7 +203,7 @@ This runs lint, formatting, types, docs, Node tests, the Pages build, clean-cons
 
 ## 🧭 Know the boundaries
 
-Output targets **JavaScript `RegExp`**. Free-form English, raw regex, groups, alternation, lookaround, and backreferences are outside the supported language. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
+Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented safe subset back into rules. Free-form English, alternation, lookaround and backreferences remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
 
 ---
 

@@ -181,6 +181,20 @@ test("exact counts stay before one rule and validate their limit", () => {
   assert.deepEqual(parse("one of: ٣, 3").nodes[0].value, ["٣", "3"]);
 });
 
+test("unbounded repetition modifiers accept zero, one and a minimum count", () => {
+  for (const [rules, repetition] of [
+    ['zero or more "a"', { kind: "zeroOrMore" }],
+    ['one or more "a"', { kind: "oneOrMore" }],
+    ['at least 3 "a"', { kind: "atLeast", min: 3 }],
+  ]) {
+    assert.deepEqual(parse(rules).nodes[0].repetition, repetition, rules);
+  }
+  assert.throws(() => parse("at least 1001 digit"), { code: "REPETITION_LIMIT" });
+  assert.throws(() => parse("at least nope digit"), { code: "INVALID_REPETITION" });
+  assert.throws(() => parse("one or more"), { code: "INVALID_REPETITION" });
+  assert.throws(() => parse("3 at least 2 digit"), { code: "DUPLICATE_REPETITION" });
+});
+
 test("malformed numeric count tokens share positioned exact and bounded diagnostics", () => {
   for (const token of ["-1", "+3", "1.5", ".5", "1e2", "0x10", "1_000", "٣", "𝟛"]) {
     for (const line of [

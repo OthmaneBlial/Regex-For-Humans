@@ -64,6 +64,15 @@ test("keyboard can reach the editor, options, copy and test controls", async ({ 
   await page.locator("#copy-button").focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("#copy-button")).toContainText("Copied");
+  const reverse = page.locator("#reverse-translator");
+  const reverseSummary = reverse.locator("summary");
+  await reverseSummary.focus();
+  await page.keyboard.press("Enter");
+  await expect(reverse).toHaveAttribute("open", "");
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#reverse-regex")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#reverse-button")).toBeFocused();
   await page.locator("#match-mode").focus();
   await expect(page.locator("#match-mode")).toBeFocused();
 });
@@ -92,6 +101,8 @@ test("generated regex is a named keyboard stop with native horizontal scrolling"
     for (const width of [viewport.width, 320]) {
       await page.setViewportSize({ width, height: viewport.height });
       await page.locator("#dot-all").focus();
+      await page.keyboard.press("Tab");
+      await expect(page.locator("#reverse-translator summary")).toBeFocused();
       await page.keyboard.press("Tab");
       await expect(output).toBeFocused();
       await expect(output).toHaveCSS("outline-style", "solid");

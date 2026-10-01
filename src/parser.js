@@ -86,6 +86,8 @@ const DUPLICATE_START_ANCHOR_MESSAGE = "Use only one start anchor.";
 const QUOTE_STYLES = /^['`“”‘’]/u;
 const QUOTE_HINT = 'Use JSON double quotes for quoted text, such as `"A"`.';
 const OPTIONAL_PREFIX = /^optional(?=\s|$)\s*/iu;
+const SEQUENCE_PREFIX = /^(zero or more|one or more)(?=\s|$)\s*/iu;
+const AT_LEAST_PREFIX = /^(at least\s+)(\S+)(?:\s+|$)/iu;
 // Recognize malformed numeric tokens so parseCount owns their diagnostics.
 const COUNT_PREFIX = /^([+-]?(?:\p{Nd}|\.\p{Nd})\S*)(?:\s+|$)/u;
 
@@ -202,6 +204,8 @@ function parseAtom(text, location, rawLine) {
   let repetition = null;
   let offset = 0;
   const optional = OPTIONAL_PREFIX.exec(remaining);
+  const sequence = SEQUENCE_PREFIX.exec(remaining);
+  const atLeast = AT_LEAST_PREFIX.exec(remaining);
   const count = COUNT_PREFIX.exec(remaining);
   const range = /^(between\s+)(\S+)(\s+and\s+)(\S+)\s+/iu.exec(remaining);
   if (optional) {
@@ -214,6 +218,26 @@ function parseAtom(text, location, rawLine) {
         location,
         'Write `optional` before one item, such as `optional "-"`.',
       );
+    }
+  } else if (sequence) {
+    repetition = {
+      kind: sequence[1].toLowerCase() === "zero or more" ? "zeroOrMore" : "oneOrMore",
+    };
+    offset = sequence[0].length;
+    if (offset === remaining.length) {
+      fail("INVALID_REPETITION", "A repetition modifier needs an item.", location);
+    }
+  } else if (atLeast) {
+    repetition = {
+      kind: "atLeast",
+      min: parseCount(atLeast[2], {
+        line: location.line,
+        column: location.column + atLeast[1].length,
+      }),
+    };
+    offset = atLeast[0].length;
+    if (offset === remaining.length) {
+      fail("INVALID_REPETITION", "A repetition modifier needs an item.", location);
     }
   } else if (range) {
     const min = parseCount(range[2], {
@@ -257,9 +281,17 @@ function parseAtom(text, location, rawLine) {
   }
   const anotherRange = /^between(?:\s|$)/iu.test(remaining);
   const anotherOptional = OPTIONAL_PREFIX.test(remaining);
-  if (COUNT_PREFIX.test(remaining) || anotherRange || anotherOptional) {
+  const anotherSequence = SEQUENCE_PREFIX.test(remaining);
+  const anotherAtLeast = AT_LEAST_PREFIX.test(remaining);
+  if (
+    COUNT_PREFIX.test(remaining) ||
+    anotherRange ||
+    anotherOptional ||
+    anotherSequence ||
+    anotherAtLeast
+  ) {
     const duplicateLocation = { line: location.line, column: location.column + offset };
-    if (optional || anotherOptional) {
+    if (optional || anotherOptional || sequence || anotherSequence || atLeast || anotherAtLeast) {
       fail(
         "DUPLICATE_REPETITION",
         "Use only one repetition modifier.",

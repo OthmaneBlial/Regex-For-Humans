@@ -37,6 +37,18 @@ test("countable sequence repairs honor bounds, exclusions and dot-all", () => {
   }
 });
 
+test("at-least repetition emits an open bound and matches every longer input", () => {
+  const result = compile("start\nat least 3 digit\nend");
+  assert.equal(result.source, "^\\d{3,}$");
+  assert.deepEqual(result.segments[1].repetition, { kind: "atLeast", min: 3 });
+  assert.match(result.segments[1].explanation, /At least 3 digits/u);
+  const regex = toRegExp(result);
+  for (let length = 0; length <= 8; length += 1) {
+    const value = "7".repeat(length);
+    assert.equal(regex.test(value), length >= 3, value);
+  }
+});
+
 test("spaces matches JavaScript whitespace with plural defaults and count overrides", () => {
   const whitespace = [
     " ",

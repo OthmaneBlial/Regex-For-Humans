@@ -3,7 +3,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { compile, toRegExp } from "../index.js";
+import { compile, regexToRules, toRegExp } from "../index.js";
 
 const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 const cli = fileURLToPath(new URL("../bin/regex-for-humans.js", import.meta.url));
@@ -30,6 +30,14 @@ test("README documents every CLI option shown by --help", () => {
   for (const option of options) {
     assert.ok(readme.includes(`\`${option}\``), `README omits ${option}`);
   }
+});
+
+test("README reverse-translation example round-trips through the public API", () => {
+  const reverse = regexToRules(/^[A-Z]{2}-\d{4}$/u);
+  assert.ok(readme.includes("regexToRules(/^[A-Z]{2}-\\d{4}$/u)"));
+  assert.equal(reverse.rules, 'start\n2 uppercase letter\n"-"\n4 digit\nend');
+  const rebuilt = compile(reverse.rules, { flags: reverse.flags });
+  assert.equal(rebuilt.source, "^[A-Z]{2}-\\d{4}$");
 });
 
 test("README's lead demo and optional shortcut match the compiler", () => {

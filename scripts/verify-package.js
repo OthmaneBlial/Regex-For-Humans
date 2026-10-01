@@ -78,8 +78,11 @@ try {
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
-    `import { compile, toRegExp, CompileError } from "regex-for-humans";
+    `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
 const result = compile(${JSON.stringify(rules)});
+const reverse = regexToRules(/^[A-Z]{2}-\\d{4}$/u);
+if (reverse.rules !== 'start\\n2 uppercase letter\\n"-"\\n4 digit\\nend' || reverse.flags !== "") throw new Error("Wrong reverse-translation behavior");
+if (compile(reverse.rules, { flags: reverse.flags }).source !== "^[A-Z]{2}-\\\\d{4}$") throw new Error("Reverse translation did not round-trip");
 const trailingList = ${JSON.stringify('one of: "😀", ",",')};
 try { compile(trailingList); throw new Error("Trailing list comma accepted"); }
 catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_CHARACTER_LIST" || error.column !== trailingList.length) throw error; }
@@ -148,14 +151,17 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   const typeSmoke = join(consumer, "type-smoke.mts");
   writeFileSync(
     typeSmoke,
-    `import { CompileError, compile, regexMatchingThroughLines, toRegExp } from "regex-for-humans";
-import type { CompileResult, RegexSegment, Repetition } from "regex-for-humans";
+    `import { CompileError, compile, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
+import type { CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
 const regex: RegExp = toRegExp(result);
 const segment: RegexSegment = result.segments[0];
 const source: string = regexMatchingThroughLines("digits");
 const range: Repetition = { kind: "range", min: 2, max: 4 };
 const max: number = range.max;
+const atLeast: Repetition = { kind: "atLeast", min: 3 };
+const reverse: ReverseTranslation = regexToRules(/^\\d{3,}$/u);
+const rules: string = reverse.rules;
 const line: number = new CompileError("UNKNOWN_RULE", "Invalid rule", { line: 1, column: 1 }).toJSON().line;
 // @ts-expect-error rules must be a string
 compile(3);
