@@ -185,23 +185,50 @@ test("control-letter escapes become visible rules and invalid control escapes pr
   }
 });
 
-test("unsupported regex syntax reports its location without replacing the current rules", async ({
+test("alternation reports its operator and hint, preserves edits and recovers to a literal pipe", async ({
   page,
 }) => {
   await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
   const rules = page.locator("#rules-input");
   await rules.fill("start\n3 digits\nend");
+  await page.locator("#ignore-case").check();
+  await page.locator("#dot-all").check();
   await page.locator("#reverse-translator summary").click();
-  await page
-    .getByRole("textbox", { name: "JavaScript regex literal", exact: true })
-    .fill("/^a|b$/u");
-  await page.getByRole("button", { name: "Translate to rules", exact: true }).click();
-
-  await expect(rules).toHaveValue("start\n3 digits\nend");
-  await expect(page.locator("#reverse-feedback")).toContainText("Column 3:");
-  await expect(page.locator("#reverse-feedback")).toContainText(
-    "Only a start anchor at the beginning",
-  );
+  const reverse = page.locator("#reverse-regex");
+  const button = page.locator("#reverse-button");
+  for (const [literal, column] of [
+    ["/^a|b$/u", 3],
+    ["/^(?:😀|b)$/u", 7],
+    [String.raw`/^a\|b|c$/u`, 6],
+  ]) {
+    await reverse.fill(literal);
+    await button.press("Enter");
+    await expect(page.locator("#reverse-feedback")).toHaveText(
+      `Column ${column}: Alternation (\`|\`) cannot be translated. Translate each alternative as a separate regex.`,
+    );
+    await expect(reverse).toHaveAttribute("aria-invalid", "true");
+    await expect(reverse).toHaveAccessibleDescription(/Alternation.*Translate each alternative/);
+    await expect(rules).toHaveValue("start\n3 digits\nend");
+    await expect(page.locator("#ignore-case")).toBeChecked();
+    await expect(page.locator("#dot-all")).toBeChecked();
+    await expect(page.locator("#regex-output")).toHaveText(String.raw`/^\d{3}$/isu`);
+    await expect(page.locator("#copy-button")).toBeEnabled();
+  }
+  await reverse.fill(String.raw`/^a\|b$/u`);
+  await button.press("Enter");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(rules).toHaveValue('start\n"a|b"\nend');
+  await expect(rules).toBeFocused();
+  await expect(page.locator("#ignore-case")).not.toBeChecked();
+  await expect(page.locator("#dot-all")).not.toBeChecked();
+  await expect(page.locator("#regex-output")).toHaveText(String.raw`/^a\|b$/u`);
+  const sample = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  await sample.fill("a|b");
+  await expect(result).toHaveText('✓ Matched "a|b" at 0');
+  await sample.fill("ab");
+  await expect(result).toHaveText("! No match");
 });
 
 test("reverse output limits explain the expansion, preserve edits and recover", async ({

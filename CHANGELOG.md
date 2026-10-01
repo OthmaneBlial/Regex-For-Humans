@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Report unsupported alternation at its pipe operator with a separate-alternative hint, including inside literal groups, while preserving literal pipes and anchor diagnostics.
+
 - Translate literal hyphens at either end of simple character lists, preserving negation, repetition and matching while continuing to reject unsupported ranges.
 
 - Translate ASCII control-letter escapes in literals, character lists and literal groups, preserving matching while displaying the controls as visible escapes.

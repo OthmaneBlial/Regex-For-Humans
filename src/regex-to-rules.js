@@ -36,6 +36,8 @@ const CONTROL_ESCAPES = new Map([
 
 const UNSUPPORTED_HINT =
   "Supported syntax includes literals, anchors, common character classes, repetition, non-capturing literal groups and i/s/u/m flags. Capturing or complex groups, alternation, lookaround and backreferences are not supported.";
+const ALTERNATION_MESSAGE = "Alternation (`|`) cannot be translated.";
+const ALTERNATION_HINT = "Translate each alternative as a separate regex.";
 
 /** @typedef {{end: number, literal?: string, phrase?: string, category?: string, set?: {values: string[], negative: boolean}}} AtomToken */
 /** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number}} QuantifierToken */
@@ -203,6 +205,7 @@ function readLiteralGroup(source, start) {
       if (!value) unsupported("An empty group has no rule-language equivalent.", start);
       return { end: index + 1, literal: value };
     }
+    if (character === "|") unsupported(ALTERNATION_MESSAGE, index, ALTERNATION_HINT);
     let literal;
     if (character === "\\") {
       const escapeResult = readEscape(source, index);
@@ -211,7 +214,7 @@ function readLiteralGroup(source, start) {
       }
       literal = escapeResult.literal;
       index = escapeResult.end;
-    } else if (".^$*+?()[]{}|".includes(character)) {
+    } else if (".^$*+?()[]{}".includes(character)) {
       unsupported("Groups can contain literal text only.", index);
     } else {
       const point = source.codePointAt(index);
@@ -310,7 +313,8 @@ export function regexToRules(regex) {
       cursor += 1;
       break;
     }
-    if (character === "^" || character === "$" || "|)".includes(character)) {
+    if (character === "|") unsupported(ALTERNATION_MESSAGE, index, ALTERNATION_HINT);
+    if (character === "^" || character === "$" || character === ")") {
       unsupported(
         "Only a start anchor at the beginning and an end anchor at the end can be translated.",
         index,

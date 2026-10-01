@@ -305,6 +305,53 @@ test("oversized regex input keeps its own source-limit code and position", () =>
   });
 });
 
+test("alternation reports its operator and repair hint while literal pipes still round-trip", () => {
+  for (const [regex, column] of [
+    [/a|b/u, 2],
+    [/^a|b$/u, 3],
+    [/😀|b/u, 3],
+    [/|a/u, 1],
+    [/^(?:a|b)$/u, 6],
+    [/^(?:😀|b)$/u, 7],
+    [/^(?:|a)$/u, 5],
+    [/^a\|b|c$/u, 6],
+    [/^[|]a|b$/u, 6],
+    [/^(?:a\|b|c)$/u, 9],
+  ]) {
+    assert.throws(
+      () => regexToRules(regex),
+      (error) => {
+        assert.ok(error instanceof CompileError);
+        assert.deepEqual(error.toJSON(), {
+          code: "UNSUPPORTED_REGEX",
+          message: "Alternation (`|`) cannot be translated.",
+          line: 1,
+          column,
+          hint: "Translate each alternative as a separate regex.",
+        });
+        return true;
+      },
+    );
+  }
+  for (const regex of [/^a\|b$/u, /^(?:a\|b){2}$/u, /^[|]$/u, /^[a|b]{2}$/iu, /^[^|]+$/u]) {
+    const translated = regexToRules(regex);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const sample of ["a|b", "a|ba|b", "|", "||", "ab", "AB", "", "😀|", "a\nb"]) {
+      assert.deepEqual(
+        rebuilt.exec(sample),
+        regex.exec(sample),
+        `${regex}: ${JSON.stringify(sample)}`,
+      );
+    }
+  }
+  assert.throws(() => regexToRules(/a^b/u), {
+    code: "UNSUPPORTED_REGEX",
+    line: 1,
+    column: 2,
+    message: "Only a start anchor at the beginning and an end anchor at the end can be translated.",
+  });
+});
+
 test("rejects features it cannot preserve and non-Unicode matching", () => {
   for (const [regex, column] of [
     [/^a|b$/u, 3],

@@ -109,6 +109,13 @@ for (const source of ["^[._-]{2}$", "^[-._]{2}$"]) {
   const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
   if (!rebuilt.test("-_") || rebuilt.test(".a") || rebuilt.test("-")) throw new Error("Reverse translation changed literal hyphen matching");
 }
+for (const [source, column] of [["a|b", 2], ["^(?:a|b)$", 6]]) {
+  try { regexToRules(new RegExp(source, "u")); throw new Error("Alternation accepted"); }
+  catch (error) { if (!(error instanceof CompileError) || error.code !== "UNSUPPORTED_REGEX" || error.message !== ${JSON.stringify("Alternation (`|`) cannot be translated.")} || error.line !== 1 || error.column !== column || error.hint !== ${JSON.stringify("Translate each alternative as a separate regex.")}) throw error; }
+}
+const literalPipe = regexToRules(new RegExp("^[|]{2}$", "u"));
+const pipePattern = toRegExp(compile(literalPipe.rules, { flags: literalPipe.flags }));
+if (!pipePattern.test("||") || pipePattern.test("|b")) throw new Error("Literal pipe rejected or changed");
 for (const [source, code, message] of ${JSON.stringify(reverseLimitCases)}) {
   try { regexToRules(new RegExp(source, "u")); throw new Error("Oversized translated rules accepted"); }
   catch (error) { if (!(error instanceof CompileError) || error.code !== code || error.message !== message || error.line !== 1 || error.column !== 1 || error.hint !== ${JSON.stringify("Simplify the regex so its translated rules fit these limits.")}) throw error; }

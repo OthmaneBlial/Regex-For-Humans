@@ -20,7 +20,12 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await reverse.fill("/^Hi|Hello$/u");
   await page.locator("#reverse-button").click();
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
-  await expect(reverse).toHaveAccessibleDescription(/Only a start anchor/);
+  await expect(reverse).toHaveAccessibleDescription(/Alternation.*Translate each alternative/);
+  await expect(output).toHaveText("/^Hello$/u");
+  await reverse.fill("/^(?:Hi|Hello)$/u");
+  await page.locator("#reverse-button").click();
+  await expect(reverse).toHaveAttribute("aria-invalid", "true");
+  await expect(reverse).toHaveAccessibleDescription(/Column 7: Alternation/);
   await expect(output).toHaveText("/^Hello$/u");
   await reverse.fill("/^[a-zA-Z]{2}$/u");
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
