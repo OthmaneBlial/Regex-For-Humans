@@ -240,6 +240,8 @@ test("optional modifiers use an inclusive zero-to-one range", () => {
     ["between 2 and 4 optional digit", "DUPLICATE_REPETITION", "optional"],
     ["optional between 2 and 4 digit", "DUPLICATE_REPETITION", "between"],
     ["optional optional digit", "DUPLICATE_REPETITION", "optional digit"],
+    ["optional any text", "DUPLICATE_REPETITION", "any text"],
+    ["optional text without: a, b", "DUPLICATE_REPETITION", "text without"],
   ]) {
     assert.throws(() => parse(rules), { code, line: 1, column: rules.indexOf(marker) + 1 }, rules);
   }

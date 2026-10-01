@@ -259,6 +259,11 @@ test("bounded counts include zero, equal endpoints and the numeric ceiling", () 
 test("optional modifiers preserve range output and explain zero or one match", () => {
   for (const [item, source, values] of [
     ["digit", "\\d", ["", "7"]],
+    ["digits", "\\d", ["", "7"]],
+    ["spaces", "\\s", ["", "\t"]],
+    ["any character", ".", ["", "A"]],
+    ["one of: a, b", "[ab]", ["", "a"]],
+    ["none of: a, b", "[^ab]", ["", "x"]],
     ['"+"', "\\+", ["", "+"]],
     ['"AB"', "(?:AB)", ["", "AB"]],
   ]) {
@@ -269,6 +274,11 @@ test("optional modifiers preserve range output and explain zero or one match", (
     for (const value of values) assert.equal(toRegExp(result).test(value), true, value);
     assert.equal(toRegExp(result).test(`${values.at(-1)}${values.at(-1)}`), false);
   }
+  assert.equal(toRegExp(compile("start\noptional any character\nend")).test("\n"), false);
+  assert.equal(
+    toRegExp(compile("start\noptional any character\nend", { flags: "s" })).test("\n"),
+    true,
+  );
   assert.equal(compile("optional digit").segments[0].explanation, "Zero or one digit (0–9).");
   assert.equal(
     compile("between 0 and 1 digit").segments[0].explanation,
