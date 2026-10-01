@@ -482,38 +482,54 @@ test("CLI preserves nonzero status when stderr cannot accept diagnostics", () =>
   }
 });
 
-test("CLI rejects malformed UTF-8 in stdin and files instead of replacing bytes", () => {
-  const message = "Input must be valid UTF-8. Save the rules as UTF-8 and try again.";
+test("CLI rejects malformed UTF-8 in either mode without replacing bytes", () => {
+  const message = "Input must be valid UTF-8. Save the input as UTF-8 and try again.";
   const directory = mkdtempSync(join(tmpdir(), "regex-for-humans-cli-"));
-  const path = join(directory, "rules.txt");
-  const inputs = [
-    ...[[0x80], [0xc0, 0xaf], [0xed, 0xa0, 0x80], [0xf4, 0x90, 0x80, 0x80]].map((bytes) =>
-      Buffer.concat([Buffer.from('start\n"'), Buffer.from(bytes), Buffer.from('"\nend')]),
-    ),
-    Buffer.concat([Buffer.from('"'), Buffer.from([0xe2, 0x82])]),
-  ];
+  const path = join(directory, "input.txt");
   try {
-    for (const input of inputs) {
-      writeFileSync(path, input);
-      for (const file of ["-", path]) {
-        for (const json of [false, true]) {
-          const result = run(json ? ["--json", file] : [file], file === "-" ? input : undefined);
-          assert.equal(result.status, 1);
-          assert.equal(result.stdout, "");
-          if (json)
-            assert.deepEqual(JSON.parse(result.stderr), { error: { code: "CLI_ERROR", message } });
-          else assert.equal(result.stderr, `Error: ${message}\n`);
+    for (const reverse of [false, true]) {
+      const args = reverse ? ["--reverse"] : [];
+      const prefix = reverse ? "/^" : 'start\n"';
+      const suffix = reverse ? "$/u" : '"\nend';
+      const inputs = [
+        ...[[0x80], [0xc0, 0xaf], [0xed, 0xa0, 0x80], [0xf4, 0x90, 0x80, 0x80]].map((bytes) =>
+          Buffer.concat([Buffer.from(prefix), Buffer.from(bytes), Buffer.from(suffix)]),
+        ),
+        Buffer.concat([Buffer.from(prefix), Buffer.from([0xe2, 0x82])]),
+      ];
+      for (const input of inputs) {
+        writeFileSync(path, input);
+        for (const file of ["-", path]) {
+          for (const json of [false, true]) {
+            const result = run(
+              [...args, ...(json ? ["--json"] : []), file],
+              file === "-" ? input : undefined,
+            );
+            assert.equal(result.status, 1);
+            assert.equal(result.stdout, "");
+            if (json)
+              assert.deepEqual(JSON.parse(result.stderr), {
+                error: { code: "CLI_ERROR", message },
+              });
+            else assert.equal(result.stderr, `Error: ${message}\n`);
+          }
         }
       }
-    }
-    const repaired = '\ufeffstart "\ufffd"\nend';
-    writeFileSync(path, repaired, "utf8");
-    for (const file of ["-", path]) {
-      const valid = run(["--json", file], file === "-" ? repaired : undefined);
-      assert.equal(valid.status, 0, valid.stderr);
-      const compiled = JSON.parse(valid.stdout);
-      assert.equal(compiled.source, "^\ufffd$");
-      assert.equal(compiled.segments[0].column, 2);
+      const repaired = reverse ? "\ufeff /^�😀$/u\r\n" : '\ufeffstart "\ufffd"\nend';
+      writeFileSync(path, repaired, "utf8");
+      for (const file of ["-", path]) {
+        const valid = run([...args, "--json", file], file === "-" ? repaired : undefined);
+        assert.equal(valid.status, 0, valid.stderr);
+        assert.equal(valid.stderr, "");
+        const result = JSON.parse(valid.stdout);
+        if (reverse) {
+          assert.deepEqual(result, { rules: 'start\n"�😀"\nend', flags: "" });
+          assert.equal(toRegExp(compile(result.rules)).test("�😀"), true);
+        } else {
+          assert.equal(result.source, "^\ufffd$");
+          assert.equal(result.segments[0].column, 2);
+        }
+      }
     }
   } finally {
     unlinkSync(path);
@@ -1048,20 +1064,6 @@ test("CLI reverse file input reports the complete literal limit in text and JSON
   } finally {
     unlinkSync(path);
     rmdirSync(directory);
-  }
-});
-
-test("CLI reverse rejects malformed UTF-8 before interpreting a literal", () => {
-  for (const input of [Buffer.from([0x80]), Buffer.from([0xe2, 0x82])]) {
-    const output = run(["--reverse", "--json", "-"], input);
-    assert.equal(output.status, 1);
-    assert.equal(output.stdout, "");
-    assert.deepEqual(JSON.parse(output.stderr), {
-      error: {
-        code: "CLI_ERROR",
-        message: "Input must be valid UTF-8. Save the rules as UTF-8 and try again.",
-      },
-    });
   }
 });
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Describe malformed UTF-8 repairs for both rules and reverse-mode regex input. Preserve strict decoding, exit status, empty stdout and the JSON `CLI_ERROR` code; share the file/stdin regression cases across both modes.
+
 - State the complete 16,392-unit UTF-16 literal budget in workshop and CLI errors, including delimiters, flags and outer whitespace. Preserve the limits, error codes and existing rules on rejection.
 
 - Count outer whitespace toward the shared workshop/CLI regex-literal input budget before trimming. Show the whole-input limit beside the reverse field, preserve current rules on oversized input and retain boundary-sized translation.
