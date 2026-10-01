@@ -124,6 +124,45 @@ test("worker rejects invalid flags without coercing them", async ({ page }) => {
   expect(outcome.recovered[0].pass).toBe(true);
 });
 
+test("worker rejects malformed examples with stable errors", async ({ page }) => {
+  await page.goto("/");
+  const outcome = await page.evaluate(async () => {
+    const { TestRunner } = await import("/web/test-runner.js");
+    const runner = new TestRunner(() => new Worker("/web/match-worker.js", { type: "module" }));
+    const invalidCases = [
+      [null],
+      [{}],
+      [{ id: "1", text: "a", expected: true }],
+      [{ id: 1, text: 1, expected: true }],
+      [{ id: 1, text: "a", expected: 1 }],
+      [
+        { id: 1, text: "a", expected: true },
+        { id: 1, text: "b", expected: false },
+      ],
+    ];
+    const errors = [];
+    for (const cases of invalidCases) {
+      try {
+        await runner.run({ source: "a", flags: "u", mode: "full", cases });
+        errors.push(null);
+      } catch (error) {
+        errors.push({ code: error.code, message: error.message });
+      }
+    }
+    const recovered = await runner.run({
+      source: "a",
+      flags: "u",
+      mode: "full",
+      cases: [{ id: 2, text: "a", expected: true }],
+    });
+    return { errors, recovered };
+  });
+  expect(outcome.errors).toEqual(
+    Array(6).fill({ code: "WORKER_ERROR", message: "An example is too long or invalid." }),
+  );
+  expect(outcome.recovered[0].pass).toBe(true);
+});
+
 test("worker startup errors use the regular error code and extra payload IDs cannot cause timeouts", async ({
   page,
 }) => {
