@@ -42,6 +42,44 @@ const recipes = JSON.parse(
   readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("homepage exposes a working, dimensioned social preview", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://othmaneblial.github.io/Regex-For-Humans/",
+  );
+  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "website");
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+    "content",
+    "https://othmaneblial.github.io/Regex-For-Humans/",
+  );
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+    "content",
+    "summary_large_image",
+  );
+  const image = page.locator('meta[property="og:image"]');
+  await expect(image).toHaveAttribute(
+    "content",
+    "https://othmaneblial.github.io/Regex-For-Humans/assets/social-card.png",
+  );
+  await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
+    "content",
+    "https://othmaneblial.github.io/Regex-For-Humans/assets/social-card.png",
+  );
+  await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
+    "content",
+    /colorful Regex For Humans card/u,
+  );
+  await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");
+  await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute("content", "630");
+  const imageResponse = await page.request.get(new URL("/assets/social-card.png", page.url()).href);
+  expect(imageResponse.status()).toBe(200);
+  expect(imageResponse.headers()["content-type"]).toContain("image/png");
+  const bytes = await imageResponse.body();
+  expect(bytes.readUInt32BE(16)).toBe(1200);
+  expect(bytes.readUInt32BE(20)).toBe(630);
+});
+
 test("homepage waits for its app before enabling controls or claiming a match", async ({
   page,
 }) => {

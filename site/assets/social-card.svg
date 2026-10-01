@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">Regex For Humans — Little rules. Big aha moments.</title>
+  <desc id="description">A cheerful, colorful card showing the rules start quote hash, six hex digits, end becoming the JavaScript regex for a hex color.</desc>
+  <defs>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="2" fill="#202735" opacity=".14" />
+    </pattern>
+    <filter id="lift" x="-15%" y="-15%" width="140%" height="145%">
+      <feDropShadow dx="0" dy="8" stdDeviation="0" flood-color="#202735" flood-opacity=".18" />
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="#ffed96" />
+  <circle cx="1170" cy="36" r="240" fill="#acd9fa" />
+  <circle cx="35" cy="620" r="174" fill="#ff8b7b" />
+  <rect x="28" y="28" width="1144" height="574" rx="32" fill="#fffdf5" stroke="#202735" stroke-width="5" />
+  <rect x="28" y="28" width="1144" height="574" rx="32" fill="url(#dots)" opacity=".46" />
+  <path d="M584 52h532a32 32 0 0 1 32 32v130H584z" fill="#c9ed97" />
+  <circle cx="1091" cy="109" r="29" fill="#ff8b7b" stroke="#202735" stroke-width="4" />
+  <path d="m1079 109 8 8 17-19" fill="none" stroke="#202735" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="80" y="93" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="18" font-weight="800" letter-spacing="2">✳ LITTLE RULES. BIG AHA MOMENTS.</text>
+  <rect x="78" y="123" width="78" height="78" rx="24" fill="#ffdf58" stroke="#202735" stroke-width="4" transform="rotate(-6 117 162)" />
+  <text x="92" y="174" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="28" font-weight="800">^_^</text>
+  <text x="80" y="288" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="64" font-weight="800" letter-spacing="-3">Regex, with</text>
+  <rect x="78" y="311" width="458" height="79" rx="18" fill="#ffdf58" transform="rotate(-1 307 350)" />
+  <text x="80" y="372" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="68" font-weight="800" letter-spacing="-3">a human side.</text>
+  <text x="82" y="435" fill="#535969" font-family="Trebuchet MS, sans-serif" font-size="26" font-weight="600">Write it. Understand it. Test it.</text>
+  <rect x="80" y="472" width="440" height="58" rx="29" fill="#202735" />
+  <text x="108" y="508" fill="#fffdf5" font-family="Trebuchet MS, sans-serif" font-size="19" font-weight="700">🧩 Fixed vocabulary   🔒 Runs locally</text>
+  <text x="546" y="129" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="16" font-weight="800" letter-spacing="1.6">🪄 WORDS IN · REGEX OUT</text>
+  <g filter="url(#lift)">
+    <rect x="580" y="156" width="528" height="366" rx="27" fill="#fffdf5" stroke="#202735" stroke-width="4" />
+  </g>
+  <rect x="603" y="180" width="482" height="46" rx="14" fill="#acd9fa" />
+  <circle cx="624" cy="203" r="7" fill="#202735" />
+  <text x="644" y="209" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="15" font-weight="800" letter-spacing="1.2">YOUR HUMAN RULES</text>
+  <rect x="603" y="242" width="482" height="48" rx="13" fill="#ffe9e4" stroke="#202735" stroke-width="2" />
+  <text x="628" y="273" fill="#202735" font-family="Menlo, Consolas, monospace" font-size="22" font-weight="700">start "#"</text>
+  <rect x="603" y="301" width="482" height="48" rx="13" fill="#e7f3ff" stroke="#202735" stroke-width="2" />
+  <text x="628" y="332" fill="#202735" font-family="Menlo, Consolas, monospace" font-size="22" font-weight="700">6 hex digits</text>
+  <rect x="603" y="360" width="482" height="48" rx="13" fill="#ecf8dc" stroke="#202735" stroke-width="2" />
+  <text x="628" y="391" fill="#202735" font-family="Menlo, Consolas, monospace" font-size="22" font-weight="700">end</text>
+  <path d="M844 412v16m0 0-8-8m8 8 8-8" fill="none" stroke="#202735" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="603" y="433" width="482" height="64" rx="15" fill="#202735" />
+  <text x="627" y="473" fill="#fffdf5" font-family="Menlo, Consolas, monospace" font-size="20" font-weight="700">/^#[0-9A-Fa-f]{6}$/u</text>
+  <rect x="626" y="545" width="210" height="34" rx="17" fill="#ecf8dc" />
+  <text x="644" y="568" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="16" font-weight="800">✅ #12aBcF</text>
+  <rect x="854" y="545" width="180" height="34" rx="17" fill="#ffe9e4" />
+  <text x="873" y="568" fill="#202735" font-family="Trebuchet MS, sans-serif" font-size="16" font-weight="800">❌ #123</text>
+  <path d="m538 211 14-9 8 16 15-13" fill="none" stroke="#ff8b7b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="m541 222 12 10" fill="none" stroke="#ff8b7b" stroke-width="6" stroke-linecap="round" />
+  <path d="m1113 434 8 14 16-4-10 13 8 14-16-6-11 12 1-17-15-8 17-3z" fill="#ffdf58" stroke="#202735" stroke-width="3" stroke-linejoin="round" />
+</svg>
