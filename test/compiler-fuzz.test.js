@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { CompileError, compile } from "../index.js";
+import { CompileError, compile, regexToRules } from "../index.js";
 import { splitLines } from "../src/parser.js";
 
 test("seeded arbitrary rules compile deterministically or fail with a valid location", () => {
@@ -72,7 +72,26 @@ test("seeded arbitrary rules compile deterministically or fail with a valid loca
   }
 });
 
-test("seeded valid literals and character lists preserve exact matching through UTF-8", () => {
+test("seeded Unicode data preserves matching through UTF-8 and reverse translation", () => {
+  const checkReverse = (original, samples) => {
+    for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+      const regex = new RegExp(original.source, flags);
+      const translated = regexToRules(regex);
+      assert.deepEqual(regexToRules(regex), translated, String(regex));
+      const result = compile(translated.rules, { flags: translated.flags });
+      assert.equal(result.flags, regex.flags, String(regex));
+      const transported = Buffer.from(result.source).toString("utf8");
+      assert.equal(transported, result.source, String(regex));
+      const rebuilt = new RegExp(transported, result.flags);
+      for (const sample of samples) {
+        assert.deepEqual(
+          rebuilt.exec(sample),
+          regex.exec(sample),
+          `${regex}: ${JSON.stringify(sample)}`,
+        );
+      }
+    }
+  };
   let state = 0x7e57_2026;
   const next = () => {
     state = (Math.imul(state, 1_664_525) + 1_013_904_223) >>> 0;
@@ -113,13 +132,22 @@ test("seeded valid literals and character lists preserve exact matching through 
     const source = Buffer.from(literal.source).toString("utf8");
     assert.equal(source, literal.source, JSON.stringify(value));
     const regex = new RegExp(source, literal.flags);
-    for (const candidate of [value, `${value}X`, `X${value}`, value.slice(1), `${value}\n`]) {
+    const literalCases = [
+      value,
+      `${value}X`,
+      `X${value}`,
+      value.slice(1),
+      `${value}\n`,
+      `\n${value}`,
+    ];
+    for (const candidate of literalCases) {
       assert.equal(
         regex.test(candidate),
         candidate === value,
         JSON.stringify({ value, candidate }),
       );
     }
+    checkReverse(regex, literalCases);
     const repeated = compile(`start\nbetween 0 and 2 ${JSON.stringify(value)}\nend`);
     const repeatRegex = new RegExp(Buffer.from(repeated.source).toString("utf8"), repeated.flags);
     for (let count = 0; count <= 3; count += 1) {
@@ -128,16 +156,22 @@ test("seeded valid literals and character lists preserve exact matching through 
       const expected = count <= 2 && [...candidate].length === [...value].length * count;
       assert.equal(repeatRegex.test(candidate), expected, JSON.stringify({ value, count }));
     }
+    checkReverse(
+      repeatRegex,
+      Array.from({ length: 4 }, (_, count) => value.repeat(count)),
+    );
     for (const negative of [false, true]) {
       const rule = `${negative ? "none" : "one"} of: ${items.map((item) => JSON.stringify(item)).join(", ")}`;
       const result = compile(`start\n${rule}\nend`);
       const transported = Buffer.from(result.source).toString("utf8");
       assert.equal(transported, result.source, rule);
       const classRegex = new RegExp(transported, result.flags);
-      for (const candidate of [...items, ...boundaries, "", "AB"]) {
+      const classCases = [...items, ...boundaries, "", "AB"];
+      for (const candidate of classCases) {
         const expected = [...candidate].length === 1 && items.includes(candidate) !== negative;
         assert.equal(classRegex.test(candidate), expected, JSON.stringify({ rule, candidate }));
       }
+      checkReverse(classRegex, classCases);
     }
   }
 });

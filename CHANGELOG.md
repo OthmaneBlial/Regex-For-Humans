@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Extend the seeded Unicode corpus to verify deterministic reverse translation, matching, positions, flags and UTF-8 preservation across all supported flag combinations.
+
 - Translate both ASCII letter range orders and all six hex range orders into the existing rules, preserving repetition, flags and matching while generating canonical class order.
 
 - Expose reverse-translation errors through the regex field's invalid state, clearing stale validation feedback on edits and successful retries.
