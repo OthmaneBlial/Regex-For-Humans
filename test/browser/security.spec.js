@@ -149,6 +149,9 @@ test("worker rejects malformed examples with stable errors", async ({ page }) =>
         { id: 1, text: "a", expected: true },
         { id: 1, text: "b", expected: false },
       ],
+      Array(1),
+      [{ id: 1, text: "a".repeat(2049), expected: false }],
+      [{ id: 1, text: "😀".repeat(1025), expected: false }],
     ];
     const errors = [];
     for (const cases of invalidCases) {
@@ -168,7 +171,7 @@ test("worker rejects malformed examples with stable errors", async ({ page }) =>
     return { errors, recovered };
   });
   expect(outcome.errors).toEqual(
-    Array(6).fill({ code: "WORKER_ERROR", message: "An example is too long or invalid." }),
+    Array(9).fill({ code: "WORKER_ERROR", message: "An example is too long or invalid." }),
   );
   expect(outcome.recovered[0].pass).toBe(true);
 });

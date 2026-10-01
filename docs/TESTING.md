@@ -58,7 +58,7 @@ npm exec -- playwright install firefox webkit
 npm run verify
 ```
 
-The full gate runs the desktop/mobile suites in installed Chrome and five compatibility checks in each of Firefox and WebKit. Browser checks run through one worker in each suite.
+The full gate runs the desktop/mobile suites in installed Chrome and six compatibility checks in each of Firefox and WebKit. Browser checks run through one worker in each suite.
 
 To repeat the full verification with Node 22 on macOS, clear the package-selection settings inherited from `npm exec` before starting npm. The clean-consumer package check runs a nested offline `npm exec`:
 
@@ -115,6 +115,8 @@ Workshop and homepage checks also use one worker locally, matching the existing 
 The enlarged reverse-field navigation check polls the existing viewport bounds until native focus scrolling settles, using the same approach as wrapped rule selections. It still requires the selected line to fit inside the viewport, plus correct focus, source selection, preserved rules, accessibility checks and recovery.
 
 Worker lifecycle regressions require one completed worker to serve sequential example edits, option changes and recipe loads. Invalid rules discard it. Ten runner checks cover request IDs, pending cancellation, stale replies/errors, idle failure, failed sends and recovery after a reused worker times out. Desktop/mobile Chrome checks exercise the actual matching and worker counts; pathological and compiler-generated bounded expressions run in already loaded workers, then the same controller recovers after each timeout. The existing 1,200 ms product deadline and input limits remain unchanged.
+
+Whole-batch validation checks place a null, duplicate ID, oversized value or sparse entry after an expensive example. Pathological and compiler-generated bounded patterns run through Full/Search requests in warmed workers; each malformed batch must report the stable `WORKER_ERROR` before matching, then recover through the same controller. Desktop/mobile Chrome and Firefox/WebKit also accept the boundary of 100 examples with 2,048-code-unit values and preserve their safe-integer IDs. Separate malformed-input checks cover sparse arrays and oversized ASCII/astral values. These checks use the existing 1,200 ms product deadline.
 
 A local macOS profile on 1 October 2026 compared 24 settled checks using the actual controller with and without cancellation between checks. Chrome, Firefox and WebKit each used 24 workers when cancelled and one when reused, with all results correct and final cleanup confirmed. Fresh-worker median times were about 7, 25 and 9 ms respectively; reused medians were below 1 ms at each browser's timer resolution. This measures that sample's repeated startup cost, not performance on every machine or proof that every timeout is prevented. The ten runner checks, twelve focused desktop/mobile worker checks and ten compatibility checks passed before the change was committed.
 
