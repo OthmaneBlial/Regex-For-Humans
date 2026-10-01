@@ -106,34 +106,6 @@ test("worker accepts regex source expanded by Unicode escaping", async ({ page }
   expect(outcome.oversizedRejected).toBe(true);
 });
 
-test("worker rejects invalid flags without coercing them", async ({ page }) => {
-  await page.goto("/");
-  const outcome = await page.evaluate(async () => {
-    const { TestRunner } = await import("/web/test-runner.js");
-    const runner = new TestRunner(() => new Worker("/web/match-worker.js", { type: "module" }));
-    const payload = {
-      source: "a",
-      flags: "u",
-      mode: "full",
-      cases: [{ id: 1, text: "a", expected: true }],
-    };
-    const errors = [];
-    for (const flags of [["u"], null, 0, {}, "iuu", "gui", "miu"]) {
-      try {
-        await runner.run({ ...payload, flags });
-        errors.push(null);
-      } catch (error) {
-        errors.push({ code: error.code, message: error.message });
-      }
-    }
-    return { errors, recovered: await runner.run(payload) };
-  });
-  expect(outcome.errors).toEqual(
-    Array(7).fill({ code: "WORKER_ERROR", message: "Invalid regex test request." }),
-  );
-  expect(outcome.recovered[0].pass).toBe(true);
-});
-
 test("worker rejects malformed examples with stable errors", async ({ page }) => {
   await page.goto("/");
   const outcome = await page.evaluate(async () => {

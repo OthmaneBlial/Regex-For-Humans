@@ -72,7 +72,7 @@ npm exec -- playwright install firefox webkit
 npm run verify
 ```
 
-The full gate runs the desktop/mobile suites in installed Chrome and six compatibility checks in each of Firefox and WebKit. Browser checks run through one worker in each suite.
+The full gate runs the desktop/mobile suites in installed Chrome and the compatibility suite in both Firefox and WebKit. Browser checks run through one worker in each suite.
 
 To repeat the full verification with Node 22 on macOS, clear the package-selection settings inherited from `npm exec` before starting npm. The clean-consumer package check runs a nested offline `npm exec`:
 
@@ -205,6 +205,8 @@ Letter-rule checks cover singular and plural defaults, exact and bounded counts,
 Control-display regressions cover all twelve `Bidi_Control` code points and all thirty-two C1 values in literals, exact counts and positive/negative character lists under every supported option-flag combination. Source and explanation escapes remain visible while matching, source positions and original metadata are preserved. CLI checks cover plain/explained output, JSON round trips, usage arguments and file errors. Workshop checks cover trace selection, copied regexes, full/search feedback and diagnostics without changing editor or example values. Separate line-separator checks preserve braced regex source and show visible escapes in explanations and match feedback. The clean-consumer check verifies the installed library and CLI display policy.
 
 Public regex-construction regressions use changing or throwing getters to ensure `toRegExp()` reads the validated source and flags once, preserving Unicode, case-insensitive and dot-all matching. Invalid source metadata prevents flags from being read; wrong field types retain the metadata `TypeError`, and native syntax/flag failures remain `SyntaxError`. Node, clean-consumer and shared desktop/mobile Chrome plus Firefox/WebKit checks exercise these observable values and errors.
+
+Shared worker-flag checks exercise all eight canonical `i?m?s?u` combinations from the real compiler in Full/Search modes, with 160 case/line/dot-all outcomes per browser run. Completed checks reuse one worker. Twenty-six malformed flag values, including wrong types, duplicates, noncanonical order, unsupported flags, line separators and an oversized string, retain the exact `WORKER_ERROR` message and recover on the next valid request. Desktop/mobile Chrome and Firefox/WebKit run the same check with the existing product deadline.
 
 Whole-literal budget regressions count outer spaces, non-breaking spaces, tabs, BOM and line breaks before trimming. They accept exactly 16,392 UTF-16 code units with an emoji literal and reject the first excess, whitespace-only excess and very long padding. Reader, CLI stdin/file and clean-consumer failures name the complete budget, including delimiters, flags and outer whitespace; plain text and JSON retain their output/error-code contracts. Desktop/mobile Chrome and Firefox/WebKit verify the visible limit, intact pasted values, preserved rules/options/copy/matching after rejection and successful boundary-sized recovery.
 
