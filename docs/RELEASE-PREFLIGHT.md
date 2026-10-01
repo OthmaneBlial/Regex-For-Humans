@@ -12,7 +12,7 @@ Run the local checks and retain the exact clean-consumer-tested candidate:
 
 ```sh
 PACK_OUTPUT_DIR=artifacts npm run test:package
-npm publish artifacts/regex-for-humans-0.1.0-dev.tgz --tag preview --access public --registry https://registry.npmjs.org/
+npm publish ./artifacts/regex-for-humans-0.1.0-dev.tgz --tag preview --access public --registry https://registry.npmjs.org/
 ```
 
 Push the candidate's source commit to `main` before publication and record its tarball SHA-256. Confirm the npm account and name availability immediately before publishing. After publication, compare the public registry tarball with the retained candidate, install `regex-for-humans@preview` in a fresh directory and run the README CLI and library examples. Record actual registry and hosted-site results in [DISTRIBUTION.md](DISTRIBUTION.md); a prepared candidate is not a published version.

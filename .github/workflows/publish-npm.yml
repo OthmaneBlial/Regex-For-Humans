@@ -59,7 +59,7 @@ jobs:
       - name: Publish the tested tarball with npm provenance
         run: |
           set -euo pipefail
-          set -- artifacts/*.tgz
+          set -- ./artifacts/*.tgz
           test "$#" -eq 1
           test -f "$1"
           sha256sum "$1"
