@@ -99,6 +99,53 @@ test("escapes literal punctuation and decodes Unicode escapes", () => {
   }
 });
 
+test("ASCII control-letter escapes preserve matching in literals, lists and literal groups", () => {
+  assert.equal(regexToRules(/^\cJ$/u).rules, 'start\n"\\n"\nend');
+  assert.equal(regexToRules(/^(?:\cM\cj){2}$/u).rules, 'start\n2 "\\r\\n"\nend');
+  const samples = [
+    ...Array.from({ length: 128 }, (_, point) => String.fromCharCode(point)),
+    "😀",
+    "",
+  ];
+  for (const letter of "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz") {
+    const escaped = `\\c${letter}`;
+    const control = String.fromCharCode(letter.charCodeAt(0) % 32);
+    for (const source of [
+      `^${escaped}{2}$`,
+      `^[${escaped}X]+$`,
+      `^[^${escaped}X]+$`,
+      `^(?:${escaped}a){2}$`,
+      `${escaped}+`,
+    ]) {
+      for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+        const regex = new RegExp(source, flags);
+        const translated = regexToRules(regex);
+        assert.doesNotMatch(translated.rules.replaceAll("\n", ""), /\p{Control}/u);
+        const result = compile(translated.rules, { flags: translated.flags });
+        assert.equal(
+          result.flags,
+          source.startsWith("^") ? regex.flags : regex.flags.replace("m", ""),
+        );
+        assert.doesNotMatch(result.source, /\p{Control}/u);
+        const rebuilt = toRegExp(result);
+        for (const sample of [...samples, control.repeat(2), `${control}a${control}a`, letter]) {
+          for (const candidate of [sample, `😀${sample}${control}\n`]) {
+            assert.deepEqual(
+              rebuilt.exec(candidate),
+              regex.exec(candidate),
+              `${regex}: ${JSON.stringify(candidate)}`,
+            );
+          }
+        }
+      }
+    }
+  }
+  for (const source of [String.raw`\c0`, String.raw`[\c_]`, String.raw`\cK`]) {
+    assert.throws(() => new RegExp(source, "u"), SyntaxError);
+    assert.throws(() => regexToRules(new RegExp(source)), { code: "UNICODE_FLAG_REQUIRED" });
+  }
+});
+
 test("fixed-width surrogate escapes preserve Unicode atoms in repetition and character classes", () => {
   const samples = ["", "😀", "😀😀", "A😀B", "😀\ude00", "\ud83d", "\ude00", "A"];
   for (const regex of [

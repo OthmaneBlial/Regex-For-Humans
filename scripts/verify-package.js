@@ -76,6 +76,7 @@ try {
   const controlText = `A${String.fromCodePoint(0, 0x1b, 0x7f, 0x9b, 0x9d, 0x2028, 0x2029)}B`;
   const controlRules = JSON.stringify(controlText);
   const unicodePairSource = String.raw`^[\uD83D\uDE00]{2}$`;
+  const controlLetterSource = String.raw`^[\cjX]{2}$`;
   const reverseLimitCases = [
     [String.raw`\d`.repeat(201), "LINE_LIMIT", "Translated rules cannot exceed 200 lines."],
     [
@@ -100,6 +101,9 @@ for (const [body, canonical, sample] of [["a-zA-Z", "A-Za-z", "Ab"], ["0-9a-fA-F
 const emojiReverse = regexToRules(new RegExp(${JSON.stringify(unicodePairSource)}, "u"));
 const emojiPattern = toRegExp(compile(emojiReverse.rules, { flags: emojiReverse.flags }));
 if (!emojiPattern.test("😀😀") || emojiPattern.test("😀")) throw new Error("Reverse translation split a Unicode surrogate pair");
+const controlReverse = regexToRules(new RegExp(${JSON.stringify(controlLetterSource)}, "u"));
+const controlPattern = toRegExp(compile(controlReverse.rules, { flags: controlReverse.flags }));
+if (!controlPattern.test(${JSON.stringify("\n\n")}) || !controlPattern.test("XX") || controlPattern.test(${JSON.stringify("\n")}) || controlPattern.test("jj") || /[\\u0000-\\u0009\\u000b-\\u001f]/u.test(controlReverse.rules)) throw new Error("Reverse translation changed control-letter matching or display");
 for (const [source, code, message] of ${JSON.stringify(reverseLimitCases)}) {
   try { regexToRules(new RegExp(source, "u")); throw new Error("Oversized translated rules accepted"); }
   catch (error) { if (!(error instanceof CompileError) || error.code !== code || error.message !== message || error.line !== 1 || error.column !== 1 || error.hint !== ${JSON.stringify("Simplify the regex so its translated rules fit these limits.")}) throw error; }

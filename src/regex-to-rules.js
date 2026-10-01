@@ -100,6 +100,9 @@ function readEscape(source, index, inClass = false) {
     return { end: index + 4, literal: String.fromCharCode(Number.parseInt(digits, 16)) };
   }
 
+  if (escaped === "c" && /^[A-Za-z]$/u.test(source[index + 2] ?? "")) {
+    return { end: index + 3, literal: String.fromCharCode(source.charCodeAt(index + 2) % 32) };
+  }
   const control = CONTROL_ESCAPES.get(escaped);
   if (control !== undefined) return { end: index + 2, literal: control };
   if (escaped === "0") {

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Translate ASCII control-letter escapes in literals, character lists and literal groups, preserving matching while displaying the controls as visible escapes.
+
 - Extend the seeded Unicode corpus to verify deterministic reverse translation, matching, positions, flags and UTF-8 preservation across all supported flag combinations.
 
 - Translate both ASCII letter range orders and all six hex range orders into the existing rules, preserving repetition, flags and matching while generating canonical class order.

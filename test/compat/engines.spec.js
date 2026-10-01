@@ -29,4 +29,11 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(output).toHaveText("/^[A-Za-z]{2}$/u");
   await firstExample.fill("Hi");
   await expect(firstResult).toHaveText('✓ Matched "Hi" at 0');
+  await reverse.fill(String.raw`/^\cJ{2}$/u`);
+  await page.locator("#reverse-button").click();
+  await expect(output).toHaveText(String.raw`/^\u{a}{2}$/u`);
+  await firstExample.fill("\n\n");
+  await expect(firstResult).toHaveText('✓ Matched "\\n\\n" at 0');
+  await firstExample.fill("\n");
+  await expect(firstResult).toHaveText("! No match");
 });
