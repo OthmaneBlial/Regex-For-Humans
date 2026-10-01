@@ -224,6 +224,15 @@ h1 {
   font-weight: 700;
   text-underline-offset: 5px;
 }
+.npm-install {
+  margin-top: 24px;
+  color: var(--soft);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.npm-install code {
+  overflow-wrap: anywhere;
+}
 .hero-notes {
   display: flex;
   flex-wrap: wrap;

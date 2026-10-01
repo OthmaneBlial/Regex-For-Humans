@@ -18,6 +18,20 @@ const workshopPreviewVersion = createHash("sha256")
 const workshopPreviewWidth = workshopPreview.readUInt32BE(16);
 const workshopPreviewHeight = workshopPreview.readUInt32BE(20);
 
+test("homepage links the published npm preview with its install command and Node requirement", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const install = page.locator(".npm-install");
+  await expect(install).toBeVisible();
+  await expect(install.locator("code")).toHaveText("npm install regex-for-humans@preview");
+  await expect(install.getByRole("link", { name: "Get the npm preview ↗" })).toHaveAttribute(
+    "href",
+    "https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev",
+  );
+  await expect(install).toContainText("Library + CLI · Node.js 22+");
+});
+
 test("homepage points readers to the complete complex examples included in the workshop", async ({
   page,
 }) => {
