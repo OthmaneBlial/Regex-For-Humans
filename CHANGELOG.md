@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Translate a pasted workshop regex with Ctrl/Cmd + Enter, reusing the existing action while preserving normal Enter, extra modifiers and IME composition.
+
 - Return `404` for local preview URLs that try to enter a file as a directory, while retaining `400` for malformed URL escapes and normal asset serving after an error.
 
 - Translate valid Unicode code-point escapes with extra leading zeros in literals, character lists and literal groups while preserving the existing source-size limit.

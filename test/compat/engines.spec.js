@@ -84,7 +84,11 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await firstExample.fill("x");
   await expect(firstResult).toContainText("not the entire string");
   await reverse.fill(String.raw`/^(?:\u{0001f600}A){2}$/isu`);
-  await page.locator("#reverse-button").click();
+  await reverse.press("Control+Enter");
+  await expect(page.locator("#rules-input")).toBeFocused();
+  await reverse.fill(String.raw`/^(?:\u{0001f600}A){2}$/isu`);
+  await reverse.press("Meta+Enter");
+  await expect(page.locator("#rules-input")).toBeFocused();
   await expect(output).toHaveText("/^(?:😀A){2}$/isu");
   await firstExample.fill("😀a😀a");
   await expect(firstResult).toHaveText('✓ Matched "😀a😀a" at 0');

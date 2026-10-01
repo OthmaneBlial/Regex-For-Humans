@@ -57,7 +57,7 @@ Your rules and examples stay in the browser. No account, AI interpretation, or a
 
 ## 🔄 Already have a regex?
 
-Paste a supported JavaScript regex literal into **Already have a regex?** in the workshop and turn it into editable rules. For example, `/^[A-Z]{2}-\d{4}$/u` becomes:
+Paste a supported JavaScript regex literal into **Already have a regex?** in the workshop and turn it into editable rules. Press **Ctrl/Cmd + Enter** in the regex field or choose **Translate to rules**. For example, `/^[A-Z]{2}-\d{4}$/u` becomes:
 
 ```text
 start

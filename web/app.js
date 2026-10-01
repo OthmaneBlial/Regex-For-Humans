@@ -492,6 +492,18 @@ ui.reverseRegex.addEventListener("input", () => {
   ui.reverseError.hidden = true;
   reverseErrorPosition = null;
 });
+ui.reverseRegex.addEventListener("keydown", (event) => {
+  if (
+    event.key !== "Enter" ||
+    !(event.ctrlKey || event.metaKey) ||
+    event.shiftKey ||
+    event.altKey ||
+    event.isComposing
+  )
+    return;
+  event.preventDefault();
+  ui.reverseButton.click();
+});
 ui.reverseError.addEventListener("click", () => {
   if (reverseErrorPosition !== null)
     selectText(ui.reverseRegex, reverseErrorPosition, reverseErrorPosition + 1);

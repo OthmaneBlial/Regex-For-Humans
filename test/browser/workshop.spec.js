@@ -28,6 +28,88 @@ test("supported JavaScript regexes translate into editable rules and keep their 
   await expect(page.locator("#rules-input")).toBeFocused();
 });
 
+test("Control and Meta Enter translate regexes without replacing edits on failure", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const rules = page.locator("#rules-input");
+  const output = page.locator("#regex-output");
+  for (const modifier of ["Control", "Meta"]) {
+    const literal = "/^😀AB$/isu";
+    await reverse.fill(literal);
+    await reverse.press(`${modifier}+Enter`);
+    await expect(rules).toHaveValue('start\n"😀AB"\nend');
+    await expect(rules).toBeFocused();
+    await expect(reverse).toHaveValue(literal);
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(output).toHaveText(literal);
+    await expect(page.locator("#ignore-case")).toBeChecked();
+    await expect(page.locator("#dot-all")).toBeChecked();
+    await page.locator("#test-list textarea").first().fill("😀ab");
+    await expect(page.locator("#test-list .test-result").first()).toHaveText(
+      '✓ Matched "😀ab" at 0',
+    );
+    await reverse.fill("/^(😀AB)$/isu");
+    await reverse.press(`${modifier}+Enter`);
+    await expect(reverse).toBeFocused();
+    await expect(reverse).toHaveValue("/^(😀AB)$/isu");
+    await expect(reverse).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#reverse-feedback")).toContainText(
+      "Capturing groups cannot be translated",
+    );
+    await expect(rules).toHaveValue('start\n"😀AB"\nend');
+    await expect(output).toHaveText(literal);
+    await expect(page.locator("#ignore-case")).toBeChecked();
+    await expect(page.locator("#dot-all")).toBeChecked();
+    await expect(page.locator("#copy-button")).toBeEnabled();
+  }
+  await expect(page.locator("#reverse-button")).toHaveAttribute(
+    "aria-keyshortcuts",
+    "Control+Enter Meta+Enter",
+  );
+  await expect(reverse).toHaveAccessibleDescription(/Ctrl\/Cmd \+ Enter/);
+});
+
+test("ordinary Enter, extra modifiers and IME composition do not translate regexes", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const rules = await page.locator("#rules-input").inputValue();
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  await reverse.fill("/^OTHER$/u");
+  const composing = await reverse.evaluate((field) => {
+    const event = new KeyboardEvent("keydown", {
+      key: "Enter",
+      ctrlKey: true,
+      isComposing: true,
+      bubbles: true,
+      cancelable: true,
+    });
+    field.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(composing).toBe(false);
+  await expect(reverse).toHaveValue("/^OTHER$/u");
+  for (const key of [
+    "Enter",
+    "Shift+Enter",
+    "Control+Shift+Enter",
+    "Meta+Shift+Enter",
+    "Control+Alt+Enter",
+  ]) {
+    await reverse.press(key);
+    await expect(page.locator("#rules-input")).toHaveValue(rules);
+    await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+    await expect(page.locator("#reverse-feedback")).toBeHidden();
+  }
+  expect(await reverse.inputValue()).toContain("\n");
+});
+
 test("leading-zero code-point escapes translate and match in the workshop", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-list textarea")).toHaveCount(4);
@@ -1296,8 +1378,7 @@ test("reverse translation waits for its handler and preserves pasted input and r
     releaseApp();
     await expect(button).toBeEnabled();
     await expect(reverse).toHaveValue(literal);
-    await button.focus();
-    await button.press("Enter");
+    await reverse.press("Control+Enter");
     const editor = page.locator("#rules-input");
     const rules = 'start\n"CODE"\n2 digit\nend';
     await expect(editor).toHaveValue(rules);
