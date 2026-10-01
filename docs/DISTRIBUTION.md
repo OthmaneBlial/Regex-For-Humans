@@ -2,7 +2,7 @@
 
 ## Local verification
 
-**Latest full local verification (1 October 2026):** `npm run verify` passed at source commit `e111b9c` on Node 25.9.0/npm 11.12.1, with Biome 2.5.15: 167 Node tests, 208 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 56 homepage tests, a clean consumer package installation (63,093-byte tarball), and `npm audit` with zero vulnerabilities. Earlier full runs passed at `a2dfe34` on Node 25.9.0/npm 11.12.1, at `4d35165` on Node 22.23.3/npm 11.12.1 and at `f4febbe` and `d91edbd` on Node 25.9.0/npm 11.12.1. These runs verify macOS only; see [TESTING.md](TESTING.md) for historical compatibility evidence.
+**Latest full local verification (1 October 2026):** `npm run verify` passed at source commit `55be6da` on Node 25.9.0/npm 11.12.1, with Biome 2.5.15: 179 Node tests, 222 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 58 homepage tests, a clean consumer package installation (74,005-byte tarball), and `npm audit` with zero vulnerabilities. Earlier full runs passed at `a2dfe34` on Node 25.9.0/npm 11.12.1, at `4d35165` on Node 22.23.3/npm 11.12.1 and at `f4febbe` and `d91edbd` on Node 25.9.0/npm 11.12.1. These runs verify macOS only; see [TESTING.md](TESTING.md) for historical compatibility evidence.
 
 ### Preview server
 
