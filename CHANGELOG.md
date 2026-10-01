@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Show the first rule when loading a recipe or translating a long regex, preserving recipe-button keyboard focus and focusing the beginning of successfully translated rules.
+
 - Load the complete 19-rule artifact manifest as a workshop recipe, with all nine accepted/rejected inputs, the readable path rule and direct README, guide and website links.
 
 - Redirect encoded forward slashes in existing preview URLs to literal path separators, keeping relative assets in their directory, queries and Unicode escapes intact, same-origin locations and outside-target rejection.

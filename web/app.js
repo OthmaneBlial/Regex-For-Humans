@@ -444,6 +444,8 @@ function setScenarioSelection(id) {
 function useScenario(scenario) {
   setScenarioSelection(scenario.id);
   ui.rules.value = scenario.rules;
+  ui.rules.setSelectionRange(0, 0);
+  ui.rules.scrollTop = 0;
   ui.ignoreCase.checked = false;
   ui.dotAll.checked = false;
   ui.matchMode.value = scenario.matchMode;
@@ -523,7 +525,7 @@ ui.reverseButton.addEventListener("click", () => {
     ui.reverseFeedback.dataset.state = "success";
     ui.reverseFeedback.textContent = "Translated. Review the rules and test your examples.";
     ui.reverseFeedback.hidden = false;
-    ui.rules.focus();
+    selectText(ui.rules, 0, 0);
   } catch (error) {
     const location = error instanceof CompileError ? `Column ${error.column}: ` : "";
     const hint = error instanceof CompileError && error.hint ? ` ${error.hint}` : "";

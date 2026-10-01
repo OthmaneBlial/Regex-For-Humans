@@ -8,6 +8,35 @@ const examples = [
   ...guide.matchAll(/<a id="([a-z-]+)"><\/a>\n([\s\S]*?)(?=\n<a id=|\n## Captures)/gu),
 ];
 
+test("loading long rules starts the editor at the first rule through either action", async ({
+  page,
+}) => {
+  await page.goto("/?example=artifact-manifest");
+  const editor = page.locator("#rules-input");
+  await expect(page.locator("#test-summary")).toHaveText("9 of 9 examples behave as expected");
+  for (const action of ["recipe", "reverse"]) {
+    await editor.evaluate((field) => {
+      field.setSelectionRange(field.value.length, field.value.length);
+      field.scrollTop = field.scrollHeight;
+    });
+    expect(await editor.evaluate((field) => field.scrollTop)).toBeGreaterThan(0);
+    if (action === "recipe") {
+      const recipe = page.getByRole("button", { name: "Read a complex artifact manifest" });
+      await recipe.press("Enter");
+      await expect(recipe).toBeFocused();
+    } else {
+      await page.locator("#reverse-translator summary").click();
+      await page.locator("#reverse-regex").fill(await page.locator("#regex-output").textContent());
+      await page.locator("#reverse-regex").press("Control+Enter");
+      await expect(editor).toBeFocused();
+    }
+    expect(
+      await editor.evaluate((field) => [field.selectionStart, field.selectionEnd, field.scrollTop]),
+    ).toEqual([0, 0, 0]);
+    await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
+  }
+});
+
 for (const [, id, section] of examples) {
   test(`complex guide works in the workshop: ${id}`, async ({ page }) => {
     const rules = /### Rules\n\n```text\n([\s\S]*?)\n```/u.exec(section)[1];

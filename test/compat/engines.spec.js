@@ -161,4 +161,23 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
   await expect(page.locator("#test-summary")).toHaveText("9 of 9 examples behave as expected");
   await expect(page.locator("#test-list textarea").nth(2)).toHaveValue(/Équipe 😀/u);
+  const editor = page.locator("#rules-input");
+  await editor.evaluate((field) => {
+    field.setSelectionRange(field.value.length, field.value.length);
+    field.scrollTop = field.scrollHeight;
+  });
+  const recipe = page.getByRole("button", { name: "Read a complex artifact manifest" });
+  await recipe.press("Enter");
+  await expect(recipe).toBeFocused();
+  expect(
+    await editor.evaluate((field) => [field.selectionStart, field.selectionEnd, field.scrollTop]),
+  ).toEqual([0, 0, 0]);
+  await page.locator("#reverse-translator summary").click();
+  await reverse.fill(await output.textContent());
+  await reverse.press("Control+Enter");
+  await expect(editor).toBeFocused();
+  expect(
+    await editor.evaluate((field) => [field.selectionStart, field.selectionEnd, field.scrollTop]),
+  ).toEqual([0, 0, 0]);
+  await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
 });
