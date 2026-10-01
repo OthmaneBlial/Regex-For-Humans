@@ -118,7 +118,7 @@
     "id": "username-shape",
     "title": "Match a username shape",
     "note": "3–16 ASCII word characters, starting with a letter; digits and underscores may follow. Check availability and service rules separately. Ignore case also permits Unicode case-folding equivalents.",
-    "rules": "start letter\nbetween 2 and 15 word\nend",
+    "rules": "start letter\nbetween 2 and 15 word characters\nend",
     "source": "^[A-Za-z]\\w{2,15}$",
     "flags": "u",
     "matchMode": "full",

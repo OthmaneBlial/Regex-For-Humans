@@ -210,7 +210,7 @@ start
 "Z level="
 between 4 and 5 uppercase letters
 " service="
-between 3 and 30 word
+between 3 and 30 word characters
 " trace="
 32 hex digits
 " span="
@@ -281,7 +281,7 @@ These rows are the compiler's actual `segments` output, in order.
 | 15 | `"Z level="` | `Z level=` | Literal text "Z level=". |
 | 16 | `between 4 and 5 uppercase letters` | `[A-Z]{4,5}` | Between 4 and 5 uppercase ASCII letters (A–Z), inclusive. |
 | 17 | `" service="` | ` service=` | Literal text " service=". |
-| 18 | `between 3 and 30 word` | `\w{3,30}` | Word character: ASCII letter, digit or underscore. With i, a few Unicode equivalents match. Between 3 and 30 times (inclusive). |
+| 18 | `between 3 and 30 word characters` | `\w{3,30}` | Word character: ASCII letter, digit or underscore. With i, a few Unicode equivalents match. Between 3 and 30 times (inclusive). |
 | 19 | `" trace="` | ` trace=` | Literal text " trace=". |
 | 20 | `32 hex digits` | `[0-9A-Fa-f]{32}` | Exactly 32 hexadecimal digits (0–9, A–F, a–f). |
 | 21 | `" span="` | ` span=` | Literal text " span=". |

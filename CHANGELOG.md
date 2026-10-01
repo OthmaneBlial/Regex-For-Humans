@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add explicit `word character` / `word characters` names with ordinary count overrides, preserving the existing `word` rule, Unicode case-folding behavior and reverse output; simplify identifier examples with the readable wording.
+
 - Recognize equivalent path-segment exclusion classes by decoded membership, so reordered, duplicate and differently escaped exclusions produce the same readable reverse translation while different sets remain explicit.
 
 - Add countable `path segment character(s)` rules to replace long separator/control exclusion lists, with the same Unicode matching, friendly explanations and canonical reverse translation.

@@ -74,6 +74,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
           <tr><td><code>any character</code></td><td><code>.</code></td><td>One character, except a line break unless <code>s</code> is on</td></tr>
           <tr><td><code>any text</code></td><td><code>.*</code></td><td>Longest text up to the next rule. <code>s</code> includes line breaks.</td></tr>
           <tr><td><code>word</code> / <code>not word</code></td><td><code>\w</code> / <code>\W</code></td><td>ASCII letters, digits, underscore / everything else</td></tr>
+          <tr><td><code>word character</code> / <code>word characters</code></td><td><code>\w</code> / <code>\w+</code></td><td>One / one or more ASCII letters, digits or underscores; counts replace the plural default</td></tr>
           <tr><td><code>digit</code> / <code>not digit</code></td><td><code>\d</code> / <code>\D</code></td><td>ASCII digit / anything else</td></tr>
           <tr><td><code>letter</code></td><td><code>[A-Za-z]</code></td><td>One ASCII letter; excludes digits and underscores</td></tr>
           <tr><td><code>letters</code></td><td><code>[A-Za-z]+</code></td><td>One or more ASCII letters</td></tr>

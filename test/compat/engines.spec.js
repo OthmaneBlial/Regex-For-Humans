@@ -94,6 +94,14 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "😀a😀a" at 0');
   await firstExample.fill("😀A");
   await expect(firstResult).toHaveText("! No match");
+  await page.locator("#rules-input").fill("start\nbetween 2 and 4 word characters\nend");
+  await expect(output).toHaveText("/^\\w{2,4}$/isu");
+  await firstExample.fill("A_7");
+  await expect(firstResult).toHaveText('✓ Matched "A_7" at 0');
+  await firstExample.fill("Kſ");
+  await expect(firstResult).toHaveText('✓ Matched "Kſ" at 0');
+  await firstExample.fill("a-b");
+  await expect(firstResult).toHaveText("! No match");
   await page.locator("#rules-input").fill("start\nbetween 1 and 32 path segment characters\nend");
   await expect(page.locator("#trace-list")).toContainText(
     "Path segment character: excludes slash, backslash, NUL and line breaks.",

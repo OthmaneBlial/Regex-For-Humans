@@ -23,6 +23,8 @@ The [complex-examples guide](COMPLEX-EXAMPLES.md) combines these atoms into an a
 | `any character` | `.` | `A` | a newline unless `s` is enabled |
 | `any text` | `.*` | longest text up to the next rule; `s` includes line breaks | a line break without `s` |
 | `word` | `\w` | `A`, `_`, `3` | `-`, `é` |
+| `word character` | `\w` | `A`, `_`, `3` | `-`, `é` |
+| `word characters` | `\w+` | one or more letters, digits or underscores | empty string, `-`, `é` |
 | `not word` | `\W` | `-`, `é` | `A`, `_` |
 | `digit` | `\d` | `3` | `A`, `٣` |
 | `not digit` | `\D` | `A`, `٣` | `3` |
@@ -46,6 +48,8 @@ The [complex-examples guide](COMPLEX-EXAMPLES.md) combines these atoms into an a
 | `text without: a, b, c` | `[^abc]*` | zero or more characters outside the list | `cab` with `start` and `end` |
 
 `word`/`not word` use JavaScript's `\w`/`\W`; `digit`/`not digit` use `\d`/`\D`. These classes are ASCII-oriented with `u`; `i` plus `u` adds a few Unicode case-folding matches to `\w`. `\w` includes `_` but excludes `é`. The misleading `alphanumeric character` aliases are rejected.
+
+`word character` is an explicit name for `word`; `word characters` means one or more of the same characters. Counts replace the plural default: `between 3 and 30 word characters` matches a 3–30 character identifier shape. Spaces, hyphens and most Unicode letters remain excluded. Each matched character follows JavaScript's `\w` semantics. The existing `word`, `not word` and reverse-translated `word` rules keep their behavior.
 
 `letter` matches one ASCII letter, and `letters` matches one or more. They exclude digits, underscores and accented or other non-ASCII letters by default. They are not a Unicode alphabetic class. The optional `i` flag follows JavaScript case folding: equivalents such as the Kelvin sign `K` and long s `ſ` also match `[A-Za-z]` with `iu`. The explanation reports this when `i` is enabled. Counts and ranges replace the sequence default, as in `3 letters` or `between 2 and 4 letters`. Anchor the pattern to validate the whole string. Forms such as `letter characters`, `letter 3 times` and `not letter` are unsupported.
 
@@ -79,7 +83,7 @@ C0/C1 control characters, DEL and Unicode line separators are also displayed as 
 
 ## Repetition
 
-A repetition modifier applies to the next item. Put it first: `3 digits`, `between 2 and 4 digits`, `optional "-"`, `zero or more digit`, `one or more any character`, or `at least 3 letter`. `optional <item>` is the same as `between 0 and 1 <item>` and generates `{0,1}`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters`, `lowercase letters`, `uppercase letters` and `spaces` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another repetition modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters.
+A repetition modifier applies to the next item. Put it first: `3 digits`, `between 2 and 4 digits`, `optional "-"`, `zero or more digit`, `one or more any character`, or `at least 3 letter`. `optional <item>` is the same as `between 0 and 1 <item>` and generates `{0,1}`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters`, `lowercase letters`, `uppercase letters`, `spaces`, `word characters` and `path segment characters` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another repetition modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |

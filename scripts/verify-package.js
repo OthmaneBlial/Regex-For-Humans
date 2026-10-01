@@ -172,6 +172,8 @@ if (excluded.source !== "^[^ab]*$" || !toRegExp(excluded).test("xyz") || toRegEx
 const hex = compile("2 hex digits");
 if (hex.source !== "[0-9A-Fa-f]{2}" || !toRegExp(hex).test("0F") || toRegExp(hex).test("0G")) throw new Error("Wrong hexadecimal behavior");
 const letters = compile("start between 2 and 4 letters\\nend");
+const wordCharacters = compile("start\\nbetween 2 and 4 word characters\\nend", {flags: "i"});
+if (wordCharacters.source !== "^\\\\w{2,4}$" || !toRegExp(wordCharacters).test("A_7") || !toRegExp(wordCharacters).test("Kſ") || toRegExp(wordCharacters).test("a-b") || compile("word character").source !== "\\\\w" || compile("word characters").source !== "\\\\w+") throw new Error("Wrong explicit word-character behavior");
 const path = compile(${JSON.stringify(pathRules)});
 if (path.source !== ${JSON.stringify(pathSource)} || !toRegExp(path).test("Équipe 😀") || toRegExp(path).test("folder/name") || toRegExp(path).test("a\\nname") || !path.segments[1].explanation.includes("Path segment character")) throw new Error("Wrong readable path behavior");
 if (regexToRules(toRegExp(path)).rules !== "start\\nbetween 1 and 32 path segment character\\nend") throw new Error("Wrong readable path reverse translation");

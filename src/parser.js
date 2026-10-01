@@ -64,6 +64,8 @@ export function validateSourceLength(source) {
 
 const SHORTHANDS = new Map([
   ["word", "\\w"],
+  ["word character", "\\w"],
+  ["word characters", "\\w"],
   ["not word", "\\W"],
   ["not digit", "\\D"],
   ["digit", "\\d"],
@@ -369,6 +371,7 @@ function parseAtom(text, location, rawLine) {
           "lowercase letters",
           "uppercase letters",
           "spaces",
+          "word characters",
           "path segment characters",
         ].includes(phrase) &&
         !repetition
@@ -440,7 +443,9 @@ function parseAtom(text, location, rawLine) {
                 ? "Use `path segment character` for one character or `path segment characters` for one or more."
                 : /^spaces?(?:\s|$)/i.test(remaining)
                   ? "Use `space` for one whitespace character or `spaces` for one or more, including line breaks."
-                  : "Try `line start`, `any text` or `3 digits`.",
+                  : /^words?(?:\s|$)/i.test(remaining)
+                    ? "Use `word character` for one ASCII letter, digit or underscore, or `word characters` for one or more."
+                    : "Try `line start`, `any text` or `3 digits`.",
   );
 }
 
