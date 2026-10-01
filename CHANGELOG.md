@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Start the explanation list at the first rule when loading a recipe or successfully translating a regex, while keeping its scroll position during ordinary edits, option changes and failed translations.
+- Start the explanation list at the first rule when loading a recipe or successfully translating a regex, while keeping its scroll position during valid rule edits, option changes and failed translations.
 
 - Load the complete access-log and telemetry examples as workshop recipes, with all 81 rules, their explanations, 17 accepted/rejected inputs and direct README, guide and website links.
 

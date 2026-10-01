@@ -4,7 +4,7 @@ import workshop from "./playwright.config.js";
 export default defineConfig({
   testDir: "./test/compat",
   fullyParallel: true,
-  workers: 2,
+  workers: 1,
   reporter: "list",
   use: {
     baseURL: workshop.use.baseURL,
