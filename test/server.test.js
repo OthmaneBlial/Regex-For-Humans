@@ -51,6 +51,42 @@ test("the local server reports its assigned port and serves its selected root", 
   assert.equal(missing.status, 404);
 });
 
+test("the local server classifies known asset extensions regardless of case", {
+  timeout: 10000,
+}, async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-server-mime-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const address = await startServer(t, root);
+  for (const [extension, type] of [
+    ["html", "text/html; charset=utf-8"],
+    ["js", "text/javascript; charset=utf-8"],
+    ["css", "text/css; charset=utf-8"],
+    ["json", "application/json; charset=utf-8"],
+    ["md", "text/markdown; charset=utf-8"],
+    ["png", "image/png"],
+    ["svg", "image/svg+xml"],
+    ["woff2", "font/woff2"],
+    ["bin", "application/octet-stream"],
+  ]) {
+    for (const variant of [
+      extension,
+      extension.toUpperCase(),
+      extension[0].toUpperCase() + extension.slice(1),
+    ]) {
+      const path = `asset.${variant}`;
+      const content = `Fixture for ${variant}`;
+      writeFileSync(join(root, path), content);
+      for (const method of ["GET", "HEAD"]) {
+        const response = await fetch(`${address}${path}?v=case`, { method, signal: t.signal });
+        assert.equal(response.status, 200, `${method} ${path}`);
+        assert.equal(response.headers.get("content-type"), type, `${method} ${path}`);
+        assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+        assert.equal(await response.text(), method === "GET" ? content : "");
+      }
+    }
+  }
+});
+
 test("the local server redirects directory URLs while preserving encoded paths and queries", {
   timeout: 10000,
 }, async (t) => {

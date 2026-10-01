@@ -39,7 +39,7 @@ const server = createServer(async (request, response) => {
     const data = await readFile(target);
     response
       .writeHead(200, {
-        "content-type": mimeTypes[extname(path)] ?? "application/octet-stream",
+        "content-type": mimeTypes[extname(path).toLowerCase()] ?? "application/octet-stream",
         "x-content-type-options": "nosniff",
       })
       .end(data);

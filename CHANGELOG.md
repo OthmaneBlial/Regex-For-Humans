@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Serve local preview assets with their known content types regardless of extension case, so uppercase JavaScript modules and mixed-case stylesheets load correctly.
+
 - Redirect local preview directory links back to the selected root, preserving encoded paths and queries while continuing to reject outside targets.
 
 - Translate the stored native regex pattern and flags even when subclasses or own properties override metadata, preserving input state and unsupported-feature diagnostics.

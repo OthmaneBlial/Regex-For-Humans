@@ -87,6 +87,8 @@ Local-server regressions start temporary static roots on operating-system-assign
 
 The root-link server update at `5a9772c` passed local `npm run check`, all 164 Node tests, `npm run build:pages` and the clean-consumer package check (61,441-byte tarball) on 1 October 2026 with Node 25.9.0/npm 11.12.1. All three local-server regressions also passed on Node 22.23.3. This focused tooling verification is separate from the full browser-verification snapshot above.
 
+Content-type checks cover HTML, JavaScript, CSS, JSON, Markdown, PNG, SVG and WOFF2 extensions in lowercase, uppercase and mixed case, with version queries on GET and HEAD requests. Unknown extensions retain `application/octet-stream`; all responses keep `nosniff`, exact GET content and empty HEAD bodies.
+
 Whitespace-sequence checks cover the `spaces` default, exact and bounded overrides including zero, representative JavaScript Unicode whitespace and rejected lookalikes under all option flags. A quoted ordinary space remains distinct from whitespace. Parser and CLI checks reject misplaced counts with a repair hint; workshop checks cover tabs and newlines, empty-input bounds, diagnostics, recovery and copied output. The clean consumer verifies the installed sequence, explanation and count behavior.
 
 Mixed-anchor regressions retain the error code, message and end-anchor location through indentation, compact prefixes, keyword case and alternate line separators. CLI text and JSON checks verify the compatible-pair hint and both repairs. Browser checks navigate to the error, repair each anchor mode, verify the generated flags and distinguish whole-input matching from line Search mode. The clean consumer checks the installed diagnostic and line-mode repair.
