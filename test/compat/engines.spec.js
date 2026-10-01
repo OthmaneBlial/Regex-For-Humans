@@ -180,4 +180,19 @@ test("the workshop compiles rules and reports example results", async ({ page })
     await editor.evaluate((field) => [field.selectionStart, field.selectionEnd, field.scrollTop]),
   ).toEqual([0, 0, 0]);
   await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
+  await expect(page.locator("#reverse-feedback")).toBeVisible();
+  await recipe.press("Enter");
+  await expect(page.locator("#reverse-feedback")).toBeHidden();
+  await expect(page.locator("#reverse-feedback")).toHaveText("");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await reverse.fill("/^(Hello)$/u");
+  await reverse.press("Control+Enter");
+  await page.locator("#ignore-case").check();
+  await recipe.press("Enter");
+  await expect(page.locator("#reverse-feedback")).toContainText(
+    "Capturing groups cannot be translated",
+  );
+  await expect(reverse).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#reverse-error")).toBeVisible();
+  await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
 });

@@ -28,6 +28,58 @@ test("supported JavaScript regexes translate into editable rules and keep their 
   await expect(page.locator("#rules-input")).toBeFocused();
 });
 
+test("translation confirmation follows the current rules and options", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const feedback = page.locator("#reverse-feedback");
+  for (const action of ["rules", "ignore-case", "dot-all", "recipe"]) {
+    await reverse.fill("/^Hello$/u");
+    await reverse.press("Control+Enter");
+    await expect(feedback).toHaveText("Translated. Review the rules and test your examples.");
+    await expect(feedback).toBeVisible();
+
+    await page.locator("#test-list textarea").first().fill("Hello");
+    await expect(page.locator("#test-list .test-result").first()).toHaveText(
+      '✓ Matched "Hello" at 0',
+    );
+    await page.locator("#match-mode").selectOption("search");
+    await expect(feedback).toBeVisible();
+
+    if (action === "rules") await page.locator("#rules-input").fill('start\n"Hi"\nend');
+    else if (action === "recipe")
+      await page.getByRole("button", { name: "Read a complex artifact manifest" }).press("Enter");
+    else await page.locator(`#${action}`).check();
+    await expect(feedback).toBeHidden();
+    await expect(feedback).toHaveText("");
+    await expect(reverse).toHaveValue("/^Hello$/u");
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(page.locator("#reverse-error")).toBeHidden();
+    await expect(reverse).toHaveAccessibleDescription(/Ctrl\/Cmd \+ Enter/);
+    await expect(reverse).not.toHaveAccessibleDescription(/Translated/);
+  }
+
+  await reverse.fill("/^(Hello)$/u");
+  await reverse.press("Control+Enter");
+  const error = await feedback.textContent();
+  await page.locator("#rules-input").fill('start\n"Hi"\nend');
+  await page.locator("#ignore-case").check();
+  await page.locator("#dot-all").check();
+  await page.getByRole("button", { name: "Read a complex artifact manifest" }).press("Enter");
+  await expect(feedback).toBeVisible();
+  await expect(feedback).toHaveText(error);
+  await expect(reverse).toHaveAttribute("aria-invalid", "true");
+  await expect(reverse).toHaveValue("/^(Hello)$/u");
+  await expect(reverse).toHaveAccessibleDescription(/Capturing groups cannot be translated/);
+  await page.locator("#reverse-error").press("Enter");
+  await expect(reverse).toBeFocused();
+  expect(await reverse.evaluate((field) => [field.selectionStart, field.selectionEnd])).toEqual([
+    2, 3,
+  ]);
+  await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
+});
+
 test("Control and Meta Enter translate regexes without replacing edits on failure", async ({
   page,
 }) => {

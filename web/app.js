@@ -388,6 +388,10 @@ function renderTests() {
 }
 
 function compileRules() {
+  if (ui.reverseFeedback.dataset.state === "success") {
+    ui.reverseFeedback.hidden = true;
+    ui.reverseFeedback.textContent = "";
+  }
   window.clearTimeout(copyFeedbackTimer);
   ui.copy.textContent = "Copy regex ↗";
   const ruleCount = splitLines(ui.rules.value).filter((line) => line.trim()).length;

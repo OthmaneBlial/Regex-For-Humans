@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Clear the workshop's translation confirmation when rules, regex options or recipes change, retaining feedback while testing examples and keeping errors attached to the pasted regex.
+
 - Show the first rule when loading a recipe or translating a long regex, preserving recipe-button keyboard focus and focusing the beginning of successfully translated rules.
 
 - Load the complete 19-rule artifact manifest as a workshop recipe, with all nine accepted/rejected inputs, the readable path rule and direct README, guide and website links.
