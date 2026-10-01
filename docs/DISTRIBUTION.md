@@ -18,6 +18,14 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Exact compiler option flags
+
+Source commit `9374163` was synchronized into the existing project folder at Pages commit `3689293`, whose build completed on 1 October 2026. Twenty-eight resources returned HTTP 200 and matched local SHA-256 values, including all eighteen changed project files and the corrected language reference. Other project folders and the published npm preview were preserved.
+
+Live Chrome checks at 1280/390px and Firefox/WebKit checks at 1280px compiled all five allowed option strings, verified canonical flags and case/dot-all matching, and rejected duplicates, trailing line breaks and 1,048,576-code-unit flags with the same positioned error. Native-metadata translation also passed with serialization disabled, including frozen iframe regexes, matching equivalence, unchanged `lastIndex`, lookalike rejection and flag/Unicode/source diagnostic priority. No page errors were recorded.
+
+Live desktop/mobile Chrome rechecked the three complex records, 100 fragments, 26 exact inputs, source selection, real clipboard, reverse translation, focus, scroll reset/retention and the 32/33-emoji boundary. Six regex crops were inspected, with no overflow at 320px. Worker reuse, complete-batch validation, stable errors, recovery, 100-example/2,048-code-unit boundaries and interruption of valid expensive batches passed again in Chrome, Firefox and WebKit. The deliberate timeout checks use a 150 ms test budget; the product deadline remains 1,200 ms.
+
 ### Native metadata without regex serialization
 
 Source commit `70191d7` was synchronized into the existing project folder at Pages commit `9507789`, whose build completed on 1 October 2026. Twenty-seven resources returned HTTP 200 and matched local SHA-256 values, including all eighteen changed project files. Other project folders and the published npm preview were preserved.
