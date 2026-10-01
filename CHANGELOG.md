@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Diagnose incomplete unbounded repetition modifiers at their source position, with repair examples shared by the library, CLI and workshop.
+
 - Bring the rendered syntax guide and architecture reference in line with reverse translation and all supported repetition forms.
 
 - Preserve Unicode surrogate-pair atoms when reverse-translating repetition and character classes; keep separate surrogate atoms separate and reject literal groups whose boundaries cannot be expressed.

@@ -87,6 +87,8 @@ if (compile(reverse.rules, { flags: reverse.flags }).source !== "^[A-Z]{2}-\\\\d
 const emojiReverse = regexToRules(new RegExp(${JSON.stringify(unicodePairSource)}, "u"));
 const emojiPattern = toRegExp(compile(emojiReverse.rules, { flags: emojiReverse.flags }));
 if (!emojiPattern.test("😀😀") || emojiPattern.test("😀")) throw new Error("Reverse translation split a Unicode surrogate pair");
+try { compile("start at least"); throw new Error("Incomplete minimum accepted"); }
+catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_REPETITION" || error.column !== 7 || error.hint !== ${JSON.stringify("Use `at least 3 digits`, with the minimum count before the item.")}) throw error; }
 const trailingList = ${JSON.stringify('one of: "😀", ",",')};
 try { compile(trailingList); throw new Error("Trailing list comma accepted"); }
 catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_CHARACTER_LIST" || error.column !== trailingList.length) throw error; }

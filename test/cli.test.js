@@ -136,6 +136,49 @@ test("CLI mixed-anchor diagnostics preserve locations and explain both repairs",
   }
 });
 
+test("CLI incomplete unbounded modifiers offer positioned repairs in text and JSON", () => {
+  for (const [modifier, message, hint] of [
+    [
+      "at least",
+      "A minimum repetition needs a count and an item.",
+      "Use `at least 3 digits`, with the minimum count before the item.",
+    ],
+    [
+      "at least 3",
+      "A repetition modifier needs an item.",
+      "Use `at least 3 digits`, with the minimum count before the item.",
+    ],
+    [
+      "zero or more",
+      "A repetition modifier needs an item.",
+      "Use `zero or more digit`, with the modifier before the item.",
+    ],
+    [
+      "one or more",
+      "A repetition modifier needs an item.",
+      "Use `one or more digit`, with the modifier before the item.",
+    ],
+  ]) {
+    for (const json of [false, true]) {
+      const result = run(json ? ["--json", "-"] : ["-"], `start\n  ${modifier}\nend`);
+      assert.equal(result.status, 1);
+      assert.equal(result.stdout, "");
+      if (json)
+        assert.deepEqual(JSON.parse(result.stderr), {
+          error: { code: "INVALID_REPETITION", message, line: 2, column: 3, hint },
+        });
+      else assert.equal(result.stderr, `Line 2, column 3: ${message}\n${hint}\n`);
+    }
+  }
+  const repaired = run(["--json", "-"], "start\nat least 3 digits\nend");
+  assert.equal(repaired.status, 0, repaired.stderr);
+  const result = JSON.parse(repaired.stdout);
+  const regex = new RegExp(result.source, result.flags);
+  assert.equal(regex.test("123"), true);
+  assert.equal(regex.test("1234"), true);
+  assert.equal(regex.test("12"), false);
+});
+
 test("CLI spaces output, explanations and invalid counts use the shared language", () => {
   const output = run(["--json", "-"], "start\nspaces\nend");
   assert.equal(output.status, 0, output.stderr);

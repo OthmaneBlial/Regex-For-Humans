@@ -715,6 +715,43 @@ test("editing rules reports errors without stale output and recovers", async ({ 
   await expect(page.locator("#test-summary")).toHaveText("3 of 4 examples behave as expected");
 });
 
+test("incomplete unbounded modifiers explain repairs and recover with correct matching", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
+  const editor = page.locator("#rules-input");
+  for (const [modifier, message, example] of [
+    ["at least", "A minimum repetition needs a count and an item.", "at least 3 digits"],
+    ["at least 3", "A repetition modifier needs an item.", "at least 3 digits"],
+    ["zero or more", "A repetition modifier needs an item.", "zero or more digit"],
+    ["one or more", "A repetition modifier needs an item.", "one or more digit"],
+  ]) {
+    await editor.fill(`  start ${modifier}`);
+    await expect(page.locator("#diagnostic")).toContainText(`Line 1, column 9: ${message}`);
+    await expect(page.locator("#diagnostic")).toContainText(`Use \`${example}\``);
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#copy-button")).toBeDisabled();
+  }
+  await page.getByRole("button", { name: "Go to error" }).click();
+  await expect(editor).toBeFocused();
+  expect(await editor.evaluate((element) => element.selectionStart)).toBe(8);
+  expect(
+    await editor.evaluate((element) =>
+      element.value.slice(element.selectionStart, element.selectionEnd),
+    ),
+  ).toBe("o");
+  await editor.fill("start\nat least 3 digits\nend");
+  await expect(page.locator("#diagnostic")).toBeHidden();
+  await expect(editor).toHaveAttribute("aria-invalid", "false");
+  await expect(page.locator("#regex-output")).toHaveText("/^\\d{3,}$/u");
+  await expect(page.locator("#copy-button")).toBeEnabled();
+  await page.locator("#test-list textarea").first().fill("1234");
+  await expect(page.locator("#test-list .test-result").first()).toHaveText('✓ Matched "1234" at 0');
+  await page.locator("#test-list textarea").first().fill("12");
+  await expect(page.locator("#test-list .test-result").first()).toHaveText("! No match");
+});
+
 test("numeric count errors focus their token and recover after a valid edit", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");

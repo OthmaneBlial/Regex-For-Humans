@@ -195,12 +195,72 @@ test("unbounded repetition modifiers accept zero, one and a minimum count", () =
   assert.throws(() => parse("3 at least 2 digit"), { code: "DUPLICATE_REPETITION" });
 });
 
+test("incomplete unbounded modifiers retain their location and offer complete examples", () => {
+  for (const [modifier, message, hint] of [
+    [
+      "at least",
+      "A minimum repetition needs a count and an item.",
+      "Use `at least 3 digits`, with the minimum count before the item.",
+    ],
+    [
+      "at least 3",
+      "A repetition modifier needs an item.",
+      "Use `at least 3 digits`, with the minimum count before the item.",
+    ],
+    [
+      "zero or more",
+      "A repetition modifier needs an item.",
+      "Use `zero or more digit`, with the modifier before the item.",
+    ],
+    [
+      "one or more",
+      "A repetition modifier needs an item.",
+      "Use `one or more digit`, with the modifier before the item.",
+    ],
+  ]) {
+    for (const [rules, line, column] of [
+      [modifier, 1, 1],
+      [`\n  start, ${modifier.toUpperCase()}   `, 2, 10],
+      [`line start ${modifier}`, 1, 12],
+    ]) {
+      assert.throws(
+        () => parse(rules),
+        { code: "INVALID_REPETITION", message, line, column, hint },
+        rules,
+      );
+    }
+  }
+  assert.equal(parse('"at least"').nodes[0].value, "at least");
+  assert.throws(() => parse("at leastly 3 digit"), { code: "UNKNOWN_RULE" });
+});
+
+test("an incomplete minimum after another modifier is a positioned duplicate", () => {
+  for (const [rules, column] of [
+    ["3 at least", 3],
+    ["optional at least", 10],
+    ["at least 3 at least", 12],
+  ]) {
+    assert.throws(
+      () => parse(rules),
+      {
+        code: "DUPLICATE_REPETITION",
+        message: "Use only one repetition modifier.",
+        line: 1,
+        column,
+        hint: "Put one repetition modifier before the item.",
+      },
+      rules,
+    );
+  }
+});
+
 test("malformed numeric count tokens share positioned exact and bounded diagnostics", () => {
   for (const token of ["-1", "+3", "1.5", ".5", "1e2", "0x10", "1_000", "٣", "𝟛"]) {
     for (const line of [
       `  start ${token} digits`,
       `between ${token} and 4 digits`,
       `between 2 and ${token} digits`,
+      `at least ${token} digits`,
     ]) {
       assert.throws(
         () => parse(`\n${line}`),
