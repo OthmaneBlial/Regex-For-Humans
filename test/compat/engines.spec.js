@@ -153,4 +153,12 @@ test("the workshop compiles rules and reports example results", async ({ page })
     localInstance: false,
     translated: { rules: 'start\n"😀"\n2 uppercase letter\nend', flags: "is" },
   });
+  await page.goto("/?example=artifact-manifest");
+  await expect(page.locator("#rules-input")).toHaveValue(
+    /between 1 and 32 path segment characters/u,
+  );
+  await expect(page.locator("#trace-list .trace-fragment")).toHaveCount(19);
+  await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
+  await expect(page.locator("#test-summary")).toHaveText("9 of 9 examples behave as expected");
+  await expect(page.locator("#test-list textarea").nth(2)).toHaveValue(/Équipe 😀/u);
 });

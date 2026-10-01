@@ -17,8 +17,16 @@ for (const [, id, section] of examples) {
     const compiled = compile(rules);
     const reverse = regexToRules(toRegExp(compiled));
     const rebuilt = compile(reverse.rules, { flags: reverse.flags });
-    await page.goto("/");
-    await expect(page.locator("#test-list textarea")).toHaveCount(4);
+    await page.goto(id === "artifact-manifest" ? `/?example=${id}` : "/");
+    await expect(page.locator("#test-list textarea")).toHaveCount(
+      id === "artifact-manifest" ? cases.length : 4,
+    );
+    if (id === "artifact-manifest") {
+      await expect(page.locator("#rules-input")).toHaveValue(rules);
+      await expect(page.locator("#test-summary")).toHaveText(
+        `${cases.length} of ${cases.length} examples behave as expected`,
+      );
+    }
     const editor = page.locator("#rules-input");
     const sample = page.locator("#test-list textarea").first();
     const feedback = page.locator("#test-list .test-result").first();

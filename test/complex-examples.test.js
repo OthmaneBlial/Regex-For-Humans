@@ -18,6 +18,31 @@ test("the complex guide contains four complete worked examples", () => {
   );
 });
 
+test("the manifest recipe preloads the guide's exact rules, regex and every input case", () => {
+  const scenarios = JSON.parse(
+    readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
+  );
+  const recipe = scenarios.find(({ id }) => id === "artifact-manifest");
+  assert.ok(recipe, "The complete manifest is available as a workshop recipe");
+  const section = examples.find(([, id]) => id === recipe.id)[2];
+  assert.equal(recipe.rules, /### Rules\n\n```text\n([\s\S]*?)\n```/u.exec(section)[1]);
+  const result = compile(recipe.rules);
+  assert.equal(recipe.source, result.source);
+  assert.equal(recipe.flags, result.flags);
+  assert.equal(recipe.matchMode, "full");
+  for (const [outcome, key] of [
+    ["✅ Match", "positive"],
+    ["❌ No match", "negative"],
+  ]) {
+    const cases = [...section.matchAll(/^\| (✅ Match|❌ No match) \| `([^`]+)` \|/gmu)]
+      .filter(([, label]) => label === outcome)
+      .map(([, , json]) => JSON.parse(json));
+    assert.deepEqual(recipe[key], cases);
+  }
+  assert.match(recipe.note, /shape only/u);
+  assert.match(recipe.note, /checksum contents/u);
+});
+
 test("README includes two complete complex examples synchronized with the full guide", () => {
   const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
   const worked = [

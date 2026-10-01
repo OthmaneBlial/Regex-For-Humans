@@ -311,6 +311,8 @@ These rows are the compiler's actual `segments` output, in order.
 
 ## 📦 Artifact manifest: path, optional channel, hash and size
 
+[Open the complete recipe in the workshop ↗](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) to load all 19 rules, their explanations and the nine accepted/rejected inputs below.
+
 A synthetic TSV record: an artifact path, a 64-digit hexadecimal checksum and a decimal byte count. The path includes an optional fixed `nightly/` directory, variable project/version components and bounded filename parts. This describes an example schema; no artifact or release is implied.
 
 ### Example input

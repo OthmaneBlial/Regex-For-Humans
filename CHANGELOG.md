@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Load the complete 19-rule artifact manifest as a workshop recipe, with all nine accepted/rejected inputs, the readable path rule and direct README, guide and website links.
+
 - Redirect encoded forward slashes in existing preview URLs to literal path separators, keeping relative assets in their directory, queries and Unicode escapes intact, same-origin locations and outside-target rejection.
 
 - Add explicit `word character` / `word characters` names with ordinary count overrides, preserving the existing `word` rule, Unicode case-folding behavior and reverse output; simplify identifier examples with the readable wording.

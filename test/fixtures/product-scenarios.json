@@ -232,5 +232,27 @@
       "notes.txt.bak",
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt"
     ]
+  },
+  {
+    "id": "artifact-manifest",
+    "title": "Read a complex artifact manifest",
+    "note": "Synthetic TSV record: optional nightly/ directory, a 1–32 character project name, version, artifact filename, 64 hex digits and byte count. Checks shape only, not files, dates, versions or checksum contents.",
+    "rules": "start\n\"incoming/\"\noptional \"nightly/\"\nbetween 1 and 32 path segment characters\n\"/v\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\"/linux-arm64/widget_\"\n8 digits\n\"_\"\n8 hex digits\n\".tar.gz\\t\"\n64 hex digits\n\"\\t\"\nbetween 1 and 12 digits\nend",
+    "source": "^incoming\\/(?:nightly\\/){0,1}[^\\/\\\\\\u{0}\\u{a}\\u{d}\\u{2028}\\u{2029}]{1,32}\\/v\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\/linux-arm64\\/widget_\\d{8}_[0-9A-Fa-f]{8}\\.tar\\.gz\\u{9}[0-9A-Fa-f]{64}\\u{9}\\d{1,12}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": [
+      "incoming/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz\tabababababababababababababababababababababababababababababababab\t1048576",
+      "incoming/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz\tabababababababababababababababababababababababababababababababab\t1048576",
+      "incoming/nightly/Équipe 😀/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz\tabababababababababababababababababababababababababababababababab\t1048576"
+    ],
+    "negative": [
+      "incoming/nightly/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz\tabababababababababababababababababababababababababababababababab\t1048576",
+      "incoming/nightly/WidgetKit/v2.15/linux-arm64/widget_20261001_ab12cd34.tar.gz\tabababababababababababababababababababababababababababababababab\t1048576",
+      "incoming/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd3g.tar.gz\tabababababababababababababababababababababababababababababababab\t1048576",
+      "incoming/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz\tababababababababababababababababababababababababababababababab\t1048576",
+      "incoming/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz abababababababababababababababababababababababababababababababab 1048576",
+      "incoming/nightly/bad\nname/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz\tabababababababababababababababababababababababababababababababab\t1048576"
+    ]
   }
 ]
