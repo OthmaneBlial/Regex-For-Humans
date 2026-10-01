@@ -6,6 +6,70 @@ import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
+test("documentation checks resolve balanced and escaped destination parentheses without truncation", () => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-balanced-"));
+  try {
+    mkdirSync(join(root, "docs"));
+    const deep = `nested${"(".repeat(12)}v${")".repeat(12)}.md`;
+    const names = [
+      "review(1).md",
+      "nested(a(b(c))).md",
+      "unbalanced(.md",
+      "unbalanced).md",
+      "sequence](link).md",
+      "guide.md",
+      "nbsp\u00a0(1).md",
+      deep,
+    ];
+    for (const name of names) writeFileSync(join(root, "docs", name), "# Guide\n");
+    const links = [
+      "[Review](docs/review(1).md)",
+      '[Nested](docs/nested(a(b(c))).md "Review (v1)")',
+      String.raw`[Escaped](docs/review\(1\).md)`,
+      String.raw`[Opening](docs/unbalanced\(.md)`,
+      String.raw`[Closing](docs/unbalanced\).md)`,
+      String.raw`[Angle escaped](<docs/review\(1\).md>)`,
+      "[Query](docs/review(1).md?view=(1)#intro)",
+      `[Deep](docs/${deep})`,
+      "[Unicode](docs/nbsp\u00a0(1).md)",
+      "[Adjacent](docs/sequence](link).md)[Guide](docs/guide.md)",
+      "![Image](docs/review(1).md)",
+    ].join("\n");
+    const check = () =>
+      spawnSync(
+        process.execPath,
+        [fileURLToPath(new URL("../scripts/check-doc-links.js", import.meta.url)), root],
+        { encoding: "utf8" },
+      );
+    writeFileSync(join(root, "README.md"), links);
+    const valid = check();
+    assert.equal(valid.status, 0, valid.stderr);
+    assert.equal(valid.stderr, "");
+    assert.equal(valid.stdout, "Checked 12 local Markdown links in 9 files.\n");
+    writeFileSync(
+      join(root, "README.md"),
+      `${links}\n` +
+        '[Missing](docs/missing(1).md?view=(1)#intro "Title")\n' +
+        String.raw`[Escaped missing](docs/missing\(2\).md)` +
+        "\n[Bad escape](docs/%ZZ(1).md)\n",
+    );
+    const invalid = check();
+    assert.equal(invalid.status, 1);
+    assert.equal(invalid.stdout, "");
+    assert.equal(
+      invalid.stderr,
+      "Missing local Markdown links:\n" +
+        "README.md: docs/missing(1).md?view=(1)#intro\n" +
+        "README.md: docs/missing(2).md\n" +
+        "README.md: docs/%ZZ(1).md (invalid URL escape)\n",
+    );
+    writeFileSync(join(root, "README.md"), links);
+    assert.equal(check().status, 0);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("documentation checks ignore ASCII scheme case without ignoring Unicode lookalikes", () => {
   const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-scheme-"));
   try {
