@@ -54,6 +54,50 @@ test("escapes literal punctuation and decodes Unicode escapes", () => {
   }
 });
 
+test("fixed-width surrogate escapes preserve Unicode atoms in repetition and character classes", () => {
+  const samples = ["", "😀", "😀😀", "A😀B", "😀\ude00", "\ud83d", "\ude00", "A"];
+  for (const regex of [
+    /\uD83D\uDE00+/u,
+    /^\uD83D\uDE00{2}$/u,
+    /^[\uD83D\uDE00]+$/u,
+    /^[^\uD83D\uDE00]+$/u,
+    /^(?:\uD83D\uDE00)+$/u,
+  ]) {
+    const translated = regexToRules(regex);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const sample of samples) {
+      const expected = regex.exec(sample);
+      const actual = rebuilt.exec(sample);
+      assert.equal(actual?.[0], expected?.[0], `${regex}: ${JSON.stringify(sample)}`);
+      assert.equal(actual?.index, expected?.index, `${regex}: ${JSON.stringify(sample)}`);
+    }
+  }
+});
+
+test("separate lone-surrogate atoms remain separate when literal rules are merged", () => {
+  for (const regex of [
+    /^\u{D83D}\u{DE00}$/u,
+    /^\uD83D(?:\uDE00)$/u,
+    /^(?:\uD83D)\uDE00$/u,
+    new RegExp(`^\ud83d${String.raw`\uDE00`}$`, "u"),
+    new RegExp(`^${String.raw`\uD83D`}\ude00$`, "u"),
+  ]) {
+    const translated = regexToRules(regex);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const sample of ["", "😀", "😀😀", "\ud83d", "\ude00"]) {
+      assert.equal(rebuilt.test(sample), regex.test(sample), `${regex}: ${JSON.stringify(sample)}`);
+    }
+  }
+});
+
+test("literal groups reject separate surrogate atoms that one literal rule cannot preserve", () => {
+  assert.throws(() => regexToRules(/^(?:\u{D83D}\u{DE00})+$/u), {
+    code: "UNSUPPORTED_REGEX",
+    line: 1,
+    column: 13,
+  });
+});
+
 test("rejects features it cannot preserve and non-Unicode matching", () => {
   for (const [regex, column] of [
     [/^a|b$/u, 3],

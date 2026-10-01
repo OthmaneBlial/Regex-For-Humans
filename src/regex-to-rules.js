@@ -40,6 +40,11 @@ function unsupported(message, index, hint = UNSUPPORTED_HINT) {
   fail("UNSUPPORTED_REGEX", message, { line: 1, column: index + 1 }, hint);
 }
 
+/** @param {string} left @param {string} right */
+function joinsSurrogates(left, right) {
+  return /[\ud800-\udbff]$/u.test(left) && /^[\udc00-\udfff]/u.test(right);
+}
+
 /** @param {string} source @param {number} index @param {boolean} [inClass] @returns {AtomToken} */
 function readEscape(source, index, inClass = false) {
   const escaped = source[index + 1];
@@ -68,7 +73,17 @@ function readEscape(source, index, inClass = false) {
     if (!/^[0-9a-f]{4}$/iu.test(digits)) {
       unsupported("Use four hexadecimal digits in a Unicode escape.", index);
     }
-    return { end: index + 6, literal: String.fromCharCode(Number.parseInt(digits, 16)) };
+    const unit = Number.parseInt(digits, 16);
+    if (unit >= 0xd800 && unit <= 0xdbff) {
+      const low = /^\\u([dD][c-fC-F][0-9a-fA-F]{2})$/u.exec(source.slice(index + 6, index + 12));
+      if (low) {
+        return {
+          end: index + 12,
+          literal: String.fromCharCode(unit, Number.parseInt(low[1], 16)),
+        };
+      }
+    }
+    return { end: index + 6, literal: String.fromCharCode(unit) };
   }
 
   if (escaped === "x") {
@@ -173,27 +188,36 @@ function readLiteralGroup(source, start) {
   }
   let value = "";
   for (let index = start + 3; index < source.length; ) {
+    const atomStart = index;
     const character = source[index];
     if (character === ")") {
       if (!value) unsupported("An empty group has no rule-language equivalent.", start);
       return { end: index + 1, literal: value };
     }
+    let literal;
     if (character === "\\") {
       const escapeResult = readEscape(source, index);
       if (escapeResult.literal === undefined) {
         unsupported("Groups can contain literal text only.", index);
       }
-      value += escapeResult.literal;
+      literal = escapeResult.literal;
       index = escapeResult.end;
     } else if (".^$*+?()[]{}|".includes(character)) {
       unsupported("Groups can contain literal text only.", index);
     } else {
       const point = source.codePointAt(index);
       if (point === undefined) unsupported("Invalid character in group.", index);
-      const literal = String.fromCodePoint(point);
-      value += literal;
+      literal = String.fromCodePoint(point);
       index += literal.length;
     }
+    if (joinsSurrogates(value, literal)) {
+      unsupported(
+        "Separate surrogate atoms in a literal group have no literal-rule equivalent.",
+        atomStart,
+        "Fixed-width surrogate pairs such as \\uD83D\\uDE00 and code-point escapes such as \\u{1f600} are supported.",
+      );
+    }
+    value += literal;
   }
   unsupported("The non-capturing group is not closed.", start);
 }
@@ -331,6 +355,7 @@ export function regexToRules(regex) {
       continue;
     }
     if (atom.literal !== undefined && atom.kind === null) {
+      if (joinsSurrogates(literalRun, atom.literal)) flushLiteral();
       literalRun += atom.literal;
       continue;
     }

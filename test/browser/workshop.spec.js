@@ -47,6 +47,23 @@ test("unsupported regex syntax reports its location without replacing the curren
   );
 });
 
+test("reverse translation keeps escaped emoji whole while testing examples", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#reverse-translator summary").click();
+  await page
+    .getByRole("textbox", { name: "JavaScript regex literal", exact: true })
+    .fill(String.raw`/^[\uD83D\uDE00]{2}$/u`);
+  await page.getByRole("button", { name: "Translate to rules", exact: true }).click();
+  await expect(page.locator("#rules-input")).toHaveValue('start\n2 "😀"\nend');
+  await expect(page.locator("#regex-output")).toHaveText("/^😀{2}$/u");
+  const example = page.locator("#test-list textarea").first();
+  const feedback = page.locator("#test-list .test-result").first();
+  await example.fill("😀😀");
+  await expect(feedback).toHaveText('✓ Matched "😀😀" at 0');
+  await example.fill("😀");
+  await expect(feedback).toHaveText("! No match");
+});
+
 async function openBeforeWorkshopAppLoads(page) {
   let release;
   await page.route("**/web/app.js*", async (route) => {

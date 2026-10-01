@@ -75,6 +75,7 @@ try {
   const directionSource = String.raw`A\u202eB`;
   const controlText = `A${String.fromCodePoint(0, 0x1b, 0x7f, 0x9b, 0x9d, 0x2028, 0x2029)}B`;
   const controlRules = JSON.stringify(controlText);
+  const unicodePairSource = String.raw`^[\uD83D\uDE00]{2}$`;
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
@@ -83,6 +84,9 @@ const result = compile(${JSON.stringify(rules)});
 const reverse = regexToRules(/^[A-Z]{2}-\\d{4}$/u);
 if (reverse.rules !== 'start\\n2 uppercase letter\\n"-"\\n4 digit\\nend' || reverse.flags !== "") throw new Error("Wrong reverse-translation behavior");
 if (compile(reverse.rules, { flags: reverse.flags }).source !== "^[A-Z]{2}-\\\\d{4}$") throw new Error("Reverse translation did not round-trip");
+const emojiReverse = regexToRules(new RegExp(${JSON.stringify(unicodePairSource)}, "u"));
+const emojiPattern = toRegExp(compile(emojiReverse.rules, { flags: emojiReverse.flags }));
+if (!emojiPattern.test("😀😀") || emojiPattern.test("😀")) throw new Error("Reverse translation split a Unicode surrogate pair");
 const trailingList = ${JSON.stringify('one of: "😀", ",",')};
 try { compile(trailingList); throw new Error("Trailing list comma accepted"); }
 catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_CHARACTER_LIST" || error.column !== trailingList.length) throw error; }

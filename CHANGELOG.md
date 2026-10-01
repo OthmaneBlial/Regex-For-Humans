@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve Unicode surrogate-pair atoms when reverse-translating repetition and character classes; keep separate surrogate atoms separate and reject literal groups whose boundaries cannot be expressed.
+
 - Translate supported Unicode JavaScript regexes into editable rules in the library and workshop; add `zero or more`, `one or more` and `at least N` rule forms, and reject syntax that cannot be preserved.
 
 - Add an IPv4 address-shape recipe with bounded ASCII octets and a visible 0–255 validation caveat.
