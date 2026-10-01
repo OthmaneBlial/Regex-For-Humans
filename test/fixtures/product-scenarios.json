@@ -204,7 +204,7 @@
     "id": "filename-shape",
     "title": "Match a .txt filename shape",
     "note": "1–64 Unicode code points before .txt, excluding slash, backslash, NUL and line breaks. Spaces, dots and other punctuation are allowed. This is only a shape; check filesystem rules and file existence separately.",
-    "rules": "start\nbetween 1 and 64 none of: \"/\", \"\\\\\", \"\\u0000\", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\".txt\"\nend",
+    "rules": "start\nbetween 1 and 64 path segment characters\n\".txt\"\nend",
     "source": "^[^\\/\\\\\\u{0}\\u{a}\\u{d}\\u{2028}\\u{2029}]{1,64}\\.txt$",
     "flags": "u",
     "matchMode": "full",

@@ -325,7 +325,7 @@ incoming/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz	a
 start
 "incoming/"
 optional "nightly/"
-between 1 and 32 none of: "/", "\\", "\u0000", "\n", "\r", "\u2028", "\u2029"
+between 1 and 32 path segment characters
 "/v"
 between 1 and 3 digits
 "."
@@ -349,7 +349,7 @@ end
 /^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
 ```
 
-A repeated multi-character literal such as `optional "nightly/"` compiles to one optional non-capturing group. Literal tabs remain visible as `\u{9}` in the generated regex and as `\t` in the rules.
+`between 1 and 32 path segment characters` keeps the component length readable. It replaces the seven escaped exclusions with one named atom; the exact generated regex stays the same. A repeated multi-character literal such as `optional "nightly/"` compiles to one optional non-capturing group. Literal tabs remain visible as `\u{9}` in the generated regex and as `\t` in the rules.
 
 ### Accepted and rejected inputs
 
@@ -377,7 +377,7 @@ These rows are the compiler's actual `segments` output, in order.
 | 1 | `start` | `^` | Input start. |
 | 2 | `"incoming/"` | `incoming\/` | Literal text "incoming/". |
 | 3 | `optional "nightly/"` | `(?:nightly\/){0,1}` | Literal text "nightly/". Optional. |
-| 4 | `between 1 and 32 none of: "/", "\\", "\u0000", "\n", "\r", "\u2028", "\u2029"` | `[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}` | Any character except "/", "\\", "\u0000", "\n", "\r", "\u2028", "\u2029". Between 1 and 32 times (inclusive). |
+| 4 | `between 1 and 32 path segment characters` | `[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}` | Path segment character: excludes slash, backslash, NUL and line breaks. Between 1 and 32 times (inclusive). |
 | 5 | `"/v"` | `\/v` | Literal text "/v". |
 | 6 | `between 1 and 3 digits` | `\d{1,3}` | Between 1 and 3 digits (0–9), inclusive. |
 | 7 | `"."` | `\.` | Literal text ".". |

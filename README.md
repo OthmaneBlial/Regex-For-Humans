@@ -134,7 +134,7 @@ A three-digit ID is only the starting point. The [full complex-examples guide](d
 start
 "incoming/"
 optional "nightly/"
-between 1 and 32 none of: "/", "\\", "\u0000", "\n", "\r", "\u2028", "\u2029"
+between 1 and 32 path segment characters
 "/v"
 between 1 and 3 digits
 "."
@@ -160,7 +160,7 @@ end
 
 <!-- /complex:artifact-manifest -->
 
-This synthetic schema accepts a path such as `incoming/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz`, followed by a tab, 64 hex digits, another tab and a 1–12 digit byte count. The whole `nightly/` directory is optional. Missing version parts, a non-hex token or spaces replacing the tabs are rejected. Check file existence, checksum contents and calendar/version semantics separately.
+This synthetic schema accepts a path such as `incoming/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz`, followed by a tab, 64 hex digits, another tab and a 1–12 digit byte count. The whole `nightly/` directory is optional. `path segment characters` replaces the long escaped exclusion list while keeping its exact matching behavior. Missing version parts, a non-hex token or spaces replacing the tabs are rejected. Check file existence, checksum contents and calendar/version semantics separately.
 
 <details>
 <summary>🧾 Second complete example: a multiline order</summary>
