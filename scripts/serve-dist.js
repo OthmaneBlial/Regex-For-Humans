@@ -44,7 +44,7 @@ const server = createServer(async (request, response) => {
       })
       .end(data);
   } catch (error) {
-    response.writeHead(error.code === "ENOENT" ? 404 : 400).end();
+    response.writeHead(["ENOENT", "ENOTDIR"].includes(error.code) ? 404 : 400).end();
   }
 }).listen(port, "127.0.0.1", () => {
   process.stdout.write(`Serving ${root} at http://127.0.0.1:${server.address().port}/\n`);

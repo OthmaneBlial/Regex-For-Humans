@@ -51,6 +51,35 @@ test("the local server reports its assigned port and serves its selected root", 
   assert.equal(missing.status, 404);
 });
 
+test("the local server reports nonexistent paths below files as not found", {
+  timeout: 10000,
+}, async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-server-not-directory-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  mkdirSync(join(root, "nested"));
+  writeFileSync(join(root, "nested", "app.js"), "export const ready = true;\n");
+  const address = await startServer(t, root);
+  for (const path of [
+    "nested/app.js/child",
+    "nested/app.js/",
+    "nested/app.js/child/index.html",
+    "nested/app.js%2Fchild",
+  ]) {
+    for (const method of ["GET", "HEAD"]) {
+      const response = await fetch(`${address}${path}?v=missing`, { method, signal: t.signal });
+      assert.equal(response.status, 404, `${method} ${path}`);
+      assert.equal(response.headers.get("location"), null);
+      assert.equal(await response.text(), "");
+    }
+  }
+  const malformed = await fetch(`${address}%ZZ`, { signal: t.signal });
+  assert.equal(malformed.status, 400);
+  assert.equal(await malformed.text(), "");
+  const asset = await fetch(`${address}nested/app.js`, { signal: t.signal });
+  assert.equal(asset.status, 200);
+  assert.equal(await asset.text(), "export const ready = true;\n");
+});
+
 test("the local server classifies known asset extensions regardless of case", {
   timeout: 10000,
 }, async (t) => {
