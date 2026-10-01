@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add a branded 1200 × 630 share image and page-specific sharing metadata to the homepage, workshop and syntax guide.
+
+- Reject noncanonical worker flags and malformed example IDs with stable errors before matching.
+
 - Add `optional <item>` as a zero-to-one repetition modifier, with positioned diagnostics and phone-shape coverage.
 
 - Tell users a blank example field tests an empty string, as visible guidance and in each field's accessible description.
