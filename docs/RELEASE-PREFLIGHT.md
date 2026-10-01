@@ -8,7 +8,7 @@ GitHub Actions is disabled for this repository. Quality checks and release candi
 
 The maintainer authorized the first npm preview on 1 October 2026. Keep `0.1.0-dev` on the explicit `preview` distribution tag and keep the human review tasks open. The stable-release gates below still apply before a stable version bump.
 
-Run the local checks and retain the exact clean-consumer-tested candidate:
+The first preview used the commands below after local checks. For a future preview, select a new prerelease version, update `package.json` and `package-lock.json` together, and verify its own retained candidate; an existing npm version cannot be republished:
 
 ```sh
 PACK_OUTPUT_DIR=artifacts npm run test:package
