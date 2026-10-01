@@ -502,6 +502,7 @@ ui.reverseButton.addEventListener("click", () => {
     ui.reverseFeedback.hidden = false;
   }
 });
+ui.reverseButton.disabled = false;
 ui.matchMode.addEventListener("change", updateTestResults);
 ui.addExample.addEventListener("click", () => {
   hasEdits = true;

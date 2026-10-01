@@ -964,6 +964,57 @@ test("rules and options entered before the workshop app loads stay intact", asyn
   }
 });
 
+test("reverse translation waits for its handler and preserves pasted input and rules during startup", async ({
+  page,
+}) => {
+  let releaseRecipes;
+  await page.route("**/product-scenarios.json*", async (route) => {
+    await new Promise((resolve) => {
+      releaseRecipes = resolve;
+    });
+    await route.continue();
+  });
+  const releaseApp = await openBeforeWorkshopAppLoads(page);
+  try {
+    await page.locator("#reverse-translator summary").click();
+    const button = page.locator("#reverse-button");
+    const reverse = page.locator("#reverse-regex");
+    const literal = String.raw`/^CODE\d{2}$/isu`;
+    await expect(button).toBeDisabled();
+    await reverse.fill(literal);
+    releaseApp();
+    await expect(button).toBeEnabled();
+    await expect(reverse).toHaveValue(literal);
+    await button.focus();
+    await button.press("Enter");
+    const editor = page.locator("#rules-input");
+    const rules = 'start\n"CODE"\n2 digit\nend';
+    await expect(editor).toHaveValue(rules);
+    await expect(editor).toBeFocused();
+    await expect(page.locator("#regex-output")).toHaveText(literal);
+    await expect(page.locator("#reverse-feedback")).toHaveText(
+      "Translated. Review the rules and test your examples.",
+    );
+    await page.locator("#add-example").click();
+    await page.locator("#test-list textarea").fill("code12");
+    await expect(page.locator("#test-list .test-result")).toHaveText('✓ Matched "code12" at 0');
+    await expect.poll(() => typeof releaseRecipes).toBe("function");
+    releaseRecipes();
+    await expect(page.locator("#example-list button")).toHaveCount(scenarios.length);
+    await expect(editor).toHaveValue(rules);
+    await expect(reverse).toHaveValue(literal);
+    await expect(page.locator("#ignore-case")).toBeChecked();
+    await expect(page.locator("#dot-all")).toBeChecked();
+    await expect(page.locator('#example-list button[aria-current="true"]')).toHaveCount(0);
+    await expect(page.locator("#test-list textarea")).toHaveCount(1);
+    await expect(page.locator("#test-list textarea")).toHaveValue("code12");
+    await expect(page.locator("#test-list .test-result")).toHaveText('✓ Matched "code12" at 0');
+  } finally {
+    releaseApp();
+    releaseRecipes?.();
+  }
+});
+
 test("pre-app option changes preserve empty or whitespace-only rules", async ({ page }) => {
   for (const [rules, ignoreCase, dotAll, matchMode] of [
     ["", true, false, "full"],
@@ -1041,6 +1092,7 @@ test("JavaScript-disabled workshop explains its controls and opens the static sy
       await expect(staticPage.locator("noscript p")).toContainText("needs JavaScript");
       await expect(staticPage.locator("#copy-button")).toBeDisabled();
       await expect(staticPage.locator("#add-example")).toBeDisabled();
+      await expect(staticPage.locator("#reverse-button")).toBeDisabled();
       await expect(staticPage.locator("#regex-output")).toHaveText(
         "Select a recipe or write a rule",
       );

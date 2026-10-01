@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Enable workshop reverse translation only after its handler loads, preserving pasted regexes and translated rules while startup and recipe requests finish.
+
 - Reject physical line breaks inside workshop regex literals with an escape hint, preserving escaped newline matching and current editor data on failure.
 
 - Distinguish oversized translated rules from oversized regex input, preserve limit codes and report the global translation error at the start of the regex with a repair hint.
