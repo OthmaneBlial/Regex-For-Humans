@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Recognize uppercase and mixed-case HTTP, HTTPS and mailto schemes in local Markdown checks, while retaining errors for Unicode lookalikes.
+
 - Resolve angle-bracket Markdown link destinations in local documentation checks, including spaces, parentheses, optional titles and external URLs.
 
 - Explain positive character lists repeated with `*` as membership instead of exclusion across the library, CLI and workshop, including reverse-translated rules.

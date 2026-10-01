@@ -23,7 +23,8 @@ for (const file of files) {
   for (const match of content.matchAll(/\]\(\s*(?:<([^<>\r\n]*)>[^)]*|([^)]+))\)/g)) {
     const destination = match[1] ?? match[2].trim().split(/\s+(?=["'(])/u, 1)[0];
     const target = destination.split(/[?#]/u, 1)[0];
-    if (!target || /^(?:https?:|mailto:)/u.test(target)) continue;
+    // URI schemes use ASCII case; /iu would also fold the Unicode long s into s.
+    if (!target || /^(?:https?:|mailto:)/i.test(target)) continue;
     checked += 1;
     let decoded;
     try {

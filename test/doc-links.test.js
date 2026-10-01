@@ -6,6 +6,38 @@ import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
+test("documentation checks ignore ASCII scheme case without ignoring Unicode lookalikes", () => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-scheme-"));
+  try {
+    mkdirSync(join(root, "docs"));
+    const links = ["[Local](README.md)"];
+    for (const name of ["http", "https", "mailto"]) {
+      for (const scheme of [name, name.toUpperCase(), name[0].toUpperCase() + name.slice(1)]) {
+        const destination = `${scheme}:${name === "mailto" ? "hello@example.com" : "//example.com/%ZZ"}`;
+        links.push(`[External](${destination})`, `[Titled](<${destination}> "External")`);
+      }
+    }
+    const check = () =>
+      spawnSync(
+        process.execPath,
+        [fileURLToPath(new URL("../scripts/check-doc-links.js", import.meta.url)), root],
+        { encoding: "utf8" },
+      );
+    writeFileSync(join(root, "README.md"), links.join("\n"));
+    const valid = check();
+    assert.equal(valid.status, 0, valid.stderr);
+    assert.equal(valid.stderr, "");
+    assert.equal(valid.stdout, "Checked 1 local Markdown links in 1 files.\n");
+    writeFileSync(join(root, "README.md"), `${links.join("\n")}\n[Lookalike](httpſ:missing.md)\n`);
+    const invalid = check();
+    assert.equal(invalid.status, 1);
+    assert.equal(invalid.stdout, "");
+    assert.equal(invalid.stderr, "Missing local Markdown links:\nREADME.md: httpſ:missing.md\n");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("documentation checks unwrap angle-bracket destinations before resolving links", () => {
   const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-angle-"));
   try {
