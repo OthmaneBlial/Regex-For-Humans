@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add an IPv4 address-shape recipe with bounded ASCII octets and a visible 0–255 validation caveat.
+
 - Add a branded 1200 × 630 share image and page-specific sharing metadata to the homepage, workshop and syntax guide.
 
 - Add a shape-only MAC-address recipe that teaches exact hex pairs and literal separators.

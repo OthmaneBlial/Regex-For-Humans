@@ -183,6 +183,24 @@
     ]
   },
   {
+    "id": "ipv4-shape",
+    "title": "Match an IPv4 address shape",
+    "note": "Four dot-separated groups of 1–3 ASCII digits. Values above 255 and leading zeros match too; validate octet ranges and network rules separately.",
+    "rules": "start\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\nend",
+    "source": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["192.0.2.42", "0.0.0.0", "999.999.999.999", "001.002.003.004"],
+    "negative": [
+      "192.0.2",
+      "192.0.2.1234",
+      "192..2.42",
+      "192.0.2.42.7",
+      "192.0.2.42\n",
+      "١٩٢.0.2.42"
+    ]
+  },
+  {
     "id": "filename-shape",
     "title": "Match a .txt filename shape",
     "note": "1–64 Unicode code points before .txt, excluding slash, backslash, NUL and line breaks. Spaces, dots and other punctuation are allowed. This is only a shape; check filesystem rules and file existence separately.",
