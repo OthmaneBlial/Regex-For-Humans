@@ -107,6 +107,8 @@ test("keyboard can reach the editor, options, copy and test controls", async ({ 
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: /Read the syntax/ })).toBeFocused();
   await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: "Complex examples ↗", exact: true })).toBeFocused();
+  await page.keyboard.press("Tab");
   await expect(page.locator("#ignore-case")).toBeFocused();
   await page.keyboard.press("Space");
   await expect(page.locator("#ignore-case")).toBeChecked();
