@@ -27,6 +27,17 @@ test("homepage requests its current stylesheet and bypasses an obsolete cached s
   await expect(page.locator("body")).toHaveCSS("background-color", "rgb(255, 253, 245)");
 });
 
+test("homepage removes decorative motion when reduced motion is requested", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.locator("#demo-input")).toBeEnabled();
+  const motion = await page.evaluate(() => ({
+    animation: getComputedStyle(document.querySelector(".hero-copy")).animationName,
+    transition: getComputedStyle(document.querySelector(".recipe-card")).transitionDuration,
+  }));
+  expect(motion).toEqual({ animation: "none", transition: "0s" });
+});
+
 const recipes = JSON.parse(
   readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );

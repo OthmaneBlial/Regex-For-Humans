@@ -35,6 +35,20 @@ for (const state of ["ready", "error"]) {
   });
 }
 
+test("workshop reduces toggle motion for reduced-motion preference", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const milliseconds = await page
+    .locator(".toggle-track")
+    .first()
+    .evaluate((element) => {
+      const duration = getComputedStyle(element).transitionDuration;
+      const value = Number.parseFloat(duration);
+      return duration.endsWith("ms") ? value : value * 1000;
+    });
+  expect(milliseconds).toBeLessThanOrEqual(0.01);
+});
+
 test("keyboard can reach the editor, options, copy and test controls", async ({ page }) => {
   await page.goto("/");
   await page.keyboard.press("Tab");
