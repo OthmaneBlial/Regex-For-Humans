@@ -69,6 +69,8 @@ end
 
 The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. It rejects syntax it cannot express, including alternation, lookaround, backreferences and lazy quantifiers; see the [language guide](docs/LANGUAGE.md) for its exact limits.
 
+Letter and hex ranges can appear in equivalent orders: `[a-zA-Z]` becomes `letter`, and all six orders of `0-9`, `A-F` and `a-f` become `hex digit`. Generated regexes use a canonical range order with the same matching behavior.
+
 [![Real desktop workshop showing editable rules, generated regex, explanations, and passing example checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 <details>

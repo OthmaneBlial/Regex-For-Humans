@@ -28,6 +28,50 @@ test("supported JavaScript regexes translate into editable rules and keep their 
   await expect(page.locator("#rules-input")).toBeFocused();
 });
 
+test("equivalent letter and hex range orders become editable rules with the same matching", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const editor = page.locator("#rules-input");
+  const sample = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  for (const [body, phrase, canonical, positive, negative] of [
+    ["a-zA-Z", "letter", "A-Za-z", "Kſ", "A1"],
+    ...["0-9a-fA-F", "A-F0-9a-f", "A-Fa-f0-9", "a-f0-9A-F", "a-fA-F0-9"].map((body) => [
+      body,
+      "hex digit",
+      "0-9A-Fa-f",
+      "0F",
+      "G0",
+    ]),
+  ]) {
+    const literal = `/^[${body}]{2,3}$/isu`;
+    await reverse.fill(literal);
+    await page.locator("#reverse-button").click();
+    await expect(reverse).toHaveValue(literal);
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(editor).toHaveValue(`start\nbetween 2 and 3 ${phrase}\nend`);
+    await expect(page.locator("#regex-output")).toHaveText(`/^[${canonical}]{2,3}$/isu`);
+    await expect(page.locator("#ignore-case")).toBeChecked();
+    await expect(page.locator("#dot-all")).toBeChecked();
+    await sample.fill(positive);
+    await expect(result).toHaveText(`✓ Matched "${positive}" at 0`);
+    await sample.fill(negative);
+    await expect(result).toHaveText("! No match");
+  }
+  await reverse.fill("/^[a-z0-9]{2}$/u");
+  await page.locator("#reverse-button").click();
+  await expect(reverse).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#reverse-feedback")).toContainText(
+    "Character ranges are supported only",
+  );
+  await expect(editor).toHaveValue("start\nbetween 2 and 3 hex digit\nend");
+  await expect(page.locator("#copy-button")).toBeEnabled();
+});
+
 test("unsupported regex syntax reports its location without replacing the current rules", async ({
   page,
 }) => {

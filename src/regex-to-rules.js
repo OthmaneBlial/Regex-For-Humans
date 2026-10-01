@@ -17,7 +17,13 @@ const CLASS_ATOMS = new Map([
   ["A-Z", "uppercase letter"],
   ["a-z", "lowercase letter"],
   ["A-Za-z", "letter"],
+  ["a-zA-Z", "letter"],
   ["0-9A-Fa-f", "hex digit"],
+  ["0-9a-fA-F", "hex digit"],
+  ["A-F0-9a-f", "hex digit"],
+  ["A-Fa-f0-9", "hex digit"],
+  ["a-f0-9A-F", "hex digit"],
+  ["a-fA-F0-9", "hex digit"],
 ]);
 
 const CONTROL_ESCAPES = new Map([

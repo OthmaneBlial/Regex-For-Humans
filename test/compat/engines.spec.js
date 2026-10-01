@@ -22,11 +22,11 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
   await expect(reverse).toHaveAccessibleDescription(/Only a start anchor/);
   await expect(output).toHaveText("/^Hello$/u");
-  await reverse.fill("/^Hi$/u");
+  await reverse.fill("/^[a-zA-Z]{2}$/u");
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
   await page.locator("#reverse-button").click();
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
-  await expect(output).toHaveText("/^Hi$/u");
+  await expect(output).toHaveText("/^[A-Za-z]{2}$/u");
   await firstExample.fill("Hi");
   await expect(firstResult).toHaveText('✓ Matched "Hi" at 0');
 });

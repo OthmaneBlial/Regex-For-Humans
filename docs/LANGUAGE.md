@@ -106,6 +106,8 @@ The JavaScript API `regexToRules(regex)` and the workshop's **Already have a reg
 
 The workshop expects a slash-delimited JavaScript literal, such as `/^a\nb$/u`. Physical LF, CR, U+2028 and U+2029 line breaks inside its pattern are rejected with an escape hint, including inside character classes or after a backslash. Escaped line breaks remain valid matching data. Whitespace outside the literal is ignored. The library accepts `RegExp` objects directly.
 
+ASCII letter classes accept `[A-Za-z]` and `[a-zA-Z]`, producing `letter`. Hex classes accept all six orders of the `0-9`, `A-F` and `a-f` ranges, including `[0-9a-fA-F]` and `[A-Fa-f0-9]`, producing `hex digit`. Recompilation uses the canonical `[A-Za-z]` or `[0-9A-Fa-f]` order with equivalent matching. Other ranges and negated letter/hex classes remain unsupported.
+
 Unicode escapes preserve regex atom boundaries. A fixed-width surrogate pair such as `\uD83D\uDE00` is one emoji atom: `/\uD83D\uDE00+/u` repeats the whole emoji, and `[\uD83D\uDE00]` matches that emoji rather than either lone surrogate. Separate code-point escapes such as `\u{D83D}\u{DE00}` remain separate atoms and must not be merged into `"😀"`. A literal group containing separate adjacent high/low surrogate atoms is rejected because one literal rule cannot preserve those boundaries.
 
 Unsupported syntax is rejected with a column diagnostic; it is never dropped or approximated. This includes alternation, captures, lookaround, backreferences, word boundaries, lazy quantifiers, unknown character ranges and flags other than `i`, `m`, `s`, `u`. The translator requires `u` because this language always matches Unicode code points. Non-capturing literal groups are accepted as input only; groups are not rule-language syntax.

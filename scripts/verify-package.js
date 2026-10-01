@@ -92,6 +92,11 @@ const result = compile(${JSON.stringify(rules)});
 const reverse = regexToRules(/^[A-Z]{2}-\\d{4}$/u);
 if (reverse.rules !== 'start\\n2 uppercase letter\\n"-"\\n4 digit\\nend' || reverse.flags !== "") throw new Error("Wrong reverse-translation behavior");
 if (compile(reverse.rules, { flags: reverse.flags }).source !== "^[A-Z]{2}-\\\\d{4}$") throw new Error("Reverse translation did not round-trip");
+for (const [body, canonical, sample] of [["a-zA-Z", "A-Za-z", "Ab"], ["0-9a-fA-F", "0-9A-Fa-f", "0F"]]) {
+  const translated = regexToRules(new RegExp("^[" + body + "]{2}$", "u"));
+  const rebuilt = compile(translated.rules, { flags: translated.flags });
+  if (rebuilt.source !== "^[" + canonical + "]{2}$" || !toRegExp(rebuilt).test(sample) || toRegExp(rebuilt).test("!?")) throw new Error("Wrong reordered class translation");
+}
 const emojiReverse = regexToRules(new RegExp(${JSON.stringify(unicodePairSource)}, "u"));
 const emojiPattern = toRegExp(compile(emojiReverse.rules, { flags: emojiReverse.flags }));
 if (!emojiPattern.test("😀😀") || emojiPattern.test("😀")) throw new Error("Reverse translation split a Unicode surrogate pair");

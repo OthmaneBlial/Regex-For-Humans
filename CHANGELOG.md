@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Translate both ASCII letter range orders and all six hex range orders into the existing rules, preserving repetition, flags and matching while generating canonical class order.
+
 - Expose reverse-translation errors through the regex field's invalid state, clearing stale validation feedback on edits and successful retries.
 
 - Enable workshop reverse translation only after its handler loads, preserving pasted regexes and translated rules while startup and recipe requests finish.

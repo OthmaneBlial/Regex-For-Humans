@@ -44,6 +44,51 @@ test("maps multiline anchors and matching flags without changing their meaning",
   assert.equal(rebuilt.flags, original.flags);
 });
 
+test("letter and hex range orders translate with equivalent matching and canonical output", () => {
+  const samples = [
+    ...Array.from({ length: 256 }, (_, point) => String.fromCodePoint(point)),
+    "K",
+    "ſ",
+    "é",
+    "😀",
+    "𐀀",
+    "\u2028",
+    "\ud800",
+    "\udc00",
+    "",
+  ];
+  for (const [body, phrase, canonical] of [
+    ["A-Za-z", "letter", "A-Za-z"],
+    ["a-zA-Z", "letter", "A-Za-z"],
+    ...["0-9A-Fa-f", "0-9a-fA-F", "A-F0-9a-f", "A-Fa-f0-9", "a-f0-9A-F", "a-fA-F0-9"].map(
+      (body) => [body, "hex digit", "0-9A-Fa-f"],
+    ),
+  ]) {
+    for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+      const regex = new RegExp(`^[${body}]{1,2}$`, flags);
+      const translated = regexToRules(regex);
+      const anchor = regex.multiline ? "line " : "";
+      assert.equal(translated.rules, `${anchor}start\nbetween 1 and 2 ${phrase}\n${anchor}end`);
+      const result = compile(translated.rules, { flags: translated.flags });
+      assert.equal(result.source, `^[${canonical}]{1,2}$`);
+      assert.equal(result.flags, regex.flags);
+      const rebuilt = toRegExp(result);
+      for (const sample of samples) {
+        for (const candidate of [sample, sample.repeat(2), `X${sample}`, `${sample}\n`]) {
+          assert.deepEqual(
+            rebuilt.exec(candidate),
+            regex.exec(candidate),
+            `${regex}: ${JSON.stringify(candidate)}`,
+          );
+        }
+      }
+    }
+  }
+  for (const regex of [/^[a-c]+$/u, /^[0-9a-f]+$/u, /^[^a-zA-Z]+$/u, /^[a-zA-Z0-9]+$/u]) {
+    assert.throws(() => regexToRules(regex), { code: "UNSUPPORTED_REGEX" });
+  }
+});
+
 test("escapes literal punctuation and decodes Unicode escapes", () => {
   for (const regex of [/^a\/b\+c$/u, /^\u{1f600}$/u, /^[,\]]$/u]) {
     const translated = regexToRules(regex);
