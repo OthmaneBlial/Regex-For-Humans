@@ -89,6 +89,67 @@ test("letter and hex range orders translate with equivalent matching and canonic
   }
 });
 
+test("edge hyphens stay literal in positive and negative character lists", () => {
+  assert.equal(regexToRules(/^[._-]+$/u).rules, 'start\none or more one of: ".", "_", "-"\nend');
+  assert.equal(regexToRules(/^[^-._]*$/u).rules, 'start\ntext without: "-", ".", "_"\nend');
+  assert.equal(regexToRules(/^[-]$/u).rules, 'start\n"-"\nend');
+  const samples = [
+    ...Array.from({ length: 256 }, (_, point) => String.fromCodePoint(point)),
+    "😀",
+    "𐀀",
+    "K",
+    "ſ",
+    "\ud800",
+    "\udc00",
+    "",
+    "._-",
+    "-😀",
+    "\n-",
+  ];
+  for (const body of [
+    "-",
+    "--",
+    "-._",
+    "._-",
+    "-a",
+    "a-",
+    "-😀",
+    "😀-",
+    String.raw`-\cJ`,
+    String.raw`\cJ-`,
+    String.raw`a\-b`,
+  ]) {
+    for (const negative of ["", "^"]) {
+      for (const suffix of ["", "*", "+", "?", "{2,3}"]) {
+        for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+          const regex = new RegExp(`^[${negative}${body}]${suffix}$`, flags);
+          const translated = regexToRules(regex);
+          const result = compile(translated.rules, { flags: translated.flags });
+          assert.equal(result.flags, regex.flags);
+          const rebuilt = toRegExp(result);
+          for (const sample of samples) {
+            for (const candidate of [sample, sample.repeat(2), `😀${sample}`, `${sample}\n`]) {
+              assert.deepEqual(
+                rebuilt.exec(candidate),
+                regex.exec(candidate),
+                `${regex}: ${JSON.stringify(candidate)}`,
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+  for (const [regex, column] of [
+    [/^[a-c-]+$/u, 4],
+    [/^[--a]+$/u, 4],
+    [/^[---]+$/u, 4],
+    [/^[\u002d-a]+$/u, 9],
+  ]) {
+    assert.throws(() => regexToRules(regex), { code: "UNSUPPORTED_REGEX", line: 1, column });
+  }
+});
+
 test("escapes literal punctuation and decodes Unicode escapes", () => {
   for (const regex of [/^a\/b\+c$/u, /^\u{1f600}$/u, /^[,\]]$/u]) {
     const translated = regexToRules(regex);

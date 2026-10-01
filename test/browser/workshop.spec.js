@@ -72,6 +72,65 @@ test("equivalent letter and hex range orders become editable rules with the same
   await expect(page.locator("#copy-button")).toBeEnabled();
 });
 
+test("literal edge hyphens translate without accepting unsupported ranges", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#test-list textarea")).toHaveCount(4);
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const editor = page.locator("#rules-input");
+  const button = page.locator("#reverse-button");
+  const sample = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  for (const [literal, rules, source, positive, negative] of [
+    [
+      "/^[._-]{2,3}$/isu",
+      'start\nbetween 2 and 3 one of: ".", "_", "-"\nend',
+      String.raw`/^[._\-]{2,3}$/isu`,
+      "._-",
+      "----",
+    ],
+    [
+      "/^[-._]+$/u",
+      'start\none or more one of: "-", ".", "_"\nend',
+      String.raw`/^[\-._]+$/u`,
+      "-",
+      "a",
+    ],
+    ["/^[^._-]*$/u", 'start\ntext without: ".", "_", "-"\nend', String.raw`/^[^._\-]*$/u`, "", "-"],
+    ["/^[-]$/u", 'start\n"-"\nend', "/^-$/u", "-", "."],
+    [
+      "/^[😀-]+$/u",
+      'start\none or more one of: "😀", "-"\nend',
+      String.raw`/^[😀\-]+$/u`,
+      "😀-",
+      "a",
+    ],
+  ]) {
+    await reverse.fill(literal);
+    await button.press("Enter");
+    await expect(reverse).toHaveValue(literal);
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(editor).toHaveValue(rules);
+    await expect(editor).toBeFocused();
+    await expect(page.locator("#regex-output")).toHaveText(source);
+    await expect(page.locator("#ignore-case")).toBeChecked({ checked: literal.endsWith("isu") });
+    await expect(page.locator("#dot-all")).toBeChecked({ checked: literal.endsWith("isu") });
+    await sample.fill(positive);
+    await expect(result).toHaveText(`✓ Matched ${JSON.stringify(positive)} at 0`);
+    await sample.fill(negative);
+    await expect(result).toHaveText("! No match");
+  }
+  const previous = await editor.inputValue();
+  for (const literal of ["/^[a-c-]+$/u", "/^[--a]+$/u", "/^[---]+$/u"]) {
+    await reverse.fill(literal);
+    await button.press("Enter");
+    await expect(reverse).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#reverse-feedback")).toContainText("Column 4: Character ranges");
+    await expect(editor).toHaveValue(previous);
+    await expect(page.locator("#copy-button")).toBeEnabled();
+  }
+});
+
 test("control-letter escapes become visible rules and invalid control escapes preserve edits", async ({
   page,
 }) => {

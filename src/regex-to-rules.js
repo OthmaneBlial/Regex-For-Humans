@@ -150,7 +150,7 @@ function readCharacterClass(source, start) {
   /** @type {string[]} */
   const values = [];
   for (let index = contentStart; index < end; ) {
-    if (source[index] === "-") {
+    if (source[index] === "-" && index !== contentStart && index !== end - 1) {
       unsupported("Character ranges are supported only for digit, letter and hex classes.", index);
     }
     if (source[index] === "\\") {

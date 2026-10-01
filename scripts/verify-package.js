@@ -104,6 +104,11 @@ if (!emojiPattern.test("😀😀") || emojiPattern.test("😀")) throw new Error
 const controlReverse = regexToRules(new RegExp(${JSON.stringify(controlLetterSource)}, "u"));
 const controlPattern = toRegExp(compile(controlReverse.rules, { flags: controlReverse.flags }));
 if (!controlPattern.test(${JSON.stringify("\n\n")}) || !controlPattern.test("XX") || controlPattern.test(${JSON.stringify("\n")}) || controlPattern.test("jj") || /[\\u0000-\\u0009\\u000b-\\u001f]/u.test(controlReverse.rules)) throw new Error("Reverse translation changed control-letter matching or display");
+for (const source of ["^[._-]{2}$", "^[-._]{2}$"]) {
+  const translated = regexToRules(new RegExp(source, "u"));
+  const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+  if (!rebuilt.test("-_") || rebuilt.test(".a") || rebuilt.test("-")) throw new Error("Reverse translation changed literal hyphen matching");
+}
 for (const [source, code, message] of ${JSON.stringify(reverseLimitCases)}) {
   try { regexToRules(new RegExp(source, "u")); throw new Error("Oversized translated rules accepted"); }
   catch (error) { if (!(error instanceof CompileError) || error.code !== code || error.message !== message || error.line !== 1 || error.column !== 1 || error.hint !== ${JSON.stringify("Simplify the regex so its translated rules fit these limits.")}) throw error; }

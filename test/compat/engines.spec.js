@@ -36,4 +36,11 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "\\n\\n" at 0');
   await firstExample.fill("\n");
   await expect(firstResult).toHaveText("! No match");
+  await reverse.fill("/^[._-]{2}$/u");
+  await page.locator("#reverse-button").click();
+  await expect(output).toHaveText(String.raw`/^[._\-]{2}$/u`);
+  await firstExample.fill("-_");
+  await expect(firstResult).toHaveText('✓ Matched "-_" at 0');
+  await firstExample.fill(".a");
+  await expect(firstResult).toHaveText("! No match");
 });
