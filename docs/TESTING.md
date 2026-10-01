@@ -2,13 +2,13 @@
 
 GitHub Actions is disabled for this repository. All current quality checks run locally with `npm run verify`; pushes and pull requests do not trigger CI. The archived CI compatibility matrix below is historical.
 
-Full local verification passed on 1 October 2026 at source commit `d6cb1d2` with Node 25.9.0/npm 11.12.1: 132 Node tests, 174 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 56 homepage tests, a clean consumer package install and `npm audit` with zero vulnerabilities. Commit `937311c` also passed the full gate with Node 22.23.3/npm 11.12.1; the earlier run at `9df9367` passed with Node 22.0.0/npm 10.9.9. Biome 2.5.15 and the 1200 × 630 social-preview checks ran in these snapshots. These local runs cover macOS; the older hosted multi-platform results below remain historical. See [DISTRIBUTION.md](DISTRIBUTION.md) for the deployment record.
+Full local verification passed on 1 October 2026 at source commit `4d35165` with Node 22.23.3/npm 11.12.1 and at `d6cb1d2` with Node 25.9.0/npm 11.12.1. Both runs passed 132 Node tests, 174 desktop/mobile Chromium workshop tests, 2 Firefox/WebKit compatibility smoke tests, 56 homepage tests, a clean consumer package install and `npm audit` with zero vulnerabilities. The earlier run at `9df9367` passed with Node 22.0.0/npm 10.9.9. Biome 2.5.15 and the 1200 × 630 social-preview checks ran in these snapshots. These local runs cover macOS; the older hosted multi-platform results below remain historical. See [DISTRIBUTION.md](DISTRIBUTION.md) for the deployment record.
 
 The package declares Node.js `>=22`. Current local full verifications and archived hosted results:
 
 | Node version | Verification |
 | --- | --- |
-| 22.23.3 | Local `npm run verify` at commit `937311c` |
+| 22.23.3 | Local `npm run verify` at commit `4d35165` (latest); earlier full run at `937311c` |
 | 24.x | [GitHub Actions run `36364750202`](https://github.com/OthmaneBlial/Regex-For-Humans/actions/runs/36364750202), Linux, macOS and Windows |
 | 25.9.0 | Local full `npm run verify` at commit `d6cb1d2` (latest); earlier full run at `bab27a5` |
 
