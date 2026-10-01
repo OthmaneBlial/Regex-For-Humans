@@ -195,4 +195,22 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
   await expect(page.locator("#reverse-error")).toBeVisible();
   await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
+  for (const [id, rules, cases] of [
+    ["access-log", 43, 8],
+    ["structured-event", 38, 9],
+  ]) {
+    await page.goto(`/?example=${id}`);
+    await expect(page.locator("#trace-list .trace-fragment")).toHaveCount(rules);
+    await expect(page.locator("#test-summary")).toHaveText(
+      `${cases} of ${cases} examples behave as expected`,
+    );
+    await page.locator("#reverse-translator summary").click();
+    await reverse.fill(await output.textContent());
+    await reverse.press("Control+Enter");
+    await expect(editor).toBeFocused();
+    await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(cases);
+    await page.locator(`[data-scenario="${id}"]`).press("Enter");
+    await expect(page.locator("#reverse-feedback")).toBeHidden();
+    await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(cases);
+  }
 });

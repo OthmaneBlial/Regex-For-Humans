@@ -8,6 +8,8 @@ Long records deserve more than a three-digit demo. These four examples combine b
 
 In the [workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/), paste a Rules block into the editor, choose **Entire string**, and try its inputs. Keep Ignore case and Dot matches newline off for the exact output below. You can also paste its generated regex into **Already have a regex?** and translate it back.
 
+The access-log, telemetry and artifact-manifest sections also link to complete recipes that preload their rules and every listed input.
+
 From a checkout with Node.js 22+, save a Rules block as `example.rules`, then run:
 
 ```sh
@@ -43,6 +45,8 @@ console.log(regexToRules(regex).rules);
 <a id="access-log"></a>
 
 ## 🌐 Access log: a long record with quoted fields
+
+[Open the complete recipe in the workshop ↗](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) to load all 43 rules, their explanations and the eight accepted/rejected inputs below.
 
 A custom access-log shape with an IPv4-looking address, username, timestamp, request, response status, byte count, referer and user agent. Quoted fields may contain spaces where allowed. This checks the whole record; it does not extract its fields.
 
@@ -181,6 +185,8 @@ These rows are the compiler's actual `segments` output, in order.
 <a id="structured-event"></a>
 
 ## 🛰️ Structured event: fixed and dynamic optional values
+
+[Open the complete recipe in the workshop ↗](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=structured-event) to load all 38 rules, their explanations and the nine accepted/rejected inputs below.
 
 A custom telemetry record with a millisecond timestamp, service name, trace/span IDs, request fields, response size and duration. The `lane=` field always exists, but its A/B/C value is optional. The entire fixed suffix ` retry=true` is optional independently.
 

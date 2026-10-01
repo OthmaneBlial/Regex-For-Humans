@@ -46,11 +46,10 @@ for (const [, id, section] of examples) {
     const compiled = compile(rules);
     const reverse = regexToRules(toRegExp(compiled));
     const rebuilt = compile(reverse.rules, { flags: reverse.flags });
-    await page.goto(id === "artifact-manifest" ? `/?example=${id}` : "/");
-    await expect(page.locator("#test-list textarea")).toHaveCount(
-      id === "artifact-manifest" ? cases.length : 4,
-    );
-    if (id === "artifact-manifest") {
+    const preloaded = id !== "multiline-order";
+    await page.goto(preloaded ? `/?example=${id}` : "/");
+    await expect(page.locator("#test-list textarea")).toHaveCount(preloaded ? cases.length : 4);
+    if (preloaded) {
       await expect(page.locator("#rules-input")).toHaveValue(rules);
       await expect(page.locator("#test-summary")).toHaveText(
         `${cases.length} of ${cases.length} examples behave as expected`,

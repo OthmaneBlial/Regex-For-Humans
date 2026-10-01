@@ -254,5 +254,48 @@
       "incoming/nightly/WidgetKit/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz abababababababababababababababababababababababababababababababab 1048576",
       "incoming/nightly/bad\nname/v2.15.3/linux-arm64/widget_20261001_ab12cd34.tar.gz\tabababababababababababababababababababababababababababababababab\t1048576"
     ]
+  },
+  {
+    "id": "access-log",
+    "title": "Read a complex access log",
+    "note": "Synthetic access-log record: address, timestamp, quoted request, status, size, referer and user agent. Shape only; validate IP, calendar and HTTP values separately. Does not extract fields.",
+    "rules": "start\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\" - \"\nbetween 1 and 32 none of: \" \", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\" [\"\n2 digits\n\"/\"\n3 letters\n\"/\"\n4 digits\n\":\"\n2 digits\n\":\"\n2 digits\n\":\"\n2 digits\n\" \"\none of: \"+\", \"-\"\n4 digits\n\"] \\\"\"\nbetween 3 and 7 uppercase letters\n\" \"\nbetween 1 and 200 none of: \" \", \"\\\"\", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\" HTTP/\"\ndigit\n\".\"\ndigit\n\"\\\" \"\n3 digits\n\" \"\nbetween 1 and 10 digits\n\" \\\"\"\nbetween 1 and 200 none of: \"\\\"\", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\"\\\" \\\"\"\nbetween 1 and 200 none of: \"\\\"\", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\"\\\"\"\nend",
+    "source": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3} - [^ \\u{a}\\u{d}\\u{2028}\\u{2029}]{1,32} \\[\\d{2}\\/[A-Za-z]{3}\\/\\d{4}:\\d{2}:\\d{2}:\\d{2} [+\\-]\\d{4}\\] \"[A-Z]{3,7} [^ \"\\u{a}\\u{d}\\u{2028}\\u{2029}]{1,200} HTTP\\/\\d\\.\\d\" \\d{3} \\d{1,10} \"[^\"\\u{a}\\u{d}\\u{2028}\\u{2029}]{1,200}\" \"[^\"\\u{a}\\u{d}\\u{2028}\\u{2029}]{1,200}\"$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": [
+      "198.51.100.42 - alice [10/Oct/2026:13:55:36 +0200] \"GET /v1/users/42?mode=full HTTP/1.1\" 200 1234 \"https://example.test/\" \"ExampleBrowser/1.0\"",
+      "198.51.100.42 - - [10/Oct/2026:13:55:36 +0200] \"GET /v1/users/42?mode=full HTTP/1.1\" 200 1234 \"https://example.test/\" \"Example Browser 1.0\"",
+      "999.999.999.999 - alice [99/Xyz/2026:13:55:36 +0200] \"GET /v1/users/42?mode=full HTTP/1.1\" 200 1234 \"https://example.test/\" \"ExampleBrowser/1.0\""
+    ],
+    "negative": [
+      "198.51.100.1234 - alice [10/Oct/2026:13:55:36 +0200] \"GET /v1/users/42?mode=full HTTP/1.1\" 200 1234 \"https://example.test/\" \"ExampleBrowser/1.0\"",
+      "198.51.100.42 - alice [10/Oct/2026:13:55:36 +0200] \"get /v1/users/42?mode=full HTTP/1.1\" 200 1234 \"https://example.test/\" \"ExampleBrowser/1.0\"",
+      "198.51.100.42 - alice [10/Oct/2026:13:55:36 +0200] \"GET /v1/users 42 HTTP/1.1\" 200 1234 \"https://example.test/\" \"ExampleBrowser/1.0\"",
+      "198.51.100.42 - alice [10/Oct/2026:13:55:36 +0200] \"GET /v1/users/42?mode=full HTTP/1.1\" 200 1234 \"https://example.test/\" \"Example\nBrowser/1.0\"",
+      "198.51.100.42 - alice [10/Oct/2026:13:55:36 +0200] \"GET /v1/users/42?mode=full HTTP/1.1\" 200 1234 \"https://example.test/\" \"ExampleBrowser/1.0\"\n"
+    ]
+  },
+  {
+    "id": "structured-event",
+    "title": "Read a complex telemetry event",
+    "note": "Synthetic telemetry record: timestamp, service, trace/span IDs, request and duration, with independent optional lane value and retry=true suffix. Shape only; validate timestamps, HTTP values and identifiers separately.",
+    "rules": "start\n4 digits\n\"-\"\n2 digits\n\"-\"\n2 digits\n\"T\"\n2 digits\n\":\"\n2 digits\n\":\"\n2 digits\n\".\"\n3 digits\n\"Z level=\"\nbetween 4 and 5 uppercase letters\n\" service=\"\nbetween 3 and 30 word characters\n\" trace=\"\n32 hex digits\n\" span=\"\n16 hex digits\n\" method=\"\nbetween 3 and 7 uppercase letters\n\" route=\"\nbetween 1 and 200 none of: \" \", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\" status=\"\n3 digits\n\" bytes=\"\nbetween 1 and 10 digits\n\" duration=\"\nbetween 1 and 7 digits\n\".\"\n3 digits\n\"ms lane=\"\noptional one of: \"A\", \"B\", \"C\"\noptional \" retry=true\"\nend",
+    "source": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z level=[A-Z]{4,5} service=\\w{3,30} trace=[0-9A-Fa-f]{32} span=[0-9A-Fa-f]{16} method=[A-Z]{3,7} route=[^ \\u{a}\\u{d}\\u{2028}\\u{2029}]{1,200} status=\\d{3} bytes=\\d{1,10} duration=\\d{1,7}\\.\\d{3}ms lane=[ABC]{0,1}(?: retry=true){0,1}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": [
+      "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane=A retry=true",
+      "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane=",
+      "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane=C",
+      "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane= retry=true"
+    ],
+    "negative": [
+      "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane=D retry=true",
+      "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane=A retry=false",
+      "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane=A retry=true",
+      "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.50ms lane=A retry=true",
+      "2026-10-01T14:23:05.123Z level=INFO service=api-prod trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane=A retry=true"
+    ]
   }
 ]
