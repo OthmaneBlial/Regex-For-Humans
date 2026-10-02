@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Handle worker message-decoding errors through the existing failure path: stop pending testing immediately, retire idle or failed workers, and allow a fresh run without late events cancelling it.
+
 - Validate and compile the homepage's three extra demo recipes before enabling any recipe button. Malformed or missing data keeps the original hex demo, copying and workshop link available, with the existing load-error notice and reload recovery.
 
 - Return the existing validation error for null or undefined example-worker messages instead of throwing before validation; the same worker remains available for a valid request.

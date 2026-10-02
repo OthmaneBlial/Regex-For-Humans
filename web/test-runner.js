@@ -24,21 +24,36 @@ export class TestRunner {
     this.sequence = 0;
   }
 
-  cancel() {
+  /** @param {TestRunError} [error] */
+  cancel(error = new TestRunError("CANCELLED", "A newer example test replaced this one.")) {
     const active = this.active;
     this.active = null;
     if (active) clearTimeout(active.timer);
     this.worker?.terminate();
     this.worker = null;
-    active?.reject(new TestRunError("CANCELLED", "A newer example test replaced this one."));
+    active?.reject(error);
   }
 
   /** @param {TestPayload} payload @returns {Promise<TestResult[]>} */
   run(payload) {
     if (this.active) this.cancel();
+    /** @type {Worker} */
     let worker;
     try {
-      worker = this.worker ??= this.factory();
+      worker = this.worker ?? this.factory();
+      if (!this.worker) {
+        this.worker = worker;
+        /** @param {Event} event */
+        const handleError = (event) => {
+          event.preventDefault?.();
+          if (this.worker !== worker) return;
+          this.cancel(
+            new TestRunError("WORKER_ERROR", "Example testing failed in its isolated worker."),
+          );
+        };
+        worker.onerror = handleError;
+        worker.addEventListener("messageerror", handleError);
+      }
     } catch (error) {
       return Promise.reject(
         new TestRunError("WORKER_ERROR", error instanceof Error ? error.message : String(error)),
@@ -66,15 +81,6 @@ export class TestRunner {
         if (event.data.id !== id) return;
         if ("error" in event.data) finish(new TestRunError("WORKER_ERROR", event.data.error));
         else finish(null, event.data.results);
-      };
-      worker.onerror = (event) => {
-        event.preventDefault?.();
-        if (this.worker !== worker) return;
-        if (!this.active) this.cancel();
-        else
-          finish(
-            new TestRunError("WORKER_ERROR", "Example testing failed in its isolated worker."),
-          );
       };
       try {
         /** @type {TestRequest} */

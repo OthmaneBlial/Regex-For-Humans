@@ -1,6 +1,74 @@
 import { expect, test } from "@playwright/test";
 import { compile } from "../../index.js";
 
+test("worker message decode errors retire pending and idle workers before recovery", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const outcome = await page.evaluate(async () => {
+    const { TestRunner } = await import("/web/test-runner.js");
+    let starts = 0;
+    const runner = new TestRunner(() => {
+      starts += 1;
+      return new Worker("/web/match-worker.js", { type: "module" });
+    });
+    const normal = {
+      source: "^a+$",
+      flags: "u",
+      mode: "full",
+      cases: [{ id: 7, text: "aaa", expected: true }],
+    };
+    const outcomes = [];
+    try {
+      for (const pending of [true, false]) {
+        await runner.run(normal);
+        const failed = runner.worker;
+        const attempt = pending ? runner.run(normal) : null;
+        const event = new MessageEvent("messageerror", { cancelable: true });
+        failed.dispatchEvent(event);
+        let error = null;
+        if (attempt) {
+          try {
+            await attempt;
+          } catch (failure) {
+            error = { code: failure.code, message: failure.message };
+          }
+        }
+        const retired = runner.worker === null;
+        const recovered = runner.run(normal);
+        // A late decode error from the retired worker cannot cancel its replacement.
+        failed.dispatchEvent(new MessageEvent("messageerror"));
+        outcomes.push({
+          error,
+          retired,
+          prevented: event.defaultPrevented,
+          results: await recovered,
+        });
+      }
+      return { outcomes, starts };
+    } finally {
+      runner.cancel();
+    }
+  });
+  const result = [{ id: 7, actual: true, pass: true, detail: 'Matched "aaa" at 0' }];
+  expect(outcome).toEqual({
+    starts: 3,
+    outcomes: [
+      {
+        error: {
+          code: "WORKER_ERROR",
+          message: "Example testing failed in its isolated worker.",
+        },
+        retired: true,
+        prevented: true,
+        results: result,
+      },
+      { error: null, retired: true, prevented: true, results: result },
+    ],
+  });
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+});
+
 test("worker rejects nullish request data with a reply and keeps accepting valid requests", async ({
   page,
 }) => {

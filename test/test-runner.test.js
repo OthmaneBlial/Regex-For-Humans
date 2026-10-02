@@ -24,6 +24,12 @@ class FakeWorker {
   terminate() {
     this.terminated = true;
   }
+
+  addEventListener(type, listener) {
+    assert.equal(type, "messageerror");
+    assert.equal(this.onmessageerror, undefined, "Register the listener only once per worker.");
+    this.onmessageerror = listener;
+  }
 }
 
 test("isolated runner reuses a completed worker until explicitly cancelled", async () => {
@@ -190,5 +196,33 @@ test("a reused worker error reply or send failure retires it before recovery", a
     assert.equal(failed.terminated, true);
     assert.equal(runner.worker, null);
     assert.equal((await runner.run({ source: "recovered" }))[0].pass, true);
+  }
+});
+
+test("worker message decode failures retire pending and idle workers before recovery", async () => {
+  for (const pending of [true, false]) {
+    const failed = new FakeWorker();
+    const fresh = new FakeWorker();
+    const workers = [failed, fresh];
+    const runner = new TestRunner(() => workers.shift(), 20);
+    await runner.run({ source: "warm" });
+    failed.reply = false;
+    const attempt = pending ? runner.run({ source: "pending" }) : null;
+    const rejected = attempt
+      ? assert.rejects(attempt, {
+          code: "WORKER_ERROR",
+          message: "Example testing failed in its isolated worker.",
+        })
+      : null;
+    failed.onmessageerror?.({ preventDefault() {} });
+    if (rejected) await rejected;
+    assert.equal(failed.terminated, true);
+    assert.equal(runner.worker, null);
+    const recovered = runner.run({ source: "recovered" });
+    failed.onmessageerror?.({ preventDefault() {} });
+    assert.equal((await recovered)[0].pass, true);
+    assert.equal(runner.worker, fresh);
+    assert.equal(fresh.terminated, false);
+    runner.cancel();
   }
 });

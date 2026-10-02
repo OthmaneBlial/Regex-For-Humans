@@ -52,6 +52,8 @@ npm pack --dry-run --json
 
 ## Coverage
 
+Worker message-error regressions cover pending and idle controllers, worker retirement, exact recovery results and late events from the retired worker. Browser checks dispatch `messageerror` on native workers to verify the event hook; they do not induce a browser's internal structured-clone failure.
+
 Homepage recipe-loading checks cover non-array, empty and null-entry responses, plus missing notes/examples and invalid rules in the last demo recipe. All three buttons stay disabled after the load-error notice appears; the initial hex pattern, matching, copy action and workshop link remain usable. Reloading valid data restores all three recipes without a page error.
 
 Node tests cover the public API, parser diagnostics, every instruction and repetition form listed in [LANGUAGE.md](LANGUAGE.md), the README's lead demo and optional shortcut against compiler output, literal/character-set escaping with deterministic Unicode samples, 519 seeded arbitrary-rule cases, CLI use from files/stdin, and the isolated worker runner. Bounded-count checks include zero and equal bounds, both limits, Unicode literal units, inclusive matching and positioned malformed-range errors. The arbitrary-rule check verifies deterministic compilation, valid regex output, contiguous source spans, and positioned `CompileError` failures. Browser tests cover all recipe fixtures, build-versioned asset URLs, editing and recovery, examples, clipboard, keyboard flow, the local syntax guide and visible build version, reduced-motion preferences, automated WCAG A/AA checks, oversized and HTML-like input, worker timeout/recovery for pathological and compiler-generated bounded expressions, and expanded Unicode-escaped regex source.
