@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Full-mode example feedback now reports the zero-based UTF-16 position of a rejected partial or empty match, consistent with Search mode.
+
 - Skip rule counting for oversized workshop input and bound source-error navigation to the source budget plus its first excess code unit. Show “Over limit”, keep the entire input and options, and retain exact-boundary compilation and matching recovery.
 
 - Construct native regexes from the same source and flags validated by `toRegExp()`, reading each field once. Preserve source-before-flags validation, the metadata `TypeError` and native syntax errors.

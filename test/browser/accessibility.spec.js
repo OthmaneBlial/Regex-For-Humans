@@ -636,8 +636,10 @@ test("example descriptions follow matching results and rule repairs", async ({ p
   await expect(expected).toHaveAccessibleDescription("✓ No match");
   const editor = page.locator("#rules-input");
   await editor.fill('"ABC"');
-  await expect(field).toHaveAccessibleDescription(`${limits} ✓ Found "ABC", not the entire string`);
-  await expect(expected).toHaveAccessibleDescription('✓ Found "ABC", not the entire string');
+  await expect(field).toHaveAccessibleDescription(
+    `${limits} ✓ Found "ABC" at 0, not the entire string`,
+  );
+  await expect(expected).toHaveAccessibleDescription('✓ Found "ABC" at 0, not the entire string');
   await page.locator("#match-mode").selectOption("search");
   await expect(field).toHaveAccessibleDescription(`${limits} ! Matched "ABC" at 0`);
   await expect(expected).toHaveAccessibleDescription('! Matched "ABC" at 0');
