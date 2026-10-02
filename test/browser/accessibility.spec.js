@@ -476,6 +476,9 @@ test("example resize heights follow their identities when adding and removing ro
     ]) {
       const field = fields.nth(index);
       await field.fill(text);
+      await expect(page.locator("#test-summary")).toHaveText(
+        `4 of 4 examples behave as expected. Example ${index + 1} matches the expected result.`,
+      );
       const before = await field.evaluate((input) => input.clientHeight);
       await field.evaluate((input) =>
         window.scrollBy({
