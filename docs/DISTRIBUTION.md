@@ -48,6 +48,12 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Published preview in the security policy
+
+Source commit `c686343` was synchronized into the existing project folder at Pages commit `12b6373`.
+
+Hosted security-policy verification passed after Pages commit `12b6373` built successfully on 2 October 2026 (Europe/Paris): all 46 served files matched local SHA-256 values. Only four Markdown files changed inside the existing project folder; all 33 non-Markdown resources are byte-identical to the prior deployment. The served policy links the README’s versioned experimental npm preview, distinguishes stable support and identifies fixes on main. This documentation update preserves the previously verified workshop behavior and unchanged npm preview; it is not a new package release or human usability result.
+
 ### Focus without caret scrolling
 
 Source commit `cb9a200` was synchronized into the existing project folder at Pages commit `30d5f42`, whose build succeeded on 2 October 2026 (Europe/Paris). All 16 changed files are within `Regex-For-Humans/`; 20 non-Markdown resources stayed identical, and 12 of the other 13 differ only in versioned URLs. The remaining file is the tested workshop app.
