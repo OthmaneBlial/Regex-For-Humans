@@ -600,7 +600,33 @@ if (hasEdits) compileRules();
 try {
   const response = await fetch(new URL("../test/fixtures/product-scenarios.json", import.meta.url));
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  scenarios = await response.json();
+  const loaded = await response.json();
+  if (!Array.isArray(loaded)) throw new Error("Invalid example recipe data");
+  if (loaded.length === 0) throw new Error("No example recipes are available.");
+  const ids = new Set();
+  for (const scenario of loaded) {
+    if (
+      typeof scenario?.id !== "string" ||
+      !scenario.id.trim() ||
+      ids.has(scenario.id) ||
+      typeof scenario.title !== "string" ||
+      !scenario.title.trim() ||
+      typeof scenario.note !== "string" ||
+      typeof scenario.rules !== "string" ||
+      !["full", "search"].includes(scenario.matchMode) ||
+      !Array.isArray(scenario.positive) ||
+      !Array.isArray(scenario.negative) ||
+      scenario.positive.length + scenario.negative.length > 100 ||
+      [...scenario.positive, ...scenario.negative].some(
+        (text) => typeof text !== "string" || text.replace(/\r\n?/gu, "\n").length > 2048,
+      )
+    ) {
+      throw new Error("Invalid example recipe data");
+    }
+    compile(scenario.rules);
+    ids.add(scenario.id);
+  }
+  scenarios = loaded;
   renderScenarioButtons();
   const requested = new URLSearchParams(window.location.search).get("example");
   const scenario = scenarios.find((item) => item.id === requested) ?? scenarios[0];
