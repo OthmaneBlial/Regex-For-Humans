@@ -14,6 +14,17 @@ const recipes = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
+test("security policy distinguishes the published preview from stable support", () => {
+  const policy = readFileSync(new URL("../SECURITY.md", import.meta.url), "utf8");
+  const preview = /https:\/\/www\.npmjs\.com\/package\/regex-for-humans\/v\/[^)]+/u.exec(readme);
+  assert.ok(preview, "README links the published npm preview");
+  assert.ok(policy.includes(preview[0]), "Security policy links the same published preview");
+  assert.match(policy, /experimental npm preview/u);
+  assert.match(policy, /No stable release is supported yet/u);
+  assert.match(policy, /Security fixes target `main`/u);
+  assert.doesNotMatch(policy, /no published npm|there are no released versions/u);
+});
+
 test("README links every shared recipe exactly once", () => {
   const ids = [
     ...readme.matchAll(

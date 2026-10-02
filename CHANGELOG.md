@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Correct the security policy's published npm preview status and distinguish it from stable support and current fixes on `main`.
+
 - Preserve the focused example's reading position after removing an adjacent row, even when its caret is outside the visible textarea. Keep normal focus and page navigation in every browser engine.
 
 - Keep surviving example selections, selection direction and scroll positions when adding or removing rows, alongside their existing resize heights. Preserve example identity, removal focus and fresh views for new rows or recipes.
