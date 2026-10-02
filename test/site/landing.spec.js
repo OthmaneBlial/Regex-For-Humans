@@ -622,6 +622,7 @@ test("recipe cards cover every shared recipe and open editable shapes", async ({
     "invoice-number",
     "username-shape",
     "mac-address-shape",
+    "uuid-shape",
     "product-code-shape",
     "time-shape",
     "phone-shape",

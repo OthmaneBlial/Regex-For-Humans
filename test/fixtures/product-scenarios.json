@@ -85,6 +85,32 @@
     ]
   },
   {
+    "id": "uuid-shape",
+    "title": "Match a UUID shape",
+    "note": "Five ASCII hexadecimal groups of 8–4–4–4–12 characters, in either letter case. Bare text only; no braces or urn:uuid: prefix. Shape only; check version, variant and uniqueness separately.",
+    "rules": "start\n8 hex digits\n\"-\"\n4 hex digits\n\"-\"\n4 hex digits\n\"-\"\n4 hex digits\n\"-\"\n12 hex digits\nend",
+    "source": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": [
+      "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
+      "F81D4faE-7dEC-11D0-A765-00a0C91E6BF6",
+      "00000000-0000-0000-0000-000000000000",
+      "ffffffff-ffff-ffff-ffff-ffffffffffff",
+      "12345678-9abc-fdef-0123-456789abcdef"
+    ],
+    "negative": [
+      "f81d4fae7dec-11d0-a765-00a0c91e6bf6",
+      "f81d4fa-7dec-11d0-a765-00a0c91e6bf6",
+      "f81d4fae-7dec-11d0-a765-00a0c91e6bf60",
+      "g81d4fae-7dec-11d0-a765-00a0c91e6bf6",
+      "urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
+      "{f81d4fae-7dec-11d0-a765-00a0c91e6bf6}",
+      "١81d4fae-7dec-11d0-a765-00a0c91e6bf6",
+      "f81d4fae-7dec-11d0-a765-00a0c91e6bf6\n"
+    ]
+  },
+  {
     "id": "product-code-shape",
     "title": "Match a case-sensitive product-code shape",
     "note": "Two uppercase ASCII letters, three lowercase ASCII letters and four digits. JavaScript's i option ignores case; verify product records separately.",

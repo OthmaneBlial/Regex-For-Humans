@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a UUID shape recipe with five fixed hexadecimal groups, mixed-case examples, explicit semantic limits and a homepage deep link. Check every hex position, separator and group boundary in both translation directions without changing the grammar.
+
 - Match worker results to the sent case count, identities and expectations. Reject missing, extra or unrelated results and contradictory boolean pass flags before rendering; preserve caller edits after sending, reordered valid replies, boundaries and recovery without rerunning regexes on the main thread.
 
 - Correct the security policy's published npm preview status and distinguish it from stable support and current fixes on `main`.
