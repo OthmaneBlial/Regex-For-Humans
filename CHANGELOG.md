@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep surviving example selections, selection direction and scroll positions when adding or removing rows, alongside their existing resize heights. Preserve example identity, removal focus and fresh views for new rows or recipes.
+
 - Validate worker reply envelopes and result fields before resolving example tests. Malformed current replies report a stable error and retire the worker immediately; valid results, old request IDs, idle messages and recovery keep their existing behavior.
 
 - Accept explicit `undefined` compiler flags in TypeScript with `exactOptionalPropertyTypes`, matching the existing default behavior. Check readonly defaults, inline options and forwarded optional flags in the installed-package consumer; native regex metadata still requires string flags.

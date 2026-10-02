@@ -283,11 +283,23 @@ async function updateTestResults() {
 }
 
 function renderTests() {
-  const heights = new Map(
-    [...ui.testList.querySelectorAll(".test-row")].map((row) => [
-      row.querySelector(".test-result")?.id,
-      row.querySelector("textarea")?.style.height ?? "",
-    ]),
+  const views = new Map(
+    [...ui.testList.querySelectorAll(".test-row")].map((row) => {
+      const input = row.querySelector("textarea");
+      return [
+        row.querySelector(".test-result")?.id,
+        input
+          ? {
+              height: input.style.height,
+              start: input.selectionStart,
+              end: input.selectionEnd,
+              direction: input.selectionDirection,
+              top: input.scrollTop,
+              left: input.scrollLeft,
+            }
+          : null,
+      ];
+    }),
   );
   ui.testList.replaceChildren();
   ui.addExample.disabled = testCases.length >= 100;
@@ -302,7 +314,9 @@ function renderTests() {
     input.value = sample.text;
     sample.text = input.value;
     input.rows = sample.text.split("\n", 3).length;
-    input.style.height = heights.get(`example-result-${sample.id}`) ?? "";
+    const view = views.get(`example-result-${sample.id}`);
+    input.style.height = view?.height ?? "";
+    if (view) input.setSelectionRange(view.start, view.end, view.direction);
     input.placeholder = "Empty string";
     input.setAttribute("aria-label", `Example ${number} string`);
     input.setAttribute("aria-describedby", `example-limits example-result-${sample.id}`);
@@ -345,6 +359,10 @@ function renderTests() {
     });
     row.append(input, expected, result, remove);
     ui.testList.append(row);
+    if (view) {
+      input.scrollTop = view.top;
+      input.scrollLeft = view.left;
+    }
   }
 }
 
