@@ -22,6 +22,12 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Local testing guide
+
+Source commit `8fe307b` was synchronized into the existing project folder at Pages commit `424b442`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including both changed documentation files. All thirty-three non-Markdown website files matched the previous deployed build byte for byte. Other project folders and the published npm preview were preserved.
+
+The served testing guide puts setup on line 5, before detailed coverage and verification records. Its individual-check block matches the complete `package.json` gate in order, including `build:pages`, `test:compat` and `build:share-card`, followed by the package dry run. Existing coverage and dated verification paragraphs are retained with reviewed reference corrections. This publication updates documentation; earlier live workshop interaction checks are recorded below.
+
 ### Partial-match positions
 
 Source commit `63689a2` was synchronized into the existing project folder at Pages commit `73394a7`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all seventeen changed project files. Other project folders and the published npm preview were preserved.
