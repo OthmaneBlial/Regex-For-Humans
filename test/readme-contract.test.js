@@ -60,6 +60,19 @@ test("local verification instructions install every configured browser before ru
   }
 });
 
+test("individual testing commands mirror the complete local verification gate", () => {
+  const guide = readFileSync(new URL("../docs/TESTING.md", import.meta.url), "utf8");
+  const { scripts } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  const block = [...guide.matchAll(/```sh\n([\s\S]*?)\n```/gu)].find(([, code]) =>
+    code.startsWith("npm run check\n"),
+  );
+  assert.ok(block, "Testing guide lists its individual checks");
+  assert.deepEqual(block[1].split("\n"), [
+    ...scripts.verify.split(" && "),
+    "npm pack --dry-run --json",
+  ]);
+});
+
 test("README reverse-translation example round-trips through the public API", () => {
   const reverse = regexToRules(/^[A-Z]{2}-\d{4}$/u);
   assert.ok(readme.includes("regexToRules(/^[A-Z]{2}-\\d{4}$/u)"));
