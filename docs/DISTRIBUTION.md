@@ -20,6 +20,14 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Bounded rule counting and error navigation
+
+Source commit `01b38cd` was synchronized into the existing project folder at Pages commit `feed927`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all eighteen changed project files. Other project folders and the published npm preview were preserved.
+
+Live Chrome checks at 1280/390px and Firefox/WebKit checks at 1280px ran the shared source-limit regression. Four excessive inputs retained their complete text and i/s flags, showed “Over limit”, disabled copying and selected the first excess position, including an empty newline row and the second UTF-16 unit of an emoji. Instrumented splitting received only 16,384 units for the diagnostic and 16,385 for navigation. Exactly 16,384 units compiled; restoring short rules recovered with the retained flags and expected results. There was no overflow at 320px in either the error or recovered state, and no page error. Four footer/diagnostic crops were inspected. These bounds apply to application splitting; native field insertion/rendering is separate.
+
+Live desktop/mobile Chrome also rechecked the three complex records, 100 fragments, 26 exact inputs, source selection, real clipboard, reverse translation, focus, scroll reset/retention and the manifest's 32/33-emoji boundary. Six regex crops were inspected. Worker reuse, complete-batch validation, four stable errors, recovery, 100-example/2,048-code-unit boundaries and interruption of valid expensive batches passed again in Chrome, Firefox and WebKit. The deliberate timeout checks use a 150 ms test budget; the product deadline remains 1,200 ms.
+
 ### Worker flag compatibility
 
 Source commit `f79de8f` was synchronized into the existing project folder at Pages commit `7dc64a1`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including both changed documentation files. All thirty-three non-Markdown website files matched the previous deployed build byte for byte. Other project folders and the published npm preview were preserved.
