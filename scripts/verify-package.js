@@ -363,7 +363,9 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
     throw new Error("Installed CLI produced an unexpected expression.");
   }
   const reverseExample =
-    /^printf '%s\\n' '([^']+)' \| node bin\/regex-for-humans\.js --reverse$/mu.exec(readme);
+    /^printf '%s\\n' '([^']+)' \| npx --yes --package=regex-for-humans@preview regex-for-humans --reverse$/mu.exec(
+      readme,
+    );
   if (!reverseExample) throw new Error("The installed README is missing its CLI reverse example.");
   const reverseRules = run([...cliArgs, "--reverse", "-"], {
     cwd: consumer,
