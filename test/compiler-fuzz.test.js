@@ -175,3 +175,95 @@ test("seeded Unicode data preserves matching through UTF-8 and reverse translati
     }
   }
 });
+
+test("seeded native regex forms preserve matches through reverse translation", () => {
+  const atoms = [
+    "a",
+    "A",
+    "😀",
+    String.raw`\u{D83D}`,
+    String.raw`\u{DE00}`,
+    String.raw`\uD83D\uDE00`,
+    String.raw`\x41`,
+    String.raw`\cA`,
+    String.raw`\n`,
+    ".",
+    String.raw`\d`,
+    String.raw`\D`,
+    String.raw`\w`,
+    String.raw`\W`,
+    String.raw`\s`,
+    String.raw`\S`,
+    "[ab]",
+    "[^ab]",
+    "[A-Za-z]",
+    "[0-9a-fA-F]",
+    String.raw`[\d]`,
+    String.raw`[^\w]`,
+    String.raw`[\u{D83D}\u{DE00}]`,
+    String.raw`[\uD83D\uDE00]`,
+    "[-^]",
+    String.raw`[\b]`,
+    "(?:ab)",
+    "(?:😀)",
+    "(?:)",
+  ];
+  const quantifiers = ["", "?", "*", "+", "{0}", "{1}", "{00,02}", "{0,2}", "{2}", "{2,}", "{0,0}"];
+  const samples = [
+    "",
+    "a",
+    "A",
+    "ab",
+    "aba",
+    "aa",
+    "abab",
+    "ABAB",
+    "😀",
+    "😀😀",
+    "a😀",
+    "😀a",
+    "😀ab",
+    "😀\ude00",
+    "\ud83d",
+    "\ude00",
+    "12",
+    "K",
+    "K",
+    "ſ",
+    "_",
+    "\n",
+    "a\nb",
+    "\r\n",
+    "\u0001",
+    "\b",
+    "\u2028",
+    "-",
+    "^",
+    "a\ud83d",
+    "\ude00a",
+  ];
+  let state = 0x7e57_1026;
+  const next = () => {
+    state = (Math.imul(state, 1_664_525) + 1_013_904_223) >>> 0;
+    return state;
+  };
+  const pick = (values) => values[next() % values.length];
+  for (let index = 0; index < 512; index += 1) {
+    const body = pick(atoms) + pick(quantifiers) + pick(atoms) + pick(quantifiers);
+    const source = index % 2 === 0 ? `^${body}$` : body;
+    for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
+      const original = new RegExp(source, flags);
+      const translated = regexToRules(original);
+      assert.deepEqual(regexToRules(original), translated);
+      const result = compile(translated.rules, { flags: translated.flags });
+      const rebuilt = new RegExp(result.source, result.flags);
+      for (const sample of samples) {
+        assert.deepEqual(
+          rebuilt.exec(sample),
+          original.exec(sample),
+          `${original}: ${JSON.stringify(sample)}`,
+        );
+      }
+    }
+  }
+});
