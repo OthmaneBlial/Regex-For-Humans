@@ -113,6 +113,7 @@ import { runInNewContext } from "node:vm";
 const result = compile(${JSON.stringify(rules)});
 let sourceReads = 0, flagReads = 0;
 const snapshot = toRegExp({
+  get segments() { throw new Error("Installed helper must not read unused segments"); },
   get source() { return ++sourceReads === 1 ? "^A.😀$" : "^CHANGED$"; },
   get flags() { return ++flagReads === 1 ? "isu" : "g"; }
 });
@@ -271,6 +272,10 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
 import type { CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
 const regex: RegExp = toRegExp(result);
+const cached = Object.freeze({ source: result.source, flags: result.flags });
+const cachedRegex: RegExp = toRegExp(cached);
+const pairRegex: RegExp = toRegExp({ source: result.source, flags: result.flags });
+const fullRegex: RegExp = toRegExp({ source: result.source, flags: result.flags, segments: result.segments });
 const segment: RegexSegment = result.segments[0];
 const source: string = regexMatchingThroughLines("digits");
 const range: Repetition = { kind: "range", min: 2, max: 4 };
@@ -283,7 +288,19 @@ const line: number = new CompileError("UNKNOWN_RULE", "Invalid rule", { line: 1,
 compile(3);
 // @ts-expect-error flags must be a string
 compile("digits", { flags: 3 });
-void [regex, segment, source, line, max];
+// @ts-expect-error metadata needs both source and flags
+toRegExp({ source: "a" });
+// @ts-expect-error metadata needs a source
+toRegExp({ flags: "u" });
+// @ts-expect-error source must be a string
+toRegExp({ source: 3, flags: "u" });
+// @ts-expect-error flags must be a string
+toRegExp({ source: "a", flags: 3 });
+// @ts-expect-error metadata cannot be null
+toRegExp(null);
+// @ts-expect-error metadata cannot be a string
+toRegExp("a");
+void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
 `,
   );
   run(

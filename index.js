@@ -16,8 +16,8 @@ export function regexMatchingThroughLines(lines) {
   return compile(lines).source;
 }
 
-/** Create a native RegExp from a successful compile result.
- * @param {ReturnType<typeof compile>} result
+/** Create a native RegExp from a compile result or its source/flags metadata.
+ * @param {ReturnType<typeof compile> | Pick<ReturnType<typeof compile>, "source" | "flags">} result
  */
 export function toRegExp(result) {
   const source = result ? result.source : undefined;

@@ -76,4 +76,4 @@ export interface ReverseTranslation {
 }
 export function regexToRules(regex: RegExp): ReverseTranslation;
 export function regexMatchingThroughLines(lines: string): string;
-export function toRegExp(result: CompileResult): RegExp;
+export function toRegExp(result: CompileResult | Pick<CompileResult, "source" | "flags">): RegExp;

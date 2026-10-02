@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Align `toRegExp()` TypeScript and JSDoc inputs with the existing runtime: accept string source/flags metadata without explanation segments, while retaining complete compile-result support and rejecting missing or non-string fields.
+
 - Reverse complete ASCII word classes into the existing `word` / `not word` rules. All range/underscore orders and duplicate parts preserve flags and matching; incomplete or extended range classes remain rejected with positioned diagnostics.
 
 - Validate the workshop recipe catalogue before assigning it or showing buttons. Invalid JSON data, duplicate IDs, malformed examples or rules leave manual editing, matching and copying usable; late failures preserve existing edits, and valid reloads recover.

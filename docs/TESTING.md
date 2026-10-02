@@ -52,6 +52,8 @@ npm pack --dry-run --json
 
 ## Coverage
 
+The clean consumer type-checks `toRegExp()` with readonly cached metadata, an inline source/flags pair and a complete inline compile result. Expected-error checks reject missing fields, non-string values and null/string inputs. Runtime checks verify that unused segments are not read, preserving single metadata reads, validation order, native syntax errors and matching.
+
 Complete word-class reverse checks cover all 24 range/underscore orders, duplicate parts, negation, eight flag combinations and every supported greedy repetition form, comparing complete native `exec()` results across ASCII, case folding, emoji, lone surrogates and line breaks. Nearby incomplete or extended ranges remain rejected at their original columns. CLI, clean-consumer and shared Chrome/Firefox/WebKit flows verify reusable rules, options, matching, copying, error navigation and recovery.
 
 Workshop recipe-validation checks cover malformed roots and later entries, duplicate or empty IDs, missing labels/notes/rules, invalid match modes, malformed or oversized example batches, and invalid compiled rules. Failure leaves the catalogue empty and manual editing, matching and copy requests usable. Delayed failures preserve rules, options and examples; valid reloads restore recipes. A valid 100-example catalogue accepts an empty string and CRLF data normalized to the 2,048-code-unit field limit, with an empty note and negative list.

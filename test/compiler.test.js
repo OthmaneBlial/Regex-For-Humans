@@ -557,6 +557,9 @@ test("toRegExp constructs from the metadata values it validated once", () => {
     let sourceReads = 0;
     let flagReads = 0;
     const result = {
+      get segments() {
+        throw new Error("Unused segments must not be read.");
+      },
       get source() {
         sourceReads += 1;
         if (sourceReads === 1) return "^A.😀$";
