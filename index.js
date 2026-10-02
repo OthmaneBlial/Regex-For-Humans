@@ -3,7 +3,7 @@ import { parse } from "./src/parser.js";
 import { regexToRules } from "./src/regex-to-rules.js";
 
 /** Compile controlled-English rules into JavaScript regex source, flags and source mapping.
- * @param {string} source @param {{flags?: string}} [options]
+ * @param {string} source @param {{flags?: string | undefined}} [options]
  */
 export function compile(source, options = {}) {
   return compileAst(parse(source), options);

@@ -92,7 +92,7 @@ function normalizeOptions(options) {
   return requested;
 }
 
-/** @param {ParsedRules} parsed @param {{flags?: string}} [options] */
+/** @param {ParsedRules} parsed @param {{flags?: string | undefined}} [options] */
 export function compileAst(parsed, options = {}) {
   const requested = normalizeOptions(options);
   const flags = `${requested.includes("i") ? "i" : ""}${parsed.anchorMode === "line" ? "m" : ""}${requested.includes("s") ? "s" : ""}u`;

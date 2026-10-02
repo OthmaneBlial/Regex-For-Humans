@@ -48,7 +48,7 @@ export interface CompileResult {
 }
 
 export interface CompileOptions {
-  flags?: string;
+  flags?: string | undefined;
 }
 
 export interface CompileErrorJSON {

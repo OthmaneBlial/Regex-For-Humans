@@ -336,6 +336,8 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 On `main` (unreleased), TypeScript also accepts cached compile metadata: `toRegExp({ source, flags })`. Both fields must be strings; explanation segments are not needed or read. Complete compile results remain accepted. The published npm preview still requires `CompileResult` in its TypeScript declaration.
 
+`compile("digit", { flags: undefined })` uses the default `u` flag, just like omitting `flags`. On `main`, its TypeScript option type also accepts this with `exactOptionalPropertyTypes` enabled; the published preview's declaration does not yet allow explicit `undefined` in that mode. `toRegExp()` metadata still requires string flags.
+
 `regexToRules()` also accepts genuine regexes from other JavaScript contexts, such as iframes or Node's `vm`, and leaves their `lastIndex` unchanged. It translates the stored native pattern and flags; subclass or own-property metadata overrides do not change the translation. Matching methods and custom `Symbol.match` getters are not called.
 
 Unicode escapes can include leading zeros: `/^\u{00000041}$/u` translates to `start`, `"A"`, `end` on separate lines. The same escapes work in character lists and literal groups; the regex source still has a 16,384-code-unit limit.

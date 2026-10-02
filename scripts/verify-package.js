@@ -269,8 +269,16 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   writeFileSync(
     typeSmoke,
     `import { CompileError, compile, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
-import type { CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
+import type { CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
+const defaults: CompileOptions = Object.freeze({ flags: undefined });
+compile("digit", defaults);
+compile("digit", { flags: undefined });
+function compileWithFlags(flags: string | undefined): CompileResult {
+  return compile("digit", { flags });
+}
+compileWithFlags(undefined);
+compileWithFlags("i");
 const regex: RegExp = toRegExp(result);
 const cached = Object.freeze({ source: result.source, flags: result.flags });
 const cachedRegex: RegExp = toRegExp(cached);
@@ -288,6 +296,8 @@ const line: number = new CompileError("UNKNOWN_RULE", "Invalid rule", { line: 1,
 compile(3);
 // @ts-expect-error flags must be a string
 compile("digits", { flags: 3 });
+// @ts-expect-error null is not a compiler flag default
+compile("digits", { flags: null });
 // @ts-expect-error metadata needs both source and flags
 toRegExp({ source: "a" });
 // @ts-expect-error metadata needs a source
@@ -296,6 +306,8 @@ toRegExp({ flags: "u" });
 toRegExp({ source: 3, flags: "u" });
 // @ts-expect-error flags must be a string
 toRegExp({ source: "a", flags: 3 });
+// @ts-expect-error native metadata flags cannot be undefined
+toRegExp({ source: "a", flags: undefined });
 // @ts-expect-error metadata cannot be null
 toRegExp(null);
 // @ts-expect-error metadata cannot be a string
@@ -307,6 +319,7 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
     [
       join(root, "node_modules", "typescript", "bin", "tsc"),
       "--strict",
+      "--exactOptionalPropertyTypes",
       "--noEmit",
       "--module",
       "NodeNext",
