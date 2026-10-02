@@ -4,6 +4,10 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { compile } from "../../index.js";
 
+const { version } = JSON.parse(
+  readFileSync(new URL("../../package.json", import.meta.url), "utf8"),
+);
+
 const stylesheetVersion = createHash("sha256")
   .update(readFileSync(new URL("../../site/styles.css", import.meta.url)))
   .digest("hex")
@@ -27,7 +31,7 @@ test("homepage links the published npm preview with its install command and Node
   await expect(install.locator("code")).toHaveText("npm install regex-for-humans@preview");
   await expect(install.getByRole("link", { name: "Get the npm preview ↗" })).toHaveAttribute(
     "href",
-    "https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev",
+    `https://www.npmjs.com/package/regex-for-humans/v/${version}`,
   );
   await expect(install).toContainText("Library + CLI · Node.js 22+");
 });

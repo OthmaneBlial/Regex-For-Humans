@@ -8,7 +8,7 @@
 
 A few clear English rules become a JavaScript regex you can actually follow.
 
-### [🚀 Open the playground](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Visit the site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Learn the syntax](docs/LANGUAGE.md) · [📦 npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev)
+### [🚀 Open the playground](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Visit the site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Learn the syntax](docs/LANGUAGE.md) · [📦 npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.1)
 
 🔒 **Runs locally** &nbsp; 🧩 **No runtime dependencies** &nbsp; ⚡ **One compiler, three ways to use it**
 
@@ -44,7 +44,7 @@ end
 
 A small, **fixed vocabulary**, with an exact meaning for every instruction. The library, CLI, and workshop use the same deterministic compiler. Unknown phrases get a line, column, and helpful diagnostic.
 
-> 🌱 **Development preview (`0.1.0-dev`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
+> 🌱 **Development preview (`0.1.0-dev.1`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
 
 ## 📦 Install the preview
 
@@ -58,7 +58,7 @@ Use the CLI without a global install:
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1.0-dev`. There are no runtime dependencies or standalone OS executables.
+This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1.0-dev.1`. There are no runtime dependencies or standalone OS executables.
 
 ## 🎮 Play with a pattern
 
@@ -300,12 +300,12 @@ Control characters and Unicode line separators from rules, arguments and filenam
 
 </details>
 
-### 🔄 Reverse from a source checkout (unreleased)
+### 🔄 Translate a regex back into rules
 
-`--reverse` is available on `main`, and is not included in the published npm `0.1.0-dev` preview. From a clone, translate a slash-delimited JavaScript regex with the required `u` flag:
+The `0.1.0-dev.1` preview includes `--reverse`. Translate a slash-delimited JavaScript regex with the required `u` flag:
 
 ```sh
-printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | node bin/regex-for-humans.js --reverse
+printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse
 ```
 
 ```text
@@ -335,9 +335,9 @@ console.log(reverse.rules);                 // start\n2 uppercase letter\n"-"\n4
 console.log(reverse.flags);                 // Flags to pass back to compile()
 ```
 
-On `main` (unreleased), TypeScript also accepts cached compile metadata: `toRegExp({ source, flags })`. Both fields must be strings; explanation segments are not needed or read. Complete compile results remain accepted. The published npm preview still requires `CompileResult` in its TypeScript declaration.
+TypeScript accepts cached compile metadata: `toRegExp({ source, flags })`. Both fields must be strings; explanation segments are not needed or read. Complete compile results remain accepted.
 
-`compile("digit", { flags: undefined })` uses the default `u` flag, just like omitting `flags`. On `main`, its TypeScript option type also accepts this with `exactOptionalPropertyTypes` enabled; the published preview's declaration does not yet allow explicit `undefined` in that mode. `toRegExp()` metadata still requires string flags.
+`compile("digit", { flags: undefined })` uses the default `u` flag, just like omitting `flags`. Its TypeScript option type accepts this with `exactOptionalPropertyTypes` enabled. `toRegExp()` metadata still requires string flags.
 
 `regexToRules()` also accepts genuine regexes from other JavaScript contexts, such as iframes or Node's `vm`, and leaves their `lastIndex` unchanged. It translates the stored native pattern and flags; subclass or own-property metadata overrides do not change the translation. Matching methods and custom `Symbol.match` getters are not called.
 
