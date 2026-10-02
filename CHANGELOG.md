@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Validate worker reply envelopes and result fields before resolving example tests. Malformed current replies report a stable error and retire the worker immediately; valid results, old request IDs, idle messages and recovery keep their existing behavior.
+
 - Accept explicit `undefined` compiler flags in TypeScript with `exactOptionalPropertyTypes`, matching the existing default behavior. Check readonly defaults, inline options and forwarded optional flags in the installed-package consumer; native regex metadata still requires string flags.
 
 - Align `toRegExp()` TypeScript and JSDoc inputs with the existing runtime: accept string source/flags metadata without explanation segments, while retaining complete compile-result support and rejecting missing or non-string fields.

@@ -78,9 +78,47 @@ export class TestRunner {
       this.active = { id, timer, reject };
       /** @param {MessageEvent<WorkerReply>} event */
       worker.onmessage = (event) => {
-        if (event.data.id !== id) return;
-        if ("error" in event.data) finish(new TestRunError("WORKER_ERROR", event.data.error));
-        else finish(null, event.data.results);
+        if (this.worker !== worker || this.active?.id !== id) return;
+        const data = event.data;
+        const invalid = () =>
+          finish(new TestRunError("WORKER_ERROR", "Invalid example test reply."));
+        if (
+          !data ||
+          typeof data !== "object" ||
+          Array.isArray(data) ||
+          !Number.isSafeInteger(data.id)
+        ) {
+          invalid();
+          return;
+        }
+        if (data.id !== id) return;
+        if ("error" in data) {
+          if (typeof data.error !== "string" || "results" in data) invalid();
+          else finish(new TestRunError("WORKER_ERROR", data.error));
+          return;
+        }
+        if (!Array.isArray(data.results) || data.results.length > 100) {
+          invalid();
+          return;
+        }
+        const ids = new Set();
+        for (const result of data.results) {
+          if (
+            !result ||
+            typeof result !== "object" ||
+            Array.isArray(result) ||
+            !Number.isSafeInteger(result.id) ||
+            ids.has(result.id) ||
+            typeof result.actual !== "boolean" ||
+            typeof result.pass !== "boolean" ||
+            typeof result.detail !== "string"
+          ) {
+            invalid();
+            return;
+          }
+          ids.add(result.id);
+        }
+        finish(null, data.results);
       };
       try {
         /** @type {TestRequest} */

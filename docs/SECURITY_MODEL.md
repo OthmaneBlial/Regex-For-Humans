@@ -28,6 +28,8 @@ Matching examples runs in a dedicated Web Worker, not on the UI thread. An edit 
 
 The UI writes rules, examples, diagnostics and explanations through `textContent` or form values. It does not use user text as HTML or JavaScript. The document has a restrictive Content Security Policy. The browser tests include an HTML-looking literal, oversized input, same-origin resource checks and zero console errors in the reference scenarios.
 
+The controller validates current worker replies before resolving a test: a safe-integer request ID, either a string error or at most 100 result objects, unique safe-integer result IDs, boolean match/pass fields and string details. Malformed replies report `Invalid example test reply.` and discard the worker immediately, allowing the next check to start fresh. Valid older request IDs and messages from idle or retired workers are ignored. This checks the reply structure; it does not independently re-run matching on the UI thread.
+
 ## Verification and limits
 
 Linked source files are copied as public static-build inputs. Asset versioning edits independent output copies and leaves the original targets unchanged.
