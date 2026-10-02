@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reverse complete ASCII word classes into the existing `word` / `not word` rules. All range/underscore orders and duplicate parts preserve flags and matching; incomplete or extended range classes remain rejected with positioned diagnostics.
+
 - Validate the workshop recipe catalogue before assigning it or showing buttons. Invalid JSON data, duplicate IDs, malformed examples or rules leave manual editing, matching and copying usable; late failures preserve existing edits, and valid reloads recover.
 
 - Handle worker message-decoding errors through the existing failure path: stop pending testing immediately, retire idle or failed workers, and allow a fresh run without late events cancelling it.

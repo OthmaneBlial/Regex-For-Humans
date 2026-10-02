@@ -52,6 +52,8 @@ npm pack --dry-run --json
 
 ## Coverage
 
+Complete word-class reverse checks cover all 24 range/underscore orders, duplicate parts, negation, eight flag combinations and every supported greedy repetition form, comparing complete native `exec()` results across ASCII, case folding, emoji, lone surrogates and line breaks. Nearby incomplete or extended ranges remain rejected at their original columns. CLI, clean-consumer and shared Chrome/Firefox/WebKit flows verify reusable rules, options, matching, copying, error navigation and recovery.
+
 Workshop recipe-validation checks cover malformed roots and later entries, duplicate or empty IDs, missing labels/notes/rules, invalid match modes, malformed or oversized example batches, and invalid compiled rules. Failure leaves the catalogue empty and manual editing, matching and copy requests usable. Delayed failures preserve rules, options and examples; valid reloads restore recipes. A valid 100-example catalogue accepts an empty string and CRLF data normalized to the 2,048-code-unit field limit, with an empty note and negative list.
 
 Worker message-error regressions cover pending and idle controllers, worker retirement, exact recovery results and late events from the retired worker. Browser checks dispatch `messageerror` on native workers to verify the event hook; they do not induce a browser's internal structured-clone failure.

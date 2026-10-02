@@ -198,6 +198,20 @@ if (hex.source !== "[0-9A-Fa-f]{2}" || !toRegExp(hex).test("0F") || toRegExp(hex
 const letters = compile("start between 2 and 4 letters\\nend");
 const wordCharacters = compile("start\\nbetween 2 and 4 word characters\\nend", {flags: "i"});
 if (wordCharacters.source !== "^\\\\w{2,4}$" || !toRegExp(wordCharacters).test("A_7") || !toRegExp(wordCharacters).test("Kſ") || toRegExp(wordCharacters).test("a-b") || compile("word character").source !== "\\\\w" || compile("word characters").source !== "\\\\w+") throw new Error("Wrong explicit word-character behavior");
+for (const body of ["A-Za-z0-9_", "^_0-9a-zA-Z_"]) {
+  const original = new RegExp("^[" + body + "]{2,4}$", "imsu");
+  const translated = regexToRules(original);
+  const phrase = body.startsWith("^") ? "not word" : "word";
+  if (translated.rules !== "line start\\nbetween 2 and 4 " + phrase + "\\nline end" || translated.flags !== "is") throw new Error("Wrong complete word-class translation");
+  const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+  for (const sample of ["A_7", "Kſ", "é😀", "a-b", "", "\\nA_7\\n"]) {
+    const expected = original.exec(sample);
+    const actual = rebuilt.exec(sample);
+    if (actual?.[0] !== expected?.[0] || actual?.index !== expected?.index || rebuilt.flags !== original.flags) throw new Error("Installed word-class matching changed");
+  }
+}
+try { regexToRules(/^[A-Za-z0-9_.]+$/u); throw new Error("Extended word class accepted"); }
+catch (error) { if (!(error instanceof CompileError) || error.code !== "UNSUPPORTED_REGEX" || error.column !== 4) throw error; }
 const path = compile(${JSON.stringify(pathRules)});
 if (path.source !== ${JSON.stringify(pathSource)} || !toRegExp(path).test("Équipe 😀") || toRegExp(path).test("folder/name") || toRegExp(path).test("a\\nname") || !path.segments[1].explanation.includes("Path segment character")) throw new Error("Wrong readable path behavior");
 if (regexToRules(toRegExp(path)).rules !== "start\\nbetween 1 and 32 path segment character\\nend") throw new Error("Wrong readable path reverse translation");

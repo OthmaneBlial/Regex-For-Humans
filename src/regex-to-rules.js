@@ -144,6 +144,11 @@ function readCharacterClass(source, start) {
   const known = CLASS_ATOMS.get(`${negative ? "^" : ""}${body}`);
   if (known) return { end: end + 1, phrase: known };
 
+  const wordParts = body.match(/A-Z|a-z|0-9|_/gu);
+  if (wordParts && wordParts.join("") === body && new Set(wordParts).size === 4) {
+    return { end: end + 1, phrase: negative ? "not word" : "word" };
+  }
+
   if (/^\\[dDwWsS]$/u.test(body)) {
     const category = body.charAt(1);
     const phrase = ESCAPED_ATOMS.get(negative ? swapClassCategory(category) : category);
@@ -154,7 +159,10 @@ function readCharacterClass(source, start) {
   const values = [];
   for (let index = contentStart; index < end; ) {
     if (source[index] === "-" && index !== contentStart && index !== end - 1) {
-      unsupported("Character ranges are supported only for digit, letter and hex classes.", index);
+      unsupported(
+        "Character ranges are supported only for digit, letter, word and hex classes.",
+        index,
+      );
     }
     if (source[index] === "\\") {
       const item = readEscape(source, index, true);
