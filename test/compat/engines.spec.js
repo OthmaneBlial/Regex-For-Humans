@@ -57,6 +57,28 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(firstResult).toHaveText('✓ Matched "Hi" at 0');
 });
 
+test("the reverse translator preserves all-character and non-line-terminating dots", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  await reverse.fill("/^.[^]$/u");
+  await reverse.press("Control+Enter");
+  await expect(page.locator("#rules-input")).toHaveValue(
+    ["start", String.raw`none of: "\n", "\r", "\u2028", "\u2029"`, "any character", "end"].join(
+      "\n",
+    ),
+  );
+  await expect(page.locator("#dot-all")).toBeChecked();
+  const example = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+  await example.fill("A\n");
+  await expect(result).toContainText("✓ Matched");
+  await example.fill("\nA");
+  await expect(result).toHaveText("! No match");
+});
+
 test("reverse translation preserves character counts, Unicode and option flags", async ({
   page,
 }) => {

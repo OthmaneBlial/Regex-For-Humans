@@ -39,8 +39,9 @@ const UNSUPPORTED_HINT =
   "Supported syntax includes literals, anchors, common character classes, repetition, non-capturing literal or empty groups and i/s/u/m flags. Capturing or complex groups, alternation, lookaround and backreferences are not supported.";
 const ALTERNATION_MESSAGE = "Alternation (`|`) cannot be translated.";
 const ALTERNATION_HINT = "Translate each alternative as a separate regex.";
+const LINE_TERMINATORS = ["\n", "\r", "\u2028", "\u2029"];
 
-/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, category?: string, set?: {values: string[], negative: boolean}}} AtomToken */
+/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}}} AtomToken */
 /** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number}} QuantifierToken */
 /** @typedef {AtomToken & QuantifierToken & {index: number}} PositionedAtom */
 
@@ -183,8 +184,10 @@ function readCharacterClass(source, start) {
     }
   }
 
-  if (values.length === 0)
+  if (values.length === 0) {
+    if (negative) return { end: end + 1, phrase: "any character", allCharacters: true };
     unsupported("An empty character class has no rule-language equivalent.", start);
+  }
   if (negative) {
     const excluded = new Set(values);
     if (
@@ -371,7 +374,8 @@ export function regexToRules(regex) {
     if (character === "[") atom = readCharacterClass(source, cursor);
     else if (character === "\\") atom = readEscape(source, cursor);
     else if (character === "(") atom = readLiteralGroup(source, cursor);
-    else if (character === ".") atom = { phrase: "any character", end: cursor + 1 };
+    else if (character === ".")
+      atom = { phrase: "any character", end: cursor + 1, nativeDot: true };
     else if ("*+?{}]".includes(character)) unsupported("Unexpected regex operator.", cursor);
     else {
       const point = source.codePointAt(cursor);
@@ -393,6 +397,23 @@ export function regexToRules(regex) {
   if (cursor !== source.length) unsupported("The regex contains unsupported syntax.", cursor);
   if (atoms.length === 0) {
     unsupported("An empty regex matches zero characters anywhere and cannot be translated.", 0);
+  }
+
+  const originalDotAll = nativeValue("dotAll");
+  const needsDotAll = atoms.some(
+    (atom) =>
+      atom.allCharacters &&
+      !(atom.kind === "exact" && atom.min === 0) &&
+      !(atom.kind === "range" && atom.min === 0 && atom.max === 0),
+  );
+  const dotAll = originalDotAll || needsDotAll;
+  if (needsDotAll && !originalDotAll) {
+    const nonLineTerminator = `none of: ${LINE_TERMINATORS.map(quoteText).join(", ")}`;
+    for (const atom of atoms) {
+      if (!atom.nativeDot || atom.empty) continue;
+      atom.phrase = nonLineTerminator;
+      atom.set = { values: LINE_TERMINATORS, negative: true };
+    }
   }
 
   const rules = [];
@@ -470,6 +491,6 @@ export function regexToRules(regex) {
   }
   return {
     rules: translated,
-    flags: `${nativeValue("ignoreCase") ? "i" : ""}${nativeValue("dotAll") ? "s" : ""}`,
+    flags: `${nativeValue("ignoreCase") ? "i" : ""}${dotAll ? "s" : ""}`,
   };
 }

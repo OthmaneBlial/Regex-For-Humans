@@ -930,6 +930,24 @@ test("CLI reverse preserves matching flags and explains plain-output compiler op
   }
 });
 
+test("CLI reverse adds the dot-all option needed by an empty negative class", () => {
+  const literal = "/^[^]$/u";
+  const rules = "start\nany character\nend";
+  const plain = run(["--reverse", "-"], literal);
+  assert.equal(plain.status, 0, plain.stderr);
+  assert.equal(plain.stdout, `${rules}\n`);
+  assert.equal(
+    plain.stderr,
+    "Compile these rules with --dot-all to preserve the regex flags, or use --json.\n",
+  );
+  const json = run(["--reverse", "--json", "-"], literal);
+  assert.equal(json.status, 0, json.stderr);
+  assert.equal(json.stderr, "");
+  const translated = JSON.parse(json.stdout);
+  assert.deepEqual(translated, { rules, flags: "s" });
+  assert.equal(toRegExp(compile(translated.rules, { flags: translated.flags })).test("\n"), true);
+});
+
 test("CLI reverse uses the existing translator for every shared recipe", () => {
   for (const scenario of scenarios) {
     const regex = new RegExp(scenario.source, scenario.flags);

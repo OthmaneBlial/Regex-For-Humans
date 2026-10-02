@@ -207,6 +207,7 @@ test("seeded native regex forms preserve matches through reverse translation", (
     "(?:ab)",
     "(?:😀)",
     "(?:)",
+    "[^]",
   ];
   const quantifiers = ["", "?", "*", "+", "{0}", "{1}", "{00,02}", "{0,2}", "{2}", "{2,}", "{0,0}"];
   const samples = [

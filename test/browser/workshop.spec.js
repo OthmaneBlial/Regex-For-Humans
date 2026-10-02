@@ -28,6 +28,33 @@ test("supported JavaScript regexes translate into editable rules and keep their 
   await expect(page.locator("#rules-input")).toBeFocused();
 });
 
+test("reverse translation keeps empty negative classes and ordinary dots distinct", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  const rules = page.locator("#rules-input");
+  const example = page.locator("#test-list textarea").first();
+  const result = page.locator("#test-list .test-result").first();
+
+  await reverse.fill("/^.[^]$/u");
+  await reverse.press("Control+Enter");
+  await expect(rules).toHaveValue(
+    ["start", String.raw`none of: "\n", "\r", "\u2028", "\u2029"`, "any character", "end"].join(
+      "\n",
+    ),
+  );
+  await expect(page.locator("#dot-all")).toBeChecked();
+  await expect(page.locator("#regex-output")).toHaveText(
+    String.raw`/^[^\u{a}\u{d}\u{2028}\u{2029}].$/su`,
+  );
+  await example.fill("A\n");
+  await expect(result).toContainText("✓ Matched");
+  await example.fill("\nA");
+  await expect(result).toHaveText("! No match");
+});
+
 test("translation confirmation follows the current rules and options", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-list textarea")).toHaveCount(4);

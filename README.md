@@ -83,6 +83,8 @@ end
 
 The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. It rejects syntax it cannot express, including alternation, lookaround, backreferences and lazy quantifiers; see the [language guide](docs/LANGUAGE.md) for its exact limits.
 
+Reverse translation also handles JavaScript's empty negative class `[^]`, which includes line breaks. When ordinary `.` atoms appear beside it, their output rules explicitly exclude line terminators so matching stays the same.
+
 Letter and hex ranges can appear in equivalent orders: `[a-zA-Z]` becomes `letter`, and all six orders of `0-9`, `A-F` and `a-f` become `hex digit`. Generated regexes use a canonical range order with the same matching behavior.
 
 Path-component exclusions become readable rules too: `/^[^/\\\0\n\r\u2028\u2029]{1,32}$/u` becomes `start`, `between 1 and 32 path segment character`, `end` on separate lines. Reordering, duplicate exclusions and equivalent escape spellings keep the same translation.

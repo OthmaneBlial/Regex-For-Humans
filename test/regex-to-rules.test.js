@@ -523,6 +523,46 @@ test("fixed-width surrogate escapes preserve Unicode atoms in repetition and cha
   }
 });
 
+test("empty negative classes include line breaks without changing adjacent dot behavior", () => {
+  const lineTerminators = ["\n", "\r", "\u2028", "\u2029"];
+  const samples = ["", "a", "\n", "\r", "\u2028", "\u2029", "😀", "\ud800", "a\nb"];
+  const withoutLineTerminators = String.raw`none of: "\n", "\r", "\u2028", "\u2029"`;
+  const makeRegex = (source, flags) => new RegExp(source, flags);
+  const cases = [
+    [makeRegex("[^]", "u"), "any character", "s"],
+    [makeRegex("[^]{0}", "u"), "0 any character", ""],
+    [makeRegex("^[^]{2}$", "iu"), "start\n2 any character\nend", "is"],
+    [
+      makeRegex("^.[^]$", "u"),
+      ["start", withoutLineTerminators, "any character", "end"].join("\n"),
+      "s",
+    ],
+    [
+      makeRegex(".*[^]", "u"),
+      [`text without: ${withoutLineTerminators.slice("none of: ".length)}`, "any character"].join(
+        "\n",
+      ),
+      "s",
+    ],
+  ];
+  for (const [original, expectedRules, expectedFlags] of cases) {
+    const translated = regexToRules(original);
+    assert.equal(translated.rules, expectedRules);
+    assert.equal(translated.flags, expectedFlags);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const sample of [
+      ...samples,
+      ...lineTerminators.flatMap((line) => [`${line}x`, `x${line}`]),
+    ]) {
+      assert.deepEqual(
+        rebuilt.exec(sample),
+        original.exec(sample),
+        `${original}: ${JSON.stringify(sample)}`,
+      );
+    }
+  }
+});
+
 test("separate lone-surrogate atoms remain separate when literal rules are merged", () => {
   for (const regex of [
     /^\u{D83D}\u{DE00}$/u,

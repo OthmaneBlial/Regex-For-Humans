@@ -29,7 +29,7 @@ Compiler option validation compares the requested flags with the five exact allo
 
 ## Reverse translation
 
-The public `regexToRules(regex)` delegates to `src/regex-to-rules.js`. It reads a bounded subset of Unicode JavaScript `RegExp` syntax and returns `{ rules, flags }`; `flags` contains the `i`/`s` compiler options, while multiline behavior is represented by line-anchor rules. The emitted rules are checked by the existing parser. Unsupported operators and flags fail with positioned `CompileError` diagnostics instead of returning approximate or partial rules.
+The public `regexToRules(regex)` delegates to `src/regex-to-rules.js`. It reads a bounded subset of Unicode JavaScript `RegExp` syntax and returns `{ rules, flags }`; `flags` contains the `i`/`s` compiler options needed to preserve matching, while multiline behavior is represented by line-anchor rules. It may add `s` for an empty negative class and express ordinary dots as explicit line-terminator exclusions when both occur together. The emitted rules are checked by the existing parser. Unsupported operators and flags fail with positioned `CompileError` diagnostics instead of returning approximate or partial rules.
 
 Native getters read the stored metadata, including for regexes from another JavaScript context. The native flags accessor receives a projection that reads those same getters rather than instance overrides. Unsupported flags, missing Unicode mode and oversized source are rejected in that order, without serializing or reconstructing the input regex. Translation leaves `lastIndex` unchanged.
 
