@@ -24,6 +24,12 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Independent native-pattern coverage
+
+Source commit `d0642d4` was synchronized into the existing project folder at Pages commit `71bcce6`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including both changed documentation files. All thirty-three non-Markdown website files matched the previous deployed build byte for byte. Other project folders and the published npm preview were preserved.
+
+The served testing guide describes the independent 512-form native-regex check, its 4,096 flag variants and 31 selected strings. Its setup remains on line 5, before coverage and verification records. This publication updates testing documentation; runtime resources are unchanged and earlier live workshop interaction checks are recorded below.
+
 ### Local testing guide
 
 Source commit `8fe307b` was synchronized into the existing project folder at Pages commit `424b442`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including both changed documentation files. All thirty-three non-Markdown website files matched the previous deployed build byte for byte. Other project folders and the published npm preview were preserved.
