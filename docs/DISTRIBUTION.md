@@ -30,6 +30,16 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Worker message errors
+
+Source commit `3c36f31` was synchronized into the existing project folder at Pages commit `89ad0f1`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all seventeen changed project files. Nineteen non-Markdown website resources were unchanged. Other project folders and the published npm preview were preserved.
+
+Live Chrome at 1280/390px and Firefox/WebKit at 1280px ran the shared native-worker event regression: pending testing rejected with the existing worker error, idle workers retired, late events were ignored and valid requests recovered with exact results. The workshop showed the failure notice and stopped rows, then recovered after editing; each tested controller used three workers. Both visible states had zero automated accessibility violations, no page errors or overflow at 320px. Four example-panel crops were inspected. These checks dispatch `messageerror`; they do not induce an internal browser decoding failure.
+
+Existing worker reuse, invalid-rule recovery, four batch-validation errors and the boundary batch of 100 examples with 2,048-code-unit values also passed in all four browser flows. Each flow interrupted three valid expensive requests and recovered through the same controller, using a 150 ms test budget while the product deadline remains 1,200 ms.
+
+Live Chrome at 1280/390px rechecked all three complex records, 100 explanation fragments and 26 exact preloaded cases, source selection, real clipboard, reverse translation, focus, scroll reset/retention and the 32/33-emoji boundary. Six regex crops were inspected; there was no page error or overflow at 320px.
+
 ### Homepage recipe validation
 
 Source commit `0d0c227` was synchronized into the existing project folder at Pages commit `fb96114`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all five changed project files. All thirty-one other non-Markdown website resources, including the workshop, matched the previous deployed build byte for byte. Other project folders and the published npm preview were preserved.
