@@ -351,6 +351,14 @@ between 1 and 12 digits
 end
 ```
 
+Prefer to list each excluded character? Replace rule 4 with this equivalent rule:
+
+```text
+between 1 and 32 none of: "/", "\\", "\u0000", "\n", "\r", "\u2028", "\u2029"
+```
+
+Both forms compile to the same bounded character class. The workshop recipe uses the shorter path-segment name for readability.
+
 ### Generated regex
 
 ```js
