@@ -28,6 +28,14 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Homepage recipe validation
+
+Source commit `0d0c227` was synchronized into the existing project folder at Pages commit `fb96114`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all five changed project files. All thirty-one other non-Markdown website resources, including the workshop, matched the previous deployed build byte for byte. Other project folders and the published npm preview were preserved.
+
+Live Chrome checks at 1280/390px and Firefox/WebKit checks at 1280px each ran the shared failure/reload check with nine malformed payloads. Missing or malformed data, including invalid rules in the last demo, keeps every recipe button disabled after the load-error notice; the initial pattern, positive/negative matching, copy action and workshop link remain usable. Reloading valid data restores all three demos. There were no page errors or overflow at 320px, and no automated accessibility violations after finite entrance animations settled.
+
+Separate live Chrome checks at both widths verified all three normal demos, their exact regexes and positive/negative inputs. All twelve real clipboard comparisons matched the requested rules or regex. Four fallback/recovered demo crops were inspected after transient copy feedback cleared. Existing workshop interaction checks remain recorded below.
+
 ### Nullish worker messages
 
 Source commit `cf98409` was synchronized into the existing project folder at Pages commit `26cf090`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all sixteen changed project files. Other project folders and the published npm preview were preserved.
