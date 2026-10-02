@@ -34,6 +34,14 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Workshop recipe validation
+
+Source commit `7e189c6` was synchronized into the existing project folder at Pages commit `13122c9` (sixteen changed project files). Its deployment was cancelled by a subsequent shared-repository update; successor `1910367` changed only `universe/` and built successfully on 2 October 2026 (Europe/Paris). All forty-six served website files returned HTTP 200 and matched local SHA-256 values. Twenty non-Markdown resources were unchanged; thirteen changed, including versioned references. Other project folders and the published npm preview were preserved.
+
+Live Chrome at 1280/390px and Firefox/WebKit at 1280px passed the shared recipe checks: nineteen malformed payloads retain manual editing, matching and copy requests; late failures preserve edits; valid reloads restore seventeen recipes; a valid 100-example catalogue accepts empty strings and CRLF normalized to the field limit. Failure/recovery states had zero automated accessibility violations, no page errors or overflow at 320px. Four sidebar crops were inspected.
+
+Existing worker reuse, invalid-rule recovery, four batch-validation errors, 100-example/2,048-code-unit boundaries and three expensive-request interruptions passed in all four browser flows. These deliberate interruptions use a 150 ms test budget; the product deadline remains 1,200 ms. Live Chrome at both widths also passed the three complex records, 100 explanation fragments and 26 exact preloaded cases, source selection, real clipboard, reverse translation, focus, scroll reset/retention and the 32/33-emoji boundary. Six regex crops were inspected.
+
 ### Worker message errors
 
 Source commit `3c36f31` was synchronized into the existing project folder at Pages commit `89ad0f1`, whose build completed on 2 October 2026 (Europe/Paris). All forty-six website files returned HTTP 200 and matched local SHA-256 values, including all seventeen changed project files. Nineteen non-Markdown website resources were unchanged. Other project folders and the published npm preview were preserved.
