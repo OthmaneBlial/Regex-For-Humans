@@ -40,6 +40,12 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Optional compiler flag defaults
+
+Source commit `c372862` was synchronized into the existing project folder at Pages commit `ae7d52c`, whose build succeeded on 2 October 2026 (Europe/Paris). All 17 changed files are within `Regex-For-Humans/`; 20 non-Markdown resources stayed identical, and the other 13 differ only in JSDoc or versioned URLs. Executable behavior and the published npm preview are unchanged. The README labels strict optional-flags type support as unreleased on main.
+
+Hosted optional-flags verification passed after Pages commit `ae7d52c` built successfully: all 46 served files matched local SHA-256 values. Chrome at 1280/390px and Firefox/WebKit at 1280px verified omitted, explicit undefined and readonly defaults, exact matching, metadata reads and validation, with no page errors or 320px overflow. Existing worker recovery, batch validation, boundaries and deliberate 150 ms interruptions passed; the product deadline remains 1,200 ms. Three complex records, 100 explanation fragments and 26 exact inputs passed desktop/mobile clipboard, reverse, focus and scroll checks; six regex crops were inspected.
+
 ### Cached compile metadata
 
 Source commit `4a266d3` was synchronized into the existing project folder at Pages commit `c8e3daa`, whose build succeeded on 2 October 2026 (Europe/Paris). All forty-six served files returned HTTP 200 and matched local SHA-256 values, including all eighteen changed project files. Twenty non-Markdown resources were unchanged; comparison of the thirteen changed resources with the prior deployment confirmed only JSDoc or versioned URL differences. Executable helper code is unchanged. Other project folders and the published npm preview were preserved; its TypeScript declaration still requires the complete compile result.
