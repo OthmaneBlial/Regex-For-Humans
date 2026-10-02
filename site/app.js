@@ -93,11 +93,22 @@ try {
     const response = await fetch(recipeUrl);
     if (!response.ok) throw new Error("Recipes unavailable");
     const recipes = await response.json();
-    for (const button of document.querySelectorAll("[data-recipe]")) {
+    if (!Array.isArray(recipes)) throw new Error("Recipes unavailable");
+    const demos = [...document.querySelectorAll("[data-recipe]")].map((button) => {
+      const recipe = recipes.find((item) => item?.id === button.dataset.recipe);
+      if (
+        typeof recipe?.note !== "string" ||
+        !Array.isArray(recipe.positive) ||
+        typeof recipe.positive[0] !== "string" ||
+        !Array.isArray(recipe.negative) ||
+        typeof recipe.negative[0] !== "string"
+      )
+        throw new Error("Recipes unavailable");
+      return { button, recipe, compiled: compile(recipe.rules) };
+    });
+    for (const { button, recipe, compiled } of demos) {
       button.disabled = false;
       button.addEventListener("click", () => {
-        const recipe = recipes.find((item) => item.id === button.dataset.recipe);
-        const compiled = compile(recipe.rules);
         pattern = toRegExp(compiled);
         copySequence += 1;
         window.clearTimeout(statusResetTimer);

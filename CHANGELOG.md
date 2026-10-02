@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Validate and compile the homepage's three extra demo recipes before enabling any recipe button. Malformed or missing data keeps the original hex demo, copying and workshop link available, with the existing load-error notice and reload recovery.
+
 - Return the existing validation error for null or undefined example-worker messages instead of throwing before validation; the same worker remains available for a valid request.
 
 - Full-mode example feedback now reports the zero-based UTF-16 position of a rejected partial or empty match, consistent with Search mode.

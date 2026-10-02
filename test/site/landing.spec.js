@@ -544,6 +544,71 @@ test("the initial hex demo still works when extra recipes cannot load", async ({
   await expect(page.locator("#demo-open")).toHaveAttribute("href", "./workshop/?example=hex-color");
 });
 
+test("malformed homepage recipes preserve the initial demo and recover on reload", async ({
+  page,
+}) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: {
+        writeText: async (text) => {
+          window.copiedText = text;
+        },
+      },
+    });
+  });
+  let payload;
+  await page.route("**/product-scenarios.json*", (route) => route.fulfill({ json: payload }));
+  const hex = recipes.find((recipe) => recipe.id === "hex-color");
+  const literal = `/${hex.source}/${hex.flags}`;
+  const malformed = [
+    null,
+    {},
+    [],
+    [null],
+    ...[
+      { note: null },
+      { positive: [] },
+      { positive: [null] },
+      { negative: null },
+      { rules: "unsupported recipe rule" },
+    ].map((patch) =>
+      recipes.map((recipe) => (recipe.id === "version-shape" ? { ...recipe, ...patch } : recipe)),
+    ),
+  ];
+  for (payload of malformed) {
+    await page.goto("/");
+    await expect(page.locator("#demo-note")).toContainText("Extra recipes couldn't load");
+    for (const button of await page.locator("[data-recipe]").all())
+      await expect(button).toBeDisabled();
+    await expect(page.locator("#rules-code")).toHaveText(hex.rules);
+    await expect(page.locator("#regex-code")).toHaveText(literal);
+    await expect(page.locator("#demo-open")).toHaveAttribute(
+      "href",
+      "./workshop/?example=hex-color",
+    );
+    await page.locator("#demo-input").fill("#xyzxyz");
+    await expect(page.locator("#demo-result")).toHaveText("× No match");
+    await page.locator("#demo-input").fill("#12aBcF");
+    await expect(page.locator("#demo-result")).toHaveText("✓ Match");
+    await page.locator('[data-copy="regex-code"]').click();
+    await expect.poll(() => page.evaluate(() => window.copiedText)).toBe(literal);
+  }
+  await page.unroute("**/product-scenarios.json*");
+  await page.reload();
+  for (const id of ["hex-color", "prefixed-identifier", "version-shape"]) {
+    const recipe = recipes.find((item) => item.id === id);
+    const button = page.locator(`[data-recipe="${id}"]`);
+    await expect(button).toBeEnabled();
+    await button.click();
+    await expect(page.locator("#rules-code")).toHaveText(recipe.rules);
+    await expect(page.locator("#regex-code")).toHaveText(`/${recipe.source}/${recipe.flags}`);
+    await expect(page.locator("#demo-result")).toHaveText("✓ Match");
+  }
+  expect(errors).toEqual([]);
+});
+
 test("recipe cards cover every shared recipe and open editable shapes", async ({ page }) => {
   await page.goto("/");
   const ids = await page
