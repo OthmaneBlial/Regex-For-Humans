@@ -21,7 +21,13 @@ test("malformed worker replies stop pending tests and allow fresh-worker recover
       mode: "full",
       cases: [{ id: 7, text: "aaa", expected: true }],
     };
-    const result = { id: 7, actual: true, pass: true, detail: 'Matched "aaa" at 0' };
+    const result = {
+      id: 7,
+      actual: true,
+      pass: true,
+      detail: 'Matched "aaa" at 0',
+      matchRange: { start: 0, end: 3 },
+    };
     const malformed = [
       null,
       undefined,
@@ -139,7 +145,15 @@ test("malformed worker replies stop pending tests and allow fresh-worker recover
       runner.cancel();
     }
   });
-  const result = [{ id: 7, actual: true, pass: true, detail: 'Matched "aaa" at 0' }];
+  const result = [
+    {
+      id: 7,
+      actual: true,
+      pass: true,
+      detail: 'Matched "aaa" at 0',
+      matchRange: { start: 0, end: 3 },
+    },
+  ];
   expect(outcome.outcomes).toEqual(
     Array.from({ length: 45 }, () => ({
       immediate: true,
@@ -158,10 +172,14 @@ test("malformed worker replies stop pending tests and allow fresh-worker recover
       actual: true,
       pass: true,
       detail: 'Matched "aaa" at 0',
+      matchRange: { start: 0, end: 3 },
     })),
   );
   expect(outcome.empty).toEqual([]);
-  const complete = [...result, { id: 8, actual: false, pass: true, detail: "No match" }];
+  const complete = [
+    ...result,
+    { id: 8, actual: false, pass: true, detail: "No match", matchRange: null },
+  ];
   expect(outcome.snapshot).toEqual(complete);
   expect(outcome.reorderedResults).toEqual([...complete].reverse());
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
@@ -296,7 +314,15 @@ test("worker message decode errors retire pending and idle workers before recove
       runner.cancel();
     }
   });
-  const result = [{ id: 7, actual: true, pass: true, detail: 'Matched "aaa" at 0' }];
+  const result = [
+    {
+      id: 7,
+      actual: true,
+      pass: true,
+      detail: 'Matched "aaa" at 0',
+      matchRange: { start: 0, end: 3 },
+    },
+  ];
   expect(outcome).toEqual({
     starts: 3,
     outcomes: [
@@ -351,7 +377,15 @@ test("worker rejects nullish request data with a reply and keeps accepting valid
   });
   const valid = {
     id: 1,
-    results: [{ id: 7, actual: true, pass: true, detail: 'Matched "aaa" at 0' }],
+    results: [
+      {
+        id: 7,
+        actual: true,
+        pass: true,
+        detail: 'Matched "aaa" at 0',
+        matchRange: { start: 0, end: 3 },
+      },
+    ],
   };
   const invalid = { id: undefined, error: "Invalid regex test request." };
   expect(replies).toEqual([valid, invalid, valid, invalid, valid]);

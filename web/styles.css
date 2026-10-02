@@ -767,10 +767,37 @@ a {
 .test-row textarea {
   resize: vertical;
 }
+.test-feedback {
+  min-width: 0;
+}
 .test-result {
   color: var(--ink-soft);
   font: 11px / 1.35 var(--mono);
   overflow-wrap: anywhere;
+}
+.match-preview {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font: 10px / 1.4 var(--mono);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.match-preview[hidden] {
+  display: none;
+}
+.match-preview-label {
+  color: var(--ink);
+  font-weight: 700;
+}
+.match-highlight {
+  border-radius: 2px;
+  background: var(--gold);
+  color: var(--ink);
+}
+.match-caret {
+  border-left: 2px solid var(--ink);
+  color: transparent;
 }
 .test-row[data-result="pass"] .test-result {
   color: var(--green);
@@ -900,7 +927,7 @@ a {
   .test-row {
     grid-template-columns: minmax(0, 1fr) 124px 30px;
   }
-  .test-result {
+  .test-feedback {
     grid-column: 1 / -1;
     grid-row: 2;
     padding-left: 2px;
@@ -942,7 +969,7 @@ a {
     grid-column: 1;
     grid-row: 2;
   }
-  .test-result {
+  .test-feedback {
     grid-row: 3;
   }
   .remove-example {

@@ -64,6 +64,8 @@ export class TestRunner {
       let caseCount = -1;
       /** @type {Map<number, boolean> | null} */
       let expectations = null;
+      /** @type {Map<number, number> | null} */
+      let caseLengths = null;
       /** @param {Error | null} error @param {TestResult[]} [result=[]] */
       const finish = (error, result = []) => {
         if (this.active?.id !== id) return;
@@ -102,6 +104,7 @@ export class TestRunner {
         }
         if (
           !expectations ||
+          !caseLengths ||
           !Array.isArray(data.results) ||
           data.results.length > 100 ||
           data.results.length !== caseCount
@@ -112,6 +115,8 @@ export class TestRunner {
         const ids = new Set();
         for (const result of data.results) {
           const expected = expectations.get(result?.id);
+          const length = caseLengths.get(result?.id);
+          const range = result?.matchRange;
           if (
             !result ||
             typeof result !== "object" ||
@@ -122,6 +127,16 @@ export class TestRunner {
             typeof result.pass !== "boolean" ||
             typeof result.detail !== "string" ||
             typeof expected !== "boolean" ||
+            (range !== undefined &&
+              range !== null &&
+              (typeof range !== "object" ||
+                Array.isArray(range) ||
+                !Number.isSafeInteger(range.start) ||
+                !Number.isSafeInteger(range.end) ||
+                range.start < 0 ||
+                range.end < range.start ||
+                length === undefined ||
+                range.end > length)) ||
             result.pass !== (result.actual === expected)
           ) {
             invalid();
@@ -138,6 +153,9 @@ export class TestRunner {
           caseCount = request.cases.length;
           expectations = new Map(
             Array.from(request.cases, (sample) => [sample?.id, sample?.expected]),
+          );
+          caseLengths = new Map(
+            Array.from(request.cases, (sample) => [sample?.id, sample?.text?.length]),
           );
         }
         worker.postMessage(request);

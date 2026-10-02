@@ -77,3 +77,43 @@ test("both match modes report zero-based UTF-16 positions for complete, partial 
   await expect(regex).toHaveText(pattern);
   await expect(mode).toHaveAccessibleDescription(help);
 });
+
+test("partial matches show a safe highlighted context while full and absent matches do not", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 844 });
+  await page.goto("/");
+  await page.locator("#rules-input").fill('"A"');
+  const field = page.locator("#test-list textarea").first();
+  const mode = page.locator("#match-mode");
+  const preview = page.locator("#test-list .match-preview").first();
+
+  await field.fill("before 😀A after");
+  await expect(preview).toBeVisible();
+  await expect(preview.locator("mark")).toHaveText("A");
+  await expect(preview).toContainText("before 😀");
+  await expect(preview).toContainText("after");
+  await expect(page.locator("body")).toHaveJSProperty("scrollWidth", 320);
+
+  await mode.selectOption("search");
+  await expect(preview).toBeVisible();
+  await field.fill("x\u202eA");
+  await expect(preview).toContainText(String.raw`\u202e`);
+
+  await field.fill('<img src=x onerror="alert(1)">A');
+  await expect(preview.locator("img")).toHaveCount(0);
+  await expect(preview.locator("mark")).toHaveText("A");
+
+  await field.fill("A");
+  await expect(preview).toBeHidden();
+  await field.fill("B");
+  await expect(preview).toBeHidden();
+
+  await mode.selectOption("full");
+  await page.locator("#rules-input").fill('between 0 and 1 "A"');
+  await field.fill("abc");
+  await expect(preview).toBeVisible();
+  await expect(preview.locator(".match-caret")).toHaveText("|");
+  await field.fill("");
+  await expect(preview).toBeHidden();
+});

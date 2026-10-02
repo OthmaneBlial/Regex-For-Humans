@@ -272,6 +272,12 @@ test("malformed worker replies fail immediately and retire the worker before rec
       { pass: undefined },
       { detail: undefined },
       { detail: 3 },
+      { matchRange: "0:1" },
+      { matchRange: [] },
+      { matchRange: { start: -1, end: 0 } },
+      { matchRange: { start: 1, end: 0 } },
+      { matchRange: { start: 0.5, end: 1 } },
+      { matchRange: { start: 0, end: 2 } },
     ].map((invalid) => ({ id: "current", results: [{ ...result, ...invalid }] })),
     { id: "current", results: [result, result] },
     { id: "current", results: Array.from({ length: 101 }, (_, id) => ({ ...result, id })) },
@@ -334,6 +340,7 @@ test("valid worker replies retain boundary IDs, empty results and stale-message 
         actual: index % 2 === 0,
         pass: index % 3 === 0,
         detail: index === 0 ? "" : `Result ${index}`,
+        matchRange: index % 2 === 0 ? { start: 0, end: 1 } : null,
       })),
     ]) {
       const attempt = runner.run({

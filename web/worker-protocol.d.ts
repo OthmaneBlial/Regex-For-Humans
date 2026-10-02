@@ -15,11 +15,14 @@ export type TestPayload = {
 
 export type TestRequest = TestPayload & { id: number };
 
+export type MatchRange = { start: number; end: number };
+
 export type TestResult = {
   id: number;
   actual: boolean;
   pass: boolean;
   detail: string;
+  matchRange?: MatchRange | null;
 };
 
 export type WorkerReply = { id: number; results: TestResult[] } | { id: number; error: string };

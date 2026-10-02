@@ -192,6 +192,46 @@ function flagsDescription(flags) {
 function setTestResult(row, text) {
   const result = row.querySelector(".test-result");
   if (result) result.textContent = text;
+  const preview = row.querySelector(".match-preview");
+  if (preview instanceof HTMLSpanElement) {
+    preview.hidden = true;
+    preview.replaceChildren();
+  }
+}
+
+/** @param {HTMLDivElement} row @param {string} input @param {{start: number, end: number} | null | undefined} range */
+function renderMatchPreview(row, input, range) {
+  const preview = row.querySelector(".match-preview");
+  if (!(preview instanceof HTMLSpanElement)) return;
+  if (!range || (range.start === 0 && range.end === input.length)) return;
+
+  const characters = Array.from(input);
+  const start = Array.from(input.slice(0, range.start)).length;
+  const matched = Array.from(input.slice(range.start, range.end));
+  const end = start + matched.length;
+  const context = 18;
+  const leftStart = Math.max(0, start - context);
+  const rightEnd = Math.min(characters.length, end + context);
+
+  preview.append(make("span", "match-preview-label", "Match in input: "));
+  if (leftStart > 0) preview.append(make("span", "match-context", "…"));
+  preview.append(
+    make("span", "match-context", escapeControls(characters.slice(leftStart, start).join(""))),
+  );
+  if (matched.length === 0) {
+    preview.append(make("span", "match-caret", "|"));
+  } else {
+    const highlight = make("mark", "match-highlight");
+    const visibleMatch =
+      matched.length > 96 ? [...matched.slice(0, 48), "…", ...matched.slice(-48)] : matched;
+    highlight.textContent = escapeControls(visibleMatch.join(""));
+    preview.append(highlight);
+  }
+  preview.append(
+    make("span", "match-context", escapeControls(characters.slice(end, rightEnd).join(""))),
+  );
+  if (rightEnd < characters.length) preview.append(make("span", "match-context", "…"));
+  preview.hidden = false;
 }
 
 function selectedMatchMode() {
@@ -263,6 +303,7 @@ async function updateTestResults() {
       if (evaluation.pass) passed += 1;
       row.dataset.result = evaluation.pass ? "pass" : "fail";
       setTestResult(row, `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`);
+      renderMatchPreview(row, testCases[index].text, evaluation.matchRange);
     });
     const focusedRowIndex = rows.findIndex((row) => row.contains(document.activeElement));
     const focusedResult = focusedRowIndex < 0 ? null : byId.get(testCases[focusedRowIndex].id);
@@ -345,6 +386,11 @@ function renderTests() {
 
     const result = make("span", "test-result");
     result.id = `example-result-${sample.id}`;
+    const preview = make("span", "match-preview");
+    preview.hidden = true;
+    preview.setAttribute("aria-hidden", "true");
+    const feedback = make("div", "test-feedback");
+    feedback.append(result, preview);
     const remove = make("button", "remove-example", "×");
     remove.type = "button";
     remove.setAttribute("aria-label", `Remove example ${number}`);
@@ -358,7 +404,7 @@ function renderTests() {
       next.focus({ preventScroll: true });
       next.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
     });
-    row.append(input, expected, result, remove);
+    row.append(input, expected, feedback, remove);
     ui.testList.append(row);
     if (view) {
       input.scrollTop = view.top;

@@ -55,7 +55,13 @@ self.onmessage = (event) => {
       let detail = match ? `Matched ${quoteText(match[0])} at ${match.index}` : "No match";
       if (match && !actual)
         detail = `Found ${quoteText(match[0])} at ${match.index}, not the entire string`;
-      return { id: sample.id, actual, pass: actual === sample.expected, detail };
+      return {
+        id: sample.id,
+        actual,
+        pass: actual === sample.expected,
+        detail,
+        matchRange: match ? { start: match.index, end: match.index + match[0].length } : null,
+      };
     });
     /** @type {WorkerReply} */
     const reply = { id, results };

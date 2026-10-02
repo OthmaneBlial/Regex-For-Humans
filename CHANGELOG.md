@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.0-dev.3 (2 October 2026)
+
+- Show escaped context around partial workshop matches, highlight the matched text and mark empty matches with a caret. Whole-input and absent matches keep the existing compact feedback.
+
 ## 0.1.0-dev.2 (2 October 2026)
 
 - Reverse-translate JavaScript's empty negative class `[^]` as any character, including line breaks. Preserve ordinary dot behavior when both appear by keeping dots non-matching for JavaScript line terminators under the translated `s` flag.
