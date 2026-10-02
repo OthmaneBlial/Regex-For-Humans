@@ -9,7 +9,7 @@ const MAX_TEXT_LENGTH = 2048;
 
 /** @param {MessageEvent<TestRequest>} event */
 self.onmessage = (event) => {
-  const { id, source, flags, mode, cases } = event.data;
+  const { id, source, flags, mode, cases } = event.data ?? {};
   try {
     if (
       typeof source !== "string" ||

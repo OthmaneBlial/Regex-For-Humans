@@ -1,6 +1,49 @@
 import { expect, test } from "@playwright/test";
 import { compile } from "../../index.js";
 
+test("worker rejects nullish request data with a reply and keeps accepting valid requests", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const replies = await page.evaluate(async () => {
+    const worker = new Worker("/web/match-worker.js", { type: "module" });
+    const send = (data) =>
+      new Promise((resolve, reject) => {
+        worker.onmessage = (event) => resolve(event.data);
+        worker.onerror = (event) => {
+          event.preventDefault();
+          reject(new Error(event.message));
+        };
+        worker.postMessage(data);
+      });
+    const valid = {
+      id: 1,
+      source: "^a+$",
+      flags: "u",
+      mode: "full",
+      cases: [{ id: 7, text: "aaa", expected: true }],
+    };
+    const replies = [];
+    try {
+      replies.push(await send(valid));
+      for (const data of [null, undefined]) {
+        replies.push(await send(data));
+        replies.push(await send(valid));
+      }
+      return replies;
+    } finally {
+      worker.terminate();
+    }
+  });
+  const valid = {
+    id: 1,
+    results: [{ id: 7, actual: true, pass: true, detail: 'Matched "aaa" at 0' }],
+  };
+  const invalid = { id: undefined, error: "Invalid regex test request." };
+  expect(replies).toEqual([valid, invalid, valid, invalid, valid]);
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+});
+
 test("worker validates the whole batch before running an earlier expensive example", async ({
   page,
 }) => {

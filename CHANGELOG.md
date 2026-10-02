@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Return the existing validation error for null or undefined example-worker messages instead of throwing before validation; the same worker remains available for a valid request.
+
 - Full-mode example feedback now reports the zero-based UTF-16 position of a rejected partial or empty match, consistent with Search mode.
 
 - Skip rule counting for oversized workshop input and bound source-error navigation to the source budget plus its first excess code unit. Show “Over limit”, keep the entire input and options, and retain exact-boundary compilation and matching recovery.
