@@ -572,7 +572,11 @@ test("CLI exposes flags, help and version", () => {
     /Compile controlled English into a JavaScript regex\.\nRead a file or stdin; use - for stdin\./u,
   );
   assert.match(help, /--\s+Treat the next argument as the input path/u);
-  assert.match(run(["--version"]).stdout, /^0\.1\.0-dev\n$/u);
+  const { version } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  const shown = run(["--version"]);
+  assert.equal(shown.status, 0, shown.stderr);
+  assert.equal(shown.stderr, "");
+  assert.equal(shown.stdout, `${version}\n`);
   const explained = run(["--explain", "-"], "digit");
   assert.equal(explained.status, 0, explained.stderr);
   assert.match(explained.stdout, /1:1 {2}\\d {2}One digit/u);
