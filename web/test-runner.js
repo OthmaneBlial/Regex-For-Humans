@@ -61,6 +61,9 @@ export class TestRunner {
     }
     const id = ++this.sequence;
     return new Promise((resolve, reject) => {
+      let caseCount = -1;
+      /** @type {Map<number, boolean> | null} */
+      let expectations = null;
       /** @param {Error | null} error @param {TestResult[]} [result=[]] */
       const finish = (error, result = []) => {
         if (this.active?.id !== id) return;
@@ -97,12 +100,18 @@ export class TestRunner {
           else finish(new TestRunError("WORKER_ERROR", data.error));
           return;
         }
-        if (!Array.isArray(data.results) || data.results.length > 100) {
+        if (
+          !expectations ||
+          !Array.isArray(data.results) ||
+          data.results.length > 100 ||
+          data.results.length !== caseCount
+        ) {
           invalid();
           return;
         }
         const ids = new Set();
         for (const result of data.results) {
+          const expected = expectations.get(result?.id);
           if (
             !result ||
             typeof result !== "object" ||
@@ -111,7 +120,9 @@ export class TestRunner {
             ids.has(result.id) ||
             typeof result.actual !== "boolean" ||
             typeof result.pass !== "boolean" ||
-            typeof result.detail !== "string"
+            typeof result.detail !== "string" ||
+            typeof expected !== "boolean" ||
+            result.pass !== (result.actual === expected)
           ) {
             invalid();
             return;
@@ -123,6 +134,12 @@ export class TestRunner {
       try {
         /** @type {TestRequest} */
         const request = { ...payload, id };
+        if (Array.isArray(request.cases) && request.cases.length <= 100) {
+          caseCount = request.cases.length;
+          expectations = new Map(
+            Array.from(request.cases, (sample) => [sample?.id, sample?.expected]),
+          );
+        }
         worker.postMessage(request);
       } catch (error) {
         finish(

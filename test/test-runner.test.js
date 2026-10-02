@@ -2,6 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { TestRunner } from "../web/test-runner.js";
 
+const normal = {
+  source: "a",
+  flags: "u",
+  mode: "full",
+  cases: [{ id: 1, text: "a", expected: true }],
+};
+
 class FakeWorker {
   constructor(reply = true) {
     this.reply = reply;
@@ -39,11 +46,11 @@ test("isolated runner reuses a completed worker until explicitly cancelled", asy
     starts += 1;
     return worker;
   }, 100);
-  const result = await runner.run({ source: "a", flags: "u", mode: "search", cases: [] });
+  const result = await runner.run({ ...normal, mode: "search" });
   assert.deepEqual(result, [{ id: 1, actual: true, pass: true, detail: 'Matched "a" at 0' }]);
   assert.equal(worker.terminated, false);
   assert.equal(worker.request.source, "a");
-  await runner.run({ source: "b", flags: "iu", mode: "full", cases: [] });
+  await runner.run({ ...normal, source: "b", flags: "iu" });
   assert.equal(starts, 1);
   assert.equal(worker.request.source, "b");
   assert.equal(worker.request.flags, "iu");
@@ -55,7 +62,7 @@ test("isolated runner reuses a completed worker until explicitly cancelled", asy
 test("isolated runner stops a worker that does not answer", async () => {
   const worker = new FakeWorker(false);
   const runner = new TestRunner(() => worker, 5);
-  await assert.rejects(runner.run({}), { code: "TIMEOUT" });
+  await assert.rejects(runner.run({ ...normal }), { code: "TIMEOUT" });
   assert.equal(worker.terminated, true);
 });
 
@@ -65,7 +72,7 @@ test("isolated runner reports non-Error worker failures", async () => {
     throw "worker unavailable";
   };
   const runner = new TestRunner(() => worker, 100);
-  await assert.rejects(runner.run({}), {
+  await assert.rejects(runner.run({ ...normal }), {
     code: "WORKER_ERROR",
     message: "worker unavailable",
   });
@@ -86,16 +93,22 @@ test("worker startup failures reject promises, cancel the old run and allow reco
     if (creation instanceof FakeWorker) return creation;
     throw creation;
   }, 100);
-  const first = runner.run({ source: "old" });
+  const first = runner.run({ ...normal, source: "old" });
   const cancelled = assert.rejects(first, { code: "CANCELLED" });
   for (const message of ["Worker construction blocked", "worker unavailable"]) {
-    const attempt = runner.run({ source: "new" });
+    const attempt = runner.run({ ...normal, source: "new" });
     assert.equal(typeof attempt.then, "function");
     await assert.rejects(attempt, { code: "WORKER_ERROR", message });
   }
   await cancelled;
   assert.equal(oldWorker.terminated, true);
-  const recovered = await runner.run({ source: "a", flags: "u", mode: "full", cases: [] });
+  const recovered = await runner.run({
+    ...normal,
+    source: "a",
+    flags: "u",
+    mode: "full",
+    cases: normal.cases,
+  });
   assert.equal(recovered[0].pass, true);
   assert.equal(recoveredWorker.terminated, false);
   assert.notEqual(recoveredWorker.request.id, oldWorker.request.id);
@@ -109,7 +122,7 @@ test("the controller owns request IDs even when a payload has an extra id", asyn
     return worker;
   }, 100);
   for (const [index, id] of [999, 1, undefined].entries()) {
-    const payload = { source: "a", flags: "u", mode: "full", cases: [], id };
+    const payload = { ...normal, id };
     const result = await runner.run(payload);
     assert.equal(result[0].pass, true);
     assert.equal(workers.length, 1);
@@ -124,8 +137,8 @@ test("a new run cancels the old one without showing its stale result", async () 
   const newWorker = new FakeWorker();
   const workers = [oldWorker, newWorker];
   const runner = new TestRunner(() => workers.shift(), 100);
-  const first = runner.run({ source: "old" });
-  const second = runner.run({ source: "new" });
+  const first = runner.run({ ...normal, source: "old" });
+  const second = runner.run({ ...normal, source: "new" });
   await assert.rejects(first, { code: "CANCELLED" });
   assert.deepEqual(await second, [{ id: 1, actual: true, pass: true, detail: 'Matched "a" at 0' }]);
   assert.equal(oldWorker.terminated, true);
@@ -137,12 +150,12 @@ test("a stalled reused worker is terminated and a later run gets a fresh worker"
   const fresh = new FakeWorker();
   const workers = [warm, fresh];
   const runner = new TestRunner(() => workers.shift(), 5);
-  await runner.run({ source: "a" });
+  await runner.run({ ...normal, source: "a" });
   warm.reply = false;
-  await assert.rejects(runner.run({ source: "stalled" }), { code: "TIMEOUT" });
+  await assert.rejects(runner.run({ ...normal, source: "stalled" }), { code: "TIMEOUT" });
   assert.equal(warm.terminated, true);
   assert.equal(runner.worker, null);
-  assert.equal((await runner.run({ source: "recovered" }))[0].pass, true);
+  assert.equal((await runner.run({ ...normal, source: "recovered" }))[0].pass, true);
   assert.equal(fresh.request.source, "recovered");
 });
 
@@ -151,14 +164,14 @@ test("cancelling a pending reused worker ignores late messages and errors before
   const fresh = new FakeWorker();
   const workers = [warm, fresh];
   const runner = new TestRunner(() => workers.shift(), 100);
-  await runner.run({ source: "a" });
+  await runner.run({ ...normal, source: "a" });
   warm.reply = false;
-  const old = runner.run({ source: "pending" });
+  const old = runner.run({ ...normal, source: "pending" });
   const rejected = assert.rejects(old, { code: "CANCELLED" });
   const message = warm.onmessage;
   const failure = warm.onerror;
   runner.cancel();
-  const current = runner.run({ source: "recovered" });
+  const current = runner.run({ ...normal, source: "recovered" });
   message({ data: { id: warm.request.id, results: [{ pass: false }] } });
   failure({ preventDefault() {} });
   await rejected;
@@ -172,11 +185,11 @@ test("an idle worker failure discards it and allows a fresh run", async () => {
   const fresh = new FakeWorker();
   const workers = [failed, fresh];
   const runner = new TestRunner(() => workers.shift(), 100);
-  await runner.run({ source: "a" });
+  await runner.run({ ...normal, source: "a" });
   failed.onerror({ preventDefault() {} });
   assert.equal(failed.terminated, true);
   assert.equal(runner.worker, null);
-  assert.equal((await runner.run({ source: "recovered" }))[0].pass, true);
+  assert.equal((await runner.run({ ...normal, source: "recovered" }))[0].pass, true);
   assert.equal(fresh.request.source, "recovered");
 });
 
@@ -186,16 +199,16 @@ test("a reused worker error reply or send failure retires it before recovery", a
     const fresh = new FakeWorker();
     const workers = [failed, fresh];
     const runner = new TestRunner(() => workers.shift(), 100);
-    await runner.run({ source: "a" });
+    await runner.run({ ...normal, source: "a" });
     failed.postMessage = (request) => {
       if (failure === "send") throw new Error("send failed");
       if (failure === "event") failed.onerror({ preventDefault() {} });
       else failed.onmessage({ data: { id: request.id, error: "bad request" } });
     };
-    await assert.rejects(runner.run({ source: "invalid" }), { code: "WORKER_ERROR" });
+    await assert.rejects(runner.run({ ...normal, source: "invalid" }), { code: "WORKER_ERROR" });
     assert.equal(failed.terminated, true);
     assert.equal(runner.worker, null);
-    assert.equal((await runner.run({ source: "recovered" }))[0].pass, true);
+    assert.equal((await runner.run({ ...normal, source: "recovered" }))[0].pass, true);
   }
 });
 
@@ -205,9 +218,9 @@ test("worker message decode failures retire pending and idle workers before reco
     const fresh = new FakeWorker();
     const workers = [failed, fresh];
     const runner = new TestRunner(() => workers.shift(), 20);
-    await runner.run({ source: "warm" });
+    await runner.run({ ...normal, source: "warm" });
     failed.reply = false;
-    const attempt = pending ? runner.run({ source: "pending" }) : null;
+    const attempt = pending ? runner.run({ ...normal, source: "pending" }) : null;
     const rejected = attempt
       ? assert.rejects(attempt, {
           code: "WORKER_ERROR",
@@ -218,7 +231,7 @@ test("worker message decode failures retire pending and idle workers before reco
     if (rejected) await rejected;
     assert.equal(failed.terminated, true);
     assert.equal(runner.worker, null);
-    const recovered = runner.run({ source: "recovered" });
+    const recovered = runner.run({ ...normal, source: "recovered" });
     failed.onmessageerror?.({ preventDefault() {} });
     assert.equal((await recovered)[0].pass, true);
     assert.equal(runner.worker, fresh);
@@ -262,13 +275,24 @@ test("malformed worker replies fail immediately and retire the worker before rec
     ].map((invalid) => ({ id: "current", results: [{ ...result, ...invalid }] })),
     { id: "current", results: [result, result] },
     { id: "current", results: Array.from({ length: 101 }, (_, id) => ({ ...result, id })) },
+    { id: "current", results: [] },
+    { id: "current", results: [{ ...result, id: 2 }] },
+    { id: "current", results: [result, { ...result, id: 2 }] },
+    { id: "current", results: [{ ...result, actual: false }] },
+    { id: "current", results: [{ ...result, pass: false }] },
   ];
   for (const reply of malformed) {
     const failed = new FakeWorker(false);
     const fresh = new FakeWorker();
     const workers = [failed, fresh];
     const runner = new TestRunner(() => workers.shift(), 100);
-    const attempt = runner.run({ source: "a", flags: "u", mode: "full", cases: [] });
+    const attempt = runner.run({
+      ...normal,
+      source: "a",
+      flags: "u",
+      mode: "full",
+      cases: normal.cases,
+    });
     const outcome = attempt.then(
       (results) => ({ results }),
       (error) => ({ code: error.code, message: error.message }),
@@ -284,7 +308,7 @@ test("malformed worker replies fail immediately and retire the worker before rec
       });
       assert.equal(failed.terminated, true);
       assert.equal(runner.worker, null);
-      const recovered = runner.run({ source: "recovered" });
+      const recovered = runner.run({ ...normal, source: "recovered" });
       assert.doesNotThrow(() => lateMessage({ data: null }));
       assert.equal((await recovered)[0].pass, true);
       assert.equal(fresh.terminated, false);
@@ -312,7 +336,14 @@ test("valid worker replies retain boundary IDs, empty results and stale-message 
         detail: index === 0 ? "" : `Result ${index}`,
       })),
     ]) {
-      const attempt = runner.run({ source: "a", flags: "u", mode: "full", cases: [] });
+      const attempt = runner.run({
+        ...normal,
+        cases: results.map((result) => ({
+          id: result.id,
+          text: "a",
+          expected: result.pass ? result.actual : !result.actual,
+        })),
+      });
       const id = worker.request.id;
       worker.onmessage({ data: { id: id - 1, results: null } });
       assert.equal(runner.active.id, id, "Ignore replies from an older request.");
@@ -323,6 +354,36 @@ test("valid worker replies retain boundary IDs, empty results and stale-message 
     }
     assert.doesNotThrow(() => worker.onmessage({ data: null }));
     assert.equal(worker.terminated, false, "Ignore messages when no request is pending.");
+  } finally {
+    runner.cancel();
+  }
+});
+
+test("worker replies use the sent case identities and expectations despite caller edits or result order", async () => {
+  const worker = new FakeWorker(false);
+  const runner = new TestRunner(() => worker, 100);
+  const cases = [
+    { id: 7, text: "a", expected: true },
+    { id: 8, text: "b", expected: false },
+  ];
+  const payload = { ...normal, cases };
+  try {
+    const attempt = runner.run(payload);
+    cases[0].id = 99;
+    cases[0].expected = false;
+    cases.push({ id: 9, text: "c", expected: false });
+    Object.defineProperty(payload, "cases", {
+      get() {
+        throw new Error("Do not reread the caller's payload after posting it.");
+      },
+    });
+    const results = [
+      { id: 8, actual: false, pass: true, detail: "No match" },
+      { id: 7, actual: true, pass: true, detail: 'Matched "a" at 0' },
+    ];
+    assert.doesNotThrow(() => worker.onmessage({ data: { id: worker.request.id, results } }));
+    assert.deepEqual(await attempt, results);
+    assert.equal(worker.terminated, false);
   } finally {
     runner.cancel();
   }

@@ -55,6 +55,11 @@ test("malformed worker replies stop pending tests and allow fresh-worker recover
       ].map((invalid) => ({ id: "current", results: [{ ...result, ...invalid }] })),
       { id: "current", results: [result, result] },
       { id: "current", results: Array.from({ length: 101 }, (_, id) => ({ ...result, id })) },
+      { id: "current", results: [] },
+      { id: "current", results: [{ ...result, id: 8 }] },
+      { id: "current", results: [result, { ...result, id: 8 }] },
+      { id: "current", results: [{ ...result, actual: false }] },
+      { id: "current", results: [{ ...result, pass: false }] },
     ];
     const outcomes = [];
     try {
@@ -99,21 +104,50 @@ test("malformed worker replies stop pending tests and allow fresh-worker recover
           expected: true,
         })),
       });
+      const mutable = {
+        ...normal,
+        cases: [{ ...normal.cases[0] }, { id: 8, text: "bbb", expected: false }],
+      };
+      const cloned = runner.run(mutable);
+      mutable.cases[0].id = 99;
+      mutable.cases[0].expected = false;
+      mutable.cases.push({ id: 9, text: "ccc", expected: false });
+      const snapshot = await cloned;
+      const reordered = runner.run({
+        ...normal,
+        cases: [{ ...normal.cases[0] }, { id: 8, text: "bbb", expected: false }],
+      });
+      runner.worker.dispatchEvent(
+        new MessageEvent("message", {
+          data: { id: runner.active.id, results: [...snapshot].reverse() },
+        }),
+      );
+      const reorderedResults = await reordered;
       const empty = await runner.run({ ...normal, cases: [] });
-      return { outcomes, starts, staleIgnored, staleResults, idlePreserved, boundary, empty };
+      return {
+        outcomes,
+        starts,
+        staleIgnored,
+        staleResults,
+        idlePreserved,
+        boundary,
+        empty,
+        snapshot,
+        reorderedResults,
+      };
     } finally {
       runner.cancel();
     }
   });
   const result = [{ id: 7, actual: true, pass: true, detail: 'Matched "aaa" at 0' }];
   expect(outcome.outcomes).toEqual(
-    Array.from({ length: 40 }, () => ({
+    Array.from({ length: 45 }, () => ({
       immediate: true,
       error: { code: "WORKER_ERROR", message: "Invalid example test reply." },
       results: result,
     })),
   );
-  expect(outcome.starts).toBe(41);
+  expect(outcome.starts).toBe(46);
   expect(outcome.staleIgnored).toBe(true);
   expect(outcome.staleResults).toEqual(result);
   expect(outcome.idlePreserved).toBe(true);
@@ -127,86 +161,91 @@ test("malformed worker replies stop pending tests and allow fresh-worker recover
     })),
   );
   expect(outcome.empty).toEqual([]);
+  const complete = [...result, { id: 8, actual: false, pass: true, detail: "No match" }];
+  expect(outcome.snapshot).toEqual(complete);
+  expect(outcome.reorderedResults).toEqual([...complete].reverse());
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
   expect(errors).toEqual([]);
 });
 
-test("invalid result fields show a stable UI failure and preserve editing before recovery", async ({
-  page,
-}) => {
-  const errors = [];
-  page.on("pageerror", (error) => errors.push(error.message));
-  await page.addInitScript(() => {
-    const NativeWorker = window.Worker;
-    window.workerStarts = 0;
-    window.invalidReply = false;
-    window.Worker = class extends NativeWorker {
-      constructor(...args) {
-        super(...args);
-        window.workerStarts += 1;
-      }
-      postMessage(request) {
-        if (window.invalidReply)
-          this.dispatchEvent(
-            new MessageEvent("message", {
-              data: {
-                id: request.id,
-                results: [
-                  {
-                    id: request.cases[0].id,
-                    actual: true,
-                    pass: "false",
-                    detail: "Invalid result",
-                  },
-                ],
-              },
-            }),
-          );
-        else super.postMessage(request);
-      }
-    };
+for (const corruption of ["string", "contradictory"]) {
+  test(`a ${corruption} worker reply shows a stable UI failure and preserves editing before recovery`, async ({
+    page,
+  }) => {
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.addInitScript((corruption) => {
+      const NativeWorker = window.Worker;
+      window.workerStarts = 0;
+      window.invalidReply = false;
+      window.replyCorruption = corruption;
+      window.Worker = class extends NativeWorker {
+        constructor(...args) {
+          super(...args);
+          window.workerStarts += 1;
+        }
+        postMessage(request) {
+          if (window.invalidReply)
+            this.dispatchEvent(
+              new MessageEvent("message", {
+                data: {
+                  id: request.id,
+                  results: request.cases.map((sample, index) => ({
+                    id: sample.id,
+                    actual: index === 0 ? false : sample.expected,
+                    pass: index === 0 && window.replyCorruption === "string" ? "false" : true,
+                    detail: "No match",
+                  })),
+                },
+              }),
+            );
+          else super.postMessage(request);
+        }
+      };
+    }, corruption);
+    await page.goto("/");
+    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+    const rules = await page.locator("#rules-input").inputValue();
+    const pattern = await page.locator("#regex-output").textContent();
+    const input = page.locator("#test-list textarea").first();
+    await page.evaluate(() => {
+      window.invalidReply = true;
+    });
+    const value = corruption === "string" ? "ABC456" : "ABC12";
+    await input.fill(value);
+    await expect(page.locator("#test-summary")).toHaveText("Invalid example test reply.");
+    await expect(page.locator("#test-summary")).toHaveAttribute("data-state", "error");
+    await expect(page.locator("#test-list .test-row").first()).toContainText("Testing stopped");
+    await expect(input).toHaveValue(value);
+    await expect(input).toBeFocused();
+    await expect(page.locator("#rules-input")).toHaveValue(rules);
+    await expect(page.locator("#regex-output")).toHaveText(pattern);
+    await expect(page.locator("#copy-button")).toBeEnabled();
+    expect(await page.evaluate(() => window.workerStarts)).toBe(1);
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+          .analyze()
+      ).violations,
+    ).toEqual([]);
+    await page.evaluate(() => {
+      window.invalidReply = false;
+    });
+    await input.fill("ABC123");
+    await expect(page.locator("#test-summary")).toHaveText(/4 of 4 examples behave as expected/u);
+    await expect(input).toBeFocused();
+    expect(await page.evaluate(() => window.workerStarts)).toBe(2);
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+          .analyze()
+      ).violations,
+    ).toEqual([]);
+    expect(errors).toEqual([]);
   });
-  await page.goto("/");
-  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
-  const rules = await page.locator("#rules-input").inputValue();
-  const pattern = await page.locator("#regex-output").textContent();
-  const input = page.locator("#test-list textarea").first();
-  await page.evaluate(() => {
-    window.invalidReply = true;
-  });
-  await input.fill("ABC456");
-  await expect(page.locator("#test-summary")).toHaveText("Invalid example test reply.");
-  await expect(page.locator("#test-summary")).toHaveAttribute("data-state", "error");
-  await expect(page.locator("#test-list .test-row").first()).toContainText("Testing stopped");
-  await expect(input).toHaveValue("ABC456");
-  await expect(input).toBeFocused();
-  await expect(page.locator("#rules-input")).toHaveValue(rules);
-  await expect(page.locator("#regex-output")).toHaveText(pattern);
-  await expect(page.locator("#copy-button")).toBeEnabled();
-  expect(await page.evaluate(() => window.workerStarts)).toBe(1);
-  expect(
-    (
-      await new AxeBuilder({ page })
-        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-        .analyze()
-    ).violations,
-  ).toEqual([]);
-  await page.evaluate(() => {
-    window.invalidReply = false;
-  });
-  await input.fill("ABC123");
-  await expect(page.locator("#test-summary")).toHaveText(/4 of 4 examples behave as expected/u);
-  await expect(input).toBeFocused();
-  expect(await page.evaluate(() => window.workerStarts)).toBe(2);
-  expect(
-    (
-      await new AxeBuilder({ page })
-        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-        .analyze()
-    ).violations,
-  ).toEqual([]);
-  expect(errors).toEqual([]);
-});
+}
 
 test("worker message decode errors retire pending and idle workers before recovery", async ({
   page,

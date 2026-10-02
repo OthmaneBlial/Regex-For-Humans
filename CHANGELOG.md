@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Match worker results to the sent case count, identities and expectations. Reject missing, extra or unrelated results and contradictory boolean pass flags before rendering; preserve caller edits after sending, reordered valid replies, boundaries and recovery without rerunning regexes on the main thread.
+
 - Correct the security policy's published npm preview status and distinguish it from stable support and current fixes on `main`.
 
 - Preserve the focused example's reading position after removing an adjacent row, even when its caret is outside the visible textarea. Keep normal focus and page navigation in every browser engine.
