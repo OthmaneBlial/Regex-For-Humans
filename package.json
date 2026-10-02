@@ -1,6 +1,6 @@
 {
   "name": "regex-for-humans",
-  "version": "0.1.0-dev.1",
+  "version": "0.1.0-dev.2",
   "description": "Compile readable regex rules and translate a supported JavaScript regex back into rules",
   "keywords": [
     "regex",

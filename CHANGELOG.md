@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.0-dev.2 (2 October 2026)
+
+- Reverse-translate JavaScript's empty negative class `[^]` as any character, including line breaks. Preserve ordinary dot behavior when both appear by keeping dots non-matching for JavaScript line terminators under the translated `s` flag.
+
 ## 0.1.0-dev.1 (2 October 2026)
 
 - Add a UUID shape recipe with five fixed hexadecimal groups, mixed-case examples, explicit semantic limits and a homepage deep link. Check every hex position, separator and group boundary in both translation directions without changing the grammar.
