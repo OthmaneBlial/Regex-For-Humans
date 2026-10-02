@@ -8,6 +8,26 @@ Cocher une tâche uniquement après vérification de tous ses critères. Les dé
 
 **Politique de vérification depuis le 30 septembre 2026 :** GitHub Actions est désactivé pour ce dépôt à la demande du mainteneur. Les portes de qualité s'exécutent localement avec `npm run verify`. Les résultats CI datés ci-dessous restent des preuves historiques. La publication du site dans `OthmaneBlial.github.io` conserve son déploiement Pages. Toute réactivation de la CI de ce projet exige une nouvelle demande explicite.
 
+## État de reprise — 2 octobre 2026
+
+L'utilisateur a demandé une nouvelle release, puis a demandé à cet agent d'arrêter et de préparer la reprise par un autre agent. La release `0.1.0-dev.3` reste donc à terminer ; ne pas confondre l'arrêt de cet agent avec une publication terminée.
+
+- **Code prêt localement :** branche `main`, commit `45d3eb9` (`feat(workshop): preview partial matches`), avec le manifeste et le lockfile en `0.1.0-dev.3`. `origin/main` est encore à `2f2b3b9` ; le commit candidat et cette note de reprise ne sont pas poussés.
+- **Fonction :** les résultats de correspondance partielle montrent un contexte échappé avec la portion correspondante surlignée ; une correspondance vide utilise un caret. Les correspondances intégrales et absentes gardent le retour compact. Le worker transmet une plage bornée et le contrôleur la valide avant affichage. Les tests couvrent les contrôles, le texte bidi, l'injection HTML, Unicode, l'absence de débordement à 320 px et les trois moteurs navigateur.
+- **Vérification locale complète :** `npm run verify` a réussi le 2 octobre sur l'arbre candidat juste avant le commit : 222 tests Node, 276 tests Chromium bureau/mobile, 46 tests Firefox/WebKit, 62 tests du site, installation propre du tarball consommateur (110 701 octets, 26 fichiers) et `npm audit` sans vulnérabilité. Environnement : macOS arm64, Node 25.9.0, npm 11.12.1. Le second lancement, effectué après le commit, a été arrêté à la demande de l'utilisateur pendant le 10e test bureau (`source navigation reveals its destination in the page viewport`) : 9 tests avaient passé, 266 n'ont pas été exécutés. Aucun échec d'assertion n'a été observé avant l'interruption. Son journal est `/tmp/regex-for-humans-dev3-commit-verify.log`.
+- **État public inchangé :** le registre npm indique encore `latest` et `preview` sur `0.1.0-dev.2`. La dernière prerelease GitHub reste `v0.1.0-dev.2`. Il n'existe ni tag, ni publication npm, ni release GitHub pour `0.1.0-dev.3`. L'API GitHub confirme que les Actions de ce dépôt sont désactivées (`enabled: false`).
+- **Site `.io` :** le dépôt existant `OthmaneBlial/OthmaneBlial.github.io` utilise `master`, actuellement au commit `64438bd`. Le dossier projet existant et le `site/` local contiennent chacun 46 fichiers. Un clone propre préparé pour la reprise est `/tmp/rfh-pages-dev3-20261002` ; vérifier son état distant avant usage. Aucune synchronisation, aucun commit et aucun déploiement du site pour `0.1.0-dev.3` n'ont été faits.
+
+### Reprise de la prerelease `0.1.0-dev.3`
+
+1. Examiner le commit `45d3eb9`, puis relancer `npm run verify` et attendre le résultat complet sur ce commit. L'exécution complète avant commit a réussi ; la vérification après commit a été volontairement interrompue. GitHub Actions doit rester désactivé.
+2. Retenir l'archive exacte avec `PACK_OUTPUT_DIR=artifacts npm run test:package`, puis relever `shasum -a 256 artifacts/regex-for-humans-0.1.0-dev.3.tgz`.
+3. Après validation complète, pousser les commits candidats de `main`, créer `v0.1.0-dev.3` sur le commit validé et pousser le tag. L'utilisateur a explicitement demandé la création d'une nouvelle release avant de demander la passation.
+4. Publier le tarball retenu sur npm avec le tag `preview`, vérifier les tags `preview`/`latest`, puis installer la version publiée dans un dossier consommateur vierge et vérifier les exemples CLI et bibliothèque du README.
+5. Créer la prerelease GitHub depuis le même tag et joindre ce tarball exact avec son fichier de sommes SHA-256. Télécharger les assets publiés et comparer leurs sommes.
+6. Synchroniser le contenu généré de `site/` uniquement dans le dossier projet existant `Regex-For-Humans/` du dépôt `.io` sur `master`, préserver le reste du dépôt, puis vérifier la fin du build Pages et le site en ligne sur bureau et mobile.
+7. Après ces vérifications externes, compléter `docs/DISTRIBUTION.md`, `docs/TESTING.md` et le suivi ci-dessous avec les tags, commits, sommes, installation publiée et build Pages réellement observés. Ne pas présenter les revues humaines encore ouvertes comme terminées ; aucune release stable n'est autorisée par ces preuves locales seules.
+
 - [x] 0.1 Contrat du langage et vocabulaire — `docs/LANGUAGE.md`, 4 scénarios vérifiés avec `RegExp` sous Node 25.9.0
 - [x] 0.2 Scénarios d'adoption et mesures — 4 fixtures rejouées en bibliothèque, CLI et navigateur ; cible de premier succès définie (mesure humaine suivie en 2.4)
 - [x] 1.1 Installation, API et CLI — preview npm `0.1.0-dev.2` installé depuis le registre avec cache isolé ; l’API inverse conserve `[^]`, le flag `s` et les quatre terminateurs de ligne sous Node 25.9.0 et 22.23.3 ; contrôle du tarball exact, CLI reverse texte/JSON, README installé, types stricts et dix-huit recettes couverts par `npm run verify`
