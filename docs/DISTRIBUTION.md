@@ -50,6 +50,10 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Replies checked against sent cases
+
+Hosted sent-case reply verification passed after Pages commit `a37a130` built successfully on 2 October 2026 (Europe/Paris): all 46 served files matched local SHA-256 values. All 17 changed files are inside the existing project folder; only the controller changes executable behavior, with 19 resources identical and 13 changing only versioned URLs. Chrome at 1280/390px and Firefox/WebKit at 1280px passed 12 shared flows: 45 malformed replies per controller flow, original expectations despite caller edits, reordered valid results, safe boundaries, stale/idle handling and replacement recovery. Both string and contradictory UI failure/recovery states retained rules, regex, input and focus, with zero automated accessibility violations, no page errors or overflow at 320px after recovery; eight failure panels were inspected. Existing worker reuse, batch validation, 100-example/2,048-code-unit boundaries and three deliberate 150 ms interruptions per flow passed; the product deadline remains 1,200 ms. Desktop/mobile complex checks passed all three records, 100 explanation fragments and 26 exact inputs, real clipboard, reverse, focus and scroll behavior; six regex crops were inspected. These are injected-event and automated browser checks, separate from the unchanged npm preview and human validation.
+
 ### Published preview in the security policy
 
 Source commit `c686343` was synchronized into the existing project folder at Pages commit `12b6373`.
