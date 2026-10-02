@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Skip rule counting for oversized workshop input and bound source-error navigation to the source budget plus its first excess code unit. Show “Over limit”, keep the entire input and options, and retain exact-boundary compilation and matching recovery.
+
 - Construct native regexes from the same source and flags validated by `toRegExp()`, reading each field once. Preserve source-before-flags validation, the metadata `TypeError` and native syntax errors.
 
 - Describe malformed UTF-8 repairs for both rules and reverse-mode regex input. Preserve strict decoding, exit status, empty stdout and the JSON `CLI_ERROR` code; share the file/stdin regression cases across both modes.

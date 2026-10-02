@@ -1,6 +1,6 @@
 import { CompileError, compile, regexToRules } from "../index.js";
 import { escapeControls } from "../src/display.js";
-import { splitLines } from "../src/parser.js";
+import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 
@@ -93,7 +93,8 @@ function setDiagnostic(message, invalidRules = false) {
 
 /** @param {number} number @param {number} [column] */
 function selectLine(number, column) {
-  const lines = splitLines(ui.rules.value);
+  // Include the first excess code unit so source-limit errors can still select it.
+  const lines = splitLines(ui.rules.value.slice(0, LIMITS.sourceLength + 1));
   const start = lines.slice(0, number - 1).reduce((sum, line) => sum + line.length + 1, 0);
   const end = start + (lines[number - 1]?.length ?? 0);
   const position = column === undefined ? start : Math.min(start + column - 1, end);
@@ -354,11 +355,15 @@ function compileRules() {
   }
   window.clearTimeout(copyFeedbackTimer);
   ui.copy.textContent = "Copy regex ↗";
-  const ruleCount = splitLines(ui.rules.value).filter((line) => line.trim()).length;
-  ui.ruleCount.textContent = `${ruleCount} ${ruleCount === 1 ? "rule" : "rules"}`;
+  const rules = ui.rules.value;
+  if (rules.length > LIMITS.sourceLength) ui.ruleCount.textContent = "Over limit";
+  else {
+    const ruleCount = splitLines(rules).filter((line) => line.trim()).length;
+    ui.ruleCount.textContent = `${ruleCount} ${ruleCount === 1 ? "rule" : "rules"}`;
+  }
   try {
     const flags = `${ui.ignoreCase.checked ? "i" : ""}${ui.dotAll.checked ? "s" : ""}`;
-    compiled = compile(ui.rules.value, { flags });
+    compiled = compile(rules, { flags });
     ui.output.textContent = `/${compiled.source}/${compiled.flags}`;
     ui.flagsSummary.textContent = flagsDescription(compiled.flags);
     ui.copy.disabled = false;

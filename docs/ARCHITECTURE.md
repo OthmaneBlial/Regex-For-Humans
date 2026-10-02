@@ -23,6 +23,8 @@ The browser imports the same `index.js` from the static build. `web/app.js` hand
 
 The internal `TestRunner.run(payload)` reports worker construction and message-send failures through rejected `WORKER_ERROR` promises. Starting a run cancels the previous one, including when the new worker cannot start; later attempts remain available. The controller assigns the request ID after copying payload fields so an extra caller-supplied `id` cannot interfere with reply routing. Example IDs inside `cases` are preserved separately.
 
+The workshop counter uses the parser's shared source-length limit before splitting rules. Oversized input shows “Over limit” and remains editable. Source navigation splits at most the limit plus one UTF-16 code unit, retaining the first excess unit for the existing source-limit diagnostic. Valid counters and selections retain the compiler's logical-line semantics.
+
 Compiler option validation compares the requested flags with the five exact allowed values (`""`, `"i"`, `"s"`, `"is"`, `"si"`). It avoids scanning or deduplicating arbitrarily long option strings while preserving the existing error and canonical flag order.
 
 ## Reverse translation
