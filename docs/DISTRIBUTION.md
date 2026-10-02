@@ -44,6 +44,12 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
 
+### Surviving example views
+
+Source commit `2759546` was synchronized into the existing project folder at Pages commit `7f9a962`, whose build succeeded on 2 October 2026 (Europe/Paris). All 16 changed files are within `Regex-For-Humans/`; 20 non-Markdown resources stayed identical, and 12 of the other 13 differ only in versioned URLs. The remaining file is the tested workshop app.
+
+Hosted example-view verification passed after Pages commit `7f9a962` built successfully: all 46 served files matched local SHA-256 values. Chrome at 1280/390px and Firefox/WebKit at 1280px repeated add/remove/renumber, preserved selections/scroll/height, native text replacement, fresh rows and recipe resets at normal width and 320px. There were zero automated accessibility violations, no page errors or overflow; seven retained-view panels were inspected. Existing worker reuse, batch validation, 100-example/2,048-code-unit boundaries and three deliberate 150 ms interruptions per flow passed; the product deadline remains 1,200 ms. Desktop/mobile complex checks passed all three records, 100 explanation fragments and 26 exact inputs, real clipboard, reverse, focus and scroll behavior; six regex crops were inspected.
+
 ### Worker reply validation
 
 Source commit `ad615f1` was synchronized into the existing project folder at Pages commit `ea6b7e9`, whose build succeeded on 2 October 2026 (Europe/Paris). All 18 changed files are within `Regex-For-Humans/`; 19 non-Markdown resources stayed identical, and 13 of the other 14 differ only in versioned URLs. The remaining file is the tested worker controller. Other folders and the published npm preview were preserved.
