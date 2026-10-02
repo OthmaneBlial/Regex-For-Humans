@@ -81,6 +81,30 @@ test("example selections and scroll positions follow their identities through ro
     await expect(page.locator("#regex-output")).toHaveText(pattern);
     await page.locator("#test-list select").last().selectOption("false");
     await expect(page.locator("#test-summary")).toHaveText(/4 of 4 examples behave as expected/u);
+    await fields.nth(1).fill(snapshots[1].value);
+    await expect(page.locator("#test-summary")).toHaveText(/4 of 4 examples behave as expected/u);
+    await fields.nth(1).evaluate((input) => {
+      input.style.height = "140px";
+      input.setSelectionRange(input.value.length, input.value.length);
+    });
+    await page.evaluate(
+      () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+    );
+    await fields.nth(1).evaluate((input) => {
+      input.scrollTop = 62;
+    });
+    const offscreenCaret = await fields.nth(1).evaluate(view);
+    expect(offscreenCaret.top).toBe(62);
+    expect(offscreenCaret.selection.slice(0, 2)).toEqual([
+      offscreenCaret.value.length,
+      offscreenCaret.value.length,
+    ]);
+    await page.getByRole("button", { name: "Remove example 1", exact: true }).click();
+    await expect(fields).toHaveCount(3);
+    await expect(fields.first()).toBeFocused();
+    await expect(fields.first()).toBeInViewport();
+    expect(await fields.first().evaluate(view)).toEqual(offscreenCaret);
+    await expect(page.locator("#test-summary")).toHaveText(/3 of 3 examples behave as expected/u);
     expect(
       (
         await new AxeBuilder({ page })

@@ -352,10 +352,11 @@ function renderTests() {
       testCases = testCases.filter((item) => item.id !== sample.id);
       renderTests();
       updateTestResults();
-      (
+      const next =
         ui.testList.querySelectorAll("textarea")[Math.min(index, testCases.length - 1)] ??
-        ui.addExample
-      ).focus();
+        ui.addExample;
+      next.focus({ preventScroll: true });
+      next.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
     });
     row.append(input, expected, result, remove);
     ui.testList.append(row);
