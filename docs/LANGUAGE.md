@@ -1,6 +1,6 @@
 # The Regex For Humans language
 
-Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the current source checkout; lazy repetition, lookaround, boundaries, Unicode properties/classes and explicit eight-flag options are unreleased additions beyond npm `0.1.0-dev.4`.
+Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the current source checkout; lazy repetition, lookaround, boundaries, Unicode properties/classes, native v sets and explicit eight-flag options are unreleased additions beyond npm `0.1.0-dev.4`.
 
 Write one rule per line. `start` or `line start` can prefix the first rule. Keywords are case-insensitive; quoted text keeps its case. Leading and trailing spaces are ignored.
 
@@ -307,7 +307,7 @@ The standalone rule `range "😀" to "🙏"` emits `[😀-🙏]`. Ranges follow 
 
 The typed `CharacterClassSegment` exposes `negative`, `repetition` and `members`. Each `CharacterClassMember` retains its discriminator, literal/range/shorthand/property data, original `location` and `text`, and exact generated `sourceStart`, `sourceEnd` and `source`. Property members additionally retain their value location and complement polarity. The CLI and isolated workshop use the shared compiler and explanation trace.
 
-Reverse translation preserves native u/v-mode unions, ranges, shorthand/property complements and outer negation, including captures, counts and flags. Existing recognized ASCII classes and simple literal lists keep their compact output. Empty classes `[]`, nested v classes and set intersection/subtraction remain explicitly unsupported. Invalid rule members, bounds, missing commas, quotes and property aliases receive positioned diagnostics. [MDN's class reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Character_class) describes the native range, union and context-sensitive escape rules.
+Reverse translation preserves native u/v-mode unions, ranges, shorthand/property complements and outer negation, including captures, counts and flags. Existing recognized ASCII classes and simple literal lists keep their compact output. Empty classes `[]` can be imported in v mode through an empty union block; u-mode empty classes remain explicitly unsupported. Invalid rule members, bounds, missing commas, quotes and property aliases receive positioned diagnostics. [MDN's class reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Character_class) describes the native range, union and context-sensitive escape rules.
 
 ## Native Unicode string sets
 
@@ -327,7 +327,33 @@ String properties cannot use `not unicode property`. A negated class may contain
 
 Reverse translation preserves `\q{…}` strings and native property aliases. Separate surrogate code-point escapes inside one native string retain their boundaries using `string code points: "\ud83d" + "\ude00"`, also permitted as a class member. Each quoted sequence item must be one code point; `+` separates items and does not mean repetition. The emitted `\q{\u{d83d}\u{de00}}` remains distinct from a literal emoji. Installed WebKit treats these sources differently; retaining the native code-point sequence avoids changing an imported match. A sequence with two parts also remains structurally non-complementable, even when concatenating its UTF-16 values would form one emoji. Typed class members expose `kind: "strings"` with `values`, or `kind: "stringCodePoints"` with `codePoints`, plus their original location and exact output span.
 
-See the [ECMAScript string-property table](https://tc39.es/ecma262/multipage/text-processing.html#table-binary-unicode-properties-of-strings), [native structural string checks](https://tc39.es/ecma262/multipage/text-processing.html#sec-static-semantics-maycontainstrings) and [MDN's native string-set examples](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Character_class#v-mode_character_class). Nested sets and intersection/subtraction are the next implementation step.
+See the [ECMAScript string-property table](https://tc39.es/ecma262/multipage/text-processing.html#table-binary-unicode-properties-of-strings), [native structural string checks](https://tc39.es/ecma262/multipage/text-processing.html#sec-static-semantics-maycontainstrings) and [MDN's native string-set examples](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Character_class#v-mode_character_class).
+
+## Nested Unicode set operations
+
+This source feature requires v mode and is absent from npm `0.1.0-dev.4`. Open a block with `character set union {`, `character set intersection {` or `character set subtraction {`; close it with `}` on its own line. Each body line contributes one operand. Nest a block to combine different operations explicitly:
+
+```text
+capture "consonant" {
+  character set subtraction {
+    character set intersection {
+      unicode property "Letter"
+      unicode property "ASCII"
+    }
+    one of: "a", "e", "i", "o", "u"
+  }
+}
+```
+
+This emits `(?<consonant>[[\p{Letter}&&\p{ASCII}]--[aeiou]])` with v. Without i, searching `éab` captures `b`. Union accepts members from any operand; intersection requires membership in every operand; subtraction takes the first operand and removes members of each following operand. Native `&&` and `--` remain inside character classes, preserving string-set matching, backtracking, captures and cursor behavior. These operations do not become ordered alternatives.
+
+An operand may be a one-code-point quoted literal, range, singular shorthand, character list, composable class, character/string property, finite string set, explicit string code-point sequence or nested set block. Use `string "ab"` for a multi-point member, not the literal rule `"ab"`. Existing `letter`, `hex digit` and `path segment character` classes also work. Repeated operands, groups, assertions, references, boundaries and the flag-sensitive `any character` wildcard are not operands. Repetition belongs on the outer block, for example `lazy between 1 and 3 character set intersection {`.
+
+Intersection and subtraction need at least two operands; union permits zero. An empty union emits `[]` and matches nothing. `not character set union {` with an empty body emits `[^]` and matches any single Unicode code point, including a line break. An empty finite string remains distinct and can match without consuming input.
+
+Prefix a block with `not` to complement the complete set. Native structural string restrictions apply even if the computed set happens to be empty: a complemented union must have no string-containing operands; a complemented intersection needs at least one character-only operand; a complemented subtraction needs a character-only first operand. Thus intersecting `string "ab"` with `digit` can be complemented, while subtracting `string "ab"` from itself cannot. Nested complements are validated independently. Runtime case folding and Unicode membership remain native to the selected engine.
+
+`CharacterClassSegment.operation` identifies the root operation; nested `CharacterClassMember` values use `kind: "set"`, `operation`, `negative`, `members` and `endLocation`. Root and child spans preserve exact emitted source, including operator spacing and required range brackets. Explanations use the same typed tree. The reverse reader preserves operations through these blocks while retaining existing compact leaf normalization and original-regex diagnostic positions. Groups and set blocks share the 64-level depth budget and existing input/source limits. Invalid arity, operands, block forms, missing braces, modes, native capabilities and structural complements receive positioned errors.
 
 ## Anchors and flags
 

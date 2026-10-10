@@ -197,7 +197,7 @@ test("workshop exposes every flag, imports options, preserves failed imports and
   await expect(rules).toHaveValue('capture "x" {\n"a"\n}');
   for (const id of toggles) await expect(page.locator(`#${id}`)).toBeChecked();
   await expect(page.locator("#unicode-mode")).toHaveValue("v");
-  await reverse.fill("/[a&&b]/v");
+  await reverse.fill("/\\1(a)/v");
   await page.locator("#reverse-button").press("Enter");
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
   await expect(rules).toHaveValue('capture "x" {\n"a"\n}');

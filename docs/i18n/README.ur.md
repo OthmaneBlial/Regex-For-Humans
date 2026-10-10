@@ -70,6 +70,8 @@ end
 | لفظ کی حدود | — | ✅ صرف سورس میں؛ متن consume کیے بغیر native assertions |
 | [Unicode properties](../LANGUAGE.md#unicode-properties) | — | ✅ u موڈ میں native aliases اور complements؛ صرف سورس میں |
 | [مرکب character classes](../LANGUAGE.md#composable-character-classes) | — | ✅ Native ranges، shorthands اور Unicode unions؛ صرف سورس میں |
+| [Unicode strings اور nested sets](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ محدود strings، string properties، union، intersection اور subtraction؛ صرف سورس میں |
+| تمام آٹھ JavaScript flags | — | ✅ واضح options، native classes اور cursor کا رویہ؛ صرف سورس میں |
 | دوسرے regex انجن اور آزاد انگریزی | — | موجودہ زبان کا حصہ نہیں |
 
 موجودہ سورس میں <code dir="ltr">lazy digits</code> سے <code dir="ltr">\d+?</code> بنتا ہے: پہلے ایک ہندسہ آزمائیں، پھر اگلے قواعد کی ضرورت کے مطابق تکرار بڑھائیں۔ یہ اضافہ npm <code dir="ltr">0.1.0-dev.4</code> میں ابھی شامل نہیں ہے۔ [تکرار کے قواعد](../LANGUAGE.md#repetition) دیکھیں۔
@@ -470,7 +472,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | <code dir="ltr">y</code> | <code dir="ltr">{ flags: 'y' }</code> | <code dir="ltr">lastIndex</code> پر match، پہلی رکاوٹ پر رکنا |
 | <code dir="ltr">v</code> | <code dir="ltr">{ flags: 'v' }</code> | Native v-mode Unicode classes اور complements |
 
-**صرف سورس checkout میں:** آٹھوں flags <code dir="ltr">d</code>، <code dir="ltr">g</code>، <code dir="ltr">i</code>، <code dir="ltr">m</code>، <code dir="ltr">s</code>، <code dir="ltr">u</code>، <code dir="ltr">v</code>، <code dir="ltr">y</code> دستیاب ہیں۔ نتیجے کی ترتیب <code dir="ltr">dgimsuvy</code> ہے؛ duplicates اور u/v ساتھ دینے پر خرابی آتی ہے، u ڈیفالٹ ہے۔ m الگ option یا line anchors سے فعال ہوتا ہے؛ دونوں انداز ملانے پر input anchors مکمل حدود برقرار رکھتے ہیں۔ Reverse translation options محفوظ رکھتی ہے اور <code dir="ltr">lastIndex</code> نہیں بدلتی۔ Workshop ہر مثال 0 سے شروع کرتا ہے اور زیادہ سے زیادہ 100 matches دکھاتا ہے؛ copied g/y regex کی state برقرار رہتی ہے۔ غیر موجود native صلاحیتوں اور nested v sets کے واضح diagnostics ملتے ہیں۔ npm <code dir="ltr">0.1.0-dev.4</code> میں پہلے والے i/s options، خودکار u اور line anchors سے m موجود ہیں۔
+**صرف سورس checkout میں:** آٹھوں flags <code dir="ltr">d</code>، <code dir="ltr">g</code>، <code dir="ltr">i</code>، <code dir="ltr">m</code>، <code dir="ltr">s</code>، <code dir="ltr">u</code>، <code dir="ltr">v</code>، <code dir="ltr">y</code> دستیاب ہیں۔ نتیجے کی ترتیب <code dir="ltr">dgimsuvy</code> ہے؛ duplicates اور u/v ساتھ دینے پر خرابی آتی ہے، u ڈیفالٹ ہے۔ m الگ option یا line anchors سے فعال ہوتا ہے؛ دونوں انداز ملانے پر input anchors مکمل حدود برقرار رکھتے ہیں۔ Reverse translation options محفوظ رکھتی ہے اور <code dir="ltr">lastIndex</code> نہیں بدلتی۔ Workshop ہر مثال 0 سے شروع کرتا ہے اور زیادہ سے زیادہ 100 matches دکھاتا ہے؛ copied g/y regex کی state برقرار رہتی ہے۔ غیر موجود native صلاحیتوں کے واضح diagnostics ملتے ہیں۔ npm <code dir="ltr">0.1.0-dev.4</code> میں پہلے والے i/s options، خودکار u اور line anchors سے m موجود ہیں۔
 
 <p dir="rtl"><strong>صرف سورس کوڈ میں:</strong> strings کے sets اور Unicode string properties کے لیے <code dir="ltr">v</code> منتخب کریں۔ Native انجن فہرست کی ترتیب سے قطع نظر لمبے ارکان پہلے آزماتا ہے؛ بعد کے قواعد چھوٹے رکن پر واپس جانے کا تقاضا کر سکتے ہیں۔ خالی strings بھی درست ہیں۔ تیسری صورت class کے اندر استعمال کریں۔ String property یا ایسی class کا complement نہیں بنایا جا سکتا جس میں خالی string یا کئی Unicode code points والا رکن ہو۔ یہ سہولتیں npm کے شائع شدہ ورژن میں موجود نہیں ہیں:</p>
 <p dir="ltr" align="left"><code dir="ltr">0.1.0-dev.4</code></p>
@@ -478,6 +480,12 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 <p dir="ltr" align="left"><code dir="ltr">one of strings: "a", "ab", ""</code></p>
 <p dir="ltr" align="left"><code dir="ltr">unicode property "RGI_Emoji"</code></p>
 <p dir="ltr" align="left"><code dir="ltr">string "ab"</code></p>
+
+<p dir="rtl"><strong>صرف سورس کوڈ میں:</strong> نیچے دی گئی صورتیں nested sets بناتی ہیں؛ block کو <code dir="ltr">}</code> سے بند کریں۔ ہر سطر ایک حرف، range، class، property، strings کا set یا nested set ہے۔ Intersection مشترک ارکان رکھتا ہے؛ subtraction پہلے operand سے دائیں طرف کے ارکان ہٹاتا ہے۔ تکرار کی تعداد اور <code dir="ltr">lazy</code> پورے block پر لاگو ہوتے ہیں۔ <code dir="ltr">not</code> strings کے native ساختی اصولوں کی پابندی کرتا ہے؛ خالی union کسی متن سے match نہیں کرتا۔ <code dir="ltr">v</code> منتخب کریں؛ یہ سہولتیں اوپر درج npm ورژن میں موجود نہیں ہیں۔ <a href="../LANGUAGE.md#nested-unicode-set-operations">Syntax اور مثالیں</a> دیکھیں۔</p>
+
+<p dir="ltr" align="left"><code dir="ltr">character set union {</code></p>
+<p dir="ltr" align="left"><code dir="ltr">character set intersection {</code></p>
+<p dir="ltr" align="left"><code dir="ltr">character set subtraction {</code></p>
 
 <p dir="ltr" align="left"><code dir="ltr">{ flags: 'dgiv' }</code></p>
 
@@ -526,7 +534,7 @@ CI=1 npm run verify
 
 متبادل قابلِ تدوین <code dir="ltr">either { … }</code> بلاک بنتے ہیں؛ ہر براہِ راست entry ایک انتخاب ہے جو ترتیب سے آزمایا جاتا ہے۔ کئی قواعد والے یا خالی انتخاب کے لیے <code dir="ltr">group { … }</code> استعمال کریں۔
 
-ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ آزاد انگریزی، خالی character classes، v-set operations اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
+ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ آزاد انگریزی، <code dir="ltr">u</code> موڈ کی خالی character classes اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
 
 ## 💬 عام سوالات
 

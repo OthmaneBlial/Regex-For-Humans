@@ -13,7 +13,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Native nested v sets and intersection/subtraction, preserving implemented finite strings, Unicode string properties and eight-flag semantics.
+1. Publish the verified dev.5 preview and synchronize the site/README with the native set, string, flag, class, property, boundary, assertion and lazy-repetition additions.
 2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 3. Workshop localization and the remaining mission waves.
 
@@ -34,6 +34,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Site/README: Pages commit `1dfaf1c` built successfully; all 58 public files match local hashes. Chrome desktop/mobile, Firefox and WebKit pass version, date capture, alternative/import and source-navigation checks without page errors or 320px overflow. The ten README guides and real screenshots reflect dev.4; actual Arabic/Urdu GitHub views retain RTL prose/tables and all 20 canonical LTR code blocks at 1280/390px. Independent language review remains open. This milestone does not close the larger mission, stable-release or human review gates.
 
 ## Evidence and constraints
+
+### Nested native v-set milestone
+
+- Implemented: native union/intersection/subtraction blocks with recursive typed operands, whole-block repetition/lazy preference, exact child spans and closing locations, structural string-complement validation, empty/universal v sets and the shared 64-level group/set depth budget. Existing class, property, finite-string and explicit code-point parsers remain the operands; API, CLI, reverse translation, explanations and workshop use the same AST and native engine.
+- Native parity: 43 patterns × 53 inputs × 64 v-flag combinations × three cursors × three calls compare 1,312,704 full match/capture/indices/cursor results per runtime/engine/viewport. Sixteen browser shards retain every case and the existing deadline. The earlier 645,120 string comparisons remain intact; 96 worker batches keep native empty-match behavior and the 100-match/1,200ms limits.
+- Verification: the final uninterrupted local gate passes 301 Node, 378 Chromium desktop/mobile, 148 Firefox/WebKit and 64 homepage tests (891 total), clean package checks, builds, lint/types/docs and an audit with zero vulnerabilities. Node 22.23.3 passes 55 selected checks and a clean JavaScript/TypeScript/API/CLI consumer. Final documentation records and capability matrices are checked and rebuilt afterward. Ten guides retain all 20 canonical code blocks; Arabic/Urdu have 234 LTR inline fragments and separate set-header lines. Public RTL rendering and human reviews are separate gates.
+- Distribution: npm/Pages remain dev.4. The next milestone is the verified dev.5 package/site release; visualization, exports, workshop localization and later mission waves remain open. The Downloads Reddit draft is updated and unposted.
 
 ### Native v-string milestone
 

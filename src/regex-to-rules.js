@@ -39,7 +39,8 @@ const UNSUPPORTED_HINT =
   "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and d/g/i/m/s/u/v/y flags. Forward/open references are not supported.";
 const LINE_TERMINATORS = ["\n", "\r", "\u2028", "\u2029"];
 
-/** @typedef {{end: number, literal?: string, phrase?: string, strings?: {value: string, codePoints?: string[]}[], empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, assertion?: {direction: 'ahead'|'behind', negative: boolean, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
+/** @typedef {{end: number, literal?: string, phrase?: string, strings?: {value: string, codePoints?: string[]}[], classSet?: {operation: import('./ast.js').ClassSetOperation, negative: boolean, members: SetOperandToken[], close: number}, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, assertion?: {direction: 'ahead'|'behind', negative: boolean, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
+/** @typedef {AtomToken & {index: number}} SetOperandToken */
 /** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number, lazy?: boolean}} QuantifierToken */
 /** @typedef {AtomToken & QuantifierToken & {index: number}} PositionedAtom */
 
@@ -190,8 +191,60 @@ function readStringSet(source, start) {
   unsupported("The string set is not closed.", start);
 }
 
-/** @param {string} source @param {number} start @param {boolean} [unicodeSets] @returns {AtomToken} */
-function readCharacterClass(source, start, unicodeSets = false) {
+/** @param {string} source @param {number} start @param {number} depth @returns {AtomToken} */
+function readUnicodeSet(source, start, depth) {
+  if (depth >= LIMITS.groupDepth)
+    fail("SET_DEPTH_LIMIT", `Groups and sets cannot nest more than ${LIMITS.groupDepth} levels.`, {
+      line: 1,
+      column: start + 1,
+    });
+  let cursor = start + 1;
+  const negative = source[cursor] === "^";
+  if (negative) cursor += 1;
+  /** @type {import('./ast.js').ClassSetOperation} */
+  let operation = "union";
+  /** @type {SetOperandToken[]} */
+  const members = [];
+  /** @param {number} index @returns {AtomToken} */
+  const readItem = (index) => {
+    if (source[index] === "\\") return readEscape(source, index, true, true);
+    if (source[index] === "[") return readCharacterClass(source, index, true, depth + 1);
+    const point = source.codePointAt(index);
+    if (point === undefined) unsupported("Invalid Unicode set operand.", index);
+    const literal = String.fromCodePoint(point);
+    return { literal, end: index + literal.length };
+  };
+  while (cursor < source.length && source[cursor] !== "]") {
+    if (members.length && (source.startsWith("&&", cursor) || source.startsWith("--", cursor))) {
+      const next = source.startsWith("&&", cursor) ? "intersection" : "subtraction";
+      if (
+        (operation !== "union" && operation !== next) ||
+        (operation === "union" && members.length > 1)
+      )
+        unsupported("Mixing Unicode set operations needs an explicit nested set.", cursor);
+      operation = next;
+      cursor += 2;
+    }
+    const index = cursor;
+    let member = readItem(cursor);
+    if (source[member.end] === "-" && !source.startsWith("--", member.end)) {
+      const upper = readItem(member.end + 1);
+      if (member.literal === undefined || upper.literal === undefined)
+        unsupported("A character range needs two single-code-point endpoints.", member.end);
+      member = {
+        end: upper.end,
+        phrase: `range ${quoteText(member.literal)} to ${quoteText(upper.literal)}`,
+      };
+    }
+    members.push({ ...member, index });
+    cursor = member.end;
+  }
+  if (source[cursor] !== "]") unsupported("The Unicode set is not closed.", start);
+  return { end: cursor + 1, classSet: { operation, negative, members, close: cursor } };
+}
+
+/** @param {string} source @param {number} start @param {boolean} [unicodeSets] @param {number} [depth] @returns {AtomToken} */
+function readCharacterClass(source, start, unicodeSets = false, depth = 0) {
   let contentStart = start + 1;
   let negative = false;
   if (source[contentStart] === "^") {
@@ -214,10 +267,7 @@ function readCharacterClass(source, start, unicodeSets = false) {
       unicodeSets &&
       (character === "[" || source.startsWith("&&", end) || source.startsWith("--", end))
     )
-      unsupported(
-        "Nested Unicode sets, intersection and subtraction cannot yet be translated.",
-        end,
-      );
+      return readUnicodeSet(source, start, depth);
     else if (character === "]") break;
   }
   if (end === source.length) unsupported("The character class is not closed.", start);
@@ -285,6 +335,7 @@ function readCharacterClass(source, start, unicodeSets = false) {
   }
 
   if (members.length === 0) {
+    if (unicodeSets) return readUnicodeSet(source, start, depth);
     if (negative) return { end: end + 1, phrase: "any character", allCharacters: true };
     unsupported("An empty character class has no rule-language equivalent.", start);
   }
@@ -472,7 +523,7 @@ function readSequence(source, start, multiline, depth, unicodeSets) {
     }
     /** @type {AtomToken} */
     let atom;
-    if (character === "[") atom = readCharacterClass(source, cursor, unicodeSets);
+    if (character === "[") atom = readCharacterClass(source, cursor, unicodeSets, depth);
     else if (character === "\\") atom = readEscape(source, cursor, false, unicodeSets);
     else if (character === "(") atom = readGroup(source, cursor, multiline, depth, unicodeSets);
     else if (character === ".")
@@ -619,6 +670,37 @@ export function regexToRules(regex) {
     addRule(quoteText(literalRun), literalIndex);
     literalRun = "";
   };
+  /** @param {SetOperandToken} atom @param {string} [prefix] */
+  function emitSet(atom, prefix = "") {
+    const set = atom.classSet;
+    if (!set) unsupported("This Unicode set has no structural representation.", atom.index);
+    addRule(
+      `${prefix ? `${prefix} ` : ""}${set.negative ? "not " : ""}character set ${set.operation} {`,
+      atom.index,
+    );
+    for (const member of set.members) {
+      if (member.classSet) emitSet(member);
+      else if (member.strings) {
+        const strings = member.strings.map((value) =>
+          value.codePoints
+            ? `string code points: ${value.codePoints.map(quoteText).join(" + ")}`
+            : `string ${quoteText(value.value)}`,
+        );
+        addRule(`character class: ${strings.join(", ")}`, member.index);
+      } else if (member.allCharacters) addRule("character class: space, not space", member.index);
+      else {
+        const phrase =
+          member.literal !== undefined
+            ? quoteText(member.literal)
+            : member.category
+              ? ESCAPED_ATOMS.get(member.category)
+              : member.phrase;
+        if (!phrase) unsupported("This Unicode set operand cannot be represented.", member.index);
+        addRule(phrase, member.index);
+      }
+    }
+    addRule("}", set.close);
+  }
   /** @param {PositionedAtom[]} list */
   function emit(list) {
     for (const atom of list) {
@@ -656,6 +738,10 @@ export function regexToRules(regex) {
                       ? `at least ${atom.min}`
                       : unsupported("Unknown repetition form.", atom.index);
       if (atom.lazy) prefix = `lazy ${prefix}`;
+      if (atom.classSet) {
+        emitSet(atom, prefix);
+        continue;
+      }
       if (atom.assertion) {
         const assertion = atom.assertion;
         const label = `${assertion.negative ? "not " : ""}${assertion.direction === "ahead" ? "followed" : "preceded"} by`;
@@ -730,12 +816,15 @@ export function regexToRules(regex) {
         "Simplify the regex so its translated rules fit these limits.",
       );
     }
-    if (error instanceof CompileError && error.code === "GROUP_DEPTH_LIMIT") {
+    if (
+      error instanceof CompileError &&
+      ["GROUP_DEPTH_LIMIT", "SET_DEPTH_LIMIT"].includes(error.code)
+    ) {
       fail(
         error.code,
         `Translated rules cannot nest more than ${LIMITS.groupDepth} levels.`,
         { line: 1, column: (positions[error.line - 1] ?? 0) + 1 },
-        "Simplify nested alternatives or groups so their translated blocks fit this limit.",
+        "Simplify nested alternatives, groups or sets so their translated blocks fit this limit.",
       );
     }
     if (

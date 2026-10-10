@@ -64,7 +64,7 @@ test("genuine regexes from another context translate with the same rules, flags 
   }
   for (const [source, flags] of [
     ["a", ""],
-    ["[a&&b]", "v"],
+    ["\\1(a)", "v"],
     ["^😀(?=ab[])AB$", "u"],
     ["a".repeat(16_385), "u"],
   ]) {
@@ -152,7 +152,7 @@ test("translation uses the stored native pattern and flags instead of overridden
   }
   for (const [source, flags, code] of [
     ["a", "", "UNICODE_FLAG_REQUIRED"],
-    ["[a&&b]", "v", "UNSUPPORTED_REGEX"],
+    ["\\1(a)", "v", "UNSUPPORTED_REGEX"],
     ["(?=ab[])a", "u", "UNSUPPORTED_REGEX"],
     ["a".repeat(16_385), "u", "REGEX_SOURCE_LIMIT"],
   ]) {

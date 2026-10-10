@@ -52,6 +52,8 @@ end
 | शब्द सीमाएँ | — | ✅ केवल सोर्स में; native zero-width assertions |
 | [Unicode properties](../LANGUAGE.md#unicode-properties) | — | ✅ u मोड में native aliases और complements; केवल सोर्स में |
 | [संयुक्त character classes](../LANGUAGE.md#composable-character-classes) | — | ✅ Native ranges, shorthands और Unicode unions; केवल सोर्स में |
+| [Unicode strings और nested sets](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ Finite strings, string properties, union, intersection और subtraction; केवल source में |
+| सभी आठ JavaScript flags | — | ✅ स्पष्ट options, native u/v classes और cursor का व्यवहार; केवल source में |
 | दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — | वर्तमान भाषा के दायरे से बाहर |
 
 वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ। यह सुविधा npm `0.1.0-dev.4` में अभी शामिल नहीं है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
@@ -363,9 +365,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | `lastIndex` पर match; पहली खाली जगह पर रुकता है |
 | `v` | `{ flags: 'v' }` | Native v-mode Unicode classes और complements |
 
-**केवल source checkout:** आठों flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` स्वीकार हैं, जैसे `{ flags: 'dgiv' }` या `--flags dgiv`। आउटपुट क्रम `dgimsuvy` है; duplicates और u/v को साथ देना त्रुटि है, तथा u डिफ़ॉल्ट रहता है। m स्पष्ट option या line anchors से सक्रिय होता है; दोनों प्रकार मिलाने पर input anchors पूर्ण सीमाएँ बनाए रखते हैं। Reverse translation options बचाता है और `lastIndex` नहीं बदलता। Workshop हर उदाहरण 0 से शुरू करता है और अधिकतम 100 matches दिखाता है; copied g/y regex में state बनी रहती है। अनुपलब्ध native क्षमताएँ और nested v sets स्पष्ट diagnostics देते हैं। npm `0.1.0-dev.4` में पुराने i/s options, automatic u और line anchors से m ही हैं।
+**केवल source checkout:** आठों flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` स्वीकार हैं, जैसे `{ flags: 'dgiv' }` या `--flags dgiv`। आउटपुट क्रम `dgimsuvy` है; duplicates और u/v को साथ देना त्रुटि है, तथा u डिफ़ॉल्ट रहता है। m स्पष्ट option या line anchors से सक्रिय होता है; दोनों प्रकार मिलाने पर input anchors पूर्ण सीमाएँ बनाए रखते हैं। Reverse translation options बचाता है और `lastIndex` नहीं बदलता। Workshop हर उदाहरण 0 से शुरू करता है और अधिकतम 100 matches दिखाता है; copied g/y regex में state बनी रहती है। अनुपलब्ध native क्षमताएँ स्पष्ट diagnostics देती हैं। npm `0.1.0-dev.4` में पुराने i/s options, automatic u और line anchors से m ही हैं।
 
 **केवल source checkout में:** `v` चुनकर `one of strings: "a", "ab", ""` या `unicode property "RGI_Emoji"` इस्तेमाल करें। Native sets सूची के क्रम से स्वतंत्र होकर लंबे सदस्यों को पहले आज़माते हैं; आगे के नियम छोटे सदस्य पर वापस जाने की माँग कर सकते हैं। खाली strings भी मान्य हैं। Class में `string "ab"` इस्तेमाल करें। String properties और खाली या कई code points वाले सदस्यों का complement नहीं बनाया जा सकता। ये सुविधाएँ npm `0.1.0-dev.4` में नहीं हैं।
+
+**केवल source checkout में:** nested sets के लिए `character set union {`, `character set intersection {` और `character set subtraction {` लिखें और `}` से बंद करें। हर पंक्ति एक अक्षर, range, class, property, strings का set या nested set है। Intersection साझा सदस्यों को रखता है; subtraction पहले operand से दाएँ सदस्यों को हटाता है। Counts और `lazy` पूरे block पर लागू होते हैं। `not` strings के native संरचनात्मक नियमों का पालन करता है; खाली union कुछ भी match नहीं करता। `v` चुनें; npm `0.1.0-dev.4` में ये सुविधाएँ अभी नहीं हैं। [Syntax और उदाहरण](../LANGUAGE.md#nested-unicode-set-operations)।
 
 ## 🛠️ स्थानीय development
 
@@ -398,7 +402,7 @@ CI=1 npm run verify
 
 विकल्प संपादन योग्य `either { … }` ब्लॉक बनते हैं: हर सीधे entry को एक विकल्प मानकर क्रम से आज़माया जाता है। कई नियमों वाले या खाली विकल्प के लिए `group { … }` इस्तेमाल करें।
 
-लक्ष्य **JavaScript `RegExp`** है। Raw regex को rules की तरह और मुक्त अंग्रेज़ी को instructions की तरह स्वीकार नहीं करता। Reverse translation सिर्फ़ दस्तावेज़ित subset के लिए है। मुक्त अंग्रेज़ी, खाली character classes, v-set operations और forward/open references अभी समर्थित नहीं हैं। वर्कशॉप का worker समय-सीमित है; कॉपी किए regex को अपने application की सुरक्षा चाहिए। [सुरक्षा मॉडल](../SECURITY_MODEL.md) देखें।
+लक्ष्य **JavaScript `RegExp`** है। Raw regex को rules की तरह और मुक्त अंग्रेज़ी को instructions की तरह स्वीकार नहीं करता। Reverse translation सिर्फ़ दस्तावेज़ित subset के लिए है। मुक्त अंग्रेज़ी, u मोड की खाली character classes और forward/open references अभी समर्थित नहीं हैं। वर्कशॉप का worker समय-सीमित है; कॉपी किए regex को अपने application की सुरक्षा चाहिए। [सुरक्षा मॉडल](../SECURITY_MODEL.md) देखें।
 
 ## 💬 सामान्य प्रश्न
 

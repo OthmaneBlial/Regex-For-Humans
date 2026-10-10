@@ -52,6 +52,8 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 | Limites de palavra | — | ✅ Apenas no código-fonte; asserções nativas sem consumo |
 | [Propriedades Unicode](../LANGUAGE.md#unicode-properties) | — | ✅ Aliases e complementos nativos no modo u; apenas no código-fonte |
 | [Classes de caracteres combinadas](../LANGUAGE.md#composable-character-classes) | — | ✅ Intervalos, atalhos e uniões Unicode nativos; apenas no código-fonte |
+| [Strings Unicode e conjuntos aninhados](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ Strings finitas, propriedades de strings, união, interseção e subtração; somente no código-fonte |
+| Os oito flags JavaScript | — | ✅ Opções explícitas, classes nativas u/v e cursores; somente no código-fonte |
 | Outros motores e inglês livre | — | Fora do idioma de regras atual |
 
 No código-fonte, `lazy digits` gera `\d+?`: tenta um dígito primeiro e aumenta a repetição se as regras seguintes precisarem. Esse recurso ainda não está no npm `0.1.0-dev.4`. Consulte as [regras de repetição](../LANGUAGE.md#repetition).
@@ -363,9 +365,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | Match em `lastIndex`; para na primeira lacuna |
 | `v` | `{ flags: 'v' }` | Classes Unicode e complementos nativos no modo v |
 
-**Somente no código-fonte:** os oito flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` são aceitos, com `{ flags: 'dgiv' }` ou `--flags dgiv`. A saída usa `dgimsuvy`; duplicatas e u/v juntos são rejeitados, e u é o padrão. m pode ser explícito ou ativado por âncoras de linha; âncoras de entrada continuam absolutas ao misturar os modos. A tradução inversa preserva opções sem alterar `lastIndex`. O workshop começa cada exemplo em 0 e lista até 100 matches; regexes g/y copiados continuam com estado. Recursos nativos ausentes e conjuntos v aninhados recebem diagnósticos explícitos. npm `0.1.0-dev.4` mantém as opções i/s, u automático e m pelas âncoras de linha.
+**Somente no código-fonte:** os oito flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` são aceitos, com `{ flags: 'dgiv' }` ou `--flags dgiv`. A saída usa `dgimsuvy`; duplicatas e u/v juntos são rejeitados, e u é o padrão. m pode ser explícito ou ativado por âncoras de linha; âncoras de entrada continuam absolutas ao misturar os modos. A tradução inversa preserva opções sem alterar `lastIndex`. O workshop começa cada exemplo em 0 e lista até 100 matches; regexes g/y copiados continuam com estado. Recursos nativos ausentes recebem diagnósticos explícitos. npm `0.1.0-dev.4` mantém as opções i/s, u automático e m pelas âncoras de linha.
 
 **Somente no código-fonte:** selecione `v` para `one of strings: "a", "ab", ""` ou `unicode property "RGI_Emoji"`. Os conjuntos nativos tentam primeiro os membros mais longos, independentemente da ordem da lista; regras posteriores podem exigir um membro mais curto. Strings vazias são permitidas. Use `string "ab"` dentro de uma classe. Propriedades de strings e membros vazios ou com vários pontos de código não podem ser complementados. Essas funções não estão no npm `0.1.0-dev.4`.
+
+**Somente no código-fonte:** conjuntos aninhados usam `character set union {`, `character set intersection {` e `character set subtraction {`, fechados com `}`. Cada linha contém um caractere, intervalo, classe, propriedade, conjunto de strings ou conjunto aninhado. A interseção mantém membros comuns; a subtração remove os membros da direita do primeiro operando. Repetições e `lazy` valem para o bloco inteiro. `not` segue as restrições estruturais nativas para strings; uma união vazia não encontra nada. Selecione `v`; npm `0.1.0-dev.4` ainda não inclui esses recursos. [Sintaxe e exemplos](../LANGUAGE.md#nested-unicode-set-operations).
 
 ## 🛠️ Desenvolvimento local
 
@@ -398,7 +402,7 @@ Inclui formatação, lint, tipos, links, Node, construção Pages, consumidor li
 
 As alternativas viram blocos editáveis `either { … }`: cada entrada é uma opção, testada na ordem. Use `group { … }` para uma opção com várias regras ou uma opção vazia.
 
-A saída é **JavaScript `RegExp`**. Regex bruto como regra e inglês livre não são aceitos. A conversão inversa usa só o subconjunto documentado. Inglês livre, classes de caracteres vazias, operações de conjuntos v e referências futuras ou a grupos ainda abertos continuam sem suporte. O worker tem prazo; um regex copiado precisa das proteções da própria aplicação. Veja o [modelo de segurança](../SECURITY_MODEL.md).
+A saída é **JavaScript `RegExp`**. Regex bruto como regra e inglês livre não são aceitos. A conversão inversa usa só o subconjunto documentado. Inglês livre, classes de caracteres vazias no modo u e referências futuras ou a grupos ainda abertos continuam sem suporte. O worker tem prazo; um regex copiado precisa das proteções da própria aplicação. Veja o [modelo de segurança](../SECURITY_MODEL.md).
 
 ## 💬 Perguntas frequentes
 

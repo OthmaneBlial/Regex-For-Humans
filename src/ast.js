@@ -28,8 +28,9 @@ export const UNICODE_STRING_PROPERTIES = Object.freeze([
  * @typedef {{kind: 'atom', atomType: 'wildcard'|'shorthand'|'literal', value: string, negative?: boolean, repetition: Repetition|null, location: Location, text: string}} TextAtomNode
  * @typedef {{kind: 'atom', atomType: 'charSet', value: string[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} SetAtomNode
  * @typedef {{kind: 'atom', atomType: 'unicodeProperty', value: string, propertyType: 'character'|'string', negative: boolean, repetition: Repetition|null, location: Location, propertyLocation: Location, text: string}} PropertyAtomNode
- * @typedef {({kind: 'literal', value: string}|{kind: 'range', from: string, to: string}|{kind: 'shorthand', value: string}|{kind: 'strings', values: string[]}|{kind: 'stringCodePoints', codePoints: string[]}|{kind: 'unicodeProperty', value: string, propertyType: 'character'|'string', negative: boolean, propertyLocation: Location}) & {location: Location, text: string}} ClassMember
- * @typedef {{kind: 'atom', atomType: 'characterClass', members: ClassMember[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} ClassAtomNode
+ * @typedef {'union'|'intersection'|'subtraction'} ClassSetOperation
+ * @typedef {({kind: 'literal', value: string}|{kind: 'range', from: string, to: string}|{kind: 'shorthand', value: string}|{kind: 'strings', values: string[]}|{kind: 'stringCodePoints', codePoints: string[]}|{kind: 'unicodeProperty', value: string, propertyType: 'character'|'string', negative: boolean, propertyLocation: Location}|{kind: 'set', operation: ClassSetOperation, negative: boolean, members: ClassMember[], endLocation: Location}) & {location: Location, text: string}} ClassMember
+ * @typedef {{kind: 'atom', atomType: 'characterClass', members: ClassMember[], negative: boolean, operation?: ClassSetOperation, repetition: Repetition|null, location: Location, text: string, endLocation?: Location}} ClassAtomNode
  * @typedef {TextAtomNode|SetAtomNode|PropertyAtomNode|ClassAtomNode} AtomNode
  * @typedef {{kind: 'group', capturing: boolean, name: string|null, captureIndex: number|null, nodes: RuleNode[], repetition: Repetition|null, location: Location, text: string, endLocation: Location}} GroupNode
  * @typedef {{kind: 'alternation', branches: RuleNode[][], repetition: Repetition|null, location: Location, text: string, endLocation: Location}} AlternationNode
@@ -38,6 +39,40 @@ export const UNICODE_STRING_PROPERTIES = Object.freeze([
  * @typedef {AnchorNode|BoundaryNode|AtomNode|GroupNode|AlternationNode|AssertionNode|BackreferenceNode} RuleNode
  * @typedef {{nodes: RuleNode[], anchorMode: 'input'|'line'|'mixed'|null}} ParsedRules
  */
+
+/** ECMAScript's structural MayContainStrings check, without enumerating runtime properties.
+ * @param {ClassMember[]} members @param {ClassSetOperation} [operation] @returns {boolean}
+ */
+export function classMayContainStrings(members, operation = "union") {
+  const contains = members.map((member) =>
+    member.kind === "set"
+      ? !member.negative && classMayContainStrings(member.members, member.operation)
+      : member.kind === "strings"
+        ? member.values.some((value) => [...value].length !== 1)
+        : member.kind === "stringCodePoints"
+          ? member.codePoints.length !== 1
+          : member.kind === "unicodeProperty" && member.propertyType === "string",
+  );
+  return operation === "intersection"
+    ? contains.every(Boolean)
+    : operation === "subtraction"
+      ? contains[0] === true
+      : contains.some(Boolean);
+}
+
+/** @param {ClassMember[]} members @param {ClassSetOperation} [operation] @returns {boolean} */
+export function classMayMatchEmpty(members, operation = "union") {
+  const empty = members.map((member) =>
+    member.kind === "set"
+      ? !member.negative && classMayMatchEmpty(member.members, member.operation)
+      : member.kind === "strings" && member.values.includes(""),
+  );
+  return operation === "intersection"
+    ? empty.every(Boolean)
+    : operation === "subtraction"
+      ? empty[0] === true && !empty.slice(1).some(Boolean)
+      : empty.some(Boolean);
+}
 
 /** @param {AnchorNode['edge']} edge @param {AnchorNode['mode']} mode @param {Location} location @param {string} text @returns {AnchorNode} */
 export function anchor(edge, mode, location, text) {

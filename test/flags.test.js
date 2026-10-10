@@ -115,12 +115,19 @@ test("v class escaping preserves reserved punctuation, controls, ranges and indi
   }
 });
 
-test("v complements explain folding in the selected mode and unsupported nested sets stay explicit", () => {
+test("v complements explain folding in the selected mode and nested sets preserve native membership", () => {
   const result = compile('not unicode property "Lowercase_Letter"', { flags: "iv" });
   assert.equal(toRegExp(result).test("a"), false);
   assert.match(result.segments[0].explanation, /\(v\).*before complementing/u);
-  for (const source of ["[a&&b]", "[a--b]", "[[a]b]"])
-    assert.throws(() => regexToRules(new RegExp(source, "v")), { code: "UNSUPPORTED_REGEX" });
+  for (const source of ["[a&&b]", "[a--b]", "[[a]b]"]) {
+    const native = new RegExp(source, "v");
+    const translated = regexToRules(native);
+    for (const input of ["", "a", "b", "ab", "😀"])
+      assert.deepEqual(
+        toRegExp(compile(translated.rules, { flags: translated.flags })).exec(input),
+        native.exec(input),
+      );
+  }
 });
 
 test("flag validation rejects duplicates, unknown flags and u/v conflicts and probes target capabilities", () => {

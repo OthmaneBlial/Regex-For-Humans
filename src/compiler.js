@@ -1,3 +1,4 @@
+import { classMayContainStrings } from "./ast.js";
 import { fail } from "./diagnostics.js";
 import { escapeControls, quoteText } from "./display.js";
 import { explainNode } from "./explain.js";
@@ -39,15 +40,17 @@ function escapeClass(values, unicodeSets) {
   return values.map((character) => escapeCharacter(character, true, unicodeSets)).join("");
 }
 
-/** @param {import('./ast.js').ClassMember} member @param {boolean} unicodeSets */
-function classMemberSource(member, unicodeSets) {
+/** @param {import('./ast.js').ClassMember} member @param {boolean} unicodeSets @param {import('./ast.js').ClassSetOperation} [operation] @returns {string} */
+function classMemberSource(member, unicodeSets, operation = "union") {
   switch (member.kind) {
     case "literal":
       return escapeControls(escapeCharacter(member.value, true, unicodeSets));
-    case "range":
-      return escapeControls(
+    case "range": {
+      const range = escapeControls(
         `${escapeCharacter(member.from, true, unicodeSets)}-${escapeCharacter(member.to, true, unicodeSets)}`,
       );
+      return operation === "union" ? range : `[${range}]`;
+    }
     case "shorthand":
       return member.value;
     case "strings":
@@ -58,9 +61,42 @@ function classMemberSource(member, unicodeSets) {
       return escapeControls(`\\q{${escapeClass(member.codePoints, true)}}`);
     case "unicodeProperty":
       return `\\${member.negative ? "P" : "p"}{${member.value}}`;
+    case "set":
+      return classSetSource(member, unicodeSets);
     default:
       throw new TypeError("Unknown character-class member.");
   }
+}
+
+/** @param {{members: import('./ast.js').ClassMember[], negative: boolean, operation?: import('./ast.js').ClassSetOperation}} set @param {boolean} unicodeSets @returns {string} */
+function classSetSource(set, unicodeSets) {
+  const operation = set.operation ?? "union";
+  const separator = operation === "intersection" ? "&&" : operation === "subtraction" ? "--" : "";
+  return `[${set.negative ? "^" : ""}${set.members.map((member) => classMemberSource(member, unicodeSets, operation)).join(separator)}]`;
+}
+
+/** @param {import('./ast.js').ClassMember[]} members @param {boolean} unicodeSets @param {number} start @param {import('./ast.js').ClassSetOperation} [operation] @returns {import('../index.d.ts').CharacterClassMember[]} */
+function classMemberTraces(members, unicodeSets, start, operation = "union") {
+  let cursor = start;
+  return members.map((member, index) => {
+    if (index && operation !== "union") cursor += 2;
+    const source = classMemberSource(member, unicodeSets, operation);
+    const sourceStart = cursor;
+    cursor += source.length;
+    const trace = { source, sourceStart, sourceEnd: cursor };
+    return member.kind === "set"
+      ? {
+          ...member,
+          ...trace,
+          members: classMemberTraces(
+            member.members,
+            unicodeSets,
+            sourceStart + 1 + Number(member.negative),
+            member.operation,
+          ),
+        }
+      : { ...member, ...trace };
+  });
 }
 
 /** @param {Repetition|null} repetition */
@@ -108,7 +144,7 @@ function atomSource(node, unicodeSets) {
       source = `\\${node.negative ? "P" : "p"}{${node.value}}`;
       break;
     case "characterClass":
-      source = `[${node.negative ? "^" : ""}${node.members.map((member) => classMemberSource(member, unicodeSets)).join("")}]`;
+      source = classSetSource(node, unicodeSets);
       break;
     default:
       throw new TypeError("Unknown atom type.");
@@ -164,6 +200,7 @@ export function compileAst(parsed, options = {}) {
   let checkedLookbehind = false;
   let checkedUnicodeProperties = false;
   let checkedStringSets = false;
+  let checkedSetOperations = false;
 
   /** @param {import('./ast.js').Location} location */
   function checkLookbehind(location) {
@@ -235,52 +272,72 @@ export function compileAst(parsed, options = {}) {
     }
   }
 
+  /** @param {{members: import('./ast.js').ClassMember[], negative: boolean, operation?: import('./ast.js').ClassSetOperation, location: import('./ast.js').Location}} set */
+  function checkClass(set) {
+    if (set.operation) {
+      if (!unicodeSets)
+        fail(
+          "UNICODE_SETS_REQUIRED",
+          "Character-set blocks require the v flag.",
+          set.location,
+          "Select v mode to use native nested sets, intersection or subtraction.",
+        );
+      if (!checkedSetOperations) {
+        try {
+          new RegExp("[[a]&&[a]]", flags);
+          new RegExp("[[a]--[b]]", flags);
+        } catch {
+          fail(
+            "UNSUPPORTED_TARGET_FEATURE",
+            "This JavaScript runtime does not support native Unicode set operations.",
+            set.location,
+            "Use a runtime with native v-mode set-operation support.",
+          );
+        }
+        checkedSetOperations = true;
+      }
+    }
+    for (const member of set.members) {
+      if (member.kind === "set") checkClass(member);
+      if (member.kind === "unicodeProperty") checkProperty(member, set.location);
+      if (member.kind === "strings" || member.kind === "stringCodePoints") {
+        if (!unicodeSets)
+          fail(
+            "UNICODE_SETS_REQUIRED",
+            "Finite string sets require the v flag.",
+            member.location,
+            "Select v mode; string sets use native longest-first matching.",
+          );
+        if (!checkedStringSets) {
+          try {
+            new RegExp("[\\q{ab}]", flags);
+          } catch {
+            fail(
+              "UNSUPPORTED_TARGET_FEATURE",
+              "This JavaScript runtime does not support finite string sets.",
+              member.location,
+              "Use a runtime with native v-mode string-set support.",
+            );
+          }
+          checkedStringSets = true;
+        }
+      }
+    }
+    if (set.negative && classMayContainStrings(set.members, set.operation))
+      fail(
+        "INVALID_STRING_COMPLEMENT",
+        "A negated class cannot contain empty or multi-code-point strings or string properties.",
+        set.location,
+        "A complemented union must have only characters; an intersection needs a character-only operand, and a subtraction needs a character-only left operand.",
+      );
+  }
+
   /** @param {import('./ast.js').RuleNode[]} nodes */
   function emit(nodes) {
     for (const [index, node] of nodes.entries()) {
-      if (node.kind === "atom" && node.atomType === "unicodeProperty") {
+      if (node.kind === "atom" && node.atomType === "unicodeProperty")
         checkProperty(node, node.location);
-      }
-      if (node.kind === "atom" && node.atomType === "characterClass") {
-        for (const member of node.members) {
-          if (member.kind === "unicodeProperty") checkProperty(member, node.location);
-          if (member.kind === "strings" || member.kind === "stringCodePoints") {
-            if (!unicodeSets)
-              fail(
-                "UNICODE_SETS_REQUIRED",
-                "Finite string sets require the v flag.",
-                member.location,
-                "Select v mode; string sets use native longest-first matching.",
-              );
-            if (!checkedStringSets) {
-              try {
-                new RegExp("[\\q{ab}]", flags);
-              } catch {
-                fail(
-                  "UNSUPPORTED_TARGET_FEATURE",
-                  "This JavaScript runtime does not support finite string sets.",
-                  member.location,
-                  "Use a runtime with native v-mode string-set support.",
-                );
-              }
-              checkedStringSets = true;
-            }
-          }
-          if (
-            node.negative &&
-            ((member.kind === "unicodeProperty" && member.propertyType === "string") ||
-              (member.kind === "strings" &&
-                member.values.some((value) => [...value].length !== 1)) ||
-              (member.kind === "stringCodePoints" && member.codePoints.length !== 1))
-          )
-            fail(
-              "INVALID_STRING_COMPLEMENT",
-              "A negated class cannot contain empty or multi-code-point strings or string properties.",
-              node.location,
-              "Complement a class containing only single Unicode code points.",
-            );
-        }
-      }
+      if (node.kind === "atom" && node.atomType === "characterClass") checkClass(node);
       if (node.kind === "assertion") {
         if (node.direction === "behind") checkLookbehind(node.location);
         const sourceStart = source.length;
@@ -434,7 +491,7 @@ export function compileAst(parsed, options = {}) {
               : atomSource(node, unicodeSets);
       const sourceStart = source.length;
       source += fragment;
-      let memberCursor =
+      const memberCursor =
         sourceStart +
         1 +
         Number(node.kind === "atom" && node.atomType === "characterClass" && node.negative);
@@ -463,17 +520,15 @@ export function compileAst(parsed, options = {}) {
                     atomType: "characterClass",
                     negative: node.negative,
                     repetition: node.repetition,
-                    members: node.members.map((member) => {
-                      const memberSource = classMemberSource(member, unicodeSets);
-                      const memberStart = memberCursor;
-                      memberCursor += memberSource.length;
-                      return {
-                        ...member,
-                        source: memberSource,
-                        sourceStart: memberStart,
-                        sourceEnd: memberCursor,
-                      };
-                    }),
+                    ...(node.operation
+                      ? { operation: node.operation, endLocation: node.endLocation }
+                      : {}),
+                    members: classMemberTraces(
+                      node.members,
+                      unicodeSets,
+                      memberCursor,
+                      node.operation,
+                    ),
                   }
                 : node.atomType === "unicodeProperty"
                   ? {

@@ -54,12 +54,21 @@ export interface UnicodePropertySegment extends SegmentBase {
   repetition: Repetition | null;
 }
 
+export type ClassSetOperation = "union" | "intersection" | "subtraction";
+
 export type CharacterClassMember = (
   | { kind: "literal"; value: string }
   | { kind: "range"; from: string; to: string }
   | { kind: "shorthand"; value: string }
   | { kind: "strings"; values: string[] }
   | { kind: "stringCodePoints"; codePoints: string[] }
+  | {
+      kind: "set";
+      operation: ClassSetOperation;
+      negative: boolean;
+      members: CharacterClassMember[];
+      endLocation: SourceLocation;
+    }
   | {
       kind: "unicodeProperty";
       value: string;
@@ -81,6 +90,8 @@ export interface CharacterClassSegment extends SegmentBase {
   negative: boolean;
   repetition: Repetition | null;
   members: CharacterClassMember[];
+  operation?: ClassSetOperation;
+  endLocation?: SourceLocation;
 }
 
 export interface GroupSegment extends SegmentBase {

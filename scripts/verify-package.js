@@ -163,6 +163,20 @@ assert.equal(stringSet.segments[0].members[0].kind, "strings");
 assert.deepEqual(stringSet.segments[0].members[0].values, ["a", "ab", ""]);
 assert.equal(toRegExp(stringSet).exec("ab")[0], "ab");
 assert.equal(toRegExp(stringSet).exec("")[0], "");
+const nestedSet = compile(${JSON.stringify('character set subtraction {\ncharacter set intersection {\nrange "a" to "z"\nunicode property "ASCII"\n}\none of: "a", "e", "i", "o", "u"\n}')}, { flags: "dv" });
+assert.equal(nestedSet.segments[0].operation, "subtraction");
+assert.equal(nestedSet.segments[0].members[0].kind, "set");
+assert.equal(nestedSet.segments[0].members[0].operation, "intersection");
+assert.deepEqual(nestedSet.segments[0].members[0].endLocation, { line: 5, column: 1 });
+assert.equal(toRegExp(nestedSet).exec("ab")[0], "b");
+function checkSetSpans(members) { for (const member of members) { assert.equal(nestedSet.source.slice(member.sourceStart, member.sourceEnd), member.source); if (member.kind === "set") checkSetSpans(member.members); } }
+checkSetSpans(nestedSet.segments[0].members);
+for (const source of ${JSON.stringify(["[[]a]", String.raw`[^[\q{a|ab|}&&\p{ASCII}]]`, String.raw`[\q{a|ab|}--\q{ab}]`, String.raw`(?<x>[\p{RGI_Emoji}--\q{😀}])`])}) {
+  const native = new RegExp(source, "dgiv");
+  const translated = regexToRules(native);
+  const result = toRegExp(compile(translated.rules, { flags: translated.flags }));
+  for (const input of ["", "a", "A", "ab", "AB", "😀", "👨‍👩‍👧"]) { native.lastIndex = 0; result.lastIndex = 0; assert.deepEqual(result.exec(input), native.exec(input)); assert.equal(result.lastIndex, native.lastIndex); }
+}
 for (const source of ${JSON.stringify([String.raw`[\q{a|ab|}]b`, String.raw`(?<emoji>\p{RGI_Emoji})?`, String.raw`[\q{\u{d83d}\u{de00}|\u{d83d}}]`])}) {
   const native = new RegExp(source, "dgv");
   const translated = regexToRules(native);
@@ -367,7 +381,7 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   writeFileSync(
     typeSmoke,
     `import { CompileError, compile, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
-import type { AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation, UnicodePropertySegment } from "regex-for-humans";
+import type { AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, ClassSetOperation, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation, UnicodePropertySegment } from "regex-for-humans";
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
 const lazyResult: CompileResult = compile("lazy digits");
 const lazyRange: Repetition = { kind: "range", min: 2, max: 4, lazy: true };
@@ -395,6 +409,9 @@ if (segment.kind === "atom" && segment.atomType === "characterClass") {
   if (member.kind === "unicodeProperty") { const negative: boolean = member.negative; console.log(negative, member.propertyLocation); }
   if (member.kind === "strings") { const values: string[] = member.values; console.log(values); }
   if (member.kind === "stringCodePoints") { const points: string[] = member.codePoints; console.log(points); }
+  if (member.kind === "set") { const operation: ClassSetOperation = member.operation; const children: CharacterClassMember[] = member.members; const closingLine: number = member.endLocation.line; console.log(operation, children, closingLine); }
+  const operation: ClassSetOperation | undefined = characterClass.operation;
+  console.log(operation, characterClass.endLocation?.column);
   console.log(sourceStart, characterClass.negative);
 }
 if (segment.kind === "atom" && segment.atomType === "unicodeProperty") {
@@ -500,6 +517,28 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
     installedStringReverse.rules !== 'character class: string "a", string "ab", string ""'
   )
     throw new Error("Installed CLI reverse lost native string-set members or flags.");
+  const installedSets = JSON.parse(
+    run([...cliArgs, "--flags=dv", "--json", "-"], {
+      cwd: consumer,
+      input: 'character set intersection {\nrange "a" to "z"\nnone of: "a", "e", "i", "o", "u"\n}',
+    }),
+  );
+  if (
+    installedSets.source !== "[[a-z]&&[^aeiou]]" ||
+    installedSets.segments[0].operation !== "intersection"
+  )
+    throw new Error("Installed CLI lost native intersection structure.");
+  const installedSetReverse = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], {
+      cwd: consumer,
+      input: "/[[a-z]--[aeiou]]/dv",
+    }),
+  );
+  if (
+    !installedSetReverse.rules.includes("character set subtraction {") ||
+    installedSetReverse.flags !== "dv"
+  )
+    throw new Error("Installed CLI reverse lost native subtraction or flags.");
   for (const reverse of [false, true]) {
     const invalidUtf8 = spawnSync(
       process.execPath,

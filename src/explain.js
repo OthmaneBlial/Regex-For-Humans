@@ -1,5 +1,30 @@
-import { PATH_SEGMENT_SOURCE } from "./ast.js";
+import { classMayContainStrings, classMayMatchEmpty, PATH_SEGMENT_SOURCE } from "./ast.js";
 import { quoteText } from "./display.js";
+
+/** @param {import('./ast.js').ClassMember} member @returns {string} */
+function describeClassMember(member) {
+  if (member.kind === "range")
+    return `code points ${quoteText(member.from)} through ${quoteText(member.to)} (inclusive)`;
+  if (member.kind === "strings") return `finite strings ${member.values.map(quoteText).join(", ")}`;
+  if (member.kind === "stringCodePoints")
+    return `native code-point sequence ${member.codePoints.map(quoteText).join(" + ")}`;
+  if (member.kind === "unicodeProperty")
+    return `${member.negative ? "the Unicode complement of" : "Unicode property"} ${quoteText(member.value)}`;
+  if (member.kind === "set")
+    return `${member.negative ? "the Unicode complement of " : ""}${member.members.length ? `${member.operation} (${member.members.map(describeClassMember).join("; ")})` : "the empty set"}`;
+  if (member.kind === "shorthand")
+    return (
+      {
+        "\\d": "ASCII digits 0–9",
+        "\\D": "non-ASCII-digit characters",
+        "\\w": "ASCII word characters",
+        "\\W": "non-word characters",
+        "\\s": "whitespace including line breaks",
+        "\\S": "non-whitespace characters",
+      }[member.value] ?? `native shorthand ${quoteText(member.value)}`
+    );
+  return quoteText(member.value);
+}
 
 /** @param {import('./ast.js').Repetition|null} repetition @param {boolean} optional */
 function repetitionText(repetition, optional) {
@@ -182,43 +207,25 @@ function describeNode(node, flags, hasFollowingRule) {
         : `One of ${node.value.map(quoteText).join(", ")}${caseNote}.`;
       break;
     case "characterClass": {
-      const members = node.members
-        .map((member) => {
-          if (member.kind === "range")
-            return `code points ${quoteText(member.from)} through ${quoteText(member.to)} (inclusive)`;
-          if (member.kind === "strings")
-            return `finite strings ${member.values.map(quoteText).join(", ")}`;
-          if (member.kind === "stringCodePoints")
-            return `native code-point sequence ${member.codePoints.map(quoteText).join(" + ")}`;
-          if (member.kind === "unicodeProperty")
-            return `${member.negative ? "the Unicode complement of" : "Unicode property"} ${quoteText(member.value)}`;
-          if (member.kind === "shorthand")
-            return {
-              "\\d": "ASCII digits 0–9",
-              "\\D": "non-ASCII-digit characters",
-              "\\w": "ASCII word characters",
-              "\\W": "non-word characters",
-              "\\s": "whitespace including line breaks",
-              "\\S": "non-whitespace characters",
-            }[member.value];
-          return quoteText(member.value);
-        })
-        .join("; ");
-      const containsStrings = node.members.some(
-        (member) =>
-          member.kind === "strings" ||
-          member.kind === "stringCodePoints" ||
-          (member.kind === "unicodeProperty" && member.propertyType === "string"),
-      );
-      meaning = `${node.negative ? "One Unicode code point outside" : containsStrings ? "One native string or Unicode code point in" : "One Unicode code point in"} the union of: ${members}.`;
+      const members = node.members.map(describeClassMember).join("; ");
+      const containsStrings = classMayContainStrings(node.members, node.operation);
+      const operation = node.operation ?? "union";
+      meaning = node.members.length
+        ? `${node.negative ? "One Unicode code point outside" : containsStrings ? "One native string or Unicode code point in" : "One Unicode code point in"} the ${operation} of: ${members}.`
+        : node.negative
+          ? "Any Unicode code point: the complement of the empty set."
+          : "An empty set: no member can match.";
+      if (operation === "intersection") meaning += " A member must satisfy every operand.";
+      if (operation === "subtraction")
+        meaning += " Start with the left operand and remove members of each following operand.";
       if (containsStrings && !node.negative)
         meaning +=
           " Native v sets try longer members first; later rules can require a shorter member.";
-      if (node.members.some((member) => member.kind === "strings" && member.values.includes("")))
+      if (!node.negative && classMayMatchEmpty(node.members, node.operation))
         meaning += " An empty member can match without consuming input.";
       if (flags.includes("i"))
         meaning += ` Native ${flags.includes("v") ? "v" : "u"}-mode case folding applies; property complements and outer-class negation remain distinct.`;
-      if (node.members.some((member) => member.kind === "unicodeProperty"))
+      if (node.operation || node.members.some((member) => member.kind === "unicodeProperty"))
         meaning += " Property classification uses this runtime's Unicode data.";
       break;
     }

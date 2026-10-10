@@ -72,6 +72,7 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | Word boundaries | — | ✅ Unreleased; native zero-width word status |
 | [Unicode character properties](docs/LANGUAGE.md#unicode-properties) | — | ✅ Native aliases and complements in u mode; source only |
 | [Composable character classes](docs/LANGUAGE.md#composable-character-classes) | — | ✅ Native ranges, shorthands and Unicode unions; source only |
+| [Native Unicode string and nested set operations](docs/LANGUAGE.md#nested-unicode-set-operations) | — | ✅ Finite strings, string properties, union, intersection and subtraction; source only |
 | All eight JavaScript flags | — | ✅ Explicit options, native u/v classes and cursor semantics; source only |
 | Other regex engines and free-form English | — | Outside the current language |
 
@@ -470,9 +471,11 @@ Unicode escapes can include leading zeros: `/^\u{00000041}$/u` translates to `st
 | `y` | `{ flags: 'y' }` | Match at `lastIndex`; search stops at the first gap |
 | `v` | `{ flags: 'v' }` | Native Unicode-set class escaping and complement semantics |
 
-**Source checkout only:** all eight flags are accepted in any order and returned canonically as `dgimsuvy`. Duplicates and combining `u` with `v` are errors; omitting both selects `u`. For example, use `{ flags: 'dgiv' }` or `--flags dgiv`. Reverse translation preserves the options without changing the input regex's `lastIndex`. The workshop resets each example to position 0 and lists up to 100 search matches; copied g/y regexes remain stateful. Mixed input/line anchors work without weakening absolute input boundaries. Unsupported runtime capabilities fail explicitly. Nested v sets and intersection/subtraction remain unsupported. npm `0.1.0-dev.4` retains its earlier i/s options, automatic u and line-anchor-driven m behavior.
+**Source checkout only:** all eight flags are accepted in any order and returned canonically as `dgimsuvy`. Duplicates and combining `u` with `v` are errors; omitting both selects `u`. For example, use `{ flags: 'dgiv' }` or `--flags dgiv`. Reverse translation preserves the options without changing the input regex's `lastIndex`. The workshop resets each example to position 0 and lists up to 100 search matches; copied g/y regexes remain stateful. Mixed input/line anchors work without weakening absolute input boundaries. Unsupported runtime capabilities fail explicitly. npm `0.1.0-dev.4` retains its earlier i/s options, automatic u and line-anchor-driven m behavior.
 
 **Source checkout only:** select `v` for `one of strings: "a", "ab", ""` or `unicode property "RGI_Emoji"`. Native sets try longer members first, regardless of list order; later rules can require a shorter member. Empty strings are allowed. Use `string "ab"` inside a class. String properties and empty/multi-code-point members cannot be complemented. These features are not in npm `0.1.0-dev.4`.
+
+**Source checkout only:** native nested sets use `character set union {`, `character set intersection {` and `character set subtraction {`, closed by `}`. Each line is one character, range, class, property, string set or nested set. Intersection keeps shared members; subtraction removes right-hand members from the first operand. Counts and `lazy` apply to the whole block. `not` follows native structural string restrictions; an empty union matches nothing. Select `v`; these features are absent from npm `0.1.0-dev.4`. [Set syntax and examples](docs/LANGUAGE.md#nested-unicode-set-operations).
 
 <a name="develop"></a>
 
@@ -511,7 +514,7 @@ CI=1 npm run verify
 
 ## 🧭 Know the boundaries
 
-Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, empty character classes, v-set operations and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
+Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, u-mode empty character classes and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
 
 <a name="faq"></a>
 

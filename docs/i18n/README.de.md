@@ -52,6 +52,8 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 | Wortgrenzen | — | ✅ Nur im Quellcode; native Bedingungen ohne Zeichenverbrauch |
 | [Unicode-Eigenschaften](../LANGUAGE.md#unicode-properties) | — | ✅ Native Aliase und Komplemente im u-Modus; nur im Quellcode |
 | [Zusammengesetzte Zeichenklassen](../LANGUAGE.md#composable-character-classes) | — | ✅ Native Bereiche, Kurzformen und Unicode-Vereinigungen; nur im Quellcode |
+| [Unicode-Zeichenfolgen und verschachtelte Mengen](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ Endliche Zeichenfolgen, Zeichenfolgeneigenschaften, Vereinigung, Schnittmenge und Differenz; nur im Quellcode |
+| Alle acht JavaScript-Flags | — | ✅ Explizite Optionen, native u/v-Klassen und Cursorverhalten; nur im Quellcode |
 | Andere Engines und freie englische Sätze | — | Außerhalb der aktuellen Sprache |
 
 Im Quellcode erzeugt `lazy digits` den Ausdruck `\d+?`: zuerst eine Ziffer versuchen, dann bei Bedarf für die folgenden Regeln mehr Wiederholungen. Diese Ergänzung ist noch nicht in npm `0.1.0-dev.4` enthalten. Siehe [Wiederholungsregeln](../LANGUAGE.md#repetition).
@@ -363,9 +365,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | Match bei `lastIndex`; Abbruch an der ersten Lücke |
 | `v` | `{ flags: 'v' }` | Native Unicode-Klassen und Komplemente im v-Modus |
 
-**Nur im Quellcode:** Alle acht Flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` werden unterstützt, etwa mit `{ flags: 'dgiv' }` oder `--flags dgiv`. Die Ausgabe verwendet `dgimsuvy`; doppelte Flags und u/v zusammen sind ungültig, u bleibt Standard. m lässt sich ausdrücklich wählen oder durch Zeilenanker aktivieren; Eingabeanker bleiben auch bei gemischten Modi absolut. Die Rückübersetzung bewahrt Optionen und verändert `lastIndex` nicht. Der Workshop beginnt jedes Beispiel bei 0 und zeigt bis zu 100 Matches; kopierte g/y-Regexe bleiben zustandsbehaftet. Fehlende native Fähigkeiten und verschachtelte v-Mengen erhalten ausdrückliche Diagnosen. npm `0.1.0-dev.4` behält i/s-Optionen, automatisches u und m durch Zeilenanker.
+**Nur im Quellcode:** Alle acht Flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` werden unterstützt, etwa mit `{ flags: 'dgiv' }` oder `--flags dgiv`. Die Ausgabe verwendet `dgimsuvy`; doppelte Flags und u/v zusammen sind ungültig, u bleibt Standard. m lässt sich ausdrücklich wählen oder durch Zeilenanker aktivieren; Eingabeanker bleiben auch bei gemischten Modi absolut. Die Rückübersetzung bewahrt Optionen und verändert `lastIndex` nicht. Der Workshop beginnt jedes Beispiel bei 0 und zeigt bis zu 100 Matches; kopierte g/y-Regexe bleiben zustandsbehaftet. Fehlende native Fähigkeiten erhalten ausdrückliche Diagnosen. npm `0.1.0-dev.4` behält i/s-Optionen, automatisches u und m durch Zeilenanker.
 
 **Nur im Quellcode:** Wähle `v` für `one of strings: "a", "ab", ""` oder `unicode property "RGI_Emoji"`. Native Mengen versuchen längere Elemente zuerst, unabhängig von der Listenreihenfolge; folgende Regeln können ein kürzeres Element erfordern. Leere Zeichenketten sind erlaubt. Verwende `string "ab"` innerhalb einer Klasse. Zeichenketteneigenschaften sowie leere Elemente oder Elemente mit mehreren Codepunkten können nicht komplementiert werden. Diese Funktionen sind nicht in npm `0.1.0-dev.4` enthalten.
+
+**Nur im Quellcode:** Verschachtelte Mengen verwenden `character set union {`, `character set intersection {` und `character set subtraction {`, abgeschlossen mit `}`. Jede Zeile enthält ein Zeichen, einen Bereich, eine Klasse, eine Eigenschaft, eine Zeichenfolgenmenge oder eine weitere Menge. Die Schnittmenge behält gemeinsame Elemente; die Differenz entfernt rechte Elemente aus dem ersten Operanden. Wiederholungen und `lazy` gelten für den gesamten Block. `not` folgt den nativen strukturellen Beschränkungen für Zeichenfolgen; eine leere Vereinigung findet nichts. Wähle `v`; npm `0.1.0-dev.4` enthält diese Funktionen noch nicht. [Syntax und Beispiele](../LANGUAGE.md#nested-unicode-set-operations).
 
 ## 🛠️ Lokal entwickeln
 
@@ -398,7 +402,7 @@ Enthalten sind Formatierung, Lint, Typen, Links, Node, Pages-Build, saubere Pake
 
 Alternativen werden zu bearbeitbaren `either { … }`-Blöcken: Jeder Eintrag ist eine Auswahl, die in Reihenfolge ausprobiert wird. Ein `group { … }`-Block bildet eine Auswahl aus mehreren Regeln oder eine leere Auswahl.
 
-Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sätze werden nicht akzeptiert. Rückübersetzung ist auf den dokumentierten Teilumfang begrenzt. Freies Englisch, leere Zeichenklassen, v-Mengenoperationen sowie Vorwärtsreferenzen und Referenzen auf noch offene Gruppen bleiben nicht unterstützt. Der Workshop hat einen Worker-Zeitrahmen; kopierte Regex brauchen die Schutzmaßnahmen ihrer Anwendung. Siehe [Sicherheitsmodell](../SECURITY_MODEL.md).
+Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sätze werden nicht akzeptiert. Rückübersetzung ist auf den dokumentierten Teilumfang begrenzt. Freies Englisch, leere Zeichenklassen im u-Modus sowie Vorwärtsreferenzen und Referenzen auf noch offene Gruppen bleiben nicht unterstützt. Der Workshop hat einen Worker-Zeitrahmen; kopierte Regex brauchen die Schutzmaßnahmen ihrer Anwendung. Siehe [Sicherheitsmodell](../SECURITY_MODEL.md).
 
 ## 💬 Häufige Fragen
 

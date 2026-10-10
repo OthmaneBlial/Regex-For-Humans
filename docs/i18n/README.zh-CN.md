@@ -52,6 +52,8 @@ end
 | 单词边界 | — | ✅ 仅源码；原生零宽边界 |
 | [Unicode 属性](../LANGUAGE.md#unicode-properties) | — | ✅ u 模式的原生别名与补集；仅源码支持 |
 | [组合字符类](../LANGUAGE.md#composable-character-classes) | — | ✅ 原生范围、简写和 Unicode 并集；仅源码支持 |
+| [Unicode 字符串和嵌套集合](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ 有限字符串、字符串属性、并集、交集和差集；仅限源码版本 |
+| 全部八个 JavaScript 标志 | — | ✅ 显式选项、原生 u/v 字符类和游标语义；仅限源码版本 |
 | 其他正则引擎、自由英文 | — | 不在当前语言范围内 |
 
 当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。此功能尚未包含在 npm `0.1.0-dev.4` 中。参见[重复规则](../LANGUAGE.md#repetition)。
@@ -363,9 +365,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | 从 `lastIndex` 匹配，遇到间隙即停止 |
 | `v` | `{ flags: 'v' }` | 原生 v 模式 Unicode 字符类与补集 |
 
-**仅源码版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力和嵌套 v 集合会明确报错。npm `0.1.0-dev.4` 仍使用原有 i/s 选项、自动 u 和行锚点控制的 m。
+**仅源码版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.4` 仍使用原有 i/s 选项、自动 u 和行锚点控制的 m。
 
 **仅限源码版本：**选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.4` 尚未包含这些功能。
+
+**仅限源码版本：**嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.4` 尚未包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
 
 ## 🛠️ 本地开发
 
@@ -398,7 +402,7 @@ CI=1 npm run verify
 
 分支会转换为可编辑的 `either { … }` 块：每个直接条目是一个选择，按顺序尝试。使用 `group { … }` 可以将多条规则组成一个选择，也可以表示空选择。
 
-目标是 **JavaScript `RegExp`**。不接受把原始正则当规则，也不理解自由英文。逆向转换仅限文档中的子集。自由英语、空字符类、v 集合运算、前向引用及对尚未闭合组的引用仍不支持。工作台的 worker 有执行期限；复制出去的正则需由使用它的应用自行防护。参阅[安全模型](../SECURITY_MODEL.md)。
+目标是 **JavaScript `RegExp`**。不接受把原始正则当规则，也不理解自由英文。逆向转换仅限文档中的子集。自由英语、u 模式下的空字符类、前向引用及对尚未闭合组的引用仍不支持。工作台的 worker 有执行期限；复制出去的正则需由使用它的应用自行防护。参阅[安全模型](../SECURITY_MODEL.md)。
 
 ## 💬 常见问题
 

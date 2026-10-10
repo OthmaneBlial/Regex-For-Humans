@@ -52,7 +52,7 @@ for (let offset = 0; offset < flagSets.length; offset += 8) {
   });
 }
 
-test("isolated worker keeps longest strings, complete emoji captures and Unicode empty-match advancement", async ({
+test("isolated worker keeps native strings and nested sets, complete captures and Unicode empty-match advancement", async ({
   page,
 }) => {
   await page.goto("/");
@@ -67,6 +67,9 @@ test("isolated worker keeps longest strings, complete emoji captures and Unicode
             "(?<x>[\\q{a|ab|}])",
             "(?<x>\\p{RGI_Emoji})",
             "(?<x>[\\q{\\r\\n|\\r|\\n}])",
+            "(?<x>[\\q{a|ab|}--\\q{ab}])",
+            "(?<x>[\\p{RGI_Emoji}--\\q{😀}])",
+            "(?<x>[[a-z]&&[^aeiou]])",
           ]) {
             const texts = ["ab", "ab", "😀", "👨‍👩‍👧", "😀a ab", "🇵🇰🇲🇦", "\r\n\n", "", "\ud83d"];
             const cases = texts.map((text, id) => {
@@ -126,7 +129,7 @@ test("isolated worker keeps longest strings, complete emoji captures and Unicode
     }
     return count;
   });
-  expect(batches).toBe(48);
+  expect(batches).toBe(96);
 });
 
 test("workshop imports native strings, selects v explicitly and shows complete string capture spans", async ({

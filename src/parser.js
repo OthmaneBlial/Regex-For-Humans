@@ -1,4 +1,10 @@
-import { anchor, atom, PATH_SEGMENT_SOURCE, UNICODE_STRING_PROPERTIES } from "./ast.js";
+import {
+  anchor,
+  atom,
+  PATH_SEGMENT_EXCLUDED,
+  PATH_SEGMENT_SOURCE,
+  UNICODE_STRING_PROPERTIES,
+} from "./ast.js";
 import { fail } from "./diagnostics.js";
 import { quoteText } from "./display.js";
 
@@ -6,6 +12,7 @@ import { quoteText } from "./display.js";
 /** @typedef {import('./ast.js').Repetition} Repetition */
 /** @typedef {import('./ast.js').AtomNode} AtomNode */
 /** @typedef {import('./ast.js').ClassMember} ClassMember */
+/** @typedef {import('./ast.js').ClassAtomNode} ClassAtomNode */
 /** @typedef {import('./ast.js').GroupNode} GroupNode */
 /** @typedef {import('./ast.js').AlternationNode} AlternationNode */
 /** @typedef {import('./ast.js').AssertionNode} AssertionNode */
@@ -433,6 +440,34 @@ function parseItem(text, location, rawLine, inClass = false) {
       'Remove the modifier or apply it to an item, such as `3 digits` or `optional "-"`.',
     );
   }
+
+  const setBlock = /^(not\s+)?character\s+set\s+(union|intersection|subtraction)\s*\{$/iu.exec(
+    remaining,
+  );
+  if (setBlock)
+    return {
+      kind: "atom",
+      atomType: "characterClass",
+      operation:
+        setBlock[2].toLowerCase() === "union"
+          ? "union"
+          : setBlock[2].toLowerCase() === "intersection"
+            ? "intersection"
+            : "subtraction",
+      negative: setBlock[1] !== undefined,
+      members: [],
+      repetition,
+      location,
+      text,
+      endLocation: location,
+    };
+  if (/^(?:not\s+)?character\s+set(?:\s|$)/iu.test(remaining))
+    fail(
+      "INVALID_SET_BLOCK",
+      "Open a character-set operation with `{` and close it with `}` on its own line.",
+      { line: location.line, column: location.column + offset },
+      "Use `character set union {`, `character set intersection {` or `character set subtraction {`, optionally prefixed by `not`.",
+    );
 
   const boundary = /^(not\s+)?word\s+boundary$/iu.exec(remaining);
   if (boundary) {
@@ -934,6 +969,119 @@ function readClassMembers(text, location, rawLine) {
   return members;
 }
 
+/** @param {ReturnType<typeof parseAtom>} node @returns {ClassMember} */
+function setOperand(node) {
+  const base = { location: node.location, text: node.text };
+  if (node.kind === "atom" && !node.repetition) {
+    if (node.atomType === "literal" && [...node.value].length === 1)
+      return { ...base, kind: "literal", value: node.value };
+    if (node.atomType === "unicodeProperty")
+      return {
+        ...base,
+        kind: "unicodeProperty",
+        value: node.value,
+        propertyType: node.propertyType,
+        negative: node.negative,
+        propertyLocation: node.propertyLocation,
+      };
+    if (node.atomType === "characterClass") {
+      if (!node.operation && !node.negative && node.members.length === 1) return node.members[0];
+      return {
+        ...base,
+        kind: "set",
+        operation: node.operation ?? "union",
+        negative: node.negative,
+        members: node.members,
+        endLocation: node.endLocation ?? node.location,
+      };
+    }
+    if (node.atomType === "charSet")
+      return {
+        ...base,
+        kind: "set",
+        operation: "union",
+        negative: node.negative,
+        members: node.value.map((value) => ({ ...base, kind: "literal", value })),
+        endLocation: node.location,
+      };
+    if (node.atomType === "shorthand") {
+      if (/^\\[dDwWsS]$/u.test(node.value))
+        return { ...base, kind: "shorthand", value: node.value };
+      if (node.value === PATH_SEGMENT_SOURCE)
+        return {
+          ...base,
+          kind: "set",
+          operation: "union",
+          negative: true,
+          members: PATH_SEGMENT_EXCLUDED.map((value) => ({ ...base, kind: "literal", value })),
+          endLocation: node.location,
+        };
+      if (/^\[[A-Za-z0-9-]+\]$/u.test(node.value)) {
+        /** @type {ClassMember[]} */
+        const members = [];
+        for (let index = 1; index < node.value.length - 1; ) {
+          if (node.value[index + 1] === "-") {
+            members.push({
+              ...base,
+              kind: "range",
+              from: node.value[index],
+              to: node.value[index + 2],
+            });
+            index += 3;
+          } else members.push({ ...base, kind: "literal", value: node.value[index++] });
+        }
+        return {
+          ...base,
+          kind: "set",
+          operation: "union",
+          negative: false,
+          members,
+          endLocation: node.location,
+        };
+      }
+    }
+  }
+  return fail(
+    "INVALID_SET_OPERAND",
+    "A set operand must be a character, range, singular class, property, finite string set or nested set, without repetition.",
+    node.location,
+    'Use `"a"`, `digit`, `range "a" to "z"`, `string "ab"`, a class/property or another character-set block.',
+  );
+}
+
+/** @param {ClassAtomNode} node @param {string[]} lines @param {number} start @param {number} depth @returns {number} */
+function readSetBlock(node, lines, start, depth) {
+  if (depth >= LIMITS.groupDepth)
+    fail(
+      "SET_DEPTH_LIMIT",
+      `Groups and sets cannot nest more than ${LIMITS.groupDepth} levels.`,
+      node.location,
+    );
+  for (let index = start + 1; index < lines.length; index += 1) {
+    const raw = lines[index];
+    const text = raw.trim();
+    if (!text) continue;
+    const location = { line: index + 1, column: raw.indexOf(text) + 1 };
+    if (text === "}") {
+      if (node.operation !== "union" && node.members.length < 2)
+        fail(
+          "SET_OPERAND_COUNT",
+          "Intersection and subtraction need at least two operands.",
+          node.location,
+        );
+      node.endLocation = location;
+      return index;
+    }
+    const operand = parseAtom(text, location, raw);
+    if (operand.kind === "atom" && operand.atomType === "characterClass" && operand.operation) {
+      if (operand.repetition) setOperand(operand);
+      index = readSetBlock(operand, lines, index, depth + 1);
+    }
+    node.members.push(setOperand(operand));
+  }
+  return fail("UNCLOSED_SET", "Close this character set with `}` on its own line.", node.location);
+}
+
 /** @param {string} source @returns {ParsedRules} */
 export function parse(source) {
   if (typeof source !== "string") throw new TypeError("Rules must be a string.");
@@ -1024,6 +1172,8 @@ export function parse(source) {
     if (sawEnd) fail("MISPLACED_ANCHOR", "End anchor must be the last rule.", location());
 
     const node = parseAtom(text, location(), raw);
+    if (node.kind === "atom" && node.atomType === "characterClass" && node.operation)
+      index = readSetBlock(node, lines, index, groups.length);
     if (node.kind === "group" || node.kind === "alternation" || node.kind === "assertion") {
       if (groups.length >= LIMITS.groupDepth) {
         fail(

@@ -70,6 +70,8 @@ end
 | حدود الكلمات | — | ✅ في المصدر فقط؛ شروط أصلية دون استهلاك النص |
 | [خصائص Unicode](../LANGUAGE.md#unicode-properties) | — | ✅ أسماء وخصائص متمّمة أصلية بوضع u؛ في المصدر فقط |
 | [فئات المحارف المركبة](../LANGUAGE.md#composable-character-classes) | — | ✅ نطاقات واختصارات واتحادات Unicode أصلية؛ في المصدر فقط |
+| [سلاسل Unicode والمجموعات المتداخلة](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ سلاسل محددة وخصائص سلاسل واتحاد وتقاطع وطرح أصلي؛ في المصدر فقط |
+| رايات JavaScript الثماني | — | ✅ خيارات صريحة وفئات أصلية ومؤشرات موضع؛ في المصدر فقط |
 | محركات أخرى والإنجليزية الحرة | — | خارج اللغة الحالية |
 
 في المصدر الحالي، تنتج <code dir="ltr">lazy digits</code> التعبير <code dir="ltr">\d+?</code>: تُجرّب رقمًا واحدًا أولًا، ثم تزيد التكرار إذا احتاجت القواعد التالية إلى المزيد. لم يُضف هذا بعد إلى حزمة npm <code dir="ltr">0.1.0-dev.4</code>. راجع [قواعد التكرار](../LANGUAGE.md#repetition).
@@ -470,7 +472,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | <code dir="ltr">y</code> | <code dir="ltr">{ flags: 'y' }</code> | مطابقة عند <code dir="ltr">lastIndex</code> والتوقف عند أول فجوة |
 | <code dir="ltr">v</code> | <code dir="ltr">{ flags: 'v' }</code> | فئات Unicode ومتمماتها الأصلية في نمط v |
 
-**في الشفرة المصدرية فقط:** تُقبل الرايات الثماني <code dir="ltr">d</code> و<code dir="ltr">g</code> و<code dir="ltr">i</code> و<code dir="ltr">m</code> و<code dir="ltr">s</code> و<code dir="ltr">u</code> و<code dir="ltr">v</code> و<code dir="ltr">y</code>. ترتيب الناتج <code dir="ltr">dgimsuvy</code>؛ تُرفض التكرارات والجمع بين u/v، ويبقى u الافتراضي. يمكن تفعيل m مباشرة أو بمراسي الأسطر؛ وتبقى مراسي الإدخال مطلقة حتى عند خلط النمطين. يحافظ التحويل العكسي على الخيارات دون تعديل <code dir="ltr">lastIndex</code>. يبدأ كل مثال في الورشة عند 0 وتُعرض حتى 100 مطابقة؛ وتحتفظ تعبيرات g/y المنسوخة بحالتها. تُبلَّغ القدرات الأصلية المفقودة ومجموعات v المتداخلة بوضوح. يحتفظ npm <code dir="ltr">0.1.0-dev.4</code> بخيارات i/s السابقة وu التلقائي وm عبر مراسي الأسطر.
+**في الشفرة المصدرية فقط:** تُقبل الرايات الثماني <code dir="ltr">d</code> و<code dir="ltr">g</code> و<code dir="ltr">i</code> و<code dir="ltr">m</code> و<code dir="ltr">s</code> و<code dir="ltr">u</code> و<code dir="ltr">v</code> و<code dir="ltr">y</code>. ترتيب الناتج <code dir="ltr">dgimsuvy</code>؛ تُرفض التكرارات والجمع بين u/v، ويبقى u الافتراضي. يمكن تفعيل m مباشرة أو بمراسي الأسطر؛ وتبقى مراسي الإدخال مطلقة حتى عند خلط النمطين. يحافظ التحويل العكسي على الخيارات دون تعديل <code dir="ltr">lastIndex</code>. يبدأ كل مثال في الورشة عند 0 وتُعرض حتى 100 مطابقة؛ وتحتفظ تعبيرات g/y المنسوخة بحالتها. تُبلَّغ القدرات الأصلية المفقودة بوضوح. يحتفظ npm <code dir="ltr">0.1.0-dev.4</code> بخيارات i/s السابقة وu التلقائي وm عبر مراسي الأسطر.
 
 <p dir="rtl"><strong>في الشفرة المصدرية فقط:</strong> اختر <code dir="ltr">v</code> لاستخدام مجموعات السلاسل وخصائص Unicode للسلاسل. يجرّب المحرك الأعضاء الأطول أولًا، بغض النظر عن ترتيب القائمة؛ وقد تتطلب القواعد التالية الرجوع إلى عضو أقصر. السلاسل الفارغة مسموحة. استخدم الصيغة الثالثة داخل فئة محارف. لا يمكن أخذ متمّم لخاصية سلاسل أو لفئة تحتوي سلسلة فارغة أو عضوًا متعدد نقاط Unicode. هذه الإضافات غير موجودة في إصدار npm المنشور:</p>
 <p dir="ltr" align="left"><code dir="ltr">0.1.0-dev.4</code></p>
@@ -478,6 +480,12 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 <p dir="ltr" align="left"><code dir="ltr">one of strings: "a", "ab", ""</code></p>
 <p dir="ltr" align="left"><code dir="ltr">unicode property "RGI_Emoji"</code></p>
 <p dir="ltr" align="left"><code dir="ltr">string "ab"</code></p>
+
+<p dir="rtl"><strong>في الشفرة المصدرية فقط:</strong> تتيح الصيغ التالية مجموعات متداخلة تُغلق بقوس <code dir="ltr">}</code>. كل سطر محرف أو نطاق أو فئة أو خاصية أو مجموعة سلاسل أو مجموعة متداخلة. يحتفظ التقاطع بالأعضاء المشتركة؛ ويزيل الطرح أعضاء اليمين من المعامل الأول. تنطبق أعداد التكرار و<code dir="ltr">lazy</code> على الكتلة كاملة. يخضع <code dir="ltr">not</code> لقيود المحرك البنيوية على السلاسل؛ ولا تطابق المجموعة الفارغة أي نص. اختر وضع <code dir="ltr">v</code>؛ هذه المزايا غير موجودة في إصدار npm المذكور أعلاه. راجع <a href="../LANGUAGE.md#nested-unicode-set-operations">الصيغ والأمثلة</a>.</p>
+
+<p dir="ltr" align="left"><code dir="ltr">character set union {</code></p>
+<p dir="ltr" align="left"><code dir="ltr">character set intersection {</code></p>
+<p dir="ltr" align="left"><code dir="ltr">character set subtraction {</code></p>
 
 <p dir="ltr" align="left"><code dir="ltr">{ flags: 'dgiv' }</code></p>
 
@@ -526,7 +534,7 @@ CI=1 npm run verify
 
 تتحول البدائل إلى كتل قابلة للتعديل من نوع <code dir="ltr">either { … }</code>؛ كل عنصر مباشر يمثل خيارًا يُجرَّب بالترتيب. استخدم <code dir="ltr">group { … }</code> لخيار يتألف من عدة قواعد أو لخيار فارغ.
 
-المحرك المستهدف هو **JavaScript <code dir="ltr">RegExp</code>**. لا تقبل لغة القواعد تعبيرًا خامًا أو إنجليزية حرة. تتعامل الترجمة العكسية مع المجموعة الفرعية الموثقة فقط. لا تدعم اللغة الإنجليزية الحرة أو فئات المحارف الفارغة أو عمليات مجموعات v أو المراجع إلى مجموعات لم تُعرّف بعد أو ما زالت مفتوحة. تستخدم الورشة عامل تنفيذ بمهلة؛ أما التعبير المنسوخ فيحتاج إلى حماية تنفيذ في تطبيقه. راجع [نموذج الأمان](../SECURITY_MODEL.md).
+المحرك المستهدف هو **JavaScript <code dir="ltr">RegExp</code>**. لا تقبل لغة القواعد تعبيرًا خامًا أو إنجليزية حرة. تتعامل الترجمة العكسية مع المجموعة الفرعية الموثقة فقط. لا تدعم اللغة الإنجليزية الحرة أو فئات المحارف الفارغة في وضع <code dir="ltr">u</code> أو المراجع إلى مجموعات لم تُعرّف بعد أو ما زالت مفتوحة. تستخدم الورشة عامل تنفيذ بمهلة؛ أما التعبير المنسوخ فيحتاج إلى حماية تنفيذ في تطبيقه. راجع [نموذج الأمان](../SECURITY_MODEL.md).
 
 ## 💬 أسئلة شائعة
 

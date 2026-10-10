@@ -52,6 +52,8 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 | Límites de palabra | — | ✅ Solo en el código fuente; aserciones nativas de ancho cero |
 | [Propiedades Unicode](../LANGUAGE.md#unicode-properties) | — | ✅ Alias y complementos nativos en modo u; solo en el código fuente |
 | [Clases de caracteres combinadas](../LANGUAGE.md#composable-character-classes) | — | ✅ Rangos, abreviaturas y uniones Unicode nativos; solo en el código fuente |
+| [Cadenas Unicode y conjuntos anidados](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ Cadenas finitas, propiedades de cadenas, unión, intersección y resta; solo en el código fuente |
+| Los ocho flags JavaScript | — | ✅ Opciones explícitas, clases nativas u/v y cursores; solo en el código fuente |
 | Otros motores e inglés libre | — | Fuera del lenguaje actual |
 
 En el código fuente, `lazy digits` genera `\d+?`: prueba primero un dígito y amplía la repetición si las reglas siguientes lo requieren. Esta función aún no está en npm `0.1.0-dev.4`. Consulta las [reglas de repetición](../LANGUAGE.md#repetition).
@@ -363,9 +365,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | Coincide en `lastIndex`; se detiene al primer hueco |
 | `v` | `{ flags: 'v' }` | Clases Unicode y complementos nativos en modo v |
 
-**Solo en el código fuente:** se aceptan los ocho flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y`, con `{ flags: 'dgiv' }` o `--flags dgiv`. La salida usa el orden `dgimsuvy`; rechaza duplicados y combinar u/v, y u es el valor predeterminado. m puede ser explícito o activarse con anclas de línea; las anclas de entrada siguen siendo absolutas al mezclar ambos modos. La traducción inversa conserva las opciones sin modificar `lastIndex`. El workshop inicia cada ejemplo en 0 y enumera hasta 100 coincidencias; los regex g/y copiados siguen teniendo estado. Las capacidades nativas ausentes y los conjuntos v anidados reciben diagnósticos explícitos. npm `0.1.0-dev.4` conserva sus opciones i/s, u automático y m por anclas de línea.
+**Solo en el código fuente:** se aceptan los ocho flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y`, con `{ flags: 'dgiv' }` o `--flags dgiv`. La salida usa el orden `dgimsuvy`; rechaza duplicados y combinar u/v, y u es el valor predeterminado. m puede ser explícito o activarse con anclas de línea; las anclas de entrada siguen siendo absolutas al mezclar ambos modos. La traducción inversa conserva las opciones sin modificar `lastIndex`. El workshop inicia cada ejemplo en 0 y enumera hasta 100 coincidencias; los regex g/y copiados siguen teniendo estado. Las capacidades nativas ausentes reciben diagnósticos explícitos. npm `0.1.0-dev.4` conserva sus opciones i/s, u automático y m por anclas de línea.
 
 **Solo en el código fuente:** selecciona `v` para `one of strings: "a", "ab", ""` o `unicode property "RGI_Emoji"`. Los conjuntos nativos prueban primero los miembros más largos, sin depender del orden de la lista; las reglas posteriores pueden exigir uno más corto. Se permiten cadenas vacías. Usa `string "ab"` dentro de una clase. Las propiedades de cadenas y los miembros vacíos o de varios puntos de código no se pueden complementar. Estas funciones no están en npm `0.1.0-dev.4`.
+
+**Solo en el código fuente:** los conjuntos anidados usan `character set union {`, `character set intersection {` y `character set subtraction {`, cerrados con `}`. Cada línea contiene un carácter, rango, clase, propiedad, conjunto de cadenas o conjunto anidado. La intersección conserva miembros comunes; la resta elimina los miembros de la derecha del primer operando. Las repeticiones y `lazy` se aplican al bloque completo. `not` respeta las restricciones estructurales nativas sobre cadenas; una unión vacía no coincide con nada. Selecciona `v`; npm `0.1.0-dev.4` aún no incluye estas funciones. [Sintaxis y ejemplos](../LANGUAGE.md#nested-unicode-set-operations).
 
 ## 🛠️ Desarrollar localmente
 
@@ -398,7 +402,7 @@ Incluye formato, lint, tipos, enlaces, Node, construcción Pages, consumidor lim
 
 Las alternativas se convierten en bloques editables `either { … }`: cada entrada es una opción, probada en orden. Usa `group { … }` para una opción con varias reglas o una opción vacía.
 
-La salida apunta a **JavaScript `RegExp`**. No admite regex bruto como reglas ni inglés libre. La conversión inversa acepta solo el subconjunto documentado. El inglés libre, las clases de caracteres vacías, las operaciones de conjuntos v y las referencias adelantadas o a grupos abiertos siguen sin admitirse. El taller usa un worker con plazo; un regex copiado necesita las protecciones de su aplicación. Consulta el [modelo de seguridad](../SECURITY_MODEL.md).
+La salida apunta a **JavaScript `RegExp`**. No admite regex bruto como reglas ni inglés libre. La conversión inversa acepta solo el subconjunto documentado. El inglés libre, las clases de caracteres vacías en modo u y las referencias adelantadas o a grupos abiertos siguen sin admitirse. El taller usa un worker con plazo; un regex copiado necesita las protecciones de su aplicación. Consulta el [modelo de seguridad](../SECURITY_MODEL.md).
 
 ## 💬 Preguntas frecuentes
 
