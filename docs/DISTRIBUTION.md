@@ -2,6 +2,8 @@
 
 ## Local verification
 
+**Capture explorer and RTL documentation verification (10 October 2026):** source `4f7495d` passes all verification components: lint/types/docs, 244 Node tests, 292 bundled Chromium desktop/mobile workshop checks, 62 Firefox/WebKit checks, 64 homepage checks, builds, clean package installation and zero audit vulnerabilities. All 30 focused group/reference/runner/localization checks pass on Node 22.23.3. The full command stopped at a language-link test selector; after its correction, the complete homepage suite and audit passed separately. This is component evidence, rather than one uninterrupted full-command pass. Native capture values/spans, absent/empty participation, Unicode advancement, bounded search enumeration and nested reply validation are covered. npm remains `0.1.0-dev.3`; the new source features have not been released there.
+
 **Compiler and multilingual documentation verification (10 October 2026):** the full `npm run verify` gate passed for the capture/reference/reverse compiler milestone at `42a147b`: 238 Node tests, 282 Chrome desktop/mobile workshop checks, 52 Firefox/WebKit checks, 62 homepage checks, clean package installation, builds and zero audit vulnerabilities. The subsequent README/site milestone at `34b2b9b` passed all 241 Node tests, all 64 Chrome desktop/mobile homepage checks, lint/types/docs, builds and clean package installation. Its 10 localization/link checks passed on Node 22.23.3. These are separate verified snapshots; npm remains `0.1.0-dev.3`, and independent translation review remains open.
 
 **Latest full release verification (2 October 2026):** `npm run verify` passed on `cae0204` with Node 25.9.0/npm 11.12.1 on macOS arm64: 222 Node tests, 276 desktop/mobile Chromium checks, 46 Firefox/WebKit checks, 62 homepage checks, clean-consumer installation of the 110,701-byte, 26-file package, and zero audit vulnerabilities. This is local verification; GitHub Actions remains disabled. The human usability and screen-reader reviews remain open.
@@ -57,6 +59,12 @@ The earlier local preview server fix at `5a9772c` passed `npm run check`, all 16
 ## Hosted development preview
 
 The development site and workshop are live at [othmaneblial.github.io/Regex-For-Humans](https://othmaneblial.github.io/Regex-For-Humans/).
+
+### Capture explorer and Arabic/Urdu README guides
+
+Source `4f7495d` was published at Pages commit `95f66c3`, whose build succeeded on 10 October 2026. All 58 served files return HTTP 200 and match local SHA-256 values; all 33 changed files remain inside the existing project folder. Chrome at 1280/390px and Firefox/WebKit at 1280px verify ten language links, four requested copies, native year/month/day values and spans, absent versus empty capture values and Unicode empty-match positions 0/2/3, with no page errors or 320px overflow. Four public capture-panel screenshots were inspected. These checks use the unchanged 1,200 ms worker deadline; clipboard interception verifies requested text.
+
+Both complete translated READMEs were also checked directly on their published GitHub pages at 1280/390px: 16 section headings and seven tables use RTL, all 20 code blocks use LTR and retain canonical code bytes, and 165 inline code fragments explicitly declare LTR. Eight published introduction/capture screenshots were inspected. Independent native-speaker and screen-reader reviews remain open, as does workshop UI localization. This website publication does not release the new compiler or explorer features to npm.
 
 ### Complete README translations and capture guides
 
