@@ -277,7 +277,7 @@ Eine Anweisung pro Zeile; wörtlicher Text in Anführungszeichen.
 | `text without: a, b` | `[^ab]*` | Null oder mehr andere Zeichen |
 | `any text` | `.*` | Mit `s` auch Zeilenumbrüche |
 
-`word character` / `word characters` und `word` / `not word` folgen `\w` / `\W`: `_` gehört dazu, `é` nicht. `letter` schließt Ziffern und Unterstrich aus. Mit `i` kommen native JavaScript-Äquivalente wie `K` und `ſ` hinzu. `u` ist immer aktiv, macht ASCII-Klassen aber nicht zu universellen Unicode-Kategorien.
+`word character` / `word characters` und `word` / `not word` folgen `\w` / `\W`: `_` gehört dazu, `é` nicht. `letter` schließt Ziffern und Unterstrich aus. Mit `i` kommen native JavaScript-Äquivalente wie `K` und `ſ` hinzu. `u` ist Standard; der Quellcode akzeptiert auch `v`. Beide machen ASCII-Klassen nicht zu universellen Unicode-Kategorien.
 
 ## 💻 Im Terminal verwenden
 
@@ -354,12 +354,16 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 | Flag | Aktivierung | Wirkung |
 | --- | --- | --- |
-| `u` | Immer | Unicode-Codepoints |
+| `u` | Standard | Unicode-Codepoints |
 | `i` | `{ flags: 'i' }` oder `--ignore-case` | Native Groß-/Kleinschreibung ignorieren |
 | `s` | `{ flags: 's' }` oder `--dot-all` | Punkt erfasst auch Zeilenumbrüche |
 | `m` | `line start` / `line end` | Zeilenanker |
+| `d` | `{ flags: 'd' }` | Native Match- und Capture-Indizes |
+| `g` | `{ flags: 'g' }` | Wiederholte Aufrufe erhöhen `lastIndex` |
+| `y` | `{ flags: 'y' }` | Match bei `lastIndex`; Abbruch an der ersten Lücke |
+| `v` | `{ flags: 'v' }` | Native Unicode-Klassen und Komplemente im v-Modus |
 
-`flags: 'is'` kombiniert beide Optionen. `g`, `y`, `d` und `v` sind keine Compileroptionen. Die Anwendung kann für ihren nativen Regex eigene Ausführungsflags wählen.
+**Nur im Quellcode:** Alle acht Flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` werden unterstützt, etwa mit `{ flags: 'dgiv' }` oder `--flags dgiv`. Die Ausgabe verwendet `dgimsuvy`; doppelte Flags und u/v zusammen sind ungültig, u bleibt Standard. m lässt sich ausdrücklich wählen oder durch Zeilenanker aktivieren; Eingabeanker bleiben auch bei gemischten Modi absolut. Die Rückübersetzung bewahrt Optionen und verändert `lastIndex` nicht. Der Workshop beginnt jedes Beispiel bei 0 und zeigt bis zu 100 Matches; kopierte g/y-Regexe bleiben zustandsbehaftet. Fehlende native Fähigkeiten, verschachtelte v-Mengen und Unicode-Zeichenketteneigenschaften erhalten ausdrückliche Diagnosen. npm `0.1.0-dev.4` behält i/s-Optionen, automatisches u und m durch Zeilenanker.
 
 ## 🛠️ Lokal entwickeln
 

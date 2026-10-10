@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Accept all eight native JavaScript flags through compile options, reverse translation, CLI `--flags` and workshop controls. Preserve d/g/y match indices and cursor state, select native u/v character-class modes, validate duplicate/u-v conflicts and runtime capabilities, and retain absolute input anchors when mixed with multiline anchors. Reset both worker matchers for every example and combine internal g/d flags without duplicates. Nested v sets and Unicode string properties remain unsupported; this addition is not in npm `0.1.0-dev.4`.
+
 - Support native u-mode composable character classes and inclusive Unicode code-point ranges in both directions, combining single-point literals, ranges, singular shorthands and property escapes. Preserve property complements separately from outer negation, class-context escaping, captures, flags and repetition. Add positioned member/range diagnostics and typed `CharacterClassSegment`/`CharacterClassMember` source metadata through the shared CLI and isolated workshop. This addition is not in npm `0.1.0-dev.4`; v sets/string properties remain open work.
 
 - Compile and reverse-translate standalone native Unicode character properties and complements, preserving case-sensitive aliases, counts/lazy preference, flags, capture values/indices and native u/i complement behavior. Add positioned alias/capability diagnostics and typed `UnicodePropertySegment` metadata through the shared CLI and workshop. This addition is not in npm `0.1.0-dev.4`.

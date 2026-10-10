@@ -362,7 +362,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 | <code dir="ltr">text without: a, b</code> | <code dir="ltr">[^ab]*</code> | صفر أو أكثر من المحارف غير المدرجة |
 | <code dir="ltr">any text</code> | <code dir="ltr">.*</code> | تشمل <code dir="ltr">s</code> فواصل الأسطر |
 
-تتبع <code dir="ltr">word character</code> و<code dir="ltr">word characters</code> و<code dir="ltr">word</code> و<code dir="ltr">not word</code> دلالات <code dir="ltr">\w</code> و<code dir="ltr">\W</code>. تشمل <code dir="ltr">\w</code> الشرطة السفلية <code dir="ltr">_</code>، لكنها لا تشمل <code dir="ltr">é</code>. تستثني <code dir="ltr">letter</code> الأرقام والشرطة السفلية. قد تشمل مقارنات JavaScript الأصلية مع <code dir="ltr">i</code> المحرفين <code dir="ltr">K</code> و<code dir="ltr">ſ</code>. تكون <code dir="ltr">u</code> مفعلة دائمًا، لكنها لا تجعل فئات ASCII فئات Unicode شاملة.
+تتبع <code dir="ltr">word character</code> و<code dir="ltr">word characters</code> و<code dir="ltr">word</code> و<code dir="ltr">not word</code> دلالات <code dir="ltr">\w</code> و<code dir="ltr">\W</code>. تشمل <code dir="ltr">\w</code> الشرطة السفلية <code dir="ltr">_</code>، لكنها لا تشمل <code dir="ltr">é</code>. تستثني <code dir="ltr">letter</code> الأرقام والشرطة السفلية. قد تشمل مقارنات JavaScript الأصلية مع <code dir="ltr">i</code> المحرفين <code dir="ltr">K</code> و<code dir="ltr">ſ</code>. يكون <code dir="ltr">u</code> الافتراضي وتقبل الشفرة المصدرية أيضًا <code dir="ltr">v</code>؛ ولا يحوّل أيّ منهما فئات ASCII إلى فئات Unicode شاملة.
 
 ## 💻 الاستخدام في الطرفية
 
@@ -461,12 +461,20 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 | الراية | طريقة التفعيل | التأثير |
 | ---: | ---: | ---: |
-| <code dir="ltr">u</code> | دائمًا | المطابقة بنقاط Unicode |
+| <code dir="ltr">u</code> | افتراضيًا | المطابقة بنقاط Unicode |
 | <code dir="ltr">i</code> | <code dir="ltr">{ flags: 'i' }</code> أو <code dir="ltr">--ignore-case</code> | مقارنة دون تمييز حالة الأحرف وفق JavaScript |
 | <code dir="ltr">s</code> | <code dir="ltr">{ flags: 's' }</code> أو <code dir="ltr">--dot-all</code> | يسمح للنقطة بمطابقة فواصل الأسطر |
 | <code dir="ltr">m</code> | <code dir="ltr">line start</code> / <code dir="ltr">line end</code> | مراسي لكل سطر |
+| <code dir="ltr">d</code> | <code dir="ltr">{ flags: 'd' }</code> | مواقع المطابقات والالتقاطات الأصلية |
+| <code dir="ltr">g</code> | <code dir="ltr">{ flags: 'g' }</code> | تحرّك الاستدعاءات المتكررة <code dir="ltr">lastIndex</code> |
+| <code dir="ltr">y</code> | <code dir="ltr">{ flags: 'y' }</code> | مطابقة عند <code dir="ltr">lastIndex</code> والتوقف عند أول فجوة |
+| <code dir="ltr">v</code> | <code dir="ltr">{ flags: 'v' }</code> | فئات Unicode ومتمماتها الأصلية في نمط v |
 
-تجمع <code dir="ltr">flags: 'is'</code> الخيارين. ليست <code dir="ltr">g</code> و<code dir="ltr">y</code> و<code dir="ltr">d</code> و<code dir="ltr">v</code> خيارات للمترجم. يستطيع التطبيق إنشاء تعبير أصلي من المصدر واختيار رايات التنفيذ التي يحتاجها.
+**في الشفرة المصدرية فقط:** تُقبل الرايات الثماني <code dir="ltr">d</code> و<code dir="ltr">g</code> و<code dir="ltr">i</code> و<code dir="ltr">m</code> و<code dir="ltr">s</code> و<code dir="ltr">u</code> و<code dir="ltr">v</code> و<code dir="ltr">y</code>. ترتيب الناتج <code dir="ltr">dgimsuvy</code>؛ تُرفض التكرارات والجمع بين u/v، ويبقى u الافتراضي. يمكن تفعيل m مباشرة أو بمراسي الأسطر؛ وتبقى مراسي الإدخال مطلقة حتى عند خلط النمطين. يحافظ التحويل العكسي على الخيارات دون تعديل <code dir="ltr">lastIndex</code>. يبدأ كل مثال في الورشة عند 0 وتُعرض حتى 100 مطابقة؛ وتحتفظ تعبيرات g/y المنسوخة بحالتها. تُبلَّغ القدرات الأصلية المفقودة ومجموعات v المتداخلة وخصائص Unicode للسلاسل بوضوح. يحتفظ npm <code dir="ltr">0.1.0-dev.4</code> بخيارات i/s السابقة وu التلقائي وm عبر مراسي الأسطر.
+
+<p dir="ltr" align="left"><code dir="ltr">{ flags: 'dgiv' }</code></p>
+
+<p dir="ltr" align="left"><code dir="ltr">--flags dgiv</code></p>
 
 ## 🛠️ التطوير محليًا
 

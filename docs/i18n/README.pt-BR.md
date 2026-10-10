@@ -277,7 +277,7 @@ Uma instrução por linha; texto literal entre aspas.
 | `text without: a, b` | `[^ab]*` | Zero ou mais caracteres fora da lista |
 | `any text` | `.*` | Com `s`, inclui quebras |
 
-`word character` / `word characters` e `word` / `not word` seguem `\w` / `\W`: `_` está incluído, `é` não. `letter` exclui dígitos e sublinhado. Com `i`, JavaScript inclui equivalências como `K` e `ſ`. `u` sempre está ativo, mas não transforma classes ASCII em categorias Unicode universais.
+`word character` / `word characters` e `word` / `not word` seguem `\w` / `\W`: `_` está incluído, `é` não. `letter` exclui dígitos e sublinhado. Com `i`, JavaScript inclui equivalências como `K` e `ſ`. `u` é o padrão; o código-fonte também aceita `v`. Nenhum transforma classes ASCII em categorias Unicode universais.
 
 ## 💻 No terminal
 
@@ -354,12 +354,16 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 | Flag | Ativação | Efeito |
 | --- | --- | --- |
-| `u` | Sempre | Pontos de código Unicode |
+| `u` | Padrão | Pontos de código Unicode |
 | `i` | `{ flags: 'i' }` ou `--ignore-case` | Comparação nativa sem distinguir caixa |
 | `s` | `{ flags: 's' }` ou `--dot-all` | Ponto inclui quebras |
 | `m` | `line start` / `line end` | Âncoras por linha |
+| `d` | `{ flags: 'd' }` | Índices nativos de correspondências e capturas |
+| `g` | `{ flags: 'g' }` | Chamadas repetidas avançam `lastIndex` |
+| `y` | `{ flags: 'y' }` | Match em `lastIndex`; para na primeira lacuna |
+| `v` | `{ flags: 'v' }` | Classes Unicode e complementos nativos no modo v |
 
-`flags: 'is'` combina as opções. `g`, `y`, `d` e `v` não são opções do compilador. A aplicação pode escolher flags ao construir seu regex nativo.
+**Somente no código-fonte:** os oito flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` são aceitos, com `{ flags: 'dgiv' }` ou `--flags dgiv`. A saída usa `dgimsuvy`; duplicatas e u/v juntos são rejeitados, e u é o padrão. m pode ser explícito ou ativado por âncoras de linha; âncoras de entrada continuam absolutas ao misturar os modos. A tradução inversa preserva opções sem alterar `lastIndex`. O workshop começa cada exemplo em 0 e lista até 100 matches; regexes g/y copiados continuam com estado. Recursos nativos ausentes, conjuntos v aninhados e propriedades Unicode de strings recebem diagnósticos explícitos. npm `0.1.0-dev.4` mantém as opções i/s, u automático e m pelas âncoras de linha.
 
 ## 🛠️ Desenvolvimento local
 

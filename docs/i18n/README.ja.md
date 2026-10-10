@@ -277,7 +277,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 | `text without: a, b` | `[^ab]*` | リスト以外の0文字以上 |
 | `any text` | `.*` | `s` で改行も含む |
 
-`word character` / `word characters` と `word` / `not word` は `\w` / `\W` に従い、`_` を含み `é` を含みません。`letter` は数字とアンダースコアを除きます。`i` では JavaScript の同値文字 `K`、`ſ` なども加わります。`u` は常に有効ですが、ASCII クラスを Unicode 全体の分類には変えません。
+`word character` / `word characters` と `word` / `not word` は `\w` / `\W` に従い、`_` を含み `é` を含みません。`letter` は数字とアンダースコアを除きます。`i` では JavaScript の同値文字 `K`、`ſ` なども加わります。既定は `u` で、ソース版は `v` も受け付けます。どちらも ASCII クラスを Unicode 全体の分類には変えません。
 
 ## 💻 ターミナルで使う
 
@@ -354,12 +354,16 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 | フラグ | 有効化 | 効果 |
 | --- | --- | --- |
-| `u` | 常に有効 | Unicode コードポイント |
+| `u` | 既定 | Unicode コードポイント |
 | `i` | `{ flags: 'i' }` または `--ignore-case` | JavaScript の大文字・小文字同値比較 |
 | `s` | `{ flags: 's' }` または `--dot-all` | ドットが改行にも一致 |
 | `m` | `line start` / `line end` | 行ごとのアンカー |
+| `d` | `{ flags: 'd' }` | ネイティブな一致とキャプチャの位置 |
+| `g` | `{ flags: 'g' }` | 繰り返し呼び出すと `lastIndex` が進む |
+| `y` | `{ flags: 'y' }` | `lastIndex` で一致し、最初の隙間で停止 |
+| `v` | `{ flags: 'v' }` | ネイティブ v モードの Unicode クラスと補集合 |
 
-`flags: 'is'` で両方を有効にできます。`g`、`y`、`d`、`v` はコンパイラのオプションではありません。出力ソースからネイティブな正規表現を作る側で実行用フラグを選べます。
+**ソース版のみ：** 8 個のフラグ `d`、`g`、`i`、`m`、`s`、`u`、`v`、`y` を `{ flags: 'dgiv' }` または `--flags dgiv` で指定できます。出力順は `dgimsuvy` です。重複と u/v の併用はエラーになり、既定は u です。m は明示指定または行アンカーで有効になります。混在しても入力アンカーは絶対境界を保ちます。逆変換はオプションを保持し、`lastIndex` を変更しません。Workshop は各例を 0 から開始し、最大 100 件を表示します。コピーした g/y 正規表現は状態を持ちます。ネイティブ機能の不足、入れ子の v 集合、Unicode 文字列プロパティは明示的な診断になります。npm `0.1.0-dev.4` は従来の i/s、既定の u、行アンカーによる m を維持します。
 
 ## 🛠️ ローカル開発
 

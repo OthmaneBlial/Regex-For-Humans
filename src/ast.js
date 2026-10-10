@@ -25,7 +25,7 @@ export const PATH_SEGMENT_EXCLUDED = Object.freeze([
  * @typedef {{kind: 'assertion', direction: 'ahead'|'behind', negative: boolean, nodes: RuleNode[], repetition: null, location: Location, text: string, endLocation: Location}} AssertionNode
  * @typedef {{kind: 'backreference', reference: string|number, captureIndex: number, referenceLocation: Location, repetition: Repetition|null, location: Location, text: string}} BackreferenceNode
  * @typedef {AnchorNode|BoundaryNode|AtomNode|GroupNode|AlternationNode|AssertionNode|BackreferenceNode} RuleNode
- * @typedef {{nodes: RuleNode[], anchorMode: 'input'|'line'|null}} ParsedRules
+ * @typedef {{nodes: RuleNode[], anchorMode: 'input'|'line'|'mixed'|null}} ParsedRules
  */
 
 /** @param {AnchorNode['edge']} edge @param {AnchorNode['mode']} mode @param {Location} location @param {string} text @returns {AnchorNode} */

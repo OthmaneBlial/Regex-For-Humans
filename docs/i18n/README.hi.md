@@ -277,7 +277,7 @@ Group बंद होने के बाद `same as capture "word"` या `s
 | `text without: a, b` | `[^ab]*` | सूची के बाहर शून्य या अधिक अक्षर |
 | `any text` | `.*` | `s` पर नई पंक्तियाँ भी |
 
-`word character` / `word characters` और `word` / `not word`, `\w` / `\W` का व्यवहार लेते हैं। `_` शामिल है, `é` नहीं। `letter` अंक और underscore हटाता है। `i` पर JavaScript के equivalents `K` और `ſ` भी जुड़ सकते हैं। `u` हमेशा चालू है, लेकिन ASCII classes को सार्वभौमिक Unicode categories नहीं बनाता।
+`word character` / `word characters` और `word` / `not word`, `\w` / `\W` का व्यवहार लेते हैं। `_` शामिल है, `é` नहीं। `letter` अंक और underscore हटाता है। `i` पर JavaScript के equivalents `K` और `ſ` भी जुड़ सकते हैं। `u` डिफ़ॉल्ट है; source में `v` भी उपलब्ध है। दोनों ASCII classes को सार्वभौमिक Unicode categories नहीं बनाते।
 
 ## 💻 टर्मिनल में इस्तेमाल करें
 
@@ -354,12 +354,16 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 | Flag | सक्रिय कैसे करें | प्रभाव |
 | --- | --- | --- |
-| `u` | हमेशा | Unicode code points |
+| `u` | डिफ़ॉल्ट | Unicode code points |
 | `i` | `{ flags: 'i' }` या `--ignore-case` | JavaScript की native case folding |
 | `s` | `{ flags: 's' }` या `--dot-all` | Dot नई पंक्तियों से भी match करता है |
 | `m` | `line start` / `line end` | हर पंक्ति के anchors |
+| `d` | `{ flags: 'd' }` | Match और capture के native indices |
+| `g` | `{ flags: 'g' }` | बार-बार कॉल करने पर `lastIndex` आगे बढ़ता है |
+| `y` | `{ flags: 'y' }` | `lastIndex` पर match; पहली खाली जगह पर रुकता है |
+| `v` | `{ flags: 'v' }` | Native v-mode Unicode classes और complements |
 
-`flags: 'is'` दोनों options जोड़ता है। `g`, `y`, `d` और `v` compiler options नहीं हैं। Output source से native regex बनाते समय application अपने execution flags चुन सकती है।
+**केवल source checkout:** आठों flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` स्वीकार हैं, जैसे `{ flags: 'dgiv' }` या `--flags dgiv`। आउटपुट क्रम `dgimsuvy` है; duplicates और u/v को साथ देना त्रुटि है, तथा u डिफ़ॉल्ट रहता है। m स्पष्ट option या line anchors से सक्रिय होता है; दोनों प्रकार मिलाने पर input anchors पूर्ण सीमाएँ बनाए रखते हैं। Reverse translation options बचाता है और `lastIndex` नहीं बदलता। Workshop हर उदाहरण 0 से शुरू करता है और अधिकतम 100 matches दिखाता है; copied g/y regex में state बनी रहती है। अनुपलब्ध native क्षमताएँ, nested v sets और Unicode string properties स्पष्ट diagnostics देते हैं। npm `0.1.0-dev.4` में पुराने i/s options, automatic u और line anchors से m ही हैं।
 
 ## 🛠️ स्थानीय development
 

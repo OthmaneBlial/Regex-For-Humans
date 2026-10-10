@@ -51,7 +51,7 @@ test("reverse translation exposes invalid input and clears stale errors on edit 
     ["not a regex", "Paste a slash-delimited JavaScript regex literal"],
     ["/^a(?=ab[])$/u", "Column 8: An empty character class"],
     ["/^(?:😀(?=ab[]))$/u", "Column 12: An empty character class"],
-    [String.raw`/^\d+$/gu`, "Only the i, s, m and u flags can be translated."],
+    [String.raw`/^\d+$/g`, "Add the `u` or `v` flag before translating."],
   ]) {
     await reverse.fill(literal);
     await expect(reverse).toHaveAttribute("aria-invalid", "false");
@@ -73,7 +73,7 @@ test("reverse translation exposes invalid input and clears stale errors on edit 
   await reverse.fill(String.raw`/^\d{2}$/u`);
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
   await expect(feedback).toBeHidden();
-  await expect(reverse).not.toHaveAccessibleDescription(/Only the i, s, m and u flags/);
+  await expect(reverse).not.toHaveAccessibleDescription(/Add the `u` or `v` flag/);
   await button.focus();
   await button.press("Enter");
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
@@ -151,7 +151,7 @@ test("generated regex is a named keyboard stop with native horizontal scrolling"
     await expect(page.locator("#regex-output")).toHaveText(pattern);
     for (const width of [viewport.width, 320]) {
       await page.setViewportSize({ width, height: viewport.height });
-      await page.locator("#dot-all").focus();
+      await page.locator("#unicode-mode").focus();
       await page.keyboard.press("Tab");
       await expect(page.locator("#reverse-translator summary")).toBeFocused();
       await page.keyboard.press("Tab");

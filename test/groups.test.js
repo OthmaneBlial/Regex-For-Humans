@@ -114,7 +114,10 @@ test("anchors retain local ordering and global multiline semantics inside groups
   const line = compile('capture {\nline start "A"\nline end\n}');
   assert.equal(line.flags, "mu");
   assert.equal(toRegExp(line).exec("B\nA")[1], "A");
-  assert.throws(() => compile("start\ngroup {\nline end\n}"), { code: "MIXED_ANCHORS", line: 3 });
+  const mixed = toRegExp(compile("start\ngroup {\nline end\n}"));
+  assert.equal(mixed.flags, "mu");
+  assert.equal(mixed.exec("\nA")?.index, 0);
+  assert.equal(mixed.test("A\n"), false);
   assert.throws(() => compile('group {\nend\n"A"\n}'), { code: "MISPLACED_ANCHOR", line: 3 });
   assert.throws(() => compile('group {\n"A"\nstart\n}'), { code: "MISPLACED_ANCHOR", line: 3 });
 });

@@ -64,7 +64,7 @@ test("genuine regexes from another context translate with the same rules, flags 
   }
   for (const [source, flags] of [
     ["a", ""],
-    ["a", "gu"],
+    ["[a&&b]", "v"],
     ["^😀(?=ab[])AB$", "u"],
     ["a".repeat(16_385), "u"],
   ]) {
@@ -152,7 +152,7 @@ test("translation uses the stored native pattern and flags instead of overridden
   }
   for (const [source, flags, code] of [
     ["a", "", "UNICODE_FLAG_REQUIRED"],
-    ["a", "gu", "UNSUPPORTED_REGEX_FLAGS"],
+    ["[a&&b]", "v", "UNSUPPORTED_REGEX"],
     ["(?=ab[])a", "u", "UNSUPPORTED_REGEX"],
     ["a".repeat(16_385), "u", "REGEX_SOURCE_LIMIT"],
   ]) {
@@ -175,11 +175,11 @@ test("reverse validation reads native metadata without cloning the pattern", () 
     for (const [flags, code, column] of [
       ["u", "REGEX_SOURCE_LIMIT", 16_385],
       ["", "UNICODE_FLAG_REQUIRED", 1],
-      ["du", "UNSUPPORTED_REGEX_FLAGS", 1],
-      ["gu", "UNSUPPORTED_REGEX_FLAGS", 1],
-      ["yu", "UNSUPPORTED_REGEX_FLAGS", 1],
-      ["v", "UNSUPPORTED_REGEX_FLAGS", 1],
-      ["dgv", "UNSUPPORTED_REGEX_FLAGS", 1],
+      ["du", "REGEX_SOURCE_LIMIT", 16_385],
+      ["gu", "REGEX_SOURCE_LIMIT", 16_385],
+      ["yu", "REGEX_SOURCE_LIMIT", 16_385],
+      ["v", "REGEX_SOURCE_LIMIT", 16_385],
+      ["dgv", "REGEX_SOURCE_LIMIT", 16_385],
     ]) {
       const regex = new RegExp(source, flags);
       regex.lastIndex = 7;
@@ -198,7 +198,7 @@ test("reverse validation reads native metadata without cloning the pattern", () 
     });
     assert.deepEqual(regexToRules(foreign), {
       rules: 'line start\n"A"\nany character\nline end',
-      flags: "is",
+      flags: "ims",
     });
     assert.equal(cloneCalls, 0);
   } finally {
@@ -247,7 +247,7 @@ test("empty non-capturing groups translate to zero-count rules with equivalent m
     ]) {
       const regex = new RegExp(source, flags);
       const translated = regexToRules(regex);
-      assert.equal(translated.flags, `${regex.ignoreCase ? "i" : ""}${regex.dotAll ? "s" : ""}`);
+      assert.equal(translated.flags, flags.replace("u", ""));
       assert.equal(
         translated.rules,
         flags.includes("m")
@@ -296,7 +296,7 @@ test("maps multiline anchors and matching flags without changing their meaning",
   const original = /^a.*$/imsu;
   const translated = regexToRules(original);
   assert.equal(translated.rules, 'line start\n"a"\nany text\nline end');
-  assert.equal(translated.flags, "is");
+  assert.equal(translated.flags, "ims");
   const rebuilt = compile(translated.rules, { flags: translated.flags });
   assert.equal(rebuilt.source, original.source);
   assert.equal(rebuilt.flags, original.flags);
@@ -485,10 +485,7 @@ test("ASCII control-letter escapes preserve matching in literals, lists and lite
         const translated = regexToRules(regex);
         assert.doesNotMatch(translated.rules.replaceAll("\n", ""), /\p{Control}/u);
         const result = compile(translated.rules, { flags: translated.flags });
-        assert.equal(
-          result.flags,
-          source.startsWith("^") ? regex.flags : regex.flags.replace("m", ""),
-        );
+        assert.equal(result.flags, regex.flags);
         assert.doesNotMatch(result.source, /\p{Control}/u);
         const rebuilt = toRegExp(result);
         for (const sample of [...samples, control.repeat(2), `${control}a${control}a`, letter]) {
@@ -716,7 +713,7 @@ test("unsupported assertion contents retain their original regex columns", () =>
               message,
               line: 1,
               column: prefix.length + source.lastIndexOf("[") + 1,
-              hint: "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and i/s/u/m flags. Forward/open references are not supported.",
+              hint: "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and d/g/i/m/s/u/v/y flags. Forward/open references are not supported.",
             });
             return true;
           },
@@ -753,6 +750,6 @@ test("rejects features it cannot preserve and non-Unicode matching", () => {
     });
   }
   assert.throws(() => regexToRules(/\d+/), { code: "UNICODE_FLAG_REQUIRED" });
-  assert.throws(() => regexToRules(/a/gu), { code: "UNSUPPORTED_REGEX_FLAGS" });
+  assert.deepEqual(regexToRules(/a/gu), { rules: '"a"', flags: "g" });
   assert.throws(() => regexToRules("a"), { name: "TypeError" });
 });

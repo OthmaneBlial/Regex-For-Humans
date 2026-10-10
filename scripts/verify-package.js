@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REGEX_LITERAL_INPUT_LIMIT } from "../src/regex-literal.js";
+import { flagSets } from "../test/fixtures/advanced-flags-corpus.js";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const npmCli = process.env.npm_execpath;
@@ -109,6 +110,24 @@ try {
     `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
+for (const flags of ${JSON.stringify(flagSets)}) {
+  for (const source of ["(?<x>a|ab)", "(?<x>)"]) {
+    const original = new RegExp(source, flags);
+    original.lastIndex = 2;
+    const translated = regexToRules(original);
+    assert.equal(original.lastIndex, 2);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    assert.equal(rebuilt.flags, flags);
+    for (const input of ["", "a", "ab", "a a", "😀a"]) for (const cursor of [0, 1, 2]) {
+      original.lastIndex = cursor;
+      rebuilt.lastIndex = cursor;
+      for (let step = 0; step < 3; step += 1) {
+        assert.deepEqual(rebuilt.exec(input), original.exec(input));
+        assert.equal(rebuilt.lastIndex, original.lastIndex);
+      }
+    }
+  }
+}
 const assertionRules = 'preceded by {\\ncapture "currency" {\\n"USD"\\n}\\n}\\ncapture "amount" {\\ndigits\\n}';
 const asserted = compile(assertionRules);
 const assertedMatch = new RegExp(asserted.source, "du").exec("USD123");
@@ -243,8 +262,8 @@ catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_
 const trailingList = ${JSON.stringify('one of: "😀", ",",')};
 try { compile(trailingList); throw new Error("Trailing list comma accepted"); }
 catch (error) { if (!(error instanceof CompileError) || error.code !== "INVALID_CHARACTER_LIST" || error.column !== trailingList.length) throw error; }
-try { compile("start line end"); throw new Error("Mixed anchors accepted"); }
-catch (error) { if (!(error instanceof CompileError) || error.code !== "MIXED_ANCHORS" || error.column !== 7 || error.hint !== ${JSON.stringify("Pair `start` with `end`, or `line start` with `line end`.")}) throw error; }
+const mixedAnchor = compile("start line end");
+if (mixedAnchor.flags !== "mu" || toRegExp(mixedAnchor).exec("\\nA")?.index !== 0 || toRegExp(mixedAnchor).test("A\\n")) throw new Error("Mixed anchors lost their individual boundary modes");
 const lineRepair = compile("line start\\n3 digits\\nline end");
 if (lineRepair.flags !== "mu" || !toRegExp(lineRepair).test("note\\n123")) throw new Error("Mixed-anchor line repair changed");
 const whitespace = compile("start\\nspaces\\nend");
@@ -264,7 +283,7 @@ for (const body of ["A-Za-z0-9_", "^_0-9a-zA-Z_"]) {
   const original = new RegExp("^[" + body + "]{2,4}$", "imsu");
   const translated = regexToRules(original);
   const phrase = body.startsWith("^") ? "not word" : "word";
-  if (translated.rules !== "line start\\nbetween 2 and 4 " + phrase + "\\nline end" || translated.flags !== "is") throw new Error("Wrong complete word-class translation");
+  if (translated.rules !== "line start\\nbetween 2 and 4 " + phrase + "\\nline end" || translated.flags !== "ims") throw new Error("Wrong complete word-class translation");
   const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
   for (const sample of ["A_7", "Kſ", "é😀", "a-b", "", "\\nA_7\\n"]) {
     const expected = original.exec(sample);
@@ -474,6 +493,25 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
   if (cliResult.source !== "^ABC\\d{3}$" || cliResult.flags !== "u") {
     throw new Error("Installed CLI produced an unexpected expression.");
   }
+  const flagged = JSON.parse(
+    run([...cliArgs, "--flags=ygvsimd", "--json", "-"], { cwd: consumer, input: "digit" }),
+  );
+  if (flagged.flags !== "dgimsvy") throw new Error("Installed CLI lost native flags.");
+  for (const args of [
+    ["--ignore-case", "--dot-all", "--flags=ygvsimd"],
+    ["--flags=ygvsimd", "--ignore-case", "--dot-all"],
+  ]) {
+    const merged = JSON.parse(
+      run([...cliArgs, ...args, "--json", "-"], { cwd: consumer, input: "digit" }),
+    );
+    if (merged.flags !== "dgimsvy")
+      throw new Error("Installed CLI aliases depend on argument order.");
+  }
+  const flaggedReverse = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: "/a/dgimsvy" }),
+  );
+  if (flaggedReverse.flags !== "dgimsvy" || flaggedReverse.rules !== '"a"')
+    throw new Error("Installed CLI reverse lost flag options.");
   const reverseExample =
     /^printf '%s\\n' '([^']+)' \| npx --yes --package=regex-for-humans@preview regex-for-humans --reverse$/mu.exec(
       readme,

@@ -840,7 +840,7 @@ export function parse(source) {
   /** @type {{node: BackreferenceNode, openGroups: (GroupNode|AlternationNode|AssertionNode)[]}[]} */
   const references = [];
   let captureCount = 0;
-  /** @type {'input'|'line'|null} */
+  /** @type {'input'|'line'|'mixed'|null} */
   let anchorMode = null;
   let sawEnd = false;
   for (let index = 0; index < lines.length; index += 1) {
@@ -884,14 +884,7 @@ export function parse(source) {
       if (nodes.length !== 0) {
         fail("MISPLACED_ANCHOR", "Start anchor must be the first rule.", location());
       }
-      if (anchorMode && anchorMode !== mode)
-        fail(
-          "MIXED_ANCHORS",
-          "Do not mix input and line anchors.",
-          location(),
-          "Pair `start` with `end`, or `line start` with `line end`.",
-        );
-      anchorMode = mode;
+      anchorMode = anchorMode && anchorMode !== mode ? "mixed" : mode;
       nodes.push(anchor("start", mode, location(), phrase));
       text = text.slice(start[0].length);
       column += start[0].length;
@@ -905,15 +898,7 @@ export function parse(source) {
     if (end) {
       const mode = end[1].toLowerCase() === "line end" ? "line" : "input";
       if (sawEnd) fail("DUPLICATE_ANCHOR", "Use only one end anchor.", location());
-      if (anchorMode && anchorMode !== mode) {
-        fail(
-          "MIXED_ANCHORS",
-          "Do not mix input and line anchors.",
-          location(),
-          "Pair `start` with `end`, or `line start` with `line end`.",
-        );
-      }
-      anchorMode = mode;
+      anchorMode = anchorMode && anchorMode !== mode ? "mixed" : mode;
       nodes.push(anchor("end", mode, location(), text));
       sawEnd = true;
       continue;

@@ -690,6 +690,7 @@ a {
   font: 700 11px var(--mono);
 }
 .test-controls select,
+.flag-controls select,
 .secondary-button {
   min-height: 37px;
   padding: 0 10px;

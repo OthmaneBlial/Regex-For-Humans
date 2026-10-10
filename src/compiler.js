@@ -8,8 +8,8 @@ import { explainNode } from "./explain.js";
 
 const locationOfOptions = { line: 1, column: 1 };
 
-/** @param {string} character @param {boolean} inClass */
-function escapeCharacter(character, inClass) {
+/** @param {string} character @param {boolean} inClass @param {boolean} [unicodeSets] */
+function escapeCharacter(character, inClass, unicodeSets = false) {
   const codePoint = character.codePointAt(0);
   if (codePoint === undefined) throw new TypeError("Cannot escape an empty character.");
   if (
@@ -21,7 +21,11 @@ function escapeCharacter(character, inClass) {
   ) {
     return `\\u{${codePoint.toString(16)}}`;
   }
-  const special = inClass ? /[\\[\]\-^/]/u : /[\\.*+?^${}()|[\]/]/u;
+  const special = inClass
+    ? unicodeSets
+      ? /[\\()[\]{}/\-|!#$%&*+,.:;<=>?@^`~]/u
+      : /[\\[\]\-^/]/u
+    : /[\\.*+?^${}()|[\]/]/u;
   return special.test(character) ? `\\${character}` : character;
 }
 
@@ -30,19 +34,19 @@ function escapeLiteral(value) {
   return [...value].map((character) => escapeCharacter(character, false)).join("");
 }
 
-/** @param {string[]} values */
-function escapeClass(values) {
-  return values.map((character) => escapeCharacter(character, true)).join("");
+/** @param {string[]} values @param {boolean} unicodeSets */
+function escapeClass(values, unicodeSets) {
+  return values.map((character) => escapeCharacter(character, true, unicodeSets)).join("");
 }
 
-/** @param {import('./ast.js').ClassMember} member */
-function classMemberSource(member) {
+/** @param {import('./ast.js').ClassMember} member @param {boolean} unicodeSets */
+function classMemberSource(member, unicodeSets) {
   switch (member.kind) {
     case "literal":
-      return escapeControls(escapeCharacter(member.value, true));
+      return escapeControls(escapeCharacter(member.value, true, unicodeSets));
     case "range":
       return escapeControls(
-        `${escapeCharacter(member.from, true)}-${escapeCharacter(member.to, true)}`,
+        `${escapeCharacter(member.from, true, unicodeSets)}-${escapeCharacter(member.to, true, unicodeSets)}`,
       );
     case "shorthand":
       return member.value;
@@ -79,8 +83,8 @@ function repetitionSource(repetition) {
   return source + (repetition.lazy ? "?" : "");
 }
 
-/** @param {AtomNode} node */
-function atomSource(node) {
+/** @param {AtomNode} node @param {boolean} unicodeSets */
+function atomSource(node, unicodeSets) {
   let source;
   switch (node.atomType) {
     case "wildcard":
@@ -92,13 +96,13 @@ function atomSource(node) {
       if (node.repetition && [...node.value].length > 1) source = `(?:${source})`;
       break;
     case "charSet":
-      source = `[${node.negative ? "^" : ""}${escapeClass(node.value)}]`;
+      source = `[${node.negative ? "^" : ""}${escapeClass(node.value, unicodeSets)}]`;
       break;
     case "unicodeProperty":
       source = `\\${node.negative ? "P" : "p"}{${node.value}}`;
       break;
     case "characterClass":
-      source = `[${node.negative ? "^" : ""}${node.members.map(classMemberSource).join("")}]`;
+      source = `[${node.negative ? "^" : ""}${node.members.map((member) => classMemberSource(member, unicodeSets)).join("")}]`;
       break;
     default:
       throw new TypeError("Unknown atom type.");
@@ -113,10 +117,16 @@ function normalizeOptions(options) {
   }
   let requested = "flags" in options ? options.flags : "";
   if (requested === undefined) requested = "";
-  if (typeof requested !== "string" || !["", "i", "s", "is", "si"].includes(requested)) {
+  if (
+    typeof requested !== "string" ||
+    requested.length > 8 ||
+    /[^dgimsuvy]/u.test(requested) ||
+    new Set(requested).size !== requested.length ||
+    (requested.includes("u") && requested.includes("v"))
+  ) {
     fail(
       "UNSUPPORTED_FLAGS",
-      "Version 1 accepts only unique i and s option flags; u is always enabled and m is controlled by line anchors.",
+      "Use unique JavaScript flags d, g, i, m, s, u, v or y; u and v cannot be combined.",
       locationOfOptions,
     );
   }
@@ -126,19 +136,49 @@ function normalizeOptions(options) {
 /** @param {ParsedRules} parsed @param {{flags?: string | undefined}} [options] */
 export function compileAst(parsed, options = {}) {
   const requested = normalizeOptions(options);
-  const flags = `${requested.includes("i") ? "i" : ""}${parsed.anchorMode === "line" ? "m" : ""}${requested.includes("s") ? "s" : ""}u`;
+  const selected = new Set(requested);
+  if (!selected.has("v")) selected.add("u");
+  if (parsed.anchorMode === "line" || parsed.anchorMode === "mixed") selected.add("m");
+  const flags = [..."dgimsuvy"].filter((flag) => selected.has(flag)).join("");
+  const unicodeSets = selected.has("v");
+  const unicodeMode = unicodeSets ? "v" : "u";
+  try {
+    new RegExp("", flags);
+  } catch {
+    fail(
+      "UNSUPPORTED_TARGET_FEATURE",
+      `This JavaScript runtime does not support the requested regex flags ${quoteText(flags)}.`,
+      locationOfOptions,
+      "Use a runtime with native support for the selected flags; they cannot be approximated.",
+    );
+  }
   let source = "";
   /** @type {import('../index.d.ts').RegexSegment[]} */
   const segments = [];
   let checkedLookbehind = false;
   let checkedUnicodeProperties = false;
 
+  /** @param {import('./ast.js').Location} location */
+  function checkLookbehind(location) {
+    if (checkedLookbehind) return;
+    try {
+      new RegExp("(?<=a)b", unicodeMode);
+    } catch {
+      fail(
+        "UNSUPPORTED_TARGET_FEATURE",
+        "This JavaScript runtime does not support lookbehind assertions.",
+        location,
+        "Use a runtime with native lookbehind support; the assertion cannot be approximated.",
+      );
+    }
+    checkedLookbehind = true;
+  }
+
   /** @param {import('./ast.js').PropertyAtomNode|Extract<import('./ast.js').ClassMember, {kind: 'unicodeProperty'}>} property @param {import('./ast.js').Location} location */
   function checkProperty(property, location) {
     if (!checkedUnicodeProperties) {
       try {
-        // biome-ignore lint/complexity/useRegexLiterals: feature detection must catch unsupported syntax at runtime.
-        new RegExp("\\p{ASCII}", "u");
+        new RegExp("\\p{ASCII}", unicodeMode);
       } catch {
         fail(
           "UNSUPPORTED_TARGET_FEATURE",
@@ -156,8 +196,20 @@ export function compileAst(parsed, options = {}) {
         "INVALID_UNICODE_PROPERTY",
         `The Unicode property ${quoteText(property.value)} is not recognized by this JavaScript runtime.`,
         property.propertyLocation,
-        "Use a case-sensitive character property such as `Letter`, `Script=Greek` or `Script_Extensions=Greek` supported in u mode.",
+        `Use a case-sensitive character property such as \`Letter\`, \`Script=Greek\` or \`Script_Extensions=Greek\` supported in ${unicodeMode} mode.`,
       );
+    }
+    if (unicodeSets) {
+      try {
+        new RegExp(`\\p{${property.value}}`, "u");
+      } catch {
+        fail(
+          "UNSUPPORTED_UNICODE_STRING_PROPERTY",
+          "Unicode string properties need string-set rules, which are not implemented yet.",
+          property.propertyLocation,
+          "Use a Unicode character property; a string property cannot be replaced by a character class.",
+        );
+      }
     }
   }
 
@@ -171,20 +223,7 @@ export function compileAst(parsed, options = {}) {
         for (const member of node.members)
           if (member.kind === "unicodeProperty") checkProperty(member, node.location);
       if (node.kind === "assertion") {
-        if (node.direction === "behind" && !checkedLookbehind) {
-          try {
-            // biome-ignore lint/complexity/useRegexLiterals: feature detection must catch unsupported syntax at runtime.
-            new RegExp("(?<=a)b", "u");
-          } catch {
-            fail(
-              "UNSUPPORTED_TARGET_FEATURE",
-              "This JavaScript runtime does not support lookbehind assertions.",
-              node.location,
-              "Use a runtime with native lookbehind support; the assertion cannot be approximated.",
-            );
-          }
-          checkedLookbehind = true;
-        }
+        if (node.direction === "behind") checkLookbehind(node.location);
         const sourceStart = source.length;
         const fragment = `(?${node.direction === "behind" ? "<" : ""}${node.negative ? "!" : "="}`;
         source += fragment;
@@ -308,11 +347,23 @@ export function compileAst(parsed, options = {}) {
         continue;
       }
       // A numeric reference needs a boundary so a following digit cannot change its number.
+      if (
+        node.kind === "anchor" &&
+        node.mode === "input" &&
+        node.edge === "start" &&
+        selected.has("m")
+      )
+        checkLookbehind(node.location);
+      // Native edge guards keep absolute assertions out of surrogate pairs in some engines.
       const fragment =
         node.kind === "anchor"
-          ? node.edge === "start"
-            ? "^"
-            : "$"
+          ? node.mode === "input" && selected.has("m")
+            ? node.edge === "start"
+              ? "^(?<![\\s\\S])"
+              : "$(?![\\s\\S])"
+            : node.edge === "start"
+              ? "^"
+              : "$"
           : node.kind === "boundary"
             ? node.negative
               ? "\\B"
@@ -321,7 +372,7 @@ export function compileAst(parsed, options = {}) {
               ? (typeof node.reference === "string"
                   ? `\\k<${node.reference}>`
                   : `(?:\\${node.captureIndex})`) + repetitionSource(node.repetition)
-              : atomSource(node);
+              : atomSource(node, unicodeSets);
       const sourceStart = source.length;
       source += fragment;
       let memberCursor =
@@ -354,7 +405,7 @@ export function compileAst(parsed, options = {}) {
                     negative: node.negative,
                     repetition: node.repetition,
                     members: node.members.map((member) => {
-                      const memberSource = classMemberSource(member);
+                      const memberSource = classMemberSource(member, unicodeSets);
                       const memberStart = memberCursor;
                       memberCursor += memberSource.length;
                       return {

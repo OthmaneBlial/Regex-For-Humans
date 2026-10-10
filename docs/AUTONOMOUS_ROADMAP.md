@@ -2,7 +2,7 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
-## Current wave: correctness and groups
+## Core grammar milestones
 
 - Implemented: AST-backed numbered/named/noncapturing blocks, nested blocks, whole-block repetition, Unicode capture names, opening-order numbering, empty/absent capture semantics, source spans, explanations and positioned diagnostics.
 - Added: named/numbered references, resolved capture metadata, digit-boundary protection and missing/forward/open-reference diagnostics. All 233 Node tests, lint/types/docs and the clean package consumer pass. Group/reference workshop tests pass in desktop/mobile Chrome (4) and Firefox/WebKit (4); the 11 group/reference Node tests also pass on Node 22.23.3.
@@ -13,7 +13,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Native v sets/string properties and complete flags/capability handling, preserving the implemented u-mode class semantics.
+1. Native nested v sets, intersection/subtraction and Unicode string properties, preserving implemented u/v class and eight-flag semantics.
 2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 3. Workshop localization and the remaining mission waves.
 
@@ -34,6 +34,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Site/README: Pages commit `1dfaf1c` built successfully; all 58 public files match local hashes. Chrome desktop/mobile, Firefox and WebKit pass version, date capture, alternative/import and source-navigation checks without page errors or 320px overflow. The ten README guides and real screenshots reflect dev.4; actual Arabic/Urdu GitHub views retain RTL prose/tables and all 20 canonical LTR code blocks at 1280/390px. Independent language review remains open. This milestone does not close the larger mission, stable-release or human review gates.
 
 ## Evidence and constraints
+
+### Eight-flag and native Unicode-mode milestone
+
+- Implemented: explicit d/g/i/m/s/u/v/y options through compile, reverse translation, CLI and workshop; canonical ordering, u/v exclusion, native capability diagnostics, class-context escaping and complement semantics. Input anchors remain absolute under m and can mix with line anchors; reverse translation recognizes their guarded native fragments. Both worker matchers reset per example, internal g/d flags are combined once, and sticky search retains native gaps. CLI i/s aliases merge independently of argument order without accepting duplicate explicit flags.
+- Native parity: all 128 combinations × ten patterns × 16 inputs × three cursors × three steps compare 184,320 native match/capture/indices and cursor results in Node and per browser engine/viewport. Shared browser checks add 20,480 absolute-anchor comparisons and 512 worker batches, preserving astral/lone-surrogate positions, empty captures, whole-string backtracking and Unicode empty-match advancement.
+- Verification: full local gates pass with 288 Node, 324 Chromium desktop/mobile, 94 Firefox/WebKit and 64 homepage checks. The final CLI order fix passes all 47 CLI/flag tests plus clean Node 25/22 consumers and final lint/types/docs; 58 selected Node 22 checks pass. Three local workshop editor screenshots are visually inspected without 320px overflow. Ten README guides describe the source-only flags, with separate LTR commands inside Arabic/Urdu prose. Public rendering proof follows source publication; human reviews stay unchecked.
+- Distribution: npm/Pages remain dev.4. Next: native nested v sets, intersection/subtraction and Unicode string properties, followed by a verified dev.5 package/site milestone. Structural visualization, exports and later mission waves remain open.
 
 ### Word-boundary milestone
 

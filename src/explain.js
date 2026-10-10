@@ -169,8 +169,8 @@ function describeNode(node, flags, hasFollowingRule) {
       break;
     case "unicodeProperty":
       meaning = node.negative
-        ? `Unicode complement of property ${quoteText(node.value)} (u).${flags.includes("i") ? " With i, case folding happens after complementing and can admit characters with this property." : ""}`
-        : `Unicode code point selected by property ${quoteText(node.value)} (u).${flags.includes("i") ? " With i, case-folded equivalents may also match." : ""}`;
+        ? `Unicode complement of property ${quoteText(node.value)} (${flags.includes("v") ? "v" : "u"}).${flags.includes("i") ? (flags.includes("v") ? " With i in v mode, case folding happens before complementing." : " With i, case folding happens after complementing and can admit characters with this property.") : ""}`
+        : `Unicode code point selected by property ${quoteText(node.value)} (${flags.includes("v") ? "v" : "u"}).${flags.includes("i") ? " With i, case-folded equivalents may also match." : ""}`;
       meaning += " Classification uses this runtime's Unicode data.";
       break;
     case "charSet":
@@ -199,8 +199,7 @@ function describeNode(node, flags, hasFollowingRule) {
         .join("; ");
       meaning = `${node.negative ? "One Unicode code point outside" : "One Unicode code point in"} the union of: ${members}.`;
       if (flags.includes("i"))
-        meaning +=
-          " Native u-mode case folding applies; property complements and outer-class negation remain distinct.";
+        meaning += ` Native ${flags.includes("v") ? "v" : "u"}-mode case folding applies; property complements and outer-class negation remain distinct.`;
       if (node.members.some((member) => member.kind === "unicodeProperty"))
         meaning += " Property classification uses this runtime's Unicode data.";
       break;

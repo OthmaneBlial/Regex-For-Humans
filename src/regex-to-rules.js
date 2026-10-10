@@ -36,7 +36,7 @@ const CONTROL_ESCAPES = new Map([
 ]);
 
 const UNSUPPORTED_HINT =
-  "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and i/s/u/m flags. Forward/open references are not supported.";
+  "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and d/g/i/m/s/u/v/y flags. Forward/open references are not supported.";
 const LINE_TERMINATORS = ["\n", "\r", "\u2028", "\u2029"];
 
 /** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, assertion?: {direction: 'ahead'|'behind', negative: boolean, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
@@ -53,8 +53,8 @@ function joinsSurrogates(left, right) {
   return /[\ud800-\udbff]$/u.test(left) && /^[\udc00-\udfff]/u.test(right);
 }
 
-/** @param {string} source @param {number} index @param {boolean} [inClass] @returns {AtomToken} */
-function readEscape(source, index, inClass = false) {
+/** @param {string} source @param {number} index @param {boolean} [inClass] @param {boolean} [unicodeSets] @returns {AtomToken} */
+function readEscape(source, index, inClass = false, unicodeSets = false) {
   const escaped = source[index + 1];
   if (escaped === undefined) unsupported("The regex ends with an incomplete escape.", index);
 
@@ -83,6 +83,16 @@ function readEscape(source, index, inClass = false) {
     const close = source.indexOf("}", index + 3);
     if (source[index + 2] !== "{" || close < 0)
       unsupported("The Unicode property escape is incomplete.", index);
+    if (unicodeSets) {
+      try {
+        new RegExp(`\\p{${source.slice(index + 3, close)}}`, "u");
+      } catch {
+        unsupported(
+          "Unicode string properties cannot yet be represented by character-property rules.",
+          index,
+        );
+      }
+    }
     return {
       end: close + 1,
       phrase: `${escaped === "P" ? "not " : ""}unicode property ${quoteText(source.slice(index + 3, close))}`,
@@ -141,13 +151,17 @@ function readEscape(source, index, inClass = false) {
   if (!inClass && (escaped === "b" || escaped === "B"))
     return { end: index + 2, phrase: escaped === "b" ? "word boundary" : "not word boundary" };
 
-  const special = inClass ? "\\[]^-/" : "\\^$.*+?()[]{}|/";
+  const special = inClass
+    ? unicodeSets
+      ? "\\()[]{}/-|!#$%&*+,.:;<=>?@^`~"
+      : "\\[]^-/"
+    : "\\^$.*+?()[]{}|/";
   if (special.includes(escaped)) return { end: index + 2, literal: escaped };
   unsupported(`The escape ${quoteText(`\\${escaped}`)} is not supported.`, index);
 }
 
 /** @param {string} source @param {number} start @returns {AtomToken} */
-function readCharacterClass(source, start) {
+function readCharacterClass(source, start, unicodeSets = false) {
   let contentStart = start + 1;
   let negative = false;
   if (source[contentStart] === "^") {
@@ -160,7 +174,18 @@ function readCharacterClass(source, start) {
   for (; end < source.length; end += 1) {
     const character = source[end];
     if (escaped) escaped = false;
-    else if (character === "\\") escaped = true;
+    else if (character === "\\") {
+      if (unicodeSets && source[end + 1] === "q")
+        unsupported("Unicode string-set escapes cannot yet be translated.", end);
+      escaped = true;
+    } else if (
+      unicodeSets &&
+      (character === "[" || source.startsWith("&&", end) || source.startsWith("--", end))
+    )
+      unsupported(
+        "Nested Unicode sets, intersection and subtraction cannot yet be translated.",
+        end,
+      );
     else if (character === "]") break;
   }
   if (end === source.length) unsupported("The character class is not closed.", start);
@@ -187,7 +212,7 @@ function readCharacterClass(source, start) {
   let complex = false;
   /** @param {number} index @returns {AtomToken} */
   const readItem = (index) => {
-    if (source[index] === "\\") return readEscape(source, index, true);
+    if (source[index] === "\\") return readEscape(source, index, true, unicodeSets);
     const point = source.codePointAt(index);
     if (point === undefined) unsupported("Invalid character class.", index);
     const value = String.fromCodePoint(point);
@@ -265,8 +290,8 @@ function readCaptureName(source, start, end) {
   return name;
 }
 
-/** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @returns {AtomToken} */
-function readGroup(source, start, multiline, depth) {
+/** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @param {boolean} unicodeSets @returns {AtomToken} */
+function readGroup(source, start, multiline, depth, unicodeSets) {
   if (depth >= LIMITS.groupDepth) {
     fail("GROUP_DEPTH_LIMIT", `Groups cannot nest more than ${LIMITS.groupDepth} levels.`, {
       line: 1,
@@ -280,6 +305,7 @@ function readGroup(source, start, multiline, depth) {
       start + assertion[0].length,
       multiline,
       depth + 1,
+      unicodeSets,
     );
     if (source[close] !== ")") unsupported("The assertion is not closed.", start);
     return {
@@ -303,7 +329,13 @@ function readGroup(source, start, multiline, depth) {
   } else if (capturing && source[start + 1] === "?") {
     unsupported("Only capturing and noncapturing groups can be translated.", start);
   }
-  const { atoms, end: close } = readDisjunction(source, contentStart, multiline, depth + 1);
+  const { atoms, end: close } = readDisjunction(
+    source,
+    contentStart,
+    multiline,
+    depth + 1,
+    unicodeSets,
+  );
   if (source[close] !== ")") unsupported("The group is not closed.", start);
   const end = close + 1;
   if (capturing) return { end, group: { capturing, name, atoms, close } };
@@ -351,8 +383,8 @@ function readQuantifier(source, index) {
   return { end: index + match[0].length, kind: "range", min, max };
 }
 
-/** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @returns {{atoms: PositionedAtom[], end: number}} */
-function readSequence(source, start, multiline, depth) {
+/** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @param {boolean} unicodeSets @returns {{atoms: PositionedAtom[], end: number}} */
+function readSequence(source, start, multiline, depth, unicodeSets) {
   /** @type {PositionedAtom[]} */
   const atoms = [];
   let cursor = start;
@@ -361,16 +393,31 @@ function readSequence(source, start, multiline, depth) {
     const character = source[cursor];
     if (character === "|" || (character === ")" && depth > 0)) break;
     if (character === "^" && atoms.length === 0) {
-      atoms.push({ phrase: multiline ? "line start" : "start", kind: null, index, end: ++cursor });
+      const absolute = source.startsWith("^(?<![\\s\\S])", cursor);
+      cursor += absolute ? "^(?<![\\s\\S])".length : 1;
+      atoms.push({
+        phrase: absolute || !multiline ? "start" : "line start",
+        kind: null,
+        index,
+        end: cursor,
+      });
       continue;
     }
+    const absoluteEnd = character === "$" && source.startsWith("$(?![\\s\\S])", cursor);
+    const anchorEnd = cursor + (absoluteEnd ? "$(?![\\s\\S])".length : 1);
     if (
       character === "$" &&
-      (cursor === source.length - 1 ||
-        source[cursor + 1] === "|" ||
-        (depth > 0 && source[cursor + 1] === ")"))
+      (anchorEnd === source.length ||
+        source[anchorEnd] === "|" ||
+        (depth > 0 && source[anchorEnd] === ")"))
     ) {
-      atoms.push({ phrase: multiline ? "line end" : "end", kind: null, index, end: ++cursor });
+      cursor = anchorEnd;
+      atoms.push({
+        phrase: absoluteEnd || !multiline ? "end" : "line end",
+        kind: null,
+        index,
+        end: cursor,
+      });
       continue;
     }
     if (character === "^" || character === "$" || character === ")") {
@@ -381,9 +428,9 @@ function readSequence(source, start, multiline, depth) {
     }
     /** @type {AtomToken} */
     let atom;
-    if (character === "[") atom = readCharacterClass(source, cursor);
-    else if (character === "\\") atom = readEscape(source, cursor);
-    else if (character === "(") atom = readGroup(source, cursor, multiline, depth);
+    if (character === "[") atom = readCharacterClass(source, cursor, unicodeSets);
+    else if (character === "\\") atom = readEscape(source, cursor, false, unicodeSets);
+    else if (character === "(") atom = readGroup(source, cursor, multiline, depth, unicodeSets);
     else if (character === ".")
       atom = { phrase: "any character", end: cursor + 1, nativeDot: true };
     else if ("*+?{}]".includes(character)) unsupported("Unexpected regex operator.", cursor);
@@ -404,13 +451,13 @@ function readSequence(source, start, multiline, depth) {
   return { atoms, end: cursor };
 }
 
-/** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @returns {{atoms: PositionedAtom[], end: number}} */
-function readDisjunction(source, start, multiline, depth) {
+/** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @param {boolean} unicodeSets @returns {{atoms: PositionedAtom[], end: number}} */
+function readDisjunction(source, start, multiline, depth, unicodeSets) {
   /** @type {{atoms: PositionedAtom[], index: number}[]} */
   const branches = [];
   let cursor = start;
   while (true) {
-    const { atoms, end } = readSequence(source, cursor, multiline, depth);
+    const { atoms, end } = readSequence(source, cursor, multiline, depth, unicodeSets);
     branches.push({ atoms, index: cursor });
     cursor = end;
     if (source[cursor] !== "|") break;
@@ -443,16 +490,21 @@ export function regexToRules(regex) {
     "flags",
     new Proxy({}, { get: (_target, property) => nativeValue(property) }),
   );
-  if (/[^imsu]/u.test(nativeFlags)) {
-    fail("UNSUPPORTED_REGEX_FLAGS", "Only the i, s, m and u flags can be translated.", {
-      line: 1,
-      column: 1,
-    });
+  if (/[^dgimsuvy]/u.test(nativeFlags)) {
+    fail(
+      "UNSUPPORTED_REGEX_FLAGS",
+      "Only JavaScript flags d, g, i, m, s, u, v and y can be translated.",
+      {
+        line: 1,
+        column: 1,
+      },
+    );
   }
-  if (!nativeValue("unicode")) {
+  const unicodeSets = nativeValue("unicodeSets") === true;
+  if (!nativeValue("unicode") && !unicodeSets) {
     fail(
       "UNICODE_FLAG_REQUIRED",
-      "Add the `u` flag before translating. The rule language always uses Unicode matching.",
+      "Add the `u` or `v` flag before translating. The rule language always uses Unicode matching.",
       { line: 1, column: 1 },
     );
   }
@@ -468,7 +520,7 @@ export function regexToRules(regex) {
   }
 
   const multiline = nativeValue("multiline");
-  const { atoms, end: cursor } = readDisjunction(source, 0, multiline, 0);
+  const { atoms, end: cursor } = readDisjunction(source, 0, multiline, 0, unicodeSets);
 
   if (cursor !== source.length) unsupported("The regex contains unsupported syntax.", cursor);
   if (atoms.length === 0) {
@@ -495,6 +547,9 @@ export function regexToRules(regex) {
       !(atom.kind === "range" && atom.min === 0 && atom.max === 0),
   );
   const dotAll = originalDotAll || needsDotAll;
+  const optionFlags = [..."dgimsvy"]
+    .filter((flag) => (flag === "s" ? dotAll : nativeFlags.includes(flag)))
+    .join("");
   if (needsDotAll && !originalDotAll) {
     const nonLineTerminator = `none of: ${LINE_TERMINATORS.map(quoteText).join(", ")}`;
     for (const atom of allAtoms) {
@@ -655,6 +710,6 @@ export function regexToRules(regex) {
   }
   return {
     rules: translated,
-    flags: `${nativeValue("ignoreCase") ? "i" : ""}${dotAll ? "s" : ""}`,
+    flags: optionFlags,
   };
 }

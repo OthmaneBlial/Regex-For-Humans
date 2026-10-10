@@ -304,10 +304,10 @@ test("the browser API accepts a genuine regex from an iframe without changing it
   expect(results).toEqual({
     localInstance: false,
     lastIndex: 7,
-    translated: { rules: 'line start\n"😀"\n2 uppercase letter\nline end', flags: "is" },
+    translated: { rules: 'line start\n"😀"\n2 uppercase letter\nline end', flags: "ims" },
     translatedWithOverrides: {
       rules: 'line start\n"😀"\n2 uppercase letter\nline end',
-      flags: "is",
+      flags: "ims",
     },
     source: "^😀[A-Z]{2}$",
     flags: "imsu",
@@ -726,7 +726,7 @@ test("counted sequences explain replacement items and recover with preserved bou
   }
 });
 
-test("mixed anchors explain compatible pairs and recover in input and line modes", async ({
+test("mixed anchors preserve absolute and line boundaries and recover from duplicate anchors", async ({
   page,
 }) => {
   await page.goto("/");
@@ -734,41 +734,36 @@ test("mixed anchors explain compatible pairs and recover in input and line modes
   const editor = page.locator("#rules-input");
   const first = page.locator("#test-list textarea").first();
   const feedback = page.locator("#test-list .test-result").first();
-  for (const [start, wrongEnd, repairedEnd, flags] of [
-    ["start", "line end", "end", "u"],
-    ["line start", "end", "line end", "mu"],
+  await page.locator("#match-mode").selectOption("search");
+  for (const [start, end, source, accepted, rejected] of [
+    ["start", "line end", String.raw`^(?<![\s\S])\d{3}$`, "123\nrest", "rest\n123"],
+    ["line start", "end", String.raw`^\d{3}$(?![\s\S])`, "rest\n123", "123\nrest"],
   ]) {
-    const rules = `${start}\n3 digits\n${wrongEnd}`;
+    const rules = `${start}\n3 digits\n${end}\n${end}`;
     await editor.fill(rules);
     await expect(page.locator("#diagnostic")).toContainText(
-      "Line 3, column 1: Do not mix input and line anchors.",
-    );
-    await expect(page.locator("#diagnostic")).toContainText(
-      "Pair `start` with `end`, or `line start` with `line end`.",
+      "Line 4, column 1: Use only one end anchor.",
     );
     await expect(editor).toHaveAttribute("aria-invalid", "true");
     await expect(page.locator("#copy-button")).toBeDisabled();
     await page.getByRole("button", { name: "Go to error", exact: true }).click();
     await expect(editor).toBeFocused();
-    const position = rules.lastIndexOf(wrongEnd);
+    const position = rules.lastIndexOf(end);
     expect(await editor.evaluate((field) => [field.selectionStart, field.selectionEnd])).toEqual([
       position,
       position + 1,
     ]);
-    await editor.fill(`${start}\n3 digits\n${repairedEnd}`);
-    await expect(page.locator("#regex-output")).toHaveText(`/^\\d{3}$/${flags}`);
+    await editor.fill(`${start}\n3 digits\n${end}`);
+    await expect(page.locator("#regex-output")).toHaveText(`/${source}/mu`);
     await expect(page.locator("#diagnostic")).toBeHidden();
     await expect(editor).toHaveAttribute("aria-invalid", "false");
     await expect(page.locator("#copy-button")).toBeEnabled();
     await first.fill("123");
     await expect(feedback).toHaveText('✓ Matched "123" at 0');
-    await first.fill("note\n123");
-    if (flags === "mu") {
-      await expect(page.locator("#flags-summary")).toContainText("m Line anchors");
-      await expect(feedback).toHaveText('! Found "123" at 5, not the entire string');
-      await page.locator("#match-mode").selectOption("search");
-      await expect(feedback).toHaveText('✓ Matched "123" at 5');
-    } else await expect(feedback).toHaveText("! No match");
+    await first.fill(accepted);
+    await expect(feedback).toHaveText(`✓ Matched "123" at ${accepted.indexOf("123")}`);
+    await first.fill(rejected);
+    await expect(feedback).toHaveText("! No match");
   }
 });
 
@@ -2168,7 +2163,7 @@ test("unsupported assertion contents identify the feature and preserve edited ru
     await page.locator("#reverse-button").press("Enter");
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(reverse).toHaveAccessibleDescription(
-      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and i/s/u/m flags. Forward/open references are not supported.`,
+      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and d/g/i/m/s/u/v/y flags. Forward/open references are not supported.`,
     );
     await expect(editor).toHaveValue(rules);
     await expect(output).toHaveText("/^Saved$/isu");
@@ -2261,7 +2256,7 @@ test("reverse syntax errors select their source character and reveal wrapped or 
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
   expect(accessibility.violations.map((violation) => violation.id)).toEqual([]);
-  for (const literal of ["not a regex", "/^a$/gu", "/^a$/", `/^${String.raw`\d`.repeat(201)}$/u`]) {
+  for (const literal of ["not a regex", "/^a$/g", "/^a$/", `/^${String.raw`\d`.repeat(201)}$/u`]) {
     await reverse.fill(literal);
     await expect(jump).toBeHidden();
     await page.locator("#reverse-button").press("Enter");

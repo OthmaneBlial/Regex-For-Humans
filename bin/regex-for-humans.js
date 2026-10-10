@@ -24,6 +24,7 @@ Options:
   --explain      Explain each generated fragment
   --ignore-case  Add the JavaScript i flag
   --dot-all      Add the JavaScript s flag
+  --flags FLAGS  Select unique JavaScript d, g, i, m, s, u, v, y flags
   --             Treat the next argument as the input path
   --help         Show this help
   --version      Show the package version
@@ -51,6 +52,8 @@ async function main() {
   let explain = false;
   let reverse = false;
   let flags = "";
+  let aliasFlags = "";
+  let flagsSupplied = false;
   let optionsEnded = false;
   /** @type {string|undefined} */
   let file;
@@ -99,7 +102,8 @@ async function main() {
     process.exitCode = 2;
   }
 
-  for (const arg of args) {
+  for (let argIndex = 0; argIndex < args.length; argIndex += 1) {
+    const arg = args[argIndex];
     if (!optionsEnded && arg === "--") {
       optionsEnded = true;
       continue;
@@ -126,11 +130,21 @@ async function main() {
       continue;
     }
     if (!optionsEnded && arg === "--ignore-case") {
-      if (!flags.includes("i")) flags += "i";
+      flagsSupplied = true;
+      if (!aliasFlags.includes("i")) aliasFlags += "i";
       continue;
     }
     if (!optionsEnded && arg === "--dot-all") {
-      if (!flags.includes("s")) flags += "s";
+      flagsSupplied = true;
+      if (!aliasFlags.includes("s")) aliasFlags += "s";
+      continue;
+    }
+    if (!optionsEnded && (arg === "--flags" || arg.startsWith("--flags="))) {
+      const supplied = arg === "--flags" ? args[++argIndex] : arg.slice("--flags=".length);
+      if (supplied === undefined || supplied.startsWith("-"))
+        return usageError("--flags needs a JavaScript flag string, such as dgimsvy.");
+      flagsSupplied = true;
+      flags += supplied;
       continue;
     }
     if (!optionsEnded && arg.startsWith("-") && arg !== "-") {
@@ -142,8 +156,12 @@ async function main() {
     file = arg;
   }
 
-  if (reverse && (explain || flags)) {
-    return usageError("--reverse cannot be combined with --explain, --ignore-case or --dot-all.");
+  for (const flag of aliasFlags) if (!flags.includes(flag)) flags += flag;
+
+  if (reverse && (explain || flagsSupplied)) {
+    return usageError(
+      "--reverse cannot be combined with --explain, --ignore-case, --dot-all or --flags.",
+    );
   }
 
   if (file === undefined && stdin.isTTY) {
@@ -187,9 +205,11 @@ async function main() {
       else {
         stdout.write(`${translated.rules}\n`);
         if (translated.flags) {
-          const options = [...translated.flags]
-            .map((flag) => (flag === "i" ? "--ignore-case" : "--dot-all"))
-            .join(" ");
+          const options = /^[is]+$/u.test(translated.flags)
+            ? [...translated.flags]
+                .map((flag) => (flag === "i" ? "--ignore-case" : "--dot-all"))
+                .join(" ")
+            : `--flags ${translated.flags}`;
           stderr.write(
             `Compile these rules with ${options} to preserve the regex flags, or use --json.\n`,
           );

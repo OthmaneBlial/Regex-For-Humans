@@ -277,7 +277,7 @@ Una instrucción por línea. Pon el texto literal entre comillas.
 | `text without: a, b` | `[^ab]*` | Cero o más caracteres fuera de la lista |
 | `any text` | `.*` | Con `s`, incluye saltos |
 
-`word character` / `word characters` y `word` / `not word` siguen `\w` / `\W`. `\w` incluye `_`, excluye `é`; `letter` excluye dígitos y guion bajo. Con `i`, JavaScript añade equivalencias como `K` y `ſ`. `u` siempre está activo, pero no convierte las clases ASCII en categorías Unicode universales.
+`word character` / `word characters` y `word` / `not word` siguen `\w` / `\W`. `\w` incluye `_`, excluye `é`; `letter` excluye dígitos y guion bajo. Con `i`, JavaScript añade equivalencias como `K` y `ſ`. `u` es el valor predeterminado; el código fuente también acepta `v`. Ninguno convierte las clases ASCII en categorías Unicode universales.
 
 ## 💻 Llevarlo al terminal
 
@@ -354,12 +354,16 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 | Flag | Cómo activarlo | Efecto |
 | --- | --- | --- |
-| `u` | Siempre | Puntos de código Unicode |
+| `u` | Por defecto | Puntos de código Unicode |
 | `i` | `{ flags: 'i' }` o `--ignore-case` | Comparación nativa sin distinguir mayúsculas |
 | `s` | `{ flags: 's' }` o `--dot-all` | El punto incluye saltos |
 | `m` | `line start` / `line end` | Anclas por línea |
+| `d` | `{ flags: 'd' }` | Índices nativos de coincidencias y capturas |
+| `g` | `{ flags: 'g' }` | Las llamadas sucesivas avanzan `lastIndex` |
+| `y` | `{ flags: 'y' }` | Coincide en `lastIndex`; se detiene al primer hueco |
+| `v` | `{ flags: 'v' }` | Clases Unicode y complementos nativos en modo v |
 
-`flags: 'is'` combina las opciones. `g`, `y`, `d` y `v` no son opciones del compilador; la aplicación puede elegir flags al construir su regex nativo.
+**Solo en el código fuente:** se aceptan los ocho flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y`, con `{ flags: 'dgiv' }` o `--flags dgiv`. La salida usa el orden `dgimsuvy`; rechaza duplicados y combinar u/v, y u es el valor predeterminado. m puede ser explícito o activarse con anclas de línea; las anclas de entrada siguen siendo absolutas al mezclar ambos modos. La traducción inversa conserva las opciones sin modificar `lastIndex`. El workshop inicia cada ejemplo en 0 y enumera hasta 100 coincidencias; los regex g/y copiados siguen teniendo estado. Las capacidades nativas ausentes, conjuntos v anidados y propiedades Unicode de cadenas reciben diagnósticos explícitos. npm `0.1.0-dev.4` conserva sus opciones i/s, u automático y m por anclas de línea.
 
 ## 🛠️ Desarrollar localmente
 

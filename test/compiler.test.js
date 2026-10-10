@@ -547,7 +547,7 @@ test("invalid input fails explicitly rather than returning partial output", () =
   ]) {
     assert.throws(() => compile(source), CompileError, source);
   }
-  assert.throws(() => compile("digit", { flags: "g" }), { code: "UNSUPPORTED_FLAGS" });
+  assert.throws(() => compile("digit", { flags: "x" }), { code: "UNSUPPORTED_FLAGS" });
   assert.throws(() => compile("digit", { flags: "ii" }), { code: "UNSUPPORTED_FLAGS" });
   assert.throws(() => toRegExp({ source: 1, flags: "u" }), TypeError);
 });
@@ -655,12 +655,10 @@ test("API option flags accept exactly the documented values without changing mat
     "isi",
     "sis",
     "sii",
-    "isg",
-    "u",
-    "m",
-    "y",
-    "d",
-    "v",
+    "uv",
+    "gg",
+    "dd",
+    "yy",
     "I",
     "S",
     "i s",
@@ -677,8 +675,7 @@ test("API option flags accept exactly the documented values without changing mat
     assert.throws(() => compile("digit", { flags }), {
       name: "CompileError",
       code: "UNSUPPORTED_FLAGS",
-      message:
-        "Version 1 accepts only unique i and s option flags; u is always enabled and m is controlled by line anchors.",
+      message: "Use unique JavaScript flags d, g, i, m, s, u, v or y; u and v cannot be combined.",
       line: 1,
       column: 1,
     });

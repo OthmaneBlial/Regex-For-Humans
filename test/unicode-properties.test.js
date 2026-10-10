@@ -252,7 +252,7 @@ test("invalid property names, quotes, aliases and class contexts keep positioned
       assert.deepEqual(rebuilt.exec(input), original.exec(input));
   }
   assert.throws(() => regexToRules(/\p{RGI_Emoji}/v), {
-    code: "UNSUPPORTED_REGEX_FLAGS",
+    code: "UNSUPPORTED_REGEX",
   });
 });
 

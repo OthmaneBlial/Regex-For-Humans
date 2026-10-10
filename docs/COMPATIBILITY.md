@@ -12,10 +12,12 @@ Current checkout evidence, 2026-10-10. Output targets JavaScript `RegExp` in Uni
 | Ordered alternatives, nested/sequence/empty choices and whole-choice repetition | Supported with `either` blocks | Supported; precedence, capture participation and ordering preserved |
 | Positive/negative lookahead and lookbehind, including nesting and captures | Supported; lookbehind requires native capability | Supported subset; native zero-width behavior and capture spans preserved |
 | Word/non-word boundaries | Supported with native ASCII word status and i-folding | Supported; class backspace stays literal |
-| Standalone Unicode character properties and complements | Supported with native aliases and runtime capability checks in u mode | Supported; aliases, polarity, flags and capture behavior preserved |
-| Composable character classes with literals, inclusive code-point ranges, singular shorthands and Unicode properties | Supported in native u mode; outer and property negation stay distinct | Supported; escaping, unions, captures, flags and source metadata preserved |
-| Empty character classes; v sets and string properties | Not yet supported | Unsupported |
-| Flags | `u` always; `m` through line anchors; `i`/`s` options | Only `i`/`m`/`s`/`u`; `u` required |
+| Standalone Unicode character properties and complements | Supported with native aliases and runtime capability checks in u/v modes | Supported; aliases, polarity, flags and capture behavior preserved |
+| Composable character classes with literals, inclusive code-point ranges, singular shorthands and Unicode properties | Supported in native u/v modes; outer and property negation stay distinct | Supported; escaping, unions, captures, flags and source metadata preserved |
+| Empty character classes; nested v sets, intersection/subtraction and string properties | Not yet supported | Unsupported |
+| Flags | All eight native options; default u, exclusive v; m explicit or from line anchors | u or v required; d/g/i/m/s/v/y preserved without touching input `lastIndex` |
+
+Explicit flag options and native u/v character-class modes are source-only additions beyond npm `0.1.0-dev.4`. Mixed anchors keep input boundaries absolute under m; native lookbehind is required for absolute input start in that mode. Nested v sets, intersection/subtraction and Unicode string properties remain unsupported. Runtime flag support and Unicode editions are supplied by the target engine, with explicit capability diagnostics instead of fallback matching.
 | Other regex engines | No target | No translation claim |
 
 Groups are numbered in opening order, including named groups. Names are Unicode JavaScript identifiers and are unique across the document. Some newer JavaScript patterns allow duplicate names in disjoint alternatives; this DSL currently uses a stricter unique-name policy. A reference to an absent optional capture matches empty text, while a participating empty capture has value `""`. Repeated captures retain the final captured value. References inside or before their target are rejected by language policy, even when JavaScript permits them, including inside lookbehind.

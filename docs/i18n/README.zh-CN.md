@@ -277,7 +277,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 | `text without: a, b` | `[^ab]*` | 零个或多个非列表字符 |
 | `any text` | `.*` | `s` 可包含换行 |
 
-`word character` / `word characters` 和 `word` / `not word` 遵循 `\w` / `\W`：包括 `_`，不包括 `é`。`letter` 排除数字和下划线。启用 `i` 后，JavaScript 的大小写折叠会纳入 `K`、`ſ` 等等价字符。`u` 始终开启，但不会把 ASCII 类变成通用 Unicode 类别。
+`word character` / `word characters` 和 `word` / `not word` 遵循 `\w` / `\W`：包括 `_`，不包括 `é`。`letter` 排除数字和下划线。启用 `i` 后，JavaScript 的大小写折叠会纳入 `K`、`ſ` 等等价字符。默认使用 `u`，源码版也接受 `v`；两者都不会把 ASCII 类变成通用 Unicode 类别。
 
 ## 💻 在终端使用
 
@@ -354,12 +354,16 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 | Flag | 启用方式 | 作用 |
 | --- | --- | --- |
-| `u` | 始终开启 | 按 Unicode 码点匹配 |
+| `u` | 默认开启 | 按 Unicode 码点匹配 |
 | `i` | `{ flags: 'i' }` 或 `--ignore-case` | JavaScript 原生大小写折叠 |
 | `s` | `{ flags: 's' }` 或 `--dot-all` | 点号可匹配换行 |
 | `m` | `line start` / `line end` | 行锚点 |
+| `d` | `{ flags: 'd' }` | 原生匹配和捕获位置索引 |
+| `g` | `{ flags: 'g' }` | 重复调用推进 `lastIndex` |
+| `y` | `{ flags: 'y' }` | 从 `lastIndex` 匹配，遇到间隙即停止 |
+| `v` | `{ flags: 'v' }` | 原生 v 模式 Unicode 字符类与补集 |
 
-`flags: 'is'` 可组合两个选项。`g`、`y`、`d`、`v` 不是编译器选项。使用输出源码构造原生正则的应用可自行选择执行 flags。
+**仅源码版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力、嵌套 v 集合和 Unicode 字符串属性会明确报错。npm `0.1.0-dev.4` 仍使用原有 i/s 选项、自动 u 和行锚点控制的 m。
 
 ## 🛠️ 本地开发
 

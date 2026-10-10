@@ -72,6 +72,7 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | Word boundaries | — | ✅ Unreleased; native zero-width word status |
 | [Unicode character properties](docs/LANGUAGE.md#unicode-properties) | — | ✅ Native aliases and complements in u mode; source only |
 | [Composable character classes](docs/LANGUAGE.md#composable-character-classes) | — | ✅ Native ranges, shorthands and Unicode unions; source only |
+| All eight JavaScript flags | — | ✅ Explicit options, native u/v classes and cursor semantics; source only |
 | Other regex engines and free-form English | — | Outside the current language |
 
 From the source checkout, `lazy digits` generates `\d+?`: try one digit first, then expand if following rules need more. `lazy any text` generates `.*?`. These additions are **unreleased** and are not in npm `0.1.0-dev.4`; see [greedy and lazy repetition](docs/LANGUAGE.md#repetition).
@@ -359,7 +360,7 @@ Put one instruction on each line. Quote literal text. Add anchors to check the w
 | `text without: a, b` | `[^ab]*` | Zero or more characters outside the list |
 | `any text` | `.*` | Any text; `s` includes line breaks |
 
-`word character` matches an ASCII letter, digit or underscore; `word characters` matches one or more. Set a length with `between 3 and 30 word characters`. The shorter `word` and `not word` rules still use JavaScript's `\w` / `\W`. They aren't every Unicode letter: `\w` includes `_` and excludes `é`. Use `letter` / `letters` to exclude digits and underscores; counts work too, such as `3 letters`. Without `i`, `lowercase letters` and `uppercase letters` match only their ASCII ranges. The `i` flag ignores that distinction and adds JavaScript case-folding equivalents such as `K` and `ſ`. Unicode mode `u` is always on. See the [full language guide](docs/LANGUAGE.md) for flags, escaping, limits, and diagnostics.
+`word character` matches an ASCII letter, digit or underscore; `word characters` matches one or more. Set a length with `between 3 and 30 word characters`. The shorter `word` and `not word` rules still use JavaScript's `\w` / `\W`. They aren't every Unicode letter: `\w` includes `_` and excludes `é`. Use `letter` / `letters` to exclude digits and underscores; counts work too, such as `3 letters`. Without `i`, `lowercase letters` and `uppercase letters` match only their ASCII ranges. The `i` flag ignores that distinction and adds JavaScript case-folding equivalents such as `K` and `ſ`. Unicode matching is always on: the source checkout accepts `u` or `v`, with `u` as the default. See the [full language guide](docs/LANGUAGE.md) for flags, escaping, limits, and diagnostics.
 
 <a name="cli"></a>
 
@@ -392,6 +393,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--json` | Structured results on stdout; errors on stderr |
 | `--ignore-case` | Add flag `i` |
 | `--dot-all` | Add flag `s` |
+| `--flags FLAGS` | Source only: select unique `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` flags |
 | `--help` | Show usage |
 | `--version` | Show the package version |
 
@@ -424,7 +426,7 @@ start
 end
 ```
 
-Use `--reverse --json` for `{ rules, flags }`, matching `regexToRules()`. Pass the returned `flags` to `compile()` to preserve `i` and `s`; `m` is represented by line anchors and `u` is automatic. Plain output contains reusable rules, with the required forward compiler options on stderr when `i` or `s` is present. These notes accompany a successful exit code. Reverse mode accepts a file or stdin and cannot be combined with `--explain`, `--ignore-case` or `--dot-all`.
+Use `--reverse --json` for `{ rules, flags }`, matching `regexToRules()`. Pass the returned `flags` to `compile()` to preserve matching and native cursor behavior. The source checkout retains `d`, `g`, `i`, `m`, `s`, `v`, `y`; implicit `u` keeps the existing default. Plain output puts reusable rules on stdout and any required compiler options on stderr, with a successful exit code. Reverse mode accepts a file or stdin and cannot be combined with forward options `--explain`, `--ignore-case`, `--dot-all` or `--flags`. npm `0.1.0-dev.4` supports the earlier i/s options and line-anchor-driven m mode.
 
 <a name="api"></a>
 
@@ -459,12 +461,16 @@ Unicode escapes can include leading zeros: `/^\u{00000041}$/u` translates to `st
 
 | Flag | How to enable it | What changes |
 | --- | --- | --- |
-| `u` | Always enabled | Unicode code-point matching; emoji are single matching atoms |
+| `u` | Default, or explicit `{ flags: 'u' }` | Unicode code-point matching; emoji are single matching atoms |
 | `i` | `compile(rules, { flags: 'i' })` or `--ignore-case` | Native JavaScript case folding, including its Unicode equivalents |
 | `s` | `compile(rules, { flags: 's' })` or `--dot-all` | `any character` / `any text` can include line breaks |
-| `m` | Use `line start` / `line end` | Anchors operate at line boundaries |
+| `m` | `{ flags: 'm' }` or `line start` / `line end` | Native line anchors; input anchors remain absolute |
+| `d` | `{ flags: 'd' }` | Native match and capture indices |
+| `g` | `{ flags: 'g' }` | Repeated native calls advance `lastIndex` |
+| `y` | `{ flags: 'y' }` | Match at `lastIndex`; search stops at the first gap |
+| `v` | `{ flags: 'v' }` | Native Unicode-set class escaping and complement semantics |
 
-Use `flags: 'is'` for both optional compiler flags. Reverse translation returns the compiler options to reuse; line anchors carry `m`, and `u` remains automatic. Stateful `g` / `y`, indices `d` and Unicode-set `v` are not compiler options. A receiving application can choose its own execution flags when constructing a native regex from the emitted source.
+**Source checkout only:** all eight flags are accepted in any order and returned canonically as `dgimsuvy`. Duplicates and combining `u` with `v` are errors; omitting both selects `u`. For example, use `{ flags: 'dgiv' }` or `--flags dgiv`. Reverse translation preserves the options without changing the input regex's `lastIndex`. The workshop resets each example to position 0 and lists up to 100 search matches; copied g/y regexes remain stateful. Mixed input/line anchors work without weakening absolute input boundaries. Unsupported runtime capabilities fail explicitly. Nested v sets, intersection/subtraction and Unicode string properties remain unsupported. npm `0.1.0-dev.4` retains its earlier i/s options, automatic u and line-anchor-driven m behavior.
 
 <a name="develop"></a>
 

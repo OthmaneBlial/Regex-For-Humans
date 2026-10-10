@@ -362,7 +362,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 | <code dir="ltr">text without: a, b</code> | <code dir="ltr">[^ab]*</code> | فہرست سے باہر صفر یا زیادہ محارف |
 | <code dir="ltr">any text</code> | <code dir="ltr">.*</code> | <code dir="ltr">s</code> کے ساتھ نئی سطریں بھی |
 
-قواعد <code dir="ltr">word character</code>، <code dir="ltr">word characters</code>، <code dir="ltr">word</code> اور <code dir="ltr">not word</code> میں <code dir="ltr">\w</code> اور <code dir="ltr">\W</code> کا مطلب استعمال ہوتا ہے۔ فہرست <code dir="ltr">\w</code> میں <code dir="ltr">_</code> ہے، مگر <code dir="ltr">é</code> نہیں۔ <code dir="ltr">letter</code> ہندسے اور underscore شامل نہیں کرتا۔ JavaScript کی native case matching میں <code dir="ltr">i</code> کے ساتھ <code dir="ltr">K</code> اور <code dir="ltr">ſ</code> بھی آ سکتے ہیں۔ فلیگ <code dir="ltr">u</code> ہمیشہ فعال ہے، مگر اس سے ASCII classes تمام Unicode categories نہیں بن جاتیں۔
+قواعد <code dir="ltr">word character</code>، <code dir="ltr">word characters</code>، <code dir="ltr">word</code> اور <code dir="ltr">not word</code> میں <code dir="ltr">\w</code> اور <code dir="ltr">\W</code> کا مطلب استعمال ہوتا ہے۔ فہرست <code dir="ltr">\w</code> میں <code dir="ltr">_</code> ہے، مگر <code dir="ltr">é</code> نہیں۔ <code dir="ltr">letter</code> ہندسے اور underscore شامل نہیں کرتا۔ JavaScript کی native case matching میں <code dir="ltr">i</code> کے ساتھ <code dir="ltr">K</code> اور <code dir="ltr">ſ</code> بھی آ سکتے ہیں۔ فلیگ <code dir="ltr">u</code> ڈیفالٹ ہے اور سورس میں <code dir="ltr">v</code> بھی دستیاب ہے؛ دونوں ASCII classes کو تمام Unicode categories نہیں بناتے۔
 
 ## 💻 ٹرمینل میں استعمال
 
@@ -461,12 +461,20 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 | Flag | کیسے فعال ہوتا ہے | اثر |
 | ---: | ---: | ---: |
-| <code dir="ltr">u</code> | ہمیشہ | Unicode code points کے مطابق match |
+| <code dir="ltr">u</code> | بطور ڈیفالٹ | Unicode code points کے مطابق match |
 | <code dir="ltr">i</code> | <code dir="ltr">{ flags: 'i' }</code> یا <code dir="ltr">--ignore-case</code> | JavaScript کے مطابق case کے فرق کے بغیر موازنہ |
 | <code dir="ltr">s</code> | <code dir="ltr">{ flags: 's' }</code> یا <code dir="ltr">--dot-all</code> | Dot نئی سطر بھی match کر سکتا ہے |
 | <code dir="ltr">m</code> | <code dir="ltr">line start</code> / <code dir="ltr">line end</code> | ہر سطر کے anchors |
+| <code dir="ltr">d</code> | <code dir="ltr">{ flags: 'd' }</code> | Native match اور capture indices |
+| <code dir="ltr">g</code> | <code dir="ltr">{ flags: 'g' }</code> | بار بار کال سے <code dir="ltr">lastIndex</code> آگے بڑھتا ہے |
+| <code dir="ltr">y</code> | <code dir="ltr">{ flags: 'y' }</code> | <code dir="ltr">lastIndex</code> پر match، پہلی رکاوٹ پر رکنا |
+| <code dir="ltr">v</code> | <code dir="ltr">{ flags: 'v' }</code> | Native v-mode Unicode classes اور complements |
 
-دونوں options کے لیے <code dir="ltr">flags: 'is'</code> ہے۔ <code dir="ltr">g</code>، <code dir="ltr">y</code>، <code dir="ltr">d</code> اور <code dir="ltr">v</code> کمپائلر کے options نہیں۔ Application سورس سے native regex بنا کر اپنی execution flags منتخب کر سکتی ہے۔
+**صرف سورس checkout میں:** آٹھوں flags <code dir="ltr">d</code>، <code dir="ltr">g</code>، <code dir="ltr">i</code>، <code dir="ltr">m</code>، <code dir="ltr">s</code>، <code dir="ltr">u</code>، <code dir="ltr">v</code>، <code dir="ltr">y</code> دستیاب ہیں۔ نتیجے کی ترتیب <code dir="ltr">dgimsuvy</code> ہے؛ duplicates اور u/v ساتھ دینے پر خرابی آتی ہے، u ڈیفالٹ ہے۔ m الگ option یا line anchors سے فعال ہوتا ہے؛ دونوں انداز ملانے پر input anchors مکمل حدود برقرار رکھتے ہیں۔ Reverse translation options محفوظ رکھتی ہے اور <code dir="ltr">lastIndex</code> نہیں بدلتی۔ Workshop ہر مثال 0 سے شروع کرتا ہے اور زیادہ سے زیادہ 100 matches دکھاتا ہے؛ copied g/y regex کی state برقرار رہتی ہے۔ غیر موجود native صلاحیتوں، nested v sets اور Unicode string properties کے واضح diagnostics ملتے ہیں۔ npm <code dir="ltr">0.1.0-dev.4</code> میں پہلے والے i/s options، خودکار u اور line anchors سے m موجود ہیں۔
+
+<p dir="ltr" align="left"><code dir="ltr">{ flags: 'dgiv' }</code></p>
+
+<p dir="ltr" align="left"><code dir="ltr">--flags dgiv</code></p>
 
 ## 🛠️ مقامی development
 

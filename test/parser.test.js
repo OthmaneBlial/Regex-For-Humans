@@ -721,16 +721,11 @@ test("unknown and misplaced instructions report a useful location", () => {
     (error) =>
       error.code === "MISPLACED_ANCHOR" && error.message === "End anchor must be the last rule.",
   );
-  assert.throws(
-    () => parse("start\nline end"),
-    (error) =>
-      error.code === "MIXED_ANCHORS" && error.message === "Do not mix input and line anchors.",
-  );
+  assert.equal(parse("start\nline end").anchorMode, "mixed");
   assert.throws(() => parse(" "), { code: "EMPTY_SOURCE" });
 });
 
-test("mixed anchors suggest compatible pairs without changing codes or end-anchor locations", () => {
-  const hint = "Pair `start` with `end`, or `line start` with `line end`.";
+test("mixed anchors retain their individual modes and end-anchor locations", () => {
   for (const [rules, line, column] of [
     ["\n  start\n  3 digits\n  line end", 4, 3],
     ["line start\nend", 2, 1],
@@ -740,21 +735,10 @@ test("mixed anchors suggest compatible pairs without changing codes or end-ancho
     ["line start\u2028end", 2, 1],
     ["start\u2029line end", 2, 1],
   ]) {
-    assert.throws(
-      () => parse(rules),
-      (error) => {
-        assert.ok(error instanceof CompileError);
-        assert.deepEqual(error.toJSON(), {
-          code: "MIXED_ANCHORS",
-          message: "Do not mix input and line anchors.",
-          line,
-          column,
-          hint,
-        });
-        return true;
-      },
-      rules,
-    );
+    const result = parse(rules);
+    assert.equal(result.anchorMode, "mixed", rules);
+    assert.deepEqual(result.nodes.at(-1).location, { line, column });
+    assert.notEqual(result.nodes[0].mode, result.nodes.at(-1).mode);
   }
   assert.equal(parse("start\n3 digits\nend").anchorMode, "input");
   assert.equal(parse("line start\n3 digits\nline end").anchorMode, "line");

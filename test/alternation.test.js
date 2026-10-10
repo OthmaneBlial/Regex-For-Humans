@@ -50,10 +50,10 @@ test("choice branches have local anchor ordering and share the input/line anchor
   assert.equal(toRegExp(result).test("xax"), false);
   assert.equal(toRegExp(compile("either {\nend\nstart\n}")).test("x"), true);
   assert.equal(compile('either {\nline start "a"\nline start "b"\n}').flags, "mu");
-  assert.throws(() => compile('either {\nstart "a"\nline start "b"\n}'), {
-    code: "MIXED_ANCHORS",
-    line: 3,
-  });
+  const mixed = toRegExp(compile('either {\nstart "a"\nline start "b"\n}'));
+  assert.equal(mixed.flags, "mu");
+  assert.equal(mixed.test("x\na"), false);
+  assert.equal(mixed.test("x\nb"), true);
 });
 
 test("choice diagnostics preserve brace, reference, duplicate-name and depth protections", () => {

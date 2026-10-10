@@ -71,13 +71,19 @@
           <label for="rules-input" class="field-label">Write your rules</label>
           <textarea id="rules-input" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-invalid="false" aria-describedby="rules-help recipe-note diagnostic" placeholder="start &quot;ABC&quot;&#10;3 digits&#10;end"></textarea>
           <div class="editor-footer"><p id="rules-help">A controlled language, not a free-form prompt. <a href="./language.html" target="_blank" rel="noopener noreferrer">Read the syntax ↗</a> · <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md" target="_blank" rel="noopener noreferrer">Complex examples ↗</a></p><span id="rule-count">0 rules</span></div>
-          <fieldset class="flag-controls" aria-label="Regex options">
+          <fieldset class="flag-controls" aria-label="Regex options" aria-describedby="flags-help">
             <label class="flag-toggle"><input id="ignore-case" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Ignore case <code>i</code></span></label>
             <label class="flag-toggle"><input id="dot-all" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Dot matches newlines <code>s</code></span></label>
+            <label class="flag-toggle"><input id="global-flag" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Global <code>g</code></span></label>
+            <label class="flag-toggle"><input id="multiline-flag" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Multiline <code>m</code></span></label>
+            <label class="flag-toggle"><input id="sticky-flag" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Sticky <code>y</code></span></label>
+            <label class="flag-toggle"><input id="indices-flag" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Match indices <code>d</code></span></label>
+            <label class="flag-toggle" for="unicode-mode">Unicode mode <select id="unicode-mode"><option value="u">Unicode u</option><option value="v">Unicode sets v</option></select></label>
           </fieldset>
+          <p id="flags-help" class="field-hint">Each example starts at position 0. Sticky matching starts there and stops at the first gap. Search lists up to 100 matches; global and sticky flags make repeated calls to the copied regex stateful. Input anchors remain absolute with multiline mode. Nested v sets and Unicode string properties are currently unsupported.</p>
           <details id="reverse-translator" class="reverse-translator">
             <summary>Already have a regex? Translate it ↙</summary>
-            <p id="reverse-help">Paste a JavaScript regex literal with <code>u</code>, such as <code>/^[A-Z]{2}-\d{4}$/u</code>. Supported patterns become editable rules; unsupported syntax is explained. Limit: 16,392 UTF-16 code units, including outer whitespace. Press Ctrl/Cmd + Enter in this field to translate.</p>
+            <p id="reverse-help">Paste a JavaScript regex literal with <code>u</code> or <code>v</code>, such as <code>/^[A-Z]{2}-\d{4}$/u</code>. Supported patterns become editable rules with their flags; unsupported syntax is explained. Limit: 16,392 UTF-16 code units, including outer whitespace. Press Ctrl/Cmd + Enter in this field to translate.</p>
             <label for="reverse-regex" class="field-label">JavaScript regex literal</label>
             <textarea id="reverse-regex" rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-invalid="false" aria-describedby="reverse-help reverse-feedback" placeholder="/^#[0-9A-Fa-f]{6}$/u"></textarea>
             <button id="reverse-button" class="secondary-button" type="button" aria-keyshortcuts="Control+Enter Meta+Enter" disabled>Translate to rules</button>

@@ -98,28 +98,26 @@ test("CLI counted sequence errors offer repairs in plain text and JSON", () => {
   }
 });
 
-test("CLI mixed-anchor diagnostics preserve locations and explain both repairs", () => {
-  const hint = "Pair `start` with `end`, or `line start` with `line end`.";
-  for (const rules of ["start\n3 digits\nline end", "line start\n3 digits\nend"]) {
+test("CLI mixed anchors preserve absolute input and native line boundaries", () => {
+  for (const [rules, source] of [
+    ["start\n3 digits\nline end", String.raw`^(?<![\s\S])\d{3}$`],
+    ["line start\n3 digits\nend", String.raw`^\d{3}$(?![\s\S])`],
+  ]) {
     for (const json of [false, true]) {
       const result = run(json ? ["--json", "-"] : ["-"], rules);
-      assert.equal(result.status, 1);
-      assert.equal(result.stdout, "");
-      if (json)
-        assert.deepEqual(JSON.parse(result.stderr), {
-          error: {
-            code: "MIXED_ANCHORS",
-            message: "Do not mix input and line anchors.",
-            line: 3,
-            column: 1,
-            hint,
-          },
-        });
-      else
-        assert.equal(
-          result.stderr,
-          `Line 3, column 1: Do not mix input and line anchors.\n${hint}\n`,
-        );
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(result.stderr, "");
+      if (json) {
+        const compiled = JSON.parse(result.stdout);
+        assert.equal(compiled.source, source);
+        assert.equal(compiled.flags, "mu");
+        const native = new RegExp(source, "mu");
+        for (const input of ["123", "123\nrest", "rest\n123", "12", "1234"])
+          assert.deepEqual(
+            new RegExp(compiled.source, compiled.flags).exec(input),
+            native.exec(input),
+          );
+      } else assert.equal(result.stdout, `/${source}/mu\n`);
     }
   }
   for (const [rules, flags, newlineMatches] of [
@@ -903,12 +901,11 @@ test("CLI reverse preserves matching flags and explains plain-output compiler op
   for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
     const regex = new RegExp("^A.$", flags);
     const expected = regexToRules(regex);
-    const options = [
-      flags.includes("i") ? "--ignore-case" : "",
-      flags.includes("s") ? "--dot-all" : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
+    const options = flags.includes("m")
+      ? `--flags ${expected.flags}`
+      : [flags.includes("i") ? "--ignore-case" : "", flags.includes("s") ? "--dot-all" : ""]
+          .filter(Boolean)
+          .join(" ");
     for (const json of [false, true]) {
       const output = run(["--reverse", ...(json ? ["--json"] : []), "-"], String(regex));
       assert.equal(output.status, 0, output.stderr);
@@ -985,8 +982,9 @@ test("CLI reverse reads UTF-8 files and accepts a leading-dash path after --", (
 });
 
 test("CLI reverse rejects conflicting forward options before reading input", () => {
-  const message = "--reverse cannot be combined with --explain, --ignore-case or --dot-all.";
-  for (const flag of ["--explain", "--ignore-case", "--dot-all"]) {
+  const message =
+    "--reverse cannot be combined with --explain, --ignore-case, --dot-all or --flags.";
+  for (const flag of ["--explain", "--ignore-case", "--dot-all", "--flags=u"]) {
     for (const json of [false, true]) {
       const output = run([flag, "--reverse", ...(json ? ["--json"] : []), "-"], "not a regex");
       assert.equal(output.status, 2);
@@ -1009,10 +1007,15 @@ test("CLI reverse preserves positioned translator errors and reports literal syn
     [
       "/^A$/",
       "UNICODE_FLAG_REQUIRED",
-      "Add the `u` flag before translating. The rule language always uses Unicode matching.",
+      "Add the `u` or `v` flag before translating. The rule language always uses Unicode matching.",
       1,
     ],
-    ["/a/gu", "UNSUPPORTED_REGEX_FLAGS", "Only the i, s, m and u flags can be translated.", 1],
+    [
+      "/a/g",
+      "UNICODE_FLAG_REQUIRED",
+      "Add the `u` or `v` flag before translating. The rule language always uses Unicode matching.",
+      1,
+    ],
     ["a", "CLI_ERROR", "Paste a slash-delimited JavaScript regex literal, such as `/\\d+/u`."],
     ["/a", "CLI_ERROR", "Add the closing `/` and any regex flags."],
     ["/a/z", "CLI_ERROR", "Put only JavaScript regex flags after the closing `/`."],

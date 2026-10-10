@@ -17,7 +17,7 @@ self.onmessage = (event) => {
       typeof source !== "string" ||
       source.length > LIMITS.regexSourceLength ||
       typeof flags !== "string" ||
-      !/^(?:i)?(?:m)?(?:s)?u$/u.test(flags)
+      !/^(?:d)?(?:g)?(?:i)?(?:m)?(?:s)?(?:u|v)(?:y)?$/u.test(flags)
     ) {
       throw new Error("Invalid regex test request.");
     }
@@ -57,13 +57,17 @@ self.onmessage = (event) => {
         // Older engines can report capture values without guessing their positions.
       }
     }
-    const testFlags = `${indicesAvailable ? "d" : ""}${flags}`;
-    const expression = new RegExp(source, `${explore && mode === "search" ? "g" : ""}${testFlags}`);
+    const testFlags = [...new Set(`${indicesAvailable ? "d" : ""}${flags}`)].sort().join("");
+    const searchFlags = [...new Set(`${explore && mode === "search" ? "g" : ""}${testFlags}`)]
+      .sort()
+      .join("");
+    const expression = new RegExp(source, searchFlags);
     // A strict input end still applies when line mode enables the m flag.
     const fullExpression =
       mode === "full" ? new RegExp(`^(?:${source})(?![\\s\\S])`, testFlags) : null;
     const results = cases.map((sample) => {
       expression.lastIndex = 0;
+      if (fullExpression) fullExpression.lastIndex = 0;
       let match = expression.exec(sample.text);
       if (fullExpression && match?.index === 0 && match[0].length !== sample.text.length) {
         const complete = fullExpression.exec(sample.text);

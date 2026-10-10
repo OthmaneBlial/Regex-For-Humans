@@ -281,7 +281,7 @@ Une instruction par ligne ; les textes littéraux sont entre guillemets.
 | `text without: a, b` | `[^ab]*` | Zéro ou plusieurs caractères non listés |
 | `any text` | `.*` | `s` inclut les retours à la ligne |
 
-`word character` / `word characters` et `word` / `not word` suivent `\w` / `\W`. `\w` inclut `_`, mais pas `é`. `letter` exclut chiffres et soulignement. Avec `i`, les équivalences natives JavaScript peuvent inclure `K` et `ſ`. `u` est toujours activé ; il ne transforme pas les classes ASCII en catégories Unicode universelles.
+`word character` / `word characters` et `word` / `not word` suivent `\w` / `\W`. `\w` inclut `_`, mais pas `é`. `letter` exclut chiffres et soulignement. Avec `i`, les équivalences natives JavaScript peuvent inclure `K` et `ſ`. `u` est le défaut ; le source accepte aussi `v`. Aucun des deux ne transforme les classes ASCII en catégories Unicode universelles.
 
 ## 💻 Dans votre terminal
 
@@ -358,12 +358,16 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 | Flag | Activation | Effet |
 | --- | --- | --- |
-| `u` | Toujours | Correspondance par points de code Unicode |
+| `u` | Par défaut | Correspondance par points de code Unicode |
 | `i` | `{ flags: 'i' }` ou `--ignore-case` | Comparaison sans distinction de casse selon JavaScript |
 | `s` | `{ flags: 's' }` ou `--dot-all` | Le point peut inclure les retours à la ligne |
 | `m` | `line start` / `line end` | Ancres par ligne |
+| `d` | `{ flags: 'd' }` | Indices natifs des correspondances et captures |
+| `g` | `{ flags: 'g' }` | Les appels successifs avancent `lastIndex` |
+| `y` | `{ flags: 'y' }` | Correspondance à `lastIndex`, arrêt au premier trou |
+| `v` | `{ flags: 'v' }` | Classes Unicode et compléments natifs en mode v |
 
-`flags: 'is'` combine les deux options. `g`, `y`, `d` et `v` ne sont pas des options du compilateur. L’application qui construit son regex natif à partir de la source peut choisir ses propres flags d’exécution.
+**Sources uniquement :** les huit flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` sont acceptés, avec `{ flags: 'dgiv' }` ou `--flags dgiv`. L’ordre de sortie est `dgimsuvy` ; doublons et combinaison u/v sont rejetés, et u reste le défaut. m peut être explicite ou ajouté par les ancres de ligne ; les ancres d’entrée restent absolues, même dans un mélange des deux modes. La traduction inverse conserve les options sans modifier `lastIndex`. Le workshop recommence chaque exemple à 0 et énumère au plus 100 correspondances ; les regex g/y copiés restent avec état. Les capacités natives manquantes, ensembles v imbriqués et propriétés Unicode de chaînes sont signalés explicitement. npm `0.1.0-dev.4` conserve ses options i/s, u automatique et m par ancres de ligne.
 
 ## 🛠️ Développer localement
 

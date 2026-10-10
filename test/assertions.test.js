@@ -199,7 +199,7 @@ test("assertions retain brace, direct-repetition, capture, anchor and mixed dept
       1,
     ],
     ['capture "x" {\nfollowed by {\nsame as capture "x"\n}\n}', "SELF_CAPTURE_REFERENCE", 3, 17],
-    ["followed by {\nstart\n}\nline end", "MIXED_ANCHORS", 4, 1],
+    ["followed by {\nstart\nstart\n}\nline end", "DUPLICATE_ANCHOR", 3, 1],
   ])
     assert.throws(() => compile(rules), { code, line, column });
   const nested = (depth) => `${"followed by {\n".repeat(depth)}"a"\n${"}\n".repeat(depth)}`;

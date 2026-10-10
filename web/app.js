@@ -28,6 +28,11 @@ const ui = {
   ruleCount: requiredElement("rule-count", HTMLSpanElement),
   ignoreCase: requiredElement("ignore-case", HTMLInputElement),
   dotAll: requiredElement("dot-all", HTMLInputElement),
+  global: requiredElement("global-flag", HTMLInputElement),
+  multiline: requiredElement("multiline-flag", HTMLInputElement),
+  sticky: requiredElement("sticky-flag", HTMLInputElement),
+  matchIndices: requiredElement("indices-flag", HTMLInputElement),
+  unicodeMode: requiredElement("unicode-mode", HTMLSelectElement),
   reverseRegex: requiredElement("reverse-regex", HTMLTextAreaElement),
   reverseButton: requiredElement("reverse-button", HTMLButtonElement),
   reverseFeedback: requiredElement("reverse-feedback", HTMLParagraphElement),
@@ -44,6 +49,15 @@ const ui = {
   testList: requiredElement("test-list", HTMLDivElement),
 };
 
+const flagInputs = {
+  d: ui.matchIndices,
+  g: ui.global,
+  i: ui.ignoreCase,
+  m: ui.multiline,
+  s: ui.dotAll,
+  y: ui.sticky,
+};
+
 /** @type {ProductScenario[]} */
 let scenarios = [];
 /** @type {TestCase[]} */
@@ -55,8 +69,8 @@ let reverseErrorPosition = null;
 let compiled = null;
 let hasEdits =
   ui.rules.value !== "" ||
-  ui.ignoreCase.checked ||
-  ui.dotAll.checked ||
+  Object.values(flagInputs).some((input) => input.checked) ||
+  ui.unicodeMode.value !== "u" ||
   ui.matchMode.value !== "full";
 let copyFeedbackTimer = 0;
 let copySequence = 0;
@@ -181,11 +195,18 @@ function renderTrace(segments) {
 
 /** @param {string} flags */
 function flagsDescription(flags) {
-  const parts = ["u Unicode"];
-  if (flags.includes("m")) parts.push("m Line anchors");
-  if (flags.includes("i")) parts.push("i Ignore case");
-  if (flags.includes("s")) parts.push("s Dot all");
-  return parts.join(" · ");
+  /** @type {Record<string, string>} */
+  const labels = {
+    d: "Capture indices",
+    g: "Global",
+    i: "Ignore case",
+    m: "Line anchors",
+    s: "Dot all",
+    u: "Unicode",
+    v: "Unicode sets",
+    y: "Sticky",
+  };
+  return [...flags].map((flag) => `${flag} ${labels[flag]}`).join(" · ");
 }
 
 /** @param {HTMLDivElement} row @param {string} text */
@@ -548,7 +569,11 @@ function compileRules() {
     ui.ruleCount.textContent = `${ruleCount} ${ruleCount === 1 ? "rule" : "rules"}`;
   }
   try {
-    const flags = `${ui.ignoreCase.checked ? "i" : ""}${ui.dotAll.checked ? "s" : ""}`;
+    const flags =
+      Object.entries(flagInputs)
+        .filter(([, input]) => input.checked)
+        .map(([flag]) => flag)
+        .join("") + ui.unicodeMode.value;
     compiled = compile(rules, { flags });
     ui.output.textContent = `/${compiled.source}/${compiled.flags}`;
     ui.flagsSummary.textContent = flagsDescription(compiled.flags);
@@ -601,8 +626,8 @@ function useScenario(scenario) {
   ui.rules.value = scenario.rules;
   ui.rules.setSelectionRange(0, 0);
   ui.rules.scrollTop = 0;
-  ui.ignoreCase.checked = false;
-  ui.dotAll.checked = false;
+  for (const input of Object.values(flagInputs)) input.checked = false;
+  ui.unicodeMode.value = "u";
   ui.matchMode.value = scenario.matchMode;
   testCases = [
     ...scenario.positive.map((text) => ({ id: nextTestId++, text, expected: true })),
@@ -642,8 +667,8 @@ ui.rules.addEventListener("input", () => {
   setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);
   compileRules();
 });
-ui.ignoreCase.addEventListener("change", compileRules);
-ui.dotAll.addEventListener("change", compileRules);
+for (const input of Object.values(flagInputs)) input.addEventListener("change", compileRules);
+ui.unicodeMode.addEventListener("change", compileRules);
 ui.reverseRegex.addEventListener("input", () => {
   ui.reverseRegex.setAttribute("aria-invalid", "false");
   ui.reverseFeedback.hidden = true;
@@ -673,8 +698,9 @@ ui.reverseButton.addEventListener("click", () => {
   try {
     const translated = regexToRules(parseRegexLiteral(ui.reverseRegex.value));
     ui.rules.value = translated.rules;
-    ui.ignoreCase.checked = translated.flags.includes("i");
-    ui.dotAll.checked = translated.flags.includes("s");
+    for (const [flag, input] of Object.entries(flagInputs))
+      input.checked = translated.flags.includes(flag);
+    ui.unicodeMode.value = translated.flags.includes("v") ? "v" : "u";
     setScenarioSelection(null);
     hasEdits = true;
     compileRules();
