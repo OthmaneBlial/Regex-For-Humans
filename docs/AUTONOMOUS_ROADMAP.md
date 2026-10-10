@@ -4,6 +4,8 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Safe group-editing source milestone
 
+- Public source: feature `364e7a0` and RTL layout `cd5974a` are pushed to `main`. Both actual Arabic/Urdu GitHub guides pass measured 1280/390/320px widths with 16 RTL headings, seven RTL tables, 20 LTR blocks, 240 LTR inline fragments and exact English code parity. Panel/version labels fit one LTR line; two narrow note screenshots are inspected after fixing a wrapped version. Viewport and test tabs are reset/closed; this does not publish npm/Pages or close human gates.
+
 - Implemented: shared-AST `editGroup`, named-capture renaming, named/numbered/noncapturing conversion, resolved-reference updates and opening-order renumbering. Other literals, indentation, line endings and repetition modifiers are retained. Referenced removal and invalid proposals fail explicitly before returning edited rules.
 - Workshop: keyboard-accessible group selection, capture numbering, reference navigation and rejected-edit feedback; native range highlighting distinguishes empty and absent captures and supports lookaround values outside the consumed match.
 - Verification: the complete local gate passes 308 Node, 384 Chromium desktop/mobile, 154 Firefox/WebKit and 64 homepage checks (910 total), clean consumers, lint/types/docs, builds and audit. All 23 focused checks and a separate clean consumer pass on Node 22. Ten README guides keep all 20 canonical code blocks and explain source-only availability; Arabic/Urdu isolate the new control/API labels LTR. Connected Chrome verifies rename/rejection/highlighting, desktop/320px layout and zero console errors. Human reviews stay open.
