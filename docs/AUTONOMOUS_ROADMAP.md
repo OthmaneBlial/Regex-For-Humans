@@ -4,7 +4,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## dev.5 distribution milestone
 
-Release preparation aligns package/lock version, changelog, all ten README guides, security policy, language/compatibility documentation, homepage and workshop guide on `0.1.0-dev.5`. The guides include native sets, strings, all eight flags, classes, properties, boundaries, assertions and lazy repetition; reverse imports accept u or v. The first candidate passes 301 Node tests, lint/types/docs, both builds and a clean installed JavaScript/TypeScript/API/CLI consumer. The native compiler is unchanged from the 891-test gate at `612dc18`; release checks must verify the final retained archive on Node 25/22, public npm/GitHub assets, Pages propagation and actual RTL rendering before distribution is recorded as complete. Historical dev.4 receipts below remain immutable. Human gates stay open.
+Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact GitHub assets, all ten README guides and the hosted site agree. The 248,223-byte archive passes clean JavaScript/TypeScript/API/CLI consumers on Node 25/22, both retained and downloaded from the registry. Release checks pass 301 Node tests, ten README/localization contracts, 64 homepage and eight guide checks, lint/types/docs and builds; the native compiler is unchanged from the 891-test gate. Pages commit `ccd5826` deployed successfully, with public bytes and a native v-set/capture UI flow verified. Both actual RTL guides pass 1280/390/320px and exact English code parity; two narrow captures were inspected. The Downloads Reddit draft is updated and unposted. See [DISTRIBUTION.md](DISTRIBUTION.md) for hashes, tag, deployment and verification scope. Historical dev.4 receipts remain immutable and human gates stay open.
 
 ## Core grammar milestones
 
@@ -17,8 +17,8 @@ Release preparation aligns package/lock version, changelog, all ten README guide
 
 ## Next priorities
 
-1. Publish the verified dev.5 preview and synchronize the site/README with the native set, string, flag, class, property, boundary, assertion and lazy-repetition additions.
-2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
+1. Safe group editing: rename named captures and update their references; support capture/noncapture conversion with explicit reference diagnostics.
+2. Structural visualization, safety heuristics with honest limits and verified exports.
 3. Workshop localization and the remaining mission waves.
 
 ## Site and README milestone
