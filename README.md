@@ -12,6 +12,8 @@ A few clear English rules become a JavaScript regex you can actually follow.
 
 🔒 **Runs locally** &nbsp; 🧩 **No runtime dependencies** &nbsp; ⚡ **One compiler, three ways to use it**
 
+[English](README.md) · [简体中文](docs/i18n/README.zh-CN.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Português do Brasil](docs/i18n/README.pt-BR.md) · [日本語](docs/i18n/README.ja.md) · [Deutsch](docs/i18n/README.de.md) · [हिन्दी](docs/i18n/README.hi.md)
+
 </div>
 
 ---
@@ -46,6 +48,31 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 > 🌱 **Development preview (`0.1.0-dev.3`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
 
+| Start here | Continue with |
+| --- | --- |
+| [Install](#install) · [Playground](#playground) | [Recipes](#recipes) · [Complex examples](#examples) |
+| [Captures](#captures) · [Cheat sheet](#cheat-sheet) | [CLI](#cli) · [JavaScript / TypeScript](#api) |
+| [Capabilities](#capabilities) · [Flags](#flags) | [Local development](#develop) · [FAQ](#faq) |
+
+<a name="capabilities"></a>
+
+## 🧰 What you can build today
+
+| Capability | Published npm `0.1.0-dev.3` | Current source checkout |
+| --- | --- | --- |
+| Readable rules → native JavaScript regex | ✅ | ✅ |
+| Supported regex → editable rules | ✅ Flat subset | ✅ Includes supported groups and references |
+| Fragment explanations and source navigation | ✅ | ✅ Includes group edges and references |
+| CLI, ESM API and TypeScript declarations | ✅ | ✅ |
+| Numbered/named captures and nested blocks | — | ✅ |
+| Whole-block repetition and backward references | — | ✅ |
+| Alternation, lookaround and lazy quantifiers | — | Planned; currently rejected |
+| Other regex engines and free-form English | — | Outside the current language |
+
+The checkout additions are unreleased. Install the published preview for its documented subset; clone `main` for groups and references. The browser workshop and npm are separate distributions. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
+
+<a name="install"></a>
+
 ## 📦 Install the preview
 
 ```sh
@@ -59,6 +86,8 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 ```
 
 This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1.0-dev.3`. There are no runtime dependencies or standalone OS executables.
+
+<a name="playground"></a>
 
 ## 🎮 Play with a pattern
 
@@ -112,6 +141,8 @@ Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. S
 
 [Real screenshot details and checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md).
 
+<a name="recipes"></a>
+
 ## 🍱 Recipes to start with
 
 | Try this | Example | What it checks |
@@ -136,6 +167,8 @@ Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. S
 | [📝 Line rule](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | `item 123` | A line ending in at least three digits |
 
 **Shapes have limits:** UUID shape follows the bare hex-and-dash layout in [RFC 9562 section 4](https://www.rfc-editor.org/rfc/rfc9562.html#section-4); version, variant and uniqueness require separate checks. Braces and a `urn:uuid:` prefix are excluded. text filename shape allows spaces, dots and punctuation; check filesystem rules and file existence separately. phone-number shape allows leading zeros and excludes spaces and punctuation; check country rules and number validity separately. invoice IDs allow leading zeros; verify invoice records separately. Username shape does not check availability or a service's account rules. Date shape accepts impossible dates such as `2026-02-31`; validate calendar values separately. Time shape accepts `25:99`; validate hour and minute ranges separately. Version shape allows leading zeros and rejects prerelease suffixes; it isn't full SemVer. Hex color accepts `#RRGGBB`, not shorthand, alpha, or every CSS color form. Product-code shape accepts only its stated ASCII letter case and counts; adding `i` ignores case, and the pattern does not verify catalog records.
+
+<a name="examples"></a>
 
 ## 🏗️ Bigger patterns, same readable rules
 
@@ -235,6 +268,58 @@ end
 
 **Captures on main:** the checkout supports numbered and named `capture` blocks, nested `group` blocks, repetition of whole blocks and [named/numbered references](docs/LANGUAGE.md#capture-references-unreleased-on-main), including reverse translation of the supported subset. These additions are unreleased; see the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures-unreleased-on-main). These existing flat worked examples still validate shapes without extracting fields.
 
+<a name="captures"></a>
+
+## 🧲 Extract fields with named captures
+
+A date can become three useful fields. This example needs the **source checkout**, because captures are not in npm `0.1.0-dev.3`.
+
+<!-- captures:date -->
+```text
+start
+capture "year" {
+  4 digits
+}
+"-"
+capture "month" {
+  2 digits
+}
+"-"
+capture "day" {
+  2 digits
+}
+end
+```
+
+```js
+import { compile, toRegExp } from './index.js';
+
+const rules = `start
+capture "year" {
+  4 digits
+}
+"-"
+capture "month" {
+  2 digits
+}
+"-"
+capture "day" {
+  2 digits
+}
+end`;
+
+const match = toRegExp(compile(rules)).exec('2026-10-10');
+console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
+```
+
+Use `capture {` for a numbered field and `group {` to group without extracting. Names are unique JavaScript identifiers; numbers follow opening order, including nested captures. Optional groups that do not participate return `undefined`; a participating empty capture returns `""`. A repeated capture retains its final value. These are native JavaScript semantics.
+
+Need the same text twice? After the group's closing brace, write `same as capture "word"` or `same as capture 1`. The [reference example](docs/LANGUAGE.md#capture-references-unreleased-on-main) matches `cat cat` and rejects `cat dog`. References before or inside their target receive a positioned diagnostic. The reverse translator preserves supported names, numbers and captured values.
+
+This pattern validates `YYYY-MM-DD`, including impossible dates. Use calendar validation after extraction.
+
+<a name="cheat-sheet"></a>
+
 ## 🧩 Your pocket cheat sheet
 
 Put one instruction on each line. Quote literal text. Add anchors to check the whole string.
@@ -258,6 +343,8 @@ Put one instruction on each line. Quote literal text. Add anchors to check the w
 | `any text` | `.*` | Any text; `s` includes line breaks |
 
 `word character` matches an ASCII letter, digit or underscore; `word characters` matches one or more. Set a length with `between 3 and 30 word characters`. The shorter `word` and `not word` rules still use JavaScript's `\w` / `\W`. They aren't every Unicode letter: `\w` includes `_` and excludes `é`. Use `letter` / `letters` to exclude digits and underscores; counts work too, such as `3 letters`. Without `i`, `lowercase letters` and `uppercase letters` match only their ASCII ranges. The `i` flag ignores that distinction and adds JavaScript case-folding equivalents such as `K` and `ſ`. Unicode mode `u` is always on. See the [full language guide](docs/LANGUAGE.md) for flags, escaping, limits, and diagnostics.
+
+<a name="cli"></a>
 
 ## 💻 Bring it to your terminal
 
@@ -322,6 +409,8 @@ end
 
 Use `--reverse --json` for `{ rules, flags }`, matching `regexToRules()`. Pass the returned `flags` to `compile()` to preserve `i` and `s`; `m` is represented by line anchors and `u` is automatic. Plain output contains reusable rules, with the required forward compiler options on stderr when `i` or `s` is present. These notes accompany a successful exit code. Reverse mode accepts a file or stdin and cannot be combined with `--explain`, `--ignore-case` or `--dot-all`.
 
+<a name="api"></a>
+
 ## 📦 Use the JavaScript library
 
 After `npm install regex-for-humans@preview`, import the package in an ES module (`.mjs`, or a project with `"type": "module"`). TypeScript declarations are included. From a source checkout, use `./index.js` instead.
@@ -346,6 +435,21 @@ TypeScript accepts cached compile metadata: `toRegExp({ source, flags })`. Both 
 `regexToRules()` also accepts genuine regexes from other JavaScript contexts, such as iframes or Node's `vm`, and leaves their `lastIndex` unchanged. It translates the stored native pattern and flags; subclass or own-property metadata overrides do not change the translation. Matching methods and custom `Symbol.match` getters are not called.
 
 Unicode escapes can include leading zeros: `/^\u{00000041}$/u` translates to `start`, `"A"`, `end` on separate lines. The same escapes work in character lists and literal groups; the regex source still has a 16,384-code-unit limit.
+
+<a name="flags"></a>
+
+## 🎛️ Flags with a purpose
+
+| Flag | How to enable it | What changes |
+| --- | --- | --- |
+| `u` | Always enabled | Unicode code-point matching; emoji are single matching atoms |
+| `i` | `compile(rules, { flags: 'i' })` or `--ignore-case` | Native JavaScript case folding, including its Unicode equivalents |
+| `s` | `compile(rules, { flags: 's' })` or `--dot-all` | `any character` / `any text` can include line breaks |
+| `m` | Use `line start` / `line end` | Anchors operate at line boundaries |
+
+Use `flags: 'is'` for both optional compiler flags. Reverse translation returns the compiler options to reuse; line anchors carry `m`, and `u` remains automatic. Stateful `g` / `y`, indices `d` and Unicode-set `v` are not compiler options. A receiving application can choose its own execution flags when constructing a native regex from the emitted source.
+
+<a name="develop"></a>
 
 ## 🛠️ Make yourself at home
 
@@ -383,6 +487,41 @@ CI=1 npm run verify
 ## 🧭 Know the boundaries
 
 Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, alternation, lookaround and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
+
+<a name="faq"></a>
+
+## 💬 Questions you might have
+
+**Is this an AI regex generator?** No. A deterministic parser maps a documented vocabulary to an AST, then emits native regex and explanations. The same rules and options give the same result. Unknown syntax fails explicitly.
+
+**Will it parse every regex?** No. Unsupported syntax returns a diagnostic and preserves workshop edits. It never removes a capture, assertion or alternative to manufacture a translation. Captures and nested groups are supported in the checkout; the [compatibility table](docs/COMPATIBILITY.md) lists the remaining limits.
+
+**Does a passing example prove the pattern is safe?** No. Examples check selected behavior. Source and repetition limits, plus the worker's deadline, protect the workshop interaction. They do not guarantee that every copied regex is fast in another program.
+
+**Is `digit` every Unicode numeral?** No: `\d` is ASCII `0–9`. `letter` is `[A-Za-z]`, and `word` follows native `\w` semantics. The `u` flag does not turn these into universal Unicode categories.
+
+**What are the limits?** Rules: 16,384 UTF-16 code units, 200 lines, at most 1,000 for bounded repetition, and 64 group levels. Workshop: 100 examples, 2,048 UTF-16 units per example, and a 1,200 ms worker deadline. An emoji normally uses two UTF-16 units even though `u` matches it as one code point.
+
+**Can I use it offline?** The library and CLI run locally. After dependencies are installed, you can build and serve the workshop locally. The hosted site needs a connection to load; no offline caching or installable PWA is claimed.
+
+**Where should I report a problem?** Use [GitHub issues](https://github.com/OthmaneBlial/Regex-For-Humans/issues) for reproducible bugs and syntax requests. Include rules, flags, input, expected behavior and runtime version. Report security issues privately using [SECURITY.md](SECURITY.md).
+
+## 🗺️ Explore the project
+
+| Guide | What you will find |
+| --- | --- |
+| [Language](docs/LANGUAGE.md) | Exact grammar, groups, references, escaping, flags and diagnostics |
+| [Complex examples](docs/COMPLEX-EXAMPLES.md) | Complete patterns and explanations for four larger formats |
+| [Architecture](docs/ARCHITECTURE.md) | Parser → AST → compiler → API/CLI/workshop |
+| [Compatibility](docs/COMPATIBILITY.md) | Supported constructs and verified runtimes |
+| [Testing](docs/TESTING.md) | Reproducible commands and scoped verification records |
+| [Security model](docs/SECURITY_MODEL.md) | Trust boundaries, worker isolation and known limits |
+| [Distribution](docs/DISTRIBUTION.md) | Published npm, release and hosted-site evidence |
+| [Current roadmap](docs/AUTONOMOUS_ROADMAP.md) | Implemented milestones and the next priorities |
+| [Competitor gaps](docs/COMPETITOR_GAPS.md) | Source-backed comparison and remaining capability gaps |
+| [Contributing](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup, scope and contribution conventions |
+
+**Verified locally on 10 October 2026:** 238 Node tests, 282 desktop/mobile Chrome checks, 52 Firefox/WebKit checks, 62 homepage checks and a clean package consumer pass. The audit reports zero vulnerabilities. The 16 dedicated group/reference/reverse tests also pass on Node 22.23.3. These counts describe that snapshot, not a guarantee for every browser or future version. Human usability and screen reader review remain open.
 
 ---
 

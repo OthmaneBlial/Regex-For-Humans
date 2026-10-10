@@ -1,0 +1,411 @@
+<div align="center">
+
+# 🧠 Regex For Humans
+
+[![Regex For Humans：読みやすいルールから実際の正規表現へ](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/site/assets/readme-banner.svg)](https://othmaneblial.github.io/Regex-For-Humans/)
+
+**書く。理解する。試す。**
+
+明確な英語のルールを、各部分の意味を追える JavaScript 正規表現に変換します。
+
+[🚀 ワークショップ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 サイト](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 構文](../LANGUAGE.md) · [📦 npm プレビュー](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.3)
+
+🔒 ローカル実行 · 🧩 実行時依存なし · ⚡ 1つのコンパイラ、3つの使い方
+
+[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · **日本語** · [Deutsch](README.de.md) · [हिन्दी](README.hi.md)
+
+</div>
+
+## 🪄 記号を読み解く手間を減らす
+
+正規表現を生成したルールが見えれば、結果も理解しやすくなります。
+
+```text
+start "#"
+6 hex digits
+end
+```
+
+```js
+/^#[0-9A-Fa-f]{6}$/u
+```
+
+✅ `#12aBcF`、`#000000` · ❌ `#123`、`#G00000`
+
+語彙は**固定**され、各命令には正確な意味があります。ライブラリ、CLI、ワークショップは同じ決定的なコンパイラを使います。不明な命令には行、列、修正のヒントを返します。どの翻訳でも、ルールの構文自体は英語のままです。
+
+> 🌱 プレビュー `0.1.0-dev.3` のライブラリと CLI には **Node.js 22+** が必要です。オンラインのワークショップはインストール不要です。人による使いやすさとスクリーンリーダーの評価は未実施です。
+
+## 🧰 現在できること
+
+| 機能 | npm `0.1.0-dev.3` | 現在のソース |
+| --- | --- | --- |
+| ルール → JavaScript 正規表現 | ✅ | ✅ |
+| 対応する正規表現 → 編集可能なルール | ✅ 単純な構文の範囲 | ✅ 対応するグループと参照を含む |
+| 各断片の説明と元のルールへの移動 | ✅ | ✅ グループの両端と参照も含む |
+| CLI、ESM API、TypeScript 型 | ✅ | ✅ |
+| 名前付き・番号付きキャプチャと入れ子のブロック | — | ✅ |
+| ブロック全体の繰り返しと後方参照 | — | ✅ |
+| 選択、先読み・後読み、非貪欲な量指定子 | — | 計画中。現在は拒否 |
+| 他の正規表現エンジンや自由な英文 | — | 現在の言語の対象外 |
+
+新機能はまだ npm に公開されていません。グループと参照には `main` をクローンしてください。ワークショップと npm は別の配布物です。[互換性](../COMPATIBILITY.md)と[公開の記録](../DISTRIBUTION.md)を確認してください。
+
+## 📦 プレビューをインストールする
+
+```sh
+npm install regex-for-humans@preview
+```
+
+グローバルインストールなしで CLI を実行できます。
+
+```sh
+printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
+```
+
+出力は `/^ABC\d{3}$/u` です。固定バージョンには `regex-for-humans@0.1.0-dev.3` を使います。実行時依存や OS ごとの単独実行ファイルはありません。
+
+## 🎮 パターンを試す
+
+1. レシピを選ぶか、1行に1命令を書きます。
+2. 生成された断片と説明を確認します。
+3. 入力例を追加し、一致すべきものを指定します。
+4. 結果を確認してから正規表現をコピーします。
+
+部分一致にはエスケープ済みの短い文脈と強調表示、空の一致には位置マーカーが表示されます。ルールと入力例はブラウザ内にとどまります。アカウント、AI による解釈、アプリケーション用バックエンドは不要です。
+
+[![デスクトップ版ワークショップの実際の画面](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+
+[モバイル画面とチェックサム](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)。
+
+## 🔄 既存の正規表現から始める
+
+**Already have a regex?** に対応する JavaScript リテラルを貼り付け、Ctrl/Cmd + Enter または **Translate to rules** を使います。`/^[A-Z]{2}-\d{4}$/u` は次のルールになります。
+
+```text
+start
+2 uppercase letter
+"-"
+4 digit
+end
+```
+
+`/` と必須の `u` を使い、改行は `\n` のようにエスケープしてください。対応する `i`、`s`、`m`、`u` の動作を保持します。現在のソースでは、キャプチャ、入れ子のグループ、後方参照も、名前・番号・値を保持して取り込めます。
+
+`[^]` は `s` 付きの任意の文字になります。隣の通常のドットは改行を明示的に除外し、意味を保ちます。完全な文字・単語・16進数クラスの同等な並び、パスの除外、制御文字のエスケープ、リスト端のリテラルなハイフンも認識します。
+
+非対応の構文を削除したり近似したりはしません。**Go to regex error** で元の位置を選択でき、失敗してもルールとオプションは保持されます。前方参照と未閉鎖キャプチャへの参照は拒否します。空の非キャプチャグループは `0 any character` になり、検索では空に一致しますが、文字列全体モードでは空入力だけが一致します。
+
+## 🍱 最初のレシピ
+
+| レシピ | 例 | 確認する形 |
+| --- | --- | --- |
+| [接頭辞付き ID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=prefixed-identifier) | `ABC123` | 接頭辞と3桁 |
+| [請求番号](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=invoice-number) | `INV-1234` | `INV-` と2–6桁 |
+| [ユーザー名](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=username-shape) | `Alice_7` | 3–16文字、先頭は ASCII 英字 |
+| [16進カラー](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=hex-color) | `#12aBcF` | `#` の後に6桁 |
+| [MAC アドレス](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=mac-address-shape) | `00:1A:2B:3C:4D:5E` | 6組の16進数 |
+| [UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | `8–4–4–4–12` | 5つの16進数グループ |
+| [製品コード](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | `AB-rgb-0420` | 固定の文字数と ASCII の大文字・小文字 |
+| [日付](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | `2026-09-30` | `YYYY-MM-DD` |
+| [時刻](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | `09:30` | `HH:MM` |
+| [電話番号](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | `+33123456789` | 任意の `+` と7–15桁 |
+| [IPv4](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | `192.0.2.42` | 1–3桁の4組 |
+| [ファイル名](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | `report.txt` | 区切り文字を除いた長さ制限付き Unicode 名 |
+| [マニフェスト](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | パス、ハッシュ、サイズ | 19ルール、9例 |
+| [アクセスログ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | リクエスト、状態、サイズ | 43ルール、8例 |
+| [テレメトリ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=structured-event) | ID、任意の値 | 38ルール、9例 |
+| [バージョン](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | `1.2.3` | 3つの数値部分 |
+| [文字の除外](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | `xyz` | 選んだ文字を含まないテキスト |
+| [行のルール](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | `item 123` | 末尾が3桁以上の行 |
+
+これらは**形の検査**です。存在しない日付や `25:99` も一致します。IPv4 の各値は255以下に制限されず、UUID のバージョン・バリアント・一意性も検査しません。ユーザー名の空き、請求記録、電話番号の有効性、カレンダー、ファイルシステムの制約は別途確認してください。バージョンは完全な SemVer ではなく、色は `#RRGGBB` のみです。
+
+## 🏗️ 大きなパターンも読みやすく
+
+[詳しいガイド](../COMPLEX-EXAMPLES.md)では、アクセスログ、テレメトリ、マニフェスト、複数行の注文を扱います。受理・拒否の35例と、すべての断片の説明があります。
+
+### 📦 アーティファクトのマニフェスト
+
+任意の `nightly/`、長さ制限付き Unicode パス、バージョン、アーカイブ名、ハッシュ、サイズをタブで区切ります。
+
+```text
+start
+"incoming/"
+optional "nightly/"
+between 1 and 32 path segment characters
+"/v"
+between 1 and 3 digits
+"."
+between 1 and 3 digits
+"."
+between 1 and 3 digits
+"/linux-arm64/widget_"
+8 digits
+"_"
+8 hex digits
+".tar.gz\t"
+64 hex digits
+"\t"
+between 1 and 12 digits
+end
+```
+
+```js
+/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+```
+
+ファイルの存在や実際の整合性は検証しません。
+
+### 🧾 複数行の注文
+
+ID、Unicode の購入者、電話、数量、金額、参照、任意の承認値、任意の優先度行を組み合わせます。
+
+```text
+start
+"ORDER\nid=ORD-"
+8 hex digits
+"\nbuyer="
+between 1 and 60 none of: "\u0000", "\n", "\r", "\u2028", "\u2029"
+"\nphone="
+optional "+"
+between 7 and 15 digits
+"\nitems="
+between 1 and 4 digits
+"\ntotal="
+between 1 and 6 digits
+"."
+2 digits
+" EUR\nreference="
+16 hex digits
+"\napproval="
+optional one of: "A", "D"
+"\n"
+optional "priority=HIGH\n"
+"END"
+optional "\n"
+end
+```
+
+```js
+/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+```
+
+改行はリテラルです。金額や注文の妥当性はアプリケーションが検証します。ガイドの4つの平坦な例はフィールドを抽出しません。
+
+## 🧲 名前付きキャプチャでフィールドを抽出する
+
+この例には **現在のソース** が必要です。npm `0.1.0-dev.3` には含まれません。
+
+```text
+start
+capture "year" {
+  4 digits
+}
+"-"
+capture "month" {
+  2 digits
+}
+"-"
+capture "day" {
+  2 digits
+}
+end
+```
+
+```js
+import { compile, toRegExp } from './index.js';
+
+const rules = `start
+capture "year" {
+  4 digits
+}
+"-"
+capture "month" {
+  2 digits
+}
+"-"
+capture "day" {
+  2 digits
+}
+end`;
+
+const match = toRegExp(compile(rules)).exec('2026-10-10');
+console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
+```
+
+`capture {` は番号付きキャプチャ、`group {` は非キャプチャのグループです。名前は一意な JavaScript 識別子で、番号は入れ子も含めた開始順です。不参加の任意キャプチャは `undefined`、参加した空のキャプチャは `""`、繰り返したキャプチャは最後の値を返します。
+
+グループを閉じた後の `same as capture "word"` または `same as capture 1` は同じテキストを要求します。[例](../LANGUAGE.md#capture-references-unreleased-on-main)は `cat cat` に一致し、`cat dog` には一致しません。前方参照や対象内部の参照には診断を返します。逆変換でも対応するキャプチャを保持します。抽出した日付はカレンダーで検証してください。
+
+## 🧩 早見表
+
+1行に1命令。リテラル文字列は引用符で囲みます。
+
+| ルール | 結果 | 意味 |
+| --- | --- | --- |
+| `start` / `end` | `^` / `$` | 入力の境界 |
+| `line start` / `line end` | `^` / `$` と `m` | 行の境界 |
+| `digit` / `not digit` | `\d` / `\D` | ASCII 数字とその補集合 |
+| `3 digits` / `digits` | `\d{3}` / `\d+` | 3桁、または1桁以上 |
+| `between 2 and 4 digits` | `\d{2,4}` | 両端を含む |
+| `optional "-"` | `-{0,1}` | 任意のハイフン |
+| `letter` / `letters` | `[A-Za-z]` / `[A-Za-z]+` | ASCII 英字 |
+| `lowercase letters` / `uppercase letters` | `[a-z]+` / `[A-Z]+` | `i` で区別を無視 |
+| `6 hex digits` | `[0-9A-Fa-f]{6}` | 16進数6桁 |
+| `space` / `spaces` | `\s` / `\s+` | 改行を含む空白 |
+| `between 1 and 32 path segment characters` | 1–32コードポイント | 区切り、NUL、改行を除外 |
+| `"hello"` | `hello` | エスケープされたリテラル |
+| `one of: a, b` | `[ab]` | リスト中の1文字 |
+| `text without: a, b` | `[^ab]*` | リスト以外の0文字以上 |
+| `any text` | `.*` | `s` で改行も含む |
+
+`word character` / `word characters` と `word` / `not word` は `\w` / `\W` に従い、`_` を含み `é` を含みません。`letter` は数字とアンダースコアを除きます。`i` では JavaScript の同値文字 `K`、`ſ` なども加わります。`u` は常に有効ですが、ASCII クラスを Unicode 全体の分類には変えません。
+
+## 💻 ターミナルで使う
+
+```sh
+npm install --global regex-for-humans@preview
+printf 'start "ABC"\n3 digits\nend\n' | regex-for-humans
+```
+
+クローンしたソースからも使えます。
+
+```sh
+git clone https://github.com/OthmaneBlial/Regex-For-Humans.git
+cd Regex-For-Humans
+printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
+```
+
+```text
+/^ABC\d{3}$/u
+```
+
+✅ `ABC123` · ❌ `ABC12`、`ABC1234`、`abc123`
+
+| オプション | 動作 |
+| --- | --- |
+| `--explain` | 断片と説明 |
+| `--json` | stdout に結果、stderr にエラー |
+| `--ignore-case` | `i` |
+| `--dot-all` | `s` |
+| `--help` | ヘルプ |
+| `--version` | パッケージのバージョン |
+
+UTF-8 ファイルか stdin を読みます。`-` で始まるファイル名の前には `--` を使います。終了コードは成功・ヘルプ・バージョンが `0`、ルールや入出力のエラーが `1`、引数エラーが `2` です。
+
+不正な UTF-8 は黙って置換せず拒否します。JSON は診断コードを保持し、引数には `CLI_USAGE`、ファイル・実行時には `CLI_ERROR` を使います。制御文字は可視エスケープで表示され、JSON を復号すると元の値に戻ります。stderr への書き込みに失敗しても終了コードは非ゼロです。
+
+### 🔄 CLI の逆変換
+
+```sh
+printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse
+```
+
+```text
+start
+2 uppercase letter
+"-"
+4 digit
+end
+```
+
+`--reverse --json` は `{ rules, flags }` を返します。`flags` を `compile()` に渡してください。`m` は行アンカー、`u` は自動です。通常出力では必要なオプションを stderr に通知し、成功の終了コードを保ちます。`--explain`、`--ignore-case`、`--dot-all` とは併用できません。
+
+## 📦 JavaScript ライブラリ
+
+ESM（`.mjs` または `"type": "module"`）を使います。TypeScript 型は同梱されています。ソースでは `./index.js` を import します。
+
+```js
+import { compile, regexToRules, toRegExp } from 'regex-for-humans';
+
+const result = compile('start 3 digits\nend');
+console.log(result.source);                // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+console.log(result.segments);              // Each fragment + explanation
+
+const reverse = regexToRules(/^[A-Z]{2}-\d{4}$/u);
+console.log(reverse.rules);                 // start\n2 uppercase letter\n"-"\n4 digit\nend
+console.log(reverse.flags);                 // Flags to pass back to compile()
+```
+
+`toRegExp({ source, flags })` はキャッシュ済みメタデータを受け取り、両方を文字列として要求し、segments を読みません。`compile("digit", { flags: undefined })` は `u` を使い、`exactOptionalPropertyTypes` にも対応します。
+
+`regexToRules()` は別コンテキストの本物の正規表現も受け取り、`lastIndex` を保持します。ネイティブなメタデータを読み、インスタンスの上書きやマッチングメソッドは呼びません。`\u{00000041}` のようなエスケープもソース長制限内で使えます。
+
+## 🎛️ フラグの意味
+
+| フラグ | 有効化 | 効果 |
+| --- | --- | --- |
+| `u` | 常に有効 | Unicode コードポイント |
+| `i` | `{ flags: 'i' }` または `--ignore-case` | JavaScript の大文字・小文字同値比較 |
+| `s` | `{ flags: 's' }` または `--dot-all` | ドットが改行にも一致 |
+| `m` | `line start` / `line end` | 行ごとのアンカー |
+
+`flags: 'is'` で両方を有効にできます。`g`、`y`、`d`、`v` はコンパイラのオプションではありません。出力ソースからネイティブな正規表現を作る側で実行用フラグを選べます。
+
+## 🛠️ ローカル開発
+
+```sh
+npm ci
+npm run build
+npm run serve
+```
+
+**http://127.0.0.1:4174/** を開きます。`npm run serve -- 0` は空きポートを選びます。ディレクトリへのリダイレクトはクエリを保持し、末尾の `/` を追加します。
+
+Chrome がインストールされている場合：
+
+```sh
+npm ci
+npm exec -- playwright install firefox webkit
+npm run verify
+```
+
+Chrome がなければ Playwright の Chromium を使います。
+
+```sh
+npm exec -- playwright install chromium firefox webkit
+CI=1 npm run verify
+```
+
+書式、lint、型、リンク、Node、Pages ビルド、クリーンな利用側へのインストール、ブラウザ、監査を確認します。`CI=1` はローカルのブラウザ選択であり、無効の GitHub Actions を有効化しません。
+
+## 🧭 制限を理解する
+
+対象は **JavaScript `RegExp`** です。生の正規表現をルールとして渡したり、自由な英文を使ったりはできません。逆変換は文書化された範囲のみです。選択、先読み・後読み、前方・未閉鎖参照は拒否します。ワークショップの worker には期限がありますが、コピーした正規表現には利用側の対策が必要です。[セキュリティモデル](../SECURITY_MODEL.md)を参照してください。
+
+## 💬 よくある質問
+
+**AI ですか？** いいえ。決定的なパーサー、AST、コンパイラ、構造に基づく説明を使います。
+
+**すべての正規表現を変換できますか？** いいえ。非対応の構文は削除せずエラーにします。
+
+**例が成功すれば安全ですか？** いいえ。選んだ動作を確認するだけで、すべての経路や実行コストを証明しません。
+
+**文字クラスは Unicode 全体ですか？** いいえ。`digit` は ASCII、`letter` は `[A-Za-z]`、`word` は `\w` です。
+
+**上限は？** UTF-16 の16,384単位、200行、有限の繰り返し回数1,000、深さ64。例は100件、各2,048単位、worker の期限は1,200 ms。絵文字は通常 UTF-16 の2単位です。
+
+**オフラインで使えますか？** ライブラリと CLI はローカルです。依存関係の導入後はワークショップもローカルでビルド・配信できます。PWA やオフラインキャッシュは提供すると主張していません。
+
+**問題の報告先は？** [GitHub issues](https://github.com/OthmaneBlial/Regex-For-Humans/issues)にルール、フラグ、入力、期待結果、エンジン版を添えてください。セキュリティは [SECURITY.md](../../SECURITY.md) の非公開手順を使います。
+
+## 🗺️ プロジェクトを詳しく見る
+
+| ガイド | 内容 |
+| --- | --- |
+| [言語](../LANGUAGE.md) | 文法、グループ、参照、診断 |
+| [複雑な例](../COMPLEX-EXAMPLES.md) | 4形式の説明 |
+| [構成](../ARCHITECTURE.md) | パーサー → AST → コンパイラ → 各インターフェース |
+| [互換性](../COMPATIBILITY.md) | 検証済みの構文とエンジン |
+| [テスト](../TESTING.md) | 再現できるコマンドと結果 |
+| [セキュリティ](../SECURITY_MODEL.md) | 信頼境界と制限 |
+| [配布](../DISTRIBUTION.md) | 公開の証拠 |
+| [ロードマップ](../AUTONOMOUS_ROADMAP.md) | 進捗と優先順位 |
+| [比較](../COMPETITOR_GAPS.md) | 出典と未対応機能 |
+| [貢献](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | 導入と規約 |
+
+**2026年10月10日のローカル検証：** Node 238件、Chrome デスクトップ・モバイル282件、Firefox/WebKit 52件、サイト62件、クリーンな利用側インストールが成功。監査の脆弱性は0件。グループ・参照・逆変換の16件は Node 22.23.3 でも成功しました。この時点の結果であり、将来の全ブラウザを保証しません。人による評価は未完了です。
+
+[MIT](../../LICENSE) · [変更履歴](../../CHANGELOG.md) · [英語版に戻る](../../README.md)。

@@ -13,11 +13,19 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Maintainer's latest priority: refresh the public GitHub Pages site and enrich the canonical README, with complete Chinese, Spanish, French, Brazilian Portuguese, Japanese, German and Hindi translations. Verify and publish to the existing project URL.
+1. Finish publication verification of the enriched site and README milestone below.
 2. Workshop capture values and multiple matches, including absent versus empty participation, inside the isolated matching worker.
 3. Alternatives, lookarounds and lazy quantifiers across the same AST and both translation directions.
 4. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 5. Workshop localization and the remaining mission waves.
+
+## Site and README milestone
+
+- Canonical README: capability matrix distinguishing npm/source, named field extraction, flags, CLI/API, FAQ, recipes and documentation map.
+- Complete Chinese, Spanish, French, Brazilian Portuguese, Japanese, German and Hindi README guides: all 16 major sections, every recipe and all 20 code blocks. Code/command parity and return navigation are checked automatically. These translations are authored; independent native-speaker review remains unverified.
+- Homepage: capture example with native field values, build/import/explain capabilities, copyable API/CLI snippets, eight language links and honest FAQ. Existing visual identity, recipes and browser-local behavior are preserved.
+- Checks: all 241 Node tests, all 64 Chrome desktop/mobile site checks, lint/types, 252 local source-document links, builds and clean package installation pass. The 10 localization/link checks also pass on Node 22.23.3. Firefox/WebKit verify the new snippet copies, native fields and eight language links, with zero automated accessibility violations/page errors or overflow at 1280/390/320px. Seven desktop/mobile captures of the new sections were visually inspected.
+- Publication: pending commit/push and verification on the existing project URL. npm remains unchanged at `0.1.0-dev.3`; publishing the site is a separate operation.
 
 ## Evidence and constraints
 

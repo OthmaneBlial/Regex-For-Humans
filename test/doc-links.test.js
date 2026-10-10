@@ -6,6 +6,34 @@ import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
+test("documentation checks include nested translations and resolve their relative paths", () => {
+  const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-i18n-"));
+  try {
+    mkdirSync(join(root, "docs", "i18n"), { recursive: true });
+    writeFileSync(join(root, "README.md"), "# English\n");
+    const translated = join(root, "docs", "i18n", "README.fr.md");
+    writeFileSync(translated, "[English](../../README.md)\n[Missing](../missing.md)\n");
+    const check = () =>
+      spawnSync(
+        process.execPath,
+        [fileURLToPath(new URL("../scripts/check-doc-links.js", import.meta.url)), root],
+        { encoding: "utf8" },
+      );
+    const invalid = check();
+    assert.equal(invalid.status, 1);
+    assert.match(
+      invalid.stderr.replaceAll("\\", "/"),
+      /docs\/i18n\/README\.fr\.md: \.\.\/missing\.md/u,
+    );
+    writeFileSync(join(root, "docs", "missing.md"), "# Found\n");
+    const valid = check();
+    assert.equal(valid.status, 0, valid.stderr);
+    assert.equal(valid.stdout, "Checked 2 local Markdown links in 3 files.\n");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("documentation checks resolve balanced and escaped destination parentheses without truncation", () => {
   const root = mkdtempSync(join(tmpdir(), "regex-for-humans-doc-balanced-"));
   try {

@@ -10,7 +10,7 @@ const root = process.argv[2]
   : fileURLToPath(new URL("../", import.meta.url));
 const files = [
   ...readdirSync(root).filter((name) => name.endsWith(".md")),
-  ...readdirSync(resolve(root, "docs"))
+  ...readdirSync(resolve(root, "docs"), { recursive: true })
     .filter((name) => name.endsWith(".md"))
     .map((name) => `docs/${name}`),
 ];
