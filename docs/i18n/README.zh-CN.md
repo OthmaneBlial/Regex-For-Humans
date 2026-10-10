@@ -12,7 +12,7 @@
 
 🔒 本地运行 · 🧩 无运行时依赖 · ⚡ 一个编译器，三种使用方式
 
-[English](../../README.md) · **简体中文** · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md)
+[English](../../README.md) · **简体中文** · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
 </div>
 
@@ -73,6 +73,8 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 4. 确认行为后复制正则。
 
 部分匹配会显示转义后的上下文并高亮匹配内容；空匹配有位置标记。规则和示例留在浏览器中，无需账号、AI 推断或应用后端。
+
+在当前工作台中展开匹配，可查看捕获值及引擎提供的位置。未参与匹配的组与捕获到空字符串的组分别显示；重复组显示最后一次捕获。**Search anywhere** 最多列出 100 个不重叠匹配，遇到空匹配后前进一个 Unicode 码点。位置按 UTF-16 代码单元计数，结束位置不包含在范围内。如果引擎不支持捕获索引，只显示值，不推测位置。
 
 [![桌面工作台的真实截图](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 

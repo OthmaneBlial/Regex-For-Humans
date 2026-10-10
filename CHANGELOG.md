@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Inspect numbered/named/nested captures in the workshop, distinguishing absent and empty values and preserving final repeated captures. List up to 100 nonoverlapping search matches, advance empty matches by Unicode code point, use native indices when available, validate nested worker replies and keep matching inside the existing deadline. Capture tables are created on demand and link to opening rules; the date recipe now exposes year/month/day.
+
+- Expand the README and homepage guides, with nine complete README translations alongside English. Arabic and Urdu use RTL prose, right-aligned tables and explicitly isolated LTR code/commands; code blocks and recipe coverage are checked against the canonical README.
+
 - Reverse-translate numbered/named captures, composite and nested groups, and backward named/numbered references without losing capture names, values, opening order or Unicode atom boundaries. Keep compact literal-only noncapturing imports; decode escaped Unicode capture names, normalize nested dot/all-character combinations, bound recursion and map unsupported reference diagnostics to their original regex positions.
 
 - Add named/numbered `same as capture` references, including repetitions, nested targets, case folding and native absent/final-capture behavior. Diagnose missing, forward and open/self targets at the reference; protect numeric references from adjoining literal digits and expose resolved capture indices in typed trace segments.

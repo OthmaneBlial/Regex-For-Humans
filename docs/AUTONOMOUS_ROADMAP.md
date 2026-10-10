@@ -13,10 +13,9 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Workshop capture values and multiple matches, including absent versus empty participation, inside the isolated matching worker.
-2. Alternatives, lookarounds and lazy quantifiers across the same AST and both translation directions.
-3. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
-4. Workshop localization and the remaining mission waves.
+1. Alternatives, lookarounds and lazy quantifiers across the same AST and both translation directions.
+2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
+3. Workshop localization and the remaining mission waves.
 
 ## Site and README milestone
 
@@ -27,6 +26,11 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Publication: source `34b2b9b` is pushed to `main`; Pages commit `22245c6` built successfully on the existing `master` branch. All 56 served files match the local build by SHA-256, and the canonical homepage returns HTTP 200. Public Chrome desktop/mobile, Firefox and WebKit verify eight language links, four copy requests, 320px layout, capture/reference import and positive/negative worker matching with no page errors. npm remains unchanged at `0.1.0-dev.3`; publishing the site is a separate operation.
 
 ## Evidence and constraints
+
+- Capture explorer and RTL milestone: native capture values/spans, absent versus empty participation, final repeated captures, nested groups, rule navigation and up to 100 nonoverlapping search matches are implemented inside the same isolated worker/deadline. Empty matches advance by Unicode code point; unsupported indices are explicitly unavailable. Nested replies are validated against sent input/count/mode before rendering; tables are created on demand. The date recipe exposes year/month/day.
+- Installed Chrome verifies the date and Unicode empty/absent capture flows at 1280/390px; all four capture-panel screenshots were visually inspected.
+- Added complete Arabic and Urdu README guides, bringing documentation to ten languages. RTL prose/tables and LTR code are explicit; all 20 code blocks retain canonical bytes. GitHub's Markdown renderer preserves the direction attributes. Its real styles were checked at 1280/390px: all 16 section headings and seven tables are RTL, all 20 blocks and 165 inline code fragments are LTR in both languages. Eight preview crops were visually inspected; native-speaker review remains open.
+- All verification components pass: 244 Node tests, 292 bundled Chromium desktop/mobile checks, 62 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds, clean package installation and zero audit vulnerabilities. All 30 focused group/reference/runner/localization tests pass on Node 22.23.3. The installed-Chrome attempt was stopped after the old UUID flow exceeded its observation budget; that test now allows 90 seconds without changing the 1,200 ms product deadline. The subsequent full command reached a bad language-link test selector; after correcting the selector, the complete 64-test site suite and audit passed separately. This records successful component gates rather than claiming one uninterrupted full-command pass. Publication of this latest milestone is pending.
 
 - Remote `main` was clean and current at `2ba3ffa` when this wave started; no open issues were returned.
 - GitHub Actions is disabled in the repository settings. Keep it disabled; local verification remains required.

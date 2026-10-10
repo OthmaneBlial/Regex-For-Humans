@@ -799,6 +799,62 @@ a {
   border-left: 2px solid var(--ink);
   color: transparent;
 }
+.capture-explorer {
+  grid-column: 1 / -1;
+  min-width: 0;
+  border-top: 1px solid var(--line);
+  padding: 8px 4px 2px;
+  color: var(--ink);
+  font: 12px / 1.5 var(--mono);
+}
+.capture-explorer[hidden] {
+  display: none;
+}
+.capture-explorer summary {
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.capture-note {
+  margin: 8px 0;
+  color: var(--ink-soft);
+  font: 12px / 1.5 var(--body);
+}
+.capture-match {
+  margin-top: 8px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: white;
+}
+.capture-table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 11px;
+}
+.capture-table caption {
+  margin-bottom: 4px;
+  text-align: left;
+  font-weight: 700;
+}
+.capture-table th,
+.capture-table td {
+  padding: 6px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.capture-rule {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
 .test-row[data-result="pass"] .test-result {
   color: var(--green);
 }

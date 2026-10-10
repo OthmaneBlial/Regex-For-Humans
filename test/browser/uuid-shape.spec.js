@@ -10,6 +10,8 @@ const recipe = recipes.find(({ id }) => id === "uuid-shape");
 test("UUID shape explains fixed hex groups, keeps semantic limits and round-trips in the workshop", async ({
   page,
 }) => {
+  // Two accessibility scans and all flag combinations need a separate observation budget.
+  test.setTimeout(90_000);
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.addInitScript(() => {

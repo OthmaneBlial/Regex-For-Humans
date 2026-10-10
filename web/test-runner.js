@@ -2,7 +2,81 @@
 /** @typedef {import("./worker-protocol.d.ts").TestRequest} TestRequest */
 /** @typedef {import("./worker-protocol.d.ts").TestResult} TestResult */
 /** @typedef {import("./worker-protocol.d.ts").WorkerReply} WorkerReply */
+/** @typedef {import("./worker-protocol.d.ts").MatchRange} MatchRange */
+/** @typedef {import("./worker-protocol.d.ts").MatchMode} MatchMode */
 /** @typedef {"CANCELLED" | "TIMEOUT" | "WORKER_ERROR"} TestRunErrorCode */
+
+/** @param {unknown} value @param {MatchRange | null | undefined} range @param {string} text */
+function validSpan(value, range, text) {
+  return (
+    typeof value === "string" &&
+    range !== null &&
+    typeof range === "object" &&
+    !Array.isArray(range) &&
+    Number.isSafeInteger(range.start) &&
+    Number.isSafeInteger(range.end) &&
+    range.start >= 0 &&
+    range.end >= range.start &&
+    range.end <= text.length &&
+    text.slice(range.start, range.end) === value
+  );
+}
+
+/** @param {TestResult} result @param {string} text @param {number} count @param {MatchMode} mode */
+function validMatches(result, text, count, mode) {
+  const matches = result.matches;
+  if (
+    !Number.isSafeInteger(count) ||
+    count < 0 ||
+    count > 100 ||
+    !Array.isArray(matches) ||
+    matches.length > (mode === "search" ? 100 : 1) ||
+    typeof result.indicesAvailable !== "boolean" ||
+    typeof result.limitReached !== "boolean" ||
+    result.limitReached !== (mode === "search" && matches.length === 100)
+  )
+    return false;
+  let nextStart = 0;
+  for (const match of matches) {
+    if (
+      !match ||
+      typeof match !== "object" ||
+      Array.isArray(match) ||
+      !validSpan(match.value, match.range, text) ||
+      match.range.start < nextStart ||
+      !Array.isArray(match.captures) ||
+      match.captures.length !== count
+    )
+      return false;
+    nextStart = match.range.end;
+    if (match.value === "") nextStart += (text.codePointAt(nextStart) ?? 0) > 0xffff ? 2 : 1;
+    for (const capture of match.captures) {
+      if (!capture || typeof capture !== "object" || Array.isArray(capture)) return false;
+      if (capture.value === null) {
+        if (capture.range !== null) return false;
+      } else if (
+        typeof capture.value !== "string" ||
+        capture.value.length > text.length ||
+        (result.indicesAvailable
+          ? !validSpan(capture.value, capture.range, text)
+          : capture.range !== null)
+      )
+        return false;
+    }
+  }
+  const first = matches[0];
+  if (
+    first
+      ? result.matchRange?.start !== first.range.start || result.matchRange?.end !== first.range.end
+      : result.matchRange !== null
+  )
+    return false;
+  return (
+    result.actual ===
+    (first !== undefined &&
+      (mode === "search" || (first.range.start === 0 && first.range.end === text.length)))
+  );
+}
 
 export class TestRunError extends Error {
   /** @param {TestRunErrorCode} code @param {string} message */
@@ -66,6 +140,12 @@ export class TestRunner {
       let expectations = null;
       /** @type {Map<number, number> | null} */
       let caseLengths = null;
+      /** @type {Map<number, string> | null} */
+      let caseTexts = null;
+      /** @type {number | undefined} */
+      let captureCount;
+      /** @type {MatchMode} */
+      let mode = "full";
       /** @param {Error | null} error @param {TestResult[]} [result=[]] */
       const finish = (error, result = []) => {
         if (this.active?.id !== id) return;
@@ -143,12 +223,25 @@ export class TestRunner {
             return;
           }
           ids.add(result.id);
+          const text = caseTexts?.get(result.id);
+          if (
+            captureCount !== undefined
+              ? typeof text !== "string" || !validMatches(result, text, captureCount, mode)
+              : result.matches !== undefined ||
+                result.indicesAvailable !== undefined ||
+                result.limitReached !== undefined
+          ) {
+            invalid();
+            return;
+          }
         }
         finish(null, data.results);
       };
       try {
         /** @type {TestRequest} */
         const request = { ...payload, id };
+        captureCount = request.captureCount;
+        mode = request.mode;
         if (Array.isArray(request.cases) && request.cases.length <= 100) {
           caseCount = request.cases.length;
           expectations = new Map(
@@ -157,6 +250,7 @@ export class TestRunner {
           caseLengths = new Map(
             Array.from(request.cases, (sample) => [sample?.id, sample?.text?.length]),
           );
+          caseTexts = new Map(Array.from(request.cases, (sample) => [sample?.id, sample?.text]));
         }
         worker.postMessage(request);
       } catch (error) {

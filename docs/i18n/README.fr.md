@@ -12,7 +12,7 @@ Quelques règles claires en anglais deviennent une expression régulière JavaSc
 
 🔒 Exécution locale · 🧩 Aucune dépendance à l’exécution · ⚡ Un compilateur, trois interfaces
 
-[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · **Français** · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md)
+[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · **Français** · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
 </div>
 
@@ -77,6 +77,8 @@ Résultat : `/^ABC\d{3}$/u`. Pour fixer la version, utilisez `regex-for-humans@0
 4. Copiez le regex quand le comportement vous convient.
 
 Un résultat partiel affiche un court extrait échappé avec la correspondance surlignée ; une correspondance vide reçoit un repère. Les règles et exemples restent dans le navigateur. Aucun compte, service d’IA ou serveur applicatif n’est nécessaire.
+
+Dans l’atelier actuel, ouvrez une correspondance pour voir les captures et leurs positions natives. Une capture absente et une chaîne vide restent distinctes ; un groupe répété montre sa dernière valeur. **Search anywhere** liste jusqu’à 100 correspondances non superposées et avance d’un point de code Unicode après une correspondance vide. Les positions comptent les unités UTF-16, avec une fin exclue. Sans indices natifs, les valeurs restent visibles sans positions déduites.
 
 [![Capture réelle de l’atelier sur ordinateur](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 

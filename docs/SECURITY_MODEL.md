@@ -32,6 +32,8 @@ The controller validates current worker replies before resolving a test: a safe-
 
 ## Verification and limits
 
+Capture exploration runs in the same isolated worker and deadline. Each example displays at most 100 nonoverlapping matches; reaching that limit is reported without claiming there are additional matches. Empty matches advance by Unicode code point, so an empty pattern cannot stall enumeration. Capture counts are bounded to 100 and validated before constructing any regex. Internal `d`/`g` flags do not alter copied source or compiler flags. Capture spans come only from native indices, never substring inference; absent values and participating empty strings are distinct. The controller checks nested counts, range bounds, values against the original input, search order, participation and limit consistency before rendering. Capture tables are built on demand with text nodes, not user-supplied HTML. Without index support the UI explicitly reports unavailable capture positions. These bounds do not prove that copied regexes are safe in another application.
+
 Linked source files are copied as public static-build inputs. Asset versioning edits independent output copies and leaves the original targets unchanged.
 
 The local development server binds to `127.0.0.1`. It resolves the selected static folder and requested files before reading them; URL paths or symlink targets outside that folder return `403`. A symlink selecting the root and links within it remain usable. This development helper assumes trusted local files that do not change during a request.

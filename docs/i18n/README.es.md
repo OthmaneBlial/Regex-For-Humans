@@ -12,7 +12,7 @@ Convierte reglas claras en inglés en una expresión regular JavaScript cuyas pa
 
 🔒 Ejecución local · 🧩 Sin dependencias en tiempo de ejecución · ⚡ Un compilador, tres interfaces
 
-[English](../../README.md) · [简体中文](README.zh-CN.md) · **Español** · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md)
+[English](../../README.md) · [简体中文](README.zh-CN.md) · **Español** · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
 </div>
 
@@ -73,6 +73,8 @@ Imprime `/^ABC\d{3}$/u`. Para fijar la versión, usa `regex-for-humans@0.1.0-dev
 4. Copia el regex cuando el comportamiento sea el esperado.
 
 Una coincidencia parcial muestra contexto escapado y resaltado; una coincidencia vacía muestra una marca. Reglas y ejemplos permanecen en el navegador, sin cuenta, interpretación por IA ni servidor de aplicación.
+
+En el taller actual, abre una coincidencia para ver las capturas y sus posiciones nativas. Un grupo ausente y una captura vacía son distintos; los grupos repetidos muestran su último valor. **Search anywhere** lista hasta 100 coincidencias sin solapamiento y avanza un punto de código Unicode después de una coincidencia vacía. Las posiciones cuentan unidades UTF-16, con el final excluido. Si el motor no ofrece índices, se muestran valores sin deducir posiciones.
 
 [![Captura real del taller de escritorio](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 

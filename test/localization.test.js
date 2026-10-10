@@ -7,9 +7,9 @@ const canonical = readFileSync(new URL("../README.md", import.meta.url), "utf8")
 const blocks = (text) => [...text.matchAll(/```([^\n]*)\n([\s\S]*?)\n```/gu)].map((m) => m[0]);
 const recipes = (text) => [...text.matchAll(/\?example=([a-z0-9-]+)\)/gu)].map((m) => m[1]);
 
-test("all seven README translations retain complete sections and executable examples", () => {
+test("all nine README translations retain complete sections and executable examples", () => {
   const homepage = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
-  for (const locale of ["zh-CN", "es", "fr", "pt-BR", "ja", "de", "hi"]) {
+  for (const locale of ["zh-CN", "es", "fr", "pt-BR", "ja", "de", "hi", "ar", "ur"]) {
     const name = `README.${locale}.md`;
     const translated = readFileSync(new URL(`../docs/i18n/${name}`, import.meta.url), "utf8");
     assert.deepEqual(
@@ -27,6 +27,31 @@ test("all seven README translations retain complete sections and executable exam
     assert.ok(translated.includes("0.1.0-dev.3"), `${locale}: name the published preview`);
     assert.ok(canonical.includes(`docs/i18n/${name}`));
     assert.ok(homepage.includes(`docs/i18n/${name}`));
+  }
+});
+
+test("Arabic and Urdu preserve RTL prose with isolated LTR code", () => {
+  for (const locale of ["ar", "ur"]) {
+    const translated = readFileSync(
+      new URL(`../docs/i18n/README.${locale}.md`, import.meta.url),
+      "utf8",
+    );
+    assert.ok(translated.startsWith(`<div dir="rtl" lang="${locale}">`));
+    assert.ok(translated.trimEnd().endsWith("</div>"));
+    const wrapped = [
+      ...translated.matchAll(
+        /<div dir="ltr" align="left">\s*(```[^\n]*\n[\s\S]*?\n```)\s*<\/div>/gu,
+      ),
+    ].map((match) => match[1]);
+    assert.deepEqual(wrapped, blocks(canonical), `${locale}: every code block stays LTR`);
+    const prose = translated.replace(/```[^\n]*\n[\s\S]*?\n```/gu, "");
+    assert.equal(prose.includes("`"), false, `${locale}: isolate inline code explicitly`);
+    assert.ok(prose.includes('<code dir="ltr">'));
+    assert.equal(
+      /[\u202a-\u202e\u2066-\u2069]/u.test(translated),
+      false,
+      "Use visible direction attributes instead of hidden bidi controls",
+    );
   }
 });
 

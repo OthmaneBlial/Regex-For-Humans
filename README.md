@@ -12,7 +12,7 @@ A few clear English rules become a JavaScript regex you can actually follow.
 
 🔒 **Runs locally** &nbsp; 🧩 **No runtime dependencies** &nbsp; ⚡ **One compiler, three ways to use it**
 
-[English](README.md) · [简体中文](docs/i18n/README.zh-CN.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Português do Brasil](docs/i18n/README.pt-BR.md) · [日本語](docs/i18n/README.ja.md) · [Deutsch](docs/i18n/README.de.md) · [हिन्दी](docs/i18n/README.hi.md)
+[English](README.md) · [简体中文](docs/i18n/README.zh-CN.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Português do Brasil](docs/i18n/README.pt-BR.md) · [日本語](docs/i18n/README.ja.md) · [Deutsch](docs/i18n/README.de.md) · [हिन्दी](docs/i18n/README.hi.md) · [العربية](docs/i18n/README.ar.md) · [اردو](docs/i18n/README.ur.md)
 
 </div>
 
@@ -97,6 +97,8 @@ This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1
 4. **Copy the regex** when the results make sense.
 
 Partial matches show a short escaped input preview with the match highlighted; an empty match gets a caret marker.
+
+Open a match in the current workshop to inspect capture values and native spans. Absent groups and empty captures stay distinct; repeated groups show their final value. **Search anywhere** lists up to 100 nonoverlapping matches and advances empty matches by a Unicode code point. Positions count UTF-16 units, with the end excluded. Engines without capture indices show values without inferred positions.
 
 Your rules and examples stay in the browser. No account, AI interpretation, or application backend.
 

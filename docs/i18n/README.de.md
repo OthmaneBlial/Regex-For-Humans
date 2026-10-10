@@ -12,7 +12,7 @@ Klare englische Regeln werden zu einem JavaScript-Regex, dessen einzelne Teile n
 
 🔒 Lokale Ausführung · 🧩 Keine Laufzeitabhängigkeiten · ⚡ Ein Compiler, drei Oberflächen
 
-[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · **Deutsch** · [हिन्दी](README.hi.md)
+[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · **Deutsch** · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
 </div>
 
@@ -73,6 +73,8 @@ Ausgabe: `/^ABC\d{3}$/u`. Für eine feste Version verwende `regex-for-humans@0.1
 4. Regex kopieren, sobald das Verhalten stimmt.
 
 Teiltreffer zeigen einen maskierten Kontext mit Hervorhebung; leere Treffer erhalten eine Markierung. Regeln und Beispiele bleiben im Browser. Kein Konto, keine KI-Auslegung, kein Anwendungsbackend.
+
+Öffne im aktuellen Workshop einen Treffer, um Capture-Werte und native Positionen zu sehen. Nicht beteiligte Gruppen und leere Captures bleiben verschieden; wiederholte Gruppen zeigen ihren letzten Wert. **Search anywhere** listet bis zu 100 nicht überlappende Treffer und rückt nach einem leeren Treffer um einen Unicode-Codepunkt weiter. Positionen zählen UTF-16-Einheiten; das Ende ist ausgeschlossen. Ohne native Capture-Indizes werden Werte ohne abgeleitete Positionen angezeigt.
 
 [![Echter Screenshot des Desktop-Workshops](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 

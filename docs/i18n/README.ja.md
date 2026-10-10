@@ -12,7 +12,7 @@
 
 🔒 ローカル実行 · 🧩 実行時依存なし · ⚡ 1つのコンパイラ、3つの使い方
 
-[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · **日本語** · [Deutsch](README.de.md) · [हिन्दी](README.hi.md)
+[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · **日本語** · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
 </div>
 
@@ -73,6 +73,8 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 4. 結果を確認してから正規表現をコピーします。
 
 部分一致にはエスケープ済みの短い文脈と強調表示、空の一致には位置マーカーが表示されます。ルールと入力例はブラウザ内にとどまります。アカウント、AI による解釈、アプリケーション用バックエンドは不要です。
+
+現在のワークショップでは、一致を展開するとキャプチャ値とエンジンが返す位置を確認できます。不参加のグループと空文字列のキャプチャは区別され、繰り返しグループには最後の値が表示されます。**Search anywhere** は重ならない一致を最大 100 件表示し、空の一致の後は Unicode コードポイント 1 個分進みます。位置は UTF-16 コード単位で数え、終端は含みません。キャプチャ位置を取得できないエンジンでは、位置を推測せず値だけを表示します。
 
 [![デスクトップ版ワークショップの実際の画面](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 

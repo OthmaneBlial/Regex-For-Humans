@@ -4,6 +4,10 @@ GitHub Actions is disabled for this repository. All current quality checks run l
 
 ## Reproduce locally
 
+**Capture explorer and RTL guides (10 October 2026):** all 244 Node tests, 292 bundled Chromium desktop/mobile checks, 62 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds and clean package installation pass; audit reports zero vulnerabilities. `CI=1` selects local bundled Chromium and does not enable GitHub Actions. The installed-Chrome attempt was stopped after the long UUID flow exceeded 30 seconds; its observation budget is now 90 seconds, while the product worker deadline remains 1,200 ms. The subsequent full command passed the Node/workshop/compatibility stages but found an incorrect selector in the new site test. The corrected complete site suite and audit passed separately. These component results do not claim one uninterrupted `npm run verify` pass.
+
+All 30 focused group/reference/runner/localization checks also pass on Node 22.23.3. Shared browser checks compare 64 search fixtures plus complete-match backtracking to native results in each engine/viewport flow, verify absent versus empty captures, final repeated/nested captures, Unicode empty-match advancement, the 100-match limit, HTML-looking data, keyboard rule navigation, retained open panels, accessibility and 320px layout. A same-origin worker shim rejects `d` to exercise the values-only fallback and invalid capture metadata/recovery. Node controller tests reject malformed nested values, spans, participation, overlaps and caller-mutated snapshots. Nine translated READMEs retain all 16 major sections, 18 recipes and 20 code blocks; Arabic/Urdu use visible direction attributes without hidden bidi overrides. GitHub-rendered markup under its real page styles has 16 RTL section headings, seven RTL tables, 20 LTR code blocks and 165 LTR inline fragments in each document. Eight desktop/mobile preview crops were inspected. Independent native-speaker review and real screen-reader testing remain open.
+
 From a fresh checkout with a supported Node, npm and installed Google Chrome, install the Firefox and WebKit engines before running the full gate:
 
 ```sh

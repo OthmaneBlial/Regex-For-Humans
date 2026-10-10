@@ -12,7 +12,7 @@ Regras claras em inglês viram uma expressão regular JavaScript que você conse
 
 🔒 Execução local · 🧩 Sem dependências em tempo de execução · ⚡ Um compilador, três interfaces
 
-[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · **Português do Brasil** · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md)
+[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · **Português do Brasil** · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
 </div>
 
@@ -73,6 +73,8 @@ A saída é `/^ABC\d{3}$/u`. Para fixar a versão, use `regex-for-humans@0.1.0-d
 4. Copie o regex quando o comportamento estiver correto.
 
 Correspondências parciais mostram contexto escapado com destaque; uma correspondência vazia recebe um marcador. Regras e exemplos ficam no navegador. Sem conta, interpretação por IA ou servidor de aplicação.
+
+Na oficina atual, abra uma correspondência para ver as capturas e suas posições nativas. Um grupo ausente e uma captura vazia são distintos; grupos repetidos mostram seu último valor. **Search anywhere** lista até 100 correspondências sem sobreposição e avança um ponto de código Unicode depois de uma correspondência vazia. As posições contam unidades UTF-16, com o fim excluído. Sem índices nativos, os valores aparecem sem posições inferidas.
 
 [![Captura real da oficina no computador](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 

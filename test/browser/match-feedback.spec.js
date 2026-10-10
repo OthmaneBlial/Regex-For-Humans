@@ -7,7 +7,7 @@ test("both match modes report zero-based UTF-16 positions for complete, partial 
   await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
   const mode = page.getByRole("combobox", { name: "Match mode", exact: true });
   const help =
-    "Entire string requires a match covering the whole example. Search anywhere shows the first match, which can be empty. Positions start at 0 and count UTF-16 code units; an emoji such as 😀 counts as two.";
+    "Entire string requires a match covering the whole example. Search anywhere lists up to 100 nonoverlapping matches, including empty matches. Positions start at 0 and count UTF-16 code units; an emoji such as 😀 counts as two. Open a match to inspect its captures.";
   await expect(page.locator("#match-mode-help")).toBeVisible();
   await expect(mode).toHaveAccessibleDescription(help);
   await mode.focus();

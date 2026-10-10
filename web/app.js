@@ -1,5 +1,5 @@
 import { CompileError, compile, regexToRules } from "../index.js";
-import { escapeControls } from "../src/display.js";
+import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
@@ -197,6 +197,118 @@ function setTestResult(row, text) {
     preview.hidden = true;
     preview.replaceChildren();
   }
+  const explorer = row.querySelector(".capture-explorer");
+  if (explorer instanceof HTMLDetailsElement) {
+    explorer.hidden = true;
+    explorer.replaceChildren();
+  }
+}
+
+/** @param {HTMLDivElement} row @param {import("./worker-protocol.d.ts").TestResult} result @param {import("../index.d.ts").GroupSegment[]} captures */
+function renderCaptureExplorer(row, result, captures) {
+  const explorer = row.querySelector(".capture-explorer");
+  if (
+    !(explorer instanceof HTMLDetailsElement) ||
+    !result.matches?.length ||
+    (!captures.length && selectedMatchMode() === "full")
+  )
+    return;
+  const count = result.matches.length;
+  explorer.append(
+    make(
+      "summary",
+      "",
+      `${count} match${count === 1 ? "" : "es"} · ${captures.length} capture${captures.length === 1 ? "" : "s"} per match`,
+    ),
+  );
+  explorer.append(
+    make(
+      "p",
+      "capture-note",
+      "Positions are zero-based UTF-16 spans; the end is excluded. Repeated groups show their final capture.",
+    ),
+  );
+  if (result.limitReached)
+    explorer.append(
+      make(
+        "p",
+        "capture-note",
+        "The 100-match display limit was reached. Matching stops at this limit.",
+      ),
+    );
+  if (captures.length && !result.indicesAvailable)
+    explorer.append(
+      make(
+        "p",
+        "capture-note",
+        "This engine reports capture values without positions. No positions are inferred.",
+      ),
+    );
+  for (const [index, match] of result.matches.entries()) {
+    const item = make("details", "capture-match");
+    item.append(
+      make("summary", "", `Match ${index + 1}: ${quoteText(match.value)} at ${match.range.start}`),
+    );
+    item.addEventListener("toggle", () => {
+      if (!item.open || item.querySelector("table")) return;
+      const table = make("table", "capture-table");
+      table.append(make("caption", "", `Captures for match ${index + 1}`));
+      const head = make("thead");
+      const heading = make("tr");
+      for (const label of ["Group", "Value", "Span"]) {
+        const cell = make("th", "", label);
+        cell.scope = "col";
+        heading.append(cell);
+      }
+      head.append(heading);
+      const body = make("tbody");
+      for (const [captureIndex, capture] of [
+        { value: match.value, range: match.range },
+        ...match.captures,
+      ].entries()) {
+        const tr = make("tr");
+        const label = make("th");
+        label.scope = "row";
+        const segment = captures[captureIndex - 1];
+        if (segment) {
+          const button = make(
+            "button",
+            "capture-rule",
+            `#${captureIndex}${segment.name === null ? "" : ` · ${segment.name}`}`,
+          );
+          button.type = "button";
+          button.setAttribute(
+            "aria-label",
+            `Go to capture #${captureIndex}${segment.name === null ? "" : ` ${segment.name}`} rule`,
+          );
+          button.addEventListener("click", () => selectLine(segment.line));
+          label.append(button);
+        } else label.textContent = "#0 · Full match";
+        const value =
+          capture.value === null
+            ? "Not captured"
+            : `${quoteText(capture.value)}${capture.value === "" ? " (empty)" : ""}`;
+        tr.append(
+          label,
+          make("td", "capture-value", value),
+          make(
+            "td",
+            "capture-span",
+            capture.range
+              ? `${capture.range.start}–${capture.range.end}`
+              : capture.value === null
+                ? "—"
+                : "Unavailable",
+          ),
+        );
+        body.append(tr);
+      }
+      table.append(head, body);
+      item.append(table);
+    });
+    explorer.append(item);
+  }
+  explorer.hidden = false;
 }
 
 /** @param {HTMLDivElement} row @param {string} input @param {{start: number, end: number} | null | undefined} range */
@@ -289,11 +401,15 @@ async function updateTestResults() {
   ui.testSummary.textContent = "Checking examples…";
   ui.testSummary.dataset.state = "neutral";
   try {
+    const captures = compiled.segments.flatMap((segment) =>
+      segment.kind === "group" && segment.edge === "start" && segment.capturing ? [segment] : [],
+    );
     const results = await testRunner.run({
       source: compiled.source,
       flags: compiled.flags,
       mode: selectedMatchMode(),
       cases: testCases.map(({ id, text, expected }) => ({ id, text, expected })),
+      captureCount: captures.length,
     });
     const byId = new Map(results.map((result) => [result.id, result]));
     let passed = 0;
@@ -304,6 +420,7 @@ async function updateTestResults() {
       row.dataset.result = evaluation.pass ? "pass" : "fail";
       setTestResult(row, `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`);
       renderMatchPreview(row, testCases[index].text, evaluation.matchRange);
+      renderCaptureExplorer(row, evaluation, captures);
     });
     const focusedRowIndex = rows.findIndex((row) => row.contains(document.activeElement));
     const focusedResult = focusedRowIndex < 0 ? null : byId.get(testCases[focusedRowIndex].id);
@@ -337,6 +454,7 @@ function renderTests() {
               direction: input.selectionDirection,
               top: input.scrollTop,
               left: input.scrollLeft,
+              explorerOpen: row.querySelector(".capture-explorer")?.hasAttribute("open") ?? false,
             }
           : null,
       ];
@@ -404,7 +522,10 @@ function renderTests() {
       next.focus({ preventScroll: true });
       next.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
     });
-    row.append(input, expected, feedback, remove);
+    const explorer = make("details", "capture-explorer");
+    explorer.hidden = true;
+    explorer.open = view?.explorerOpen ?? false;
+    row.append(input, expected, feedback, remove, explorer);
     ui.testList.append(row);
     if (view) {
       input.scrollTop = view.top;

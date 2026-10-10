@@ -366,6 +366,114 @@ test("valid worker replies retain boundary IDs, empty results and stale-message 
   }
 });
 
+test("capture replies validate native values, spans, participation and snapshot metadata", async () => {
+  const payload = { ...normal, captureCount: 1 };
+  const result = {
+    id: 1,
+    actual: true,
+    pass: true,
+    detail: 'Matched "a" at 0',
+    matchRange: { start: 0, end: 1 },
+    matches: [
+      {
+        value: "a",
+        range: { start: 0, end: 1 },
+        captures: [{ value: "a", range: { start: 0, end: 1 } }],
+      },
+    ],
+    indicesAvailable: true,
+    limitReached: false,
+  };
+  const malformed = [
+    { matches: undefined },
+    { matches: null },
+    { matches: [] },
+    { matches: [null] },
+    { indicesAvailable: "yes" },
+    { limitReached: true },
+    { actual: false, pass: false },
+    { matchRange: null },
+    { matchRange: { start: 0, end: 0 } },
+    ...[
+      { value: "b" },
+      { range: { start: -1, end: 1 } },
+      { range: { start: 0, end: 2 } },
+      { captures: [] },
+      { captures: [null] },
+      { captures: [{ value: undefined, range: null }] },
+      { captures: [{ value: "b", range: { start: 0, end: 1 } }] },
+      { captures: [{ value: null, range: { start: 0, end: 0 } }] },
+      { captures: [{ value: "a", range: null }] },
+    ].map((change) => ({ matches: [{ ...result.matches[0], ...change }] })),
+    { indicesAvailable: false },
+  ];
+  for (const change of malformed) {
+    const worker = new FakeWorker(false);
+    const runner = new TestRunner(() => worker, 100);
+    const attempt = runner.run(payload);
+    worker.onmessage({ data: { id: worker.request.id, results: [{ ...result, ...change }] } });
+    await assert.rejects(attempt, { code: "WORKER_ERROR", message: "Invalid example test reply." });
+    assert.equal(worker.terminated, true);
+  }
+  for (const capture of [
+    { value: "a", range: { start: 0, end: 1 } },
+    { value: "", range: { start: 1, end: 1 } },
+    { value: null, range: null },
+  ]) {
+    const worker = new FakeWorker(false);
+    const runner = new TestRunner(() => worker, 100);
+    const input = structuredClone(payload);
+    const attempt = runner.run(input);
+    input.captureCount = 100;
+    input.mode = "search";
+    input.cases[0].text = "edited";
+    const reply = { ...result, matches: [{ ...result.matches[0], captures: [capture] }] };
+    worker.onmessage({ data: { id: worker.request.id, results: [reply] } });
+    assert.deepEqual(await attempt, [reply]);
+    runner.cancel();
+  }
+});
+
+test("search capture replies reject overlapping and wrongly advanced empty matches", async () => {
+  for (const starts of [
+    [0, 0],
+    [0, 1],
+    [2, 2],
+    [2, 1],
+  ]) {
+    const worker = new FakeWorker(false);
+    const runner = new TestRunner(() => worker, 100);
+    const attempt = runner.run({
+      ...normal,
+      mode: "search",
+      captureCount: 0,
+      cases: [{ id: 1, text: "😀", expected: true }],
+    });
+    worker.onmessage({
+      data: {
+        id: worker.request.id,
+        results: [
+          {
+            id: 1,
+            actual: true,
+            pass: true,
+            detail: "empty",
+            matchRange: { start: starts[0], end: starts[0] },
+            indicesAvailable: true,
+            limitReached: false,
+            matches: starts.map((start) => ({
+              value: "",
+              range: { start, end: start },
+              captures: [],
+            })),
+          },
+        ],
+      },
+    });
+    await assert.rejects(attempt, { code: "WORKER_ERROR" });
+  }
+});
+
 test("worker replies use the sent case identities and expectations despite caller edits or result order", async () => {
   const worker = new FakeWorker(false);
   const runner = new TestRunner(() => worker, 100);

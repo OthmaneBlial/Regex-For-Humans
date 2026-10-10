@@ -12,7 +12,7 @@
 
 🔒 स्थानीय निष्पादन · 🧩 कोई runtime dependency नहीं · ⚡ एक compiler, तीन इंटरफ़ेस
 
-[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · **हिन्दी**
+[English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · **हिन्दी** · [العربية](README.ar.md) · [اردو](README.ur.md)
 
 </div>
 
@@ -73,6 +73,8 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 4. व्यवहार सही होने पर regex कॉपी करें।
 
 आंशिक match में escape किया हुआ छोटा संदर्भ और highlight दिखाई देता है; खाली match के लिए स्थान का निशान मिलता है। नियम और उदाहरण ब्राउज़र में रहते हैं। अकाउंट, AI व्याख्या या application backend की ज़रूरत नहीं है।
+
+मौजूदा workshop में match खोलकर capture के मान और इंजन से मिले स्थान देखें। अनुपस्थित समूह और खाली string अलग दिखते हैं; दोहराया गया समूह अपना अंतिम capture दिखाता है। **Search anywhere** अधिकतम 100 बिना overlap वाले matches दिखाता है और खाली match के बाद एक Unicode code point आगे बढ़ता है। स्थान UTF-16 units में गिने जाते हैं; अंतिम सीमा शामिल नहीं होती। Capture indices न मिलने पर मान दिखाए जाते हैं, स्थानों का अनुमान नहीं लगाया जाता।
 
 [![डेस्कटॉप वर्कशॉप का वास्तविक स्क्रीनशॉट](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 

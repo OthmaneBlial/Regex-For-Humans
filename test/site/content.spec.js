@@ -29,7 +29,12 @@ test("capture and developer examples copy real source and expose all README lang
     await expect.poll(() => page.evaluate(() => window.copiedText)).toBe(text);
   }
   const languages = page.getByRole("navigation", { name: "README languages" }).getByRole("link");
-  await expect(languages).toHaveCount(8);
+  await expect(languages).toHaveCount(10);
+  for (const locale of ["ar", "ur"]) {
+    const link = page.locator(`.language-links a[lang="${locale}"]`);
+    await expect(link).toHaveAttribute("dir", "rtl");
+    await expect(link.locator("span")).toHaveAttribute("dir", "ltr");
+  }
   for (const link of await languages.all()) await expect(link).toBeVisible();
   await page.locator("#questions details").first().locator("summary").press("Enter");
   await expect(page.locator("#questions details").first()).toHaveAttribute("open", "");
