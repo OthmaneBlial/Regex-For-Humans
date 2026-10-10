@@ -52,10 +52,12 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 | Répétition de blocs et références vers une capture précédente | ✅ | ✅ |
 | Alternatives ordonnées avec `either { … }` | ✅ | ✅ Choix imbriqués et traduction inverse |
 | Répétition paresseuse avec `lazy` | — | ✅ Dans le code source ; non publiée |
-| Assertions avant/arrière | — | Prévues ; actuellement refusées |
+| Assertions avant/arrière | — | ✅ Dans le source ; captures natives et imbrication |
 | Autres moteurs et anglais libre | — | Hors du langage actuel |
 
 Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord, puis augmenter le nombre si les règles suivantes le demandent. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [règles de répétition](../LANGUAGE.md#repetition).
+
+Le source accepte aussi `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Ces assertions vérifient le texte autour de la position courante sans le consommer. Les captures gardent leurs valeurs et positions natives, parfois hors du texte consommé ; les assertions arrière exigent un moteur compatible. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [assertions avant/arrière](../LANGUAGE.md#lookaround-assertions).
 
 npm `0.1.0-dev.4` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
 
@@ -385,7 +387,7 @@ La vérification comprend formatage, lint, types, liens, tests Node, constructio
 
 Les alternatives deviennent des blocs modifiables `either { … }` : chaque entrée est un choix, essayé dans l’ordre. Utilisez `group { … }` pour un choix composé de plusieurs règles ou un choix vide.
 
-La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’anglais libre. La traduction inverse traite seulement le sous-ensemble documenté. Assertions et références futures/ouvertes restent refusées. L’atelier utilise un worker avec délai ; un regex copié nécessite les protections de sa propre application. Consultez le [modèle de sécurité](../SECURITY_MODEL.md).
+La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’anglais libre. La traduction inverse traite seulement le sous-ensemble documenté. Les frontières de mots, propriétés Unicode et références futures/ouvertes restent refusées. L’atelier utilise un worker avec délai ; un regex copié nécessite les protections de sa propre application. Consultez le [modèle de sécurité](../SECURITY_MODEL.md).
 
 ## 💬 Questions fréquentes
 

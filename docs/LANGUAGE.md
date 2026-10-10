@@ -1,6 +1,6 @@
 # The Regex For Humans language
 
-Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the current source checkout; lazy repetition is an unreleased addition beyond npm `0.1.0-dev.4`.
+Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the current source checkout; lazy repetition and lookaround assertions are unreleased additions beyond npm `0.1.0-dev.4`.
 
 Write one rule per line. `start` or `line start` can prefix the first rule. Keywords are case-insensitive; quoted text keeps its case. Leading and trailing spaces are ignored.
 
@@ -135,6 +135,36 @@ Missing targets report `MISSING_CAPTURE_REFERENCE`; references before their targ
 
 Reference trace segments have `kind: "backreference"`, `reference` (string or number), resolved `captureIndex`, `repetition` and the usual source offsets and explanation. Reverse translation imports backward references under this same policy; unsupported forward/open references point to their original regex escape.
 
+## Lookaround assertions
+
+Assertions test the text around the current input position without consuming characters. Open a block with one of these four fixed phrases and close it with `}` on its own line:
+
+| Block | Native source | Condition at the current position |
+| --- | --- | --- |
+| `followed by { … }` | `(?=…)` | The contents match starting here |
+| `not followed by { … }` | `(?!…)` | The contents do not match starting here |
+| `preceded by { … }` | `(?<=…)` | The contents match ending here |
+| `not preceded by { … }` | `(?<!…)` | The contents do not match ending here |
+
+```text
+preceded by {
+  capture "currency" {
+    "USD"
+  }
+}
+capture "amount" {
+  digits
+}
+```
+
+This generates `(?<=(?<currency>USD))(?<amount>\d+)` with `u`. Searching `USD123` consumes only `123` at UTF-16 span `[3, 6)`, while `currency` captures `USD` at `[0, 3)`. A positive lookahead can likewise capture text after the consumed match. The workshop shows these native spans without forcing them inside the full-match range. Entire-string mode still requires the consumed match to cover the entire input.
+
+Blocks can contain groups, captures, alternatives, repetitions, anchors and other assertions, sharing the 64-level nesting, source and line budgets. Capture numbering remains opening order. Positive assertions retain native captures; captures in a successful negative assertion are absent. Empty positive assertions always succeed, and empty negative assertions always fail. Repetition is allowed inside an assertion or on a containing group. Directly quantifying an assertion, such as `optional followed by {`, reports `ASSERTION_REPETITION`; a bare `lazy followed by {` reports `INVALID_LAZY_REPETITION`.
+
+JavaScript matches lookbehind contents backwards: in `/(?<=([ab]+)([bc]+))$/u` against `abc`, captures 1 and 2 are `a` and `bc`. Variable-length lookbehind is accepted when its contents belong to this language. Assertion atomicity and capture updates come from native JavaScript, following [ECMAScript assertion semantics](https://tc39.es/ecma262/2025/multipage/text-processing.html#sec-runtime-semantics-compileassertion); the explanation is structural, not an execution trace. Forward/open references remain rejected by source-order policy, even inside lookbehind where JavaScript can give them a different meaning. Duplicate names remain rejected.
+
+Compilation probes native lookbehind support before emitting the first behind assertion. An unsupported runtime reports `UNSUPPORTED_TARGET_FEATURE` at that opening rule, with a repair hint; it never approximates the assertion. Ahead assertions do not need that probe. The public trace adds `AssertionSegment` with `kind: "assertion"`, `edge: "start" | "end"`, `direction: "ahead" | "behind"`, `negative`, and the usual exact source offsets, original locations and explanations. Consumers switching on segment kinds should handle this variant. These four forms and their reverse translation are unreleased beyond npm `0.1.0-dev.4`.
+
 ## Repetition
 
 A repetition modifier applies to the next item. Put it first: `3 digits`, `between 2 and 4 digits`, `optional "-"`, `zero or more digit`, `one or more any character`, or `at least 3 letter`. `optional <item>` is the same as `between 0 and 1 <item>` and generates `{0,1}`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters`, `lowercase letters`, `uppercase letters`, `spaces`, `word characters` and `path segment characters` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another repetition modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters.
@@ -202,7 +232,7 @@ Without `m`, JavaScript `^` and `$` match only the true start and end of input. 
 
 ## Reverse translation
 
-The JavaScript API `regexToRules(regex)` and the workshop's **Already have a regex?** control translate a bounded subset back into editable rules. The input must be a JavaScript `RegExp` using `u`; `i` and `s` return as compile options, while `m` becomes `line start` / `line end` rules. Supported input includes literals, edge anchors, `\d`/`\w`/`\s` and their complements, common ASCII digit/letter/word/hex classes, simple character lists, greedy/lazy repetition, capturing/noncapturing groups, nested groups and backward named/numbered references. Open-ended repetition becomes `zero or more`, `one or more` or `at least N`. Captures retain names, numbering and values, including empty and absent groups; Unicode escapes in capture names are decoded to identifiers. Literal-only noncapturing groups keep their compact literal-rule normalization. Composite groups become editable blocks.
+The JavaScript API `regexToRules(regex)` and the workshop's **Already have a regex?** control translate a bounded subset back into editable rules. The input must be a JavaScript `RegExp` using `u`; `i` and `s` return as compile options, while `m` becomes `line start` / `line end` rules. Supported input includes literals, edge anchors, `\d`/`\w`/`\s` and their complements, common ASCII digit/letter/word/hex classes, simple character lists, greedy/lazy repetition, capturing/noncapturing groups, nested groups, positive/negative lookahead/lookbehind and backward named/numbered references. Open-ended repetition becomes `zero or more`, `one or more` or `at least N`. Captures retain names, numbering and values, including empty and absent groups; Unicode escapes in capture names are decoded to identifiers. Literal-only noncapturing groups keep their compact literal-rule normalization. Composite groups become editable blocks.
 
 The workshop expects a slash-delimited JavaScript literal, such as `/^a\nb$/u`. Physical LF, CR, U+2028 and U+2029 line breaks inside its pattern are rejected with an escape hint, including inside character classes or after a backslash. Escaped line breaks remain valid matching data. Whitespace outside the literal is ignored for translation but counts toward the input budget of 16,392 UTF-16 code units, together with delimiters and flags. The workshop and CLI reject larger input before trimming or native syntax validation; the independent regex-source ceiling remains 16,384 code units. The library accepts genuine `RegExp` objects directly, including those created in another JavaScript context such as an iframe or Node's `vm`. Lookalike objects are rejected with `TypeError`; translation does not run the input pattern or change its `lastIndex`. Native getters supply the stored pattern and flags without serializing the regex or reading overridden metadata or custom `Symbol.match` getters, so subclass and own-property overrides are ignored; unsupported native flags and syntax still receive the same diagnostics.
 
@@ -222,11 +252,11 @@ Empty non-capturing groups such as `(?:)` translate to `0 any character`, genera
 
 The empty negative class `[^]` matches any Unicode code point, including line breaks, so it becomes `any character` with the returned `s` option enabled. When the same regex also contains ordinary `.` atoms, those rules become `none of: "\\n", "\\r", "\\u2028", "\\u2029"` so they still exclude JavaScript line terminators under `s`. The empty positive class `[]`, which matches nothing, remains unsupported.
 
-Unsupported syntax is rejected with a column diagnostic; it is never dropped or approximated. This includes lookaround, forward/open references, word boundaries, unknown character ranges and flags other than `i`, `m`, `s`, `u`. The translator requires `u` because this language always matches Unicode code points. Nested groups and alternatives share the 64-level translated-block budget and the translated source/line budgets. Forward/open reference failures report `UNSUPPORTED_REGEX` at the original reference escape; they are not silently replaced by empty text.
+Unsupported syntax is rejected with a column diagnostic; it is never dropped or approximated. This includes forward/open references, word boundaries, Unicode properties, unknown character ranges and flags other than `i`, `m`, `s`, `u`. The translator requires `u` because this language always matches Unicode code points. Nested groups, alternatives and assertions share the 64-level translated-block budget and the translated source/line budgets. Forward/open reference failures report `UNSUPPORTED_REGEX` at the original reference escape; they are not silently replaced by empty text.
 
 Top-level and grouped `|` alternatives translate to ordered `either` blocks, including alternatives inside captures. Sequence choices become noncapturing `group` blocks; empty choices become empty group blocks. For example, `/cat|dog|bird/u` becomes an `either` block with three quoted entries, while `/^a|b$/u` retains its separately anchored branches. Additional editable blocks can reach the translated-depth budget before the native group-depth budget; that error points into the original regex and names the translated limit. Escaped pipes such as `\|` and character-class pipes such as `[|]` stay literal matching data. Misplaced anchors retain their own anchor diagnostic.
 
-Lookahead assertions `(?=AB)` / `(?!AB)` and lookbehind assertions `(?<=A)` / `(?<!A)` still report distinct messages at their opening `(`, with the same `UNSUPPORTED_REGEX` code. For example, `/^😀(?=AB)AB/u` points to column 4. Captures and supported composite groups translate without removing their semantics. Literal parentheses such as `\(` or `[()]` remain supported. Unsupported assertions are not stripped to force conversion.
+Lookahead assertions `(?=AB)` / `(?!AB)` and lookbehind assertions `(?<=A)` / `(?<!A)` become the four assertion blocks above, preserving zero-width behavior, nested captures and native matching direction. Unsupported child constructs still fail at their original regex position: `/^😀(?=[a-c])a/u` reports the range's `-` at column 9. Captures and supported composite groups translate without removing their semantics. Literal parentheses such as `\(` or `[()]` remain supported. Unsupported contents are not stripped to force conversion.
 
 For positioned unsupported-syntax errors, the workshop's **Go to regex error** action focuses the regex field, selects the source character and brings it into view, including wrapped patterns and enlarged fields. Selection includes the opening slash and any leading whitespace when converting the pattern's UTF-16 column into the pasted field's position. Editing the field clears the stale action; a successful translation focuses the rules editor.
 

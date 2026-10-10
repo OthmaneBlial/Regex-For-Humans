@@ -27,8 +27,14 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
   await expect(output).toHaveText("/^(?:Hi|Hello)$/u");
   for (const [literal, diagnostic] of [
-    ["/^😀(?=AB)AB/u", "Column 4: Lookahead assertions cannot be translated."],
-    ["/😀(?<!A)B/u", "Column 3: Lookbehind assertions cannot be translated."],
+    [
+      "/^😀(?=[a-c])AB/u",
+      "Column 9: Character ranges are supported only for digit, letter, word and hex classes.",
+    ],
+    [
+      "/😀(?<![a-c])B/u",
+      "Column 9: Character ranges are supported only for digit, letter, word and hex classes.",
+    ],
   ]) {
     await reverse.fill(literal);
     await page.locator("#reverse-button").press("Enter");
@@ -38,7 +44,7 @@ test("the workshop compiles rules and reports example results", async ({ page })
     await expect(output).toHaveText("/^(?:Hi|Hello)$/u");
     await page.getByRole("button", { name: "Go to regex error", exact: true }).press("Enter");
     await expect(reverse).toBeFocused();
-    const position = literal.lastIndexOf("(");
+    const position = literal.indexOf("-");
     expect(await reverse.evaluate((field) => [field.selectionStart, field.selectionEnd])).toEqual([
       position,
       position + 1,
@@ -261,12 +267,12 @@ test("long recipes retain matching and focus while resetting rules, explanation 
   await expect(page.locator("#reverse-feedback")).toBeHidden();
   await expect(page.locator("#reverse-feedback")).toHaveText("");
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
-  await reverse.fill("/^(?=Hello)Hello$/u");
+  await reverse.fill("/^(?=[a-c])Hello$/u");
   await reverse.press("Control+Enter");
   await page.locator("#ignore-case").check();
   await recipe.press("Enter");
   await expect(page.locator("#reverse-feedback")).toContainText(
-    "Lookahead assertions cannot be translated",
+    "Character ranges are supported only for digit, letter, word and hex classes",
   );
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
   await expect(page.locator("#reverse-error")).toBeVisible();

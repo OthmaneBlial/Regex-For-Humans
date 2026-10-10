@@ -36,6 +36,8 @@ export function explainNode(node, flags, hasFollowingRule = false) {
 
 /** @param {import('./ast.js').RuleNode} node @param {string} flags @param {boolean} hasFollowingRule */
 function describeNode(node, flags, hasFollowingRule) {
+  if (node.kind === "assertion")
+    return `${node.negative ? "Require no match" : "Require a match"} ${node.direction === "ahead" ? "starting" : "ending"} at the current position, without consuming characters.${node.direction === "behind" ? " JavaScript tests this subpattern backwards." : ""}`;
   if (node.kind === "anchor") {
     if (node.mode === "line") {
       return node.edge === "start" ? "Start of each line (m)." : "End of each line (m).";

@@ -48,10 +48,12 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 | Repetición de bloques y referencias a capturas anteriores | ✅ | ✅ |
 | Alternativas ordenadas con `either { … }` | ✅ | ✅ Opciones anidadas y conversión inversa |
 | Repetición no codiciosa con `lazy` | — | ✅ En el código fuente; aún no publicada |
-| Aserciones de anticipación y retrospección | — | Previstas; actualmente se rechazan |
+| Aserciones de anticipación y retrospección | — | ✅ Solo en el código fuente; anidación y capturas nativas |
 | Otros motores e inglés libre | — | Fuera del lenguaje actual |
 
 En el código fuente, `lazy digits` genera `\d+?`: prueba primero un dígito y amplía la repetición si las reglas siguientes lo requieren. Esta función aún no está en npm `0.1.0-dev.4`. Consulta las [reglas de repetición](../LANGUAGE.md#repetition).
+
+El código fuente también admite `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Comprueban el texto alrededor de la posición actual sin consumirlo. Las capturas conservan sus valores y posiciones nativos, incluso fuera del texto consumido; la retrospección requiere un motor compatible. Estas funciones aún no están en npm `0.1.0-dev.4`. Consulta las [aserciones](../LANGUAGE.md#lookaround-assertions).
 
 npm `0.1.0-dev.4` incluye grupos, capturas, referencias anteriores y alternativas ordenadas en la biblioteca y el CLI. El taller añade inspección de capturas y múltiples coincidencias de búsqueda. Consulta [compatibilidad](../COMPATIBILITY.md) y [publicación](../DISTRIBUTION.md).
 
@@ -381,7 +383,7 @@ Incluye formato, lint, tipos, enlaces, Node, construcción Pages, consumidor lim
 
 Las alternativas se convierten en bloques editables `either { … }`: cada entrada es una opción, probada en orden. Usa `group { … }` para una opción con varias reglas o una opción vacía.
 
-La salida apunta a **JavaScript `RegExp`**. No admite regex bruto como reglas ni inglés libre. La conversión inversa acepta solo el subconjunto documentado. Aserciones y referencias futuras/abiertas siguen rechazadas. El taller usa un worker con plazo; un regex copiado necesita las protecciones de su aplicación. Consulta el [modelo de seguridad](../SECURITY_MODEL.md).
+La salida apunta a **JavaScript `RegExp`**. No admite regex bruto como reglas ni inglés libre. La conversión inversa acepta solo el subconjunto documentado. Los límites de palabra, las propiedades Unicode y las referencias futuras/abiertas siguen rechazados. El taller usa un worker con plazo; un regex copiado necesita las protecciones de su aplicación. Consulta el [modelo de seguridad](../SECURITY_MODEL.md).
 
 ## 💬 Preguntas frecuentes
 

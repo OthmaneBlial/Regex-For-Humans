@@ -48,10 +48,12 @@ end
 | पूरे block की पुनरावृत्ति और पिछले capture के संदर्भ | ✅ | ✅ |
 | `either { … }` के साथ क्रमबद्ध विकल्प | ✅ | ✅ नेस्टेड विकल्प और reverse translation |
 | `lazy` के साथ non-greedy दोहराव | — | ✅ वर्तमान source में; अभी रिलीज़ नहीं हुआ |
-| Lookaround assertions | — | योजना में; अभी अस्वीकृत |
+| Lookaround assertions | — | ✅ केवल सोर्स में; nested assertions और native captures |
 | दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — | वर्तमान भाषा के दायरे से बाहर |
 
 वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ। यह सुविधा npm `0.1.0-dev.4` में अभी शामिल नहीं है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
+
+सोर्स में `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }` भी उपलब्ध हैं। ये वर्तमान स्थान के आसपास के टेक्स्ट को जाँचते हैं, बिना अक्षर consume किए। Captures की native values और positions बनी रहती हैं, भले वे match के बाहर हों; lookbehind के लिए runtime support चाहिए। ये सुविधाएँ अभी npm `0.1.0-dev.4` में नहीं हैं। [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) देखें।
 
 npm `0.1.0-dev.4` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
 
@@ -381,7 +383,7 @@ CI=1 npm run verify
 
 विकल्प संपादन योग्य `either { … }` ब्लॉक बनते हैं: हर सीधे entry को एक विकल्प मानकर क्रम से आज़माया जाता है। कई नियमों वाले या खाली विकल्प के लिए `group { … }` इस्तेमाल करें।
 
-लक्ष्य **JavaScript `RegExp`** है। Raw regex को rules की तरह और मुक्त अंग्रेज़ी को instructions की तरह स्वीकार नहीं करता। Reverse translation सिर्फ़ दस्तावेज़ित subset के लिए है। Lookaround और future/open references अस्वीकृत हैं। वर्कशॉप का worker समय-सीमित है; कॉपी किए regex को अपने application की सुरक्षा चाहिए। [सुरक्षा मॉडल](../SECURITY_MODEL.md) देखें।
+लक्ष्य **JavaScript `RegExp`** है। Raw regex को rules की तरह और मुक्त अंग्रेज़ी को instructions की तरह स्वीकार नहीं करता। Reverse translation सिर्फ़ दस्तावेज़ित subset के लिए है। Word boundaries, Unicode properties और future/open references अस्वीकृत हैं। वर्कशॉप का worker समय-सीमित है; कॉपी किए regex को अपने application की सुरक्षा चाहिए। [सुरक्षा मॉडल](../SECURITY_MODEL.md) देखें।
 
 ## 💬 सामान्य प्रश्न
 

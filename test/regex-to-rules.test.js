@@ -65,7 +65,7 @@ test("genuine regexes from another context translate with the same rules, flags 
   for (const [source, flags] of [
     ["a", ""],
     ["a", "gu"],
-    ["^😀(?=AB)AB$", "u"],
+    ["^😀(?=[a-c])AB$", "u"],
     ["a".repeat(16_385), "u"],
   ]) {
     let expected;
@@ -153,7 +153,7 @@ test("translation uses the stored native pattern and flags instead of overridden
   for (const [source, flags, code] of [
     ["a", "", "UNICODE_FLAG_REQUIRED"],
     ["a", "gu", "UNSUPPORTED_REGEX_FLAGS"],
-    ["(?=a)a", "u", "UNSUPPORTED_REGEX"],
+    ["(?=[a-c])a", "u", "UNSUPPORTED_REGEX"],
     ["a".repeat(16_385), "u", "REGEX_SOURCE_LIMIT"],
   ]) {
     const original = new AnnotatedRegExp(source, flags);
@@ -280,7 +280,7 @@ test("empty non-capturing groups translate to zero-count rules with equivalent m
     }
   }
   for (const [source, column] of [
-    ["(?:)(?=a)", 5],
+    ["(?:)[a-c]", 7],
     ["(?:){1001}", 5],
     ["[]", 1],
   ]) {
@@ -689,12 +689,12 @@ test("ordered alternatives and literal pipes round-trip without changing precede
   });
 });
 
-test("unsupported lookaround is identified at its opening parenthesis", () => {
+test("unsupported assertion contents retain their original regex columns", () => {
   for (const [source, message] of [
-    ["(?=AB)AB", "Lookahead assertions cannot be translated."],
-    ["(?!AB)CD", "Lookahead assertions cannot be translated."],
-    ["(?<=A)B", "Lookbehind assertions cannot be translated."],
-    ["(?<!A)B", "Lookbehind assertions cannot be translated."],
+    ["(?=[a-c])AB", "Character ranges are supported only for digit, letter, word and hex classes."],
+    ["(?![a-c])CD", "Character ranges are supported only for digit, letter, word and hex classes."],
+    ["(?<=[a-c])B", "Character ranges are supported only for digit, letter, word and hex classes."],
+    ["(?<![a-c])B", "Character ranges are supported only for digit, letter, word and hex classes."],
   ]) {
     for (const [prefix, suffix] of [
       ["", ""],
@@ -714,8 +714,8 @@ test("unsupported lookaround is identified at its opening parenthesis", () => {
               code: "UNSUPPORTED_REGEX",
               message,
               line: 1,
-              column: prefix.length + 1,
-              hint: "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround and forward/open references are not supported.",
+              column: prefix.length + source.indexOf("-") + 1,
+              hint: "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and i/s/u/m flags. Forward/open references are not supported.",
             });
             return true;
           },
@@ -740,9 +740,9 @@ test("unsupported lookaround is identified at its opening parenthesis", () => {
 
 test("rejects features it cannot preserve and non-Unicode matching", () => {
   for (const [regex, column] of [
-    [/(?=a)a/u, 1],
+    [/(?=[a-c])a/u, 6],
     [/\bword/u, 1],
-    [/ab(?=c)/u, 3],
+    [/ab(?=[a-c])/u, 8],
     [/\p{L}/u, 1],
   ]) {
     assert.throws(() => regexToRules(regex), {

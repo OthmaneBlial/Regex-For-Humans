@@ -92,8 +92,8 @@ try {
   const unicodePairSource = String.raw`^[\uD83D\uDE00]{2}$`;
   const controlLetterSource = String.raw`^[\cjX]{2}$`;
   const reverseGroupCases = [
-    ["^😀(?=AB)AB", 4, "Lookahead assertions cannot be translated."],
-    ["😀(?<!A)B", 3, "Lookbehind assertions cannot be translated."],
+    ["^😀[a-c]", 6, "Character ranges are supported only for digit, letter, word and hex classes."],
+    ["😀[x-z]", 5, "Character ranges are supported only for digit, letter, word and hex classes."],
   ];
   const reverseLimitCases = [
     [String.raw`\d`.repeat(201), "LINE_LIMIT", "Translated rules cannot exceed 200 lines."],
@@ -109,6 +109,20 @@ try {
     `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
+const assertionRules = 'preceded by {\\ncapture "currency" {\\n"USD"\\n}\\n}\\ncapture "amount" {\\ndigits\\n}';
+const asserted = compile(assertionRules);
+const assertedMatch = new RegExp(asserted.source, "du").exec("USD123");
+assert.deepEqual(assertedMatch?.indices?.[0], [3, 6]);
+assert.deepEqual(assertedMatch?.indices?.groups?.currency, [0, 3]);
+assert.equal(assertedMatch?.groups?.amount, "123");
+assert.deepEqual(asserted.segments.filter(s => s.kind === "assertion").map(s => [s.edge, s.direction, s.negative]), [["start", "behind", false], ["end", "behind", false]]);
+for (const source of ["(?<currency>USD)(?=(?<amount>[0-9]+))", "(?<=([ab]+)([bc]+))$", "(?!(a))\\\\1b", "(?<!USD)[0-9]+", "(?=(?!b)a)a"]) {
+  const original = new RegExp(source, "du");
+  const translated = regexToRules(new RegExp(source, "u"));
+  const result = compile(translated.rules, { flags: translated.flags });
+  const rebuilt = new RegExp(result.source, "d" + result.flags);
+  for (const sample of ["", "USD123", "123", "abc", "b", "a", "😀"]) assert.deepEqual(rebuilt.exec(sample), original.exec(sample));
+}
 const lazyForward = compile("lazy digits");
 if (toRegExp(lazyForward).exec("1234")?.[0] !== "1" || lazyForward.segments[0].repetition?.lazy !== true) throw new Error("Installed lazy compilation changed its preferred count or metadata");
 for (const source of ["(?<number>[0-9]+?)", "(?<optional>a)??a", "(?:AB){1,3}?", "(?:)*?"]) {
@@ -294,7 +308,7 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   writeFileSync(
     typeSmoke,
     `import { CompileError, compile, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
-import type { CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
+import type { AssertionSegment, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
 const lazyResult: CompileResult = compile("lazy digits");
 const lazyRange: Repetition = { kind: "range", min: 2, max: 4, lazy: true };
@@ -314,6 +328,13 @@ const cachedRegex: RegExp = toRegExp(cached);
 const pairRegex: RegExp = toRegExp({ source: result.source, flags: result.flags });
 const fullRegex: RegExp = toRegExp({ source: result.source, flags: result.flags, segments: result.segments });
 const segment: RegexSegment = result.segments[0];
+if (segment.kind === "assertion") {
+  const assertion: AssertionSegment = segment;
+  const direction: "ahead" | "behind" = assertion.direction;
+  const negative: boolean = assertion.negative;
+  const edge: "start" | "end" = assertion.edge;
+  console.log(direction, negative, edge);
+}
 if (segment.kind === "backreference") {
   const reference: string | number = segment.reference;
   const index: number = segment.captureIndex;
@@ -440,6 +461,22 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
   );
   if (lazyImport.rules !== 'lazy one or more "a"')
     throw new Error("Installed CLI lost lazy import semantics.");
+  const assertionCli = JSON.parse(
+    run([...cliArgs, "--json", "-"], {
+      cwd: consumer,
+      input: 'preceded by {\n"USD"\n}\ndigits',
+    }),
+  );
+  if (assertionCli.source !== "(?<=USD)\\d+" || assertionCli.segments[0].direction !== "behind")
+    throw new Error("Installed CLI lost lookbehind semantics or metadata.");
+  const assertionImport = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], {
+      cwd: consumer,
+      input: "/USD(?=[0-9]+)/u",
+    }),
+  );
+  if (assertionImport.rules !== '"USD"\nfollowed by {\none or more digit\n}')
+    throw new Error("Installed CLI lost lookahead import semantics.");
   const paddedLiteral = `${"\u00a0".repeat(REGEX_LITERAL_INPUT_LIMIT - literalInput.length)}${literalInput}`;
   const paddedReverse = JSON.parse(
     run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: paddedLiteral }),

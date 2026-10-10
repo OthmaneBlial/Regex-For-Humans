@@ -36,10 +36,10 @@ const CONTROL_ESCAPES = new Map([
 ]);
 
 const UNSUPPORTED_HINT =
-  "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround and forward/open references are not supported.";
+  "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and i/s/u/m flags. Forward/open references are not supported.";
 const LINE_TERMINATORS = ["\n", "\r", "\u2028", "\u2029"];
 
-/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
+/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, assertion?: {direction: 'ahead'|'behind', negative: boolean, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
 /** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number, lazy?: boolean}} QuantifierToken */
 /** @typedef {AtomToken & QuantifierToken & {index: number}} PositionedAtom */
 
@@ -249,11 +249,24 @@ function readGroup(source, start, multiline, depth) {
       column: start + 1,
     });
   }
-  if (source.startsWith("(?=", start) || source.startsWith("(?!", start)) {
-    unsupported("Lookahead assertions cannot be translated.", start);
-  }
-  if (source.startsWith("(?<=", start) || source.startsWith("(?<!", start)) {
-    unsupported("Lookbehind assertions cannot be translated.", start);
+  const assertion = /^\(\?(<)?([=!])/u.exec(source.slice(start));
+  if (assertion) {
+    const { atoms, end: close } = readDisjunction(
+      source,
+      start + assertion[0].length,
+      multiline,
+      depth + 1,
+    );
+    if (source[close] !== ")") unsupported("The assertion is not closed.", start);
+    return {
+      end: close + 1,
+      assertion: {
+        direction: assertion[1] ? "behind" : "ahead",
+        negative: assertion[2] === "!",
+        atoms,
+        close,
+      },
+    };
   }
   const capturing = !source.startsWith("(?:", start);
   let name = null;
@@ -446,6 +459,7 @@ export function regexToRules(regex) {
     for (const atom of list) {
       allAtoms.push(atom);
       if (atom.group) collect(atom.group.atoms);
+      if (atom.assertion) collect(atom.assertion.atoms);
       if (atom.alternation) for (const branch of atom.alternation.branches) collect(branch.atoms);
     }
   };
@@ -519,6 +533,14 @@ export function regexToRules(regex) {
                       ? `at least ${atom.min}`
                       : unsupported("Unknown repetition form.", atom.index);
       if (atom.lazy) prefix = `lazy ${prefix}`;
+      if (atom.assertion) {
+        const assertion = atom.assertion;
+        const label = `${assertion.negative ? "not " : ""}${assertion.direction === "ahead" ? "followed" : "preceded"} by`;
+        addRule(`${label} {`, atom.index);
+        emit(assertion.atoms);
+        addRule("}", assertion.close);
+        continue;
+      }
       if (atom.alternation) {
         addRule(`${prefix ? `${prefix} ` : ""}either {`, atom.index);
         for (const branch of atom.alternation.branches) {

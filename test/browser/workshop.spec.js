@@ -87,7 +87,7 @@ test("translation confirmation follows the current rules and options", async ({ 
     await expect(reverse).not.toHaveAccessibleDescription(/Translated/);
   }
 
-  await reverse.fill("/^(?=Hello)Hello$/u");
+  await reverse.fill("/^(?=[a-c])Hello$/u");
   await reverse.press("Control+Enter");
   const error = await feedback.textContent();
   await page.locator("#rules-input").fill('start\n"Hi"\nend');
@@ -97,12 +97,14 @@ test("translation confirmation follows the current rules and options", async ({ 
   await expect(feedback).toBeVisible();
   await expect(feedback).toHaveText(error);
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
-  await expect(reverse).toHaveValue("/^(?=Hello)Hello$/u");
-  await expect(reverse).toHaveAccessibleDescription(/Lookahead assertions cannot be translated/);
+  await expect(reverse).toHaveValue("/^(?=[a-c])Hello$/u");
+  await expect(reverse).toHaveAccessibleDescription(
+    /Character ranges are supported only for digit, letter, word and hex classes/,
+  );
   await page.locator("#reverse-error").press("Enter");
   await expect(reverse).toBeFocused();
   expect(await reverse.evaluate((field) => [field.selectionStart, field.selectionEnd])).toEqual([
-    2, 3,
+    7, 8,
   ]);
   await expect(page.locator('#test-list .test-row[data-result="pass"]')).toHaveCount(9);
 });
@@ -131,13 +133,13 @@ test("Control and Meta Enter translate regexes without replacing edits on failur
     await expect(page.locator("#test-list .test-result").first()).toHaveText(
       '✓ Matched "😀ab" at 0',
     );
-    await reverse.fill("/^(?=😀AB)😀AB$/isu");
+    await reverse.fill("/^(?=😀[a-c])😀AB$/isu");
     await reverse.press(`${modifier}+Enter`);
     await expect(reverse).toBeFocused();
-    await expect(reverse).toHaveValue("/^(?=😀AB)😀AB$/isu");
+    await expect(reverse).toHaveValue("/^(?=😀[a-c])😀AB$/isu");
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(page.locator("#reverse-feedback")).toContainText(
-      "Lookahead assertions cannot be translated",
+      "Character ranges are supported only for digit, letter, word and hex classes",
     );
     await expect(rules).toHaveValue('start\n"😀AB"\nend');
     await expect(output).toHaveText(literal);
@@ -2133,7 +2135,7 @@ test("letter rules show counts, alphabetic matching and Unicode case-folding beh
   await expect(page.locator("#copy-button")).toBeEnabled();
 });
 
-test("unsupported group errors identify the feature and preserve edited rules before recovery", async ({
+test("unsupported assertion contents identify the feature and preserve edited rules before recovery", async ({
   page,
   context,
 }) => {
@@ -2153,11 +2155,31 @@ test("unsupported group errors identify the feature and preserve edited rules be
   const reverse = page.locator("#reverse-regex");
   const help = await page.locator("#reverse-help").innerText();
   for (const [literal, column, message] of [
-    ["/^😀(?=AB)AB/u", 4, "Lookahead assertions cannot be translated."],
-    ["/^(?!AB)CD/u", 2, "Lookahead assertions cannot be translated."],
-    ["/😀(?<=A)B/u", 3, "Lookbehind assertions cannot be translated."],
-    ["/(?<!A)B/u", 1, "Lookbehind assertions cannot be translated."],
-    ["/^(?:😀(?<=A)B)/u", 7, "Lookbehind assertions cannot be translated."],
+    [
+      "/^😀(?=[a-c])AB/u",
+      9,
+      "Character ranges are supported only for digit, letter, word and hex classes.",
+    ],
+    [
+      "/^(?![a-c])CD/u",
+      7,
+      "Character ranges are supported only for digit, letter, word and hex classes.",
+    ],
+    [
+      "/😀(?<=[a-c])B/u",
+      9,
+      "Character ranges are supported only for digit, letter, word and hex classes.",
+    ],
+    [
+      "/(?<![a-c])B/u",
+      7,
+      "Character ranges are supported only for digit, letter, word and hex classes.",
+    ],
+    [
+      "/^(?:😀(?<=[a-c])B)/u",
+      13,
+      "Character ranges are supported only for digit, letter, word and hex classes.",
+    ],
   ]) {
     await reverse.fill(literal);
     await expect(reverse).toHaveAttribute("aria-invalid", "false");
@@ -2165,7 +2187,7 @@ test("unsupported group errors identify the feature and preserve edited rules be
     await page.locator("#reverse-button").press("Enter");
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(reverse).toHaveAccessibleDescription(
-      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround and forward/open references are not supported.`,
+      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and i/s/u/m flags. Forward/open references are not supported.`,
     );
     await expect(editor).toHaveValue(rules);
     await expect(output).toHaveText("/^Saved$/isu");
@@ -2205,12 +2227,12 @@ test("reverse syntax errors select their source character and reveal wrapped or 
   const original = await editor.inputValue();
   await expect(jump).toBeHidden();
   for (const [literal, character] of [
-    ["/^😀a(?=b)b$/u", "("],
-    [" \r\n\t/^😀(?=AB)AB$/u \n", "("],
-    ["/^(?:😀(?=AB)AB)$/u", "("],
+    ["/^😀a(?=[a-c])b$/u", "-"],
+    [" \r\n\t/^😀(?=[a-c])AB$/u \n", "-"],
+    ["/^(?:😀(?=[a-c])AB)$/u", "-"],
     ["/^[a-c]+$/u", "-"],
     ["/^(?:😀)\\p{L}$/u", "\\"],
-    [` \n\t/^${"A".repeat(700)}😀(?=B)B$/u \n`, "("],
+    [` \n\t/^${"A".repeat(700)}😀(?=[a-c])B$/u \n`, "-"],
   ]) {
     await reverse.fill(literal);
     await expect(jump).toBeHidden();
@@ -2239,7 +2261,7 @@ test("reverse syntax errors select their source character and reveal wrapped or 
   await reverse.evaluate((field) => {
     field.style.height = "1400px";
   });
-  await reverse.fill("/^😀a(?=b)b$/u");
+  await reverse.fill("/^😀a(?=[a-c])b$/u");
   await page.locator("#reverse-button").press("Enter");
   await jump.focus();
   await jump.press("Enter");

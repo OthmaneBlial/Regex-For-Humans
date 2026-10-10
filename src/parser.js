@@ -7,6 +7,7 @@ import { quoteText } from "./display.js";
 /** @typedef {import('./ast.js').AtomNode} AtomNode */
 /** @typedef {import('./ast.js').GroupNode} GroupNode */
 /** @typedef {import('./ast.js').AlternationNode} AlternationNode */
+/** @typedef {import('./ast.js').AssertionNode} AssertionNode */
 /** @typedef {import('./ast.js').BackreferenceNode} BackreferenceNode */
 /** @typedef {import('./ast.js').RuleNode} RuleNode */
 /** @typedef {import('./ast.js').ParsedRules} ParsedRules */
@@ -207,7 +208,7 @@ function readCharacterList(text, location, rawLine) {
   return items;
 }
 
-/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|BackreferenceNode} */
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|AssertionNode|BackreferenceNode} */
 function parseAtom(text, location, rawLine) {
   const lazy = /^lazy(?:\s+|$)/iu.exec(text);
   if (!lazy) return parseItem(text, location, rawLine);
@@ -236,7 +237,7 @@ function parseAtom(text, location, rawLine) {
   return node;
 }
 
-/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|BackreferenceNode} */
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|AssertionNode|BackreferenceNode} */
 function parseItem(text, location, rawLine) {
   let remaining = text;
   /** @type {Repetition|null} */
@@ -366,6 +367,34 @@ function parseItem(text, location, rawLine) {
       { line: location.line, column: location.column + offset },
       'Remove the modifier or apply it to an item, such as `3 digits` or `optional "-"`.',
     );
+  }
+
+  const assertion = /^(not\s+)?(followed\s+by|preceded\s+by)(?=\s|\{|$)\s*/iu.exec(remaining);
+  if (assertion) {
+    if (repetition)
+      fail(
+        "ASSERTION_REPETITION",
+        "Lookaround assertions do not consume characters and cannot be repeated directly.",
+        { line: location.line, column: location.column + offset },
+        "Repeat the consuming items inside the assertion, or a group containing it.",
+      );
+    if (remaining.slice(assertion[0].length) !== "{")
+      fail(
+        "INVALID_ASSERTION",
+        "Open an assertion with `{` and close it with `}` on its own line.",
+        { line: location.line, column: location.column + offset + assertion[0].length },
+        "Use `followed by {`, `not followed by {`, `preceded by {` or `not preceded by {`.",
+      );
+    return {
+      kind: "assertion",
+      direction: assertion[2].toLowerCase().startsWith("followed") ? "ahead" : "behind",
+      negative: assertion[1] !== undefined,
+      nodes: [],
+      repetition: null,
+      location,
+      text,
+      endLocation: location,
+    };
   }
 
   const group = /^(group|capture|either)(?=\s|\{|$)\s*/iu.exec(remaining);
@@ -588,13 +617,13 @@ export function parse(source) {
   /** @type {RuleNode[]} */
   const rootNodes = [];
   let nodes = rootNodes;
-  /** @type {{node: GroupNode|AlternationNode, parent: RuleNode[], sawEnd: boolean}[]} */
+  /** @type {{node: GroupNode|AlternationNode|AssertionNode, parent: RuleNode[], sawEnd: boolean}[]} */
   const groups = [];
   /** @type {Map<string, GroupNode>} */
   const names = new Map();
   /** @type {GroupNode[]} */
   const captures = [];
-  /** @type {{node: BackreferenceNode, openGroups: (GroupNode|AlternationNode)[]}[]} */
+  /** @type {{node: BackreferenceNode, openGroups: (GroupNode|AlternationNode|AssertionNode)[]}[]} */
   const references = [];
   let captureCount = 0;
   /** @type {'input'|'line'|null} */
@@ -678,7 +707,7 @@ export function parse(source) {
     if (sawEnd) fail("MISPLACED_ANCHOR", "End anchor must be the last rule.", location());
 
     const node = parseAtom(text, location(), raw);
-    if (node.kind === "group" || node.kind === "alternation") {
+    if (node.kind === "group" || node.kind === "alternation" || node.kind === "assertion") {
       if (groups.length >= LIMITS.groupDepth) {
         fail(
           "GROUP_DEPTH_LIMIT",
@@ -701,7 +730,7 @@ export function parse(source) {
       }
       nodes.push(node);
       groups.push({ node, parent: nodes, sawEnd });
-      nodes = node.kind === "group" ? node.nodes : [];
+      nodes = node.kind === "alternation" ? [] : node.nodes;
       sawEnd = false;
     } else {
       nodes.push(node);

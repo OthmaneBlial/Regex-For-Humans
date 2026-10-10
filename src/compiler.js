@@ -106,10 +106,57 @@ export function compileAst(parsed, options = {}) {
   let source = "";
   /** @type {import('../index.d.ts').RegexSegment[]} */
   const segments = [];
+  let checkedLookbehind = false;
 
   /** @param {import('./ast.js').RuleNode[]} nodes */
   function emit(nodes) {
     for (const [index, node] of nodes.entries()) {
+      if (node.kind === "assertion") {
+        if (node.direction === "behind" && !checkedLookbehind) {
+          try {
+            // biome-ignore lint/complexity/useRegexLiterals: feature detection must catch unsupported syntax at runtime.
+            new RegExp("(?<=a)b", "u");
+          } catch {
+            fail(
+              "UNSUPPORTED_TARGET_FEATURE",
+              "This JavaScript runtime does not support lookbehind assertions.",
+              node.location,
+              "Use a runtime with native lookbehind support; the assertion cannot be approximated.",
+            );
+          }
+          checkedLookbehind = true;
+        }
+        const sourceStart = source.length;
+        const fragment = `(?${node.direction === "behind" ? "<" : ""}${node.negative ? "!" : "="}`;
+        source += fragment;
+        const details = { direction: node.direction, negative: node.negative };
+        segments.push({
+          kind: "assertion",
+          edge: "start",
+          ...details,
+          sourceStart,
+          sourceEnd: source.length,
+          source: fragment,
+          text: node.text,
+          explanation: explainNode(node, flags),
+          ...node.location,
+        });
+        emit(node.nodes);
+        const endStart = source.length;
+        source += ")";
+        segments.push({
+          kind: "assertion",
+          edge: "end",
+          ...details,
+          sourceStart: endStart,
+          sourceEnd: source.length,
+          source: ")",
+          text: "}",
+          explanation: "End assertion. The input position is unchanged.",
+          ...node.endLocation,
+        });
+        continue;
+      }
       if (node.kind === "alternation") {
         const sourceStart = source.length;
         source += "(?:";

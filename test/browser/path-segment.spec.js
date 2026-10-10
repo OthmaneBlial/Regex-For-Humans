@@ -55,10 +55,10 @@ test("readable path segment rules explain Unicode bounds and translate back with
     await expect(feedback).toHaveText("! No match");
   }
   const previous = await editor.inputValue();
-  await page.locator("#reverse-regex").fill(String.raw`/^[^/\\\0\n\r\u2028\u2029](?=x)x$/u`);
+  await page.locator("#reverse-regex").fill(String.raw`/^[^/\\\0\n\r\u2028\u2029](?=[a-c])x$/u`);
   await page.locator("#reverse-button").click();
   await expect(page.locator("#reverse-feedback")).toContainText(
-    "Lookahead assertions cannot be translated.",
+    "Character ranges are supported only for digit, letter, word and hex classes.",
   );
   await expect(editor).toHaveValue(previous);
 });

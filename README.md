@@ -68,10 +68,12 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | Whole-block repetition and backward references | ✅ | ✅ |
 | Ordered alternatives with `either { … }` | ✅ | ✅ Nested choices and reverse translation |
 | Lazy repetition with `lazy` | — | ✅ Unreleased; atoms, blocks, alternatives and references |
-| Lookaround | — | Planned; currently rejected |
+| Lookaround | — | ✅ Unreleased; nested assertions and native captures |
 | Other regex engines and free-form English | — | Outside the current language |
 
 From the source checkout, `lazy digits` generates `\d+?`: try one digit first, then expand if following rules need more. `lazy any text` generates `.*?`. These additions are **unreleased** and are not in npm `0.1.0-dev.4`; see [greedy and lazy repetition](docs/LANGUAGE.md#repetition).
+
+The source also supports `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. They test surrounding text without consuming it. Captures keep native values and positions, which can lie outside the consumed match; lookbehind requires runtime support. These assertions are **unreleased** beyond npm `0.1.0-dev.4`; see [lookaround assertions](docs/LANGUAGE.md#lookaround-assertions).
 
 The `0.1.0-dev.4` preview includes groups, captures, backward references and ordered alternatives in the library and CLI. The browser workshop adds capture inspection and multiple search matches. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
 
@@ -118,7 +120,7 @@ start
 end
 ```
 
-The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. The published preview also imports numbered/named captures, nested groups, ordered alternatives and backward references, preserving capture values and numbering. npm `0.1.0-dev.4` rejects lookaround, forward/open references and lazy quantifiers. The current source checkout adds exact lazy-quantifier imports; see the [language guide](docs/LANGUAGE.md) for its limits.
+The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. The published preview also imports numbered/named captures, nested groups, ordered alternatives and backward references, preserving capture values and numbering. npm `0.1.0-dev.4` rejects lookaround, forward/open references and lazy quantifiers. The current source checkout adds exact lazy-quantifier and lookaround imports; see the [language guide](docs/LANGUAGE.md) for its limits.
 
 Reverse translation also handles JavaScript's empty negative class `[^]`, which includes line breaks. When ordinary `.` atoms appear beside it, their output rules explicitly exclude line terminators so matching stays the same.
 
@@ -132,7 +134,7 @@ Separator lists such as `[._-]` and `[-._]` translate too: a hyphen at either en
 
 Alternatives become editable `either { … }` blocks: each entry is one ordered choice. Use `group { … }` for a sequence or an empty choice. Literal pipes such as `\|` or `[|]` remain matching data.
 
-Lookahead and lookbehind get a specific error at their opening `(`; unsupported forward/open references point to their escape. Use **Go to regex error** to select that character in your pasted pattern and bring it into view. Failed translation preserves your current rules and options.
+Unsupported contents inside assertions remain errors: `/^😀(?=[a-c])a/u` points to the range’s `-` at column 9. Unsupported forward/open references point to their escape. Use **Go to regex error** to select that character in your pasted pattern and bring it into view. Failed translation preserves your current rules and options.
 
 Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. Search mode finds an empty match at position 0, including in nonempty input; Entire string mode accepts only blank input for this pattern.
 
@@ -492,7 +494,7 @@ CI=1 npm run verify
 
 ## 🧭 Know the boundaries
 
-Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, lookaround and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
+Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, word boundaries, Unicode properties and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
 
 <a name="faq"></a>
 

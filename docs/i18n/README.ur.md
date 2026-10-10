@@ -66,10 +66,12 @@ end
 | پورے بلاک کی تکرار اور پچھلے capture کا حوالہ | ✅ | ✅ |
 | ترتیب وار متبادل بذریعہ <code dir="ltr">either { … }</code> | ✅ | ✅ اندرونی انتخاب اور reverse translation |
 | کم سے کم تکرار کو پہلے آزمانا، بذریعہ <code dir="ltr">lazy</code> | — | ✅ موجودہ سورس میں؛ ابھی شائع نہیں ہوا |
-| آگے یا پیچھے دیکھنے کی assertions | — | منصوبے میں ہیں؛ ابھی مسترد ہوتی ہیں |
+| آگے یا پیچھے دیکھنے کی assertions | — | ✅ صرف موجودہ سورس میں؛ nested assertions اور اصل captures |
 | دوسرے regex انجن اور آزاد انگریزی | — | موجودہ زبان کا حصہ نہیں |
 
 موجودہ سورس میں <code dir="ltr">lazy digits</code> سے <code dir="ltr">\d+?</code> بنتا ہے: پہلے ایک ہندسہ آزمائیں، پھر اگلے قواعد کی ضرورت کے مطابق تکرار بڑھائیں۔ یہ اضافہ npm <code dir="ltr">0.1.0-dev.4</code> میں ابھی شامل نہیں ہے۔ [تکرار کے قواعد](../LANGUAGE.md#repetition) دیکھیں۔
+
+سورس میں <code dir="ltr">followed by { … }</code>، <code dir="ltr">not followed by { … }</code>، <code dir="ltr">preceded by { … }</code>، <code dir="ltr">not preceded by { … }</code> بھی دستیاب ہیں۔ یہ اردگرد کے متن کو جانچتے ہیں، اسے match میں شامل نہیں کرتے۔ Captures کی اصل values اور positions برقرار رہتی ہیں، چاہے وہ match کے باہر ہوں؛ lookbehind کے لیے انجن کی معاونت ضروری ہے۔ یہ فیچر ابھی npm <code dir="ltr">0.1.0-dev.4</code> میں شامل نہیں ہے۔ [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) دیکھیں۔
 
 لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.4</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
 
@@ -469,7 +471,7 @@ CI=1 npm run verify
 
 متبادل قابلِ تدوین <code dir="ltr">either { … }</code> بلاک بنتے ہیں؛ ہر براہِ راست entry ایک انتخاب ہے جو ترتیب سے آزمایا جاتا ہے۔ کئی قواعد والے یا خالی انتخاب کے لیے <code dir="ltr">group { … }</code> استعمال کریں۔
 
-ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ Lookaround اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
+ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ Word boundaries، Unicode properties اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
 
 ## 💬 عام سوالات
 

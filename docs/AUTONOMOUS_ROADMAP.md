@@ -13,7 +13,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Positive/negative lookahead and lookbehind across the AST, both translation directions and native capture inspection.
+1. Boundaries, modern Unicode/flags and explicit target-capability diagnostics.
 2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 3. Workshop localization and the remaining mission waves.
 
@@ -34,6 +34,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Site/README: Pages commit `1dfaf1c` built successfully; all 58 public files match local hashes. Chrome desktop/mobile, Firefox and WebKit pass version, date capture, alternative/import and source-navigation checks without page errors or 320px overflow. The ten README guides and real screenshots reflect dev.4; actual Arabic/Urdu GitHub views retain RTL prose/tables and all 20 canonical LTR code blocks at 1280/390px. Independent language review remains open. This milestone does not close the larger mission, stable-release or human review gates.
 
 ## Evidence and constraints
+
+### Lookaround milestone
+
+- Implemented in the source checkout: four positive/negative ahead/behind block forms, nesting, captures, native backwards lookbehind behavior and both translation directions. Typed assertion edges retain exact locations and source spans. Direct assertion repetition and unsupported runtime capability fail explicitly; source-order reference and duplicate-name policies remain unchanged.
+- Native parity: 35 patterns × eight flag sets × 39 inputs preserve complete capture arrays, named values and native indices. Shared browser checks add 1,728 comparisons per engine/viewport and inspect captures before/after the consumed match, absent captures, Unicode empty matches, keyboard navigation, accessibility and 320px layout.
+- Verification: all components pass: 263 Node tests, 304 bundled Chromium desktop/mobile checks, 74 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds, clean JavaScript/TypeScript consumers and zero audit vulnerabilities. The 38 focused checks and a separate clean consumer pass on Node 22.23.3. The first full command reached compatibility and found two obsolete parenthesis-selection expectations; after selecting the unsupported child's range marker instead, all 74 compatibility checks and the remaining homepage/audit stages pass. This is successful component verification, not one uninterrupted full-command pass. Final documentation records are rebuilt and checked afterward.
+- All ten README guides and source language/site documentation distinguish this unreleased support from published npm `0.1.0-dev.4`. Existing native worker/controller span validation supports assertion captures without a second execution path. There is no new npm or Pages publication for this milestone yet. Human review remains open.
 
 ### Lazy repetition milestone
 

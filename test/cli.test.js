@@ -1000,7 +1000,12 @@ test("CLI reverse rejects conflicting forward options before reading input", () 
 
 test("CLI reverse preserves positioned translator errors and reports literal syntax failures", () => {
   for (const [input, code, message, column] of [
-    ["/^😀(?=AB)AB/u", "UNSUPPORTED_REGEX", "Lookahead assertions cannot be translated.", 4],
+    [
+      "/^😀[a-c]/u",
+      "UNSUPPORTED_REGEX",
+      "Character ranges are supported only for digit, letter, word and hex classes.",
+      6,
+    ],
     [
       "/^A$/",
       "UNICODE_FLAG_REQUIRED",

@@ -235,6 +235,6 @@ test("CLI reverse emits reusable complete word classes and rejects nearby unsupp
     message: "Character ranges are supported only for digit, letter, word and hex classes.",
     line: 1,
     column: 4,
-    hint: "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround and forward/open references are not supported.",
+    hint: "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and i/s/u/m flags. Forward/open references are not supported.",
   });
 });

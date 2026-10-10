@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Support positive/negative lookahead and lookbehind blocks in both translation directions, including nesting, native capture values outside the consumed match, backwards lookbehind semantics and exact source trace segments. Probe native lookbehind support with a positioned capability error; retain source-order reference policies and bounded parsing. Add typed `AssertionSegment` metadata and shared CLI/workshop support. This addition is not in npm `0.1.0-dev.4`.
 - Support `lazy` on every existing repetition and implicit sequence, including entire groups, captures, alternatives and references. Import native lazy quantifiers without changing capture values, participation, indices, Unicode boundaries or supported flags. Keep greedy defaults and add optional typed `lazy` metadata, precise modifier diagnostics and shortest-count-first explanations through the shared API, CLI and workshop. This addition is not in npm `0.1.0-dev.4`.
 
 ## 0.1.0-dev.4 (10 October 2026)

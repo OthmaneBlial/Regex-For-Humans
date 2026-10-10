@@ -63,12 +63,20 @@ export interface AlternationSegment extends SegmentBase {
   repetition: Repetition | null;
 }
 
+export interface AssertionSegment extends SegmentBase {
+  kind: "assertion";
+  edge: "start" | "end";
+  direction: "ahead" | "behind";
+  negative: boolean;
+}
+
 export type RegexSegment =
   | AnchorSegment
   | TextSegment
   | CharacterSetSegment
   | GroupSegment
   | AlternationSegment
+  | AssertionSegment
   | BackreferenceSegment;
 
 export interface CompileResult {

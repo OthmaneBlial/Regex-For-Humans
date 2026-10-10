@@ -37,6 +37,12 @@ The parser uses a stack for brace-delimited groups, sharing existing atom parsin
 
 References are resolved against the completed capture table after parsing. A reference carries its target token's location and the enclosing groups at that point; this distinguishes missing, forward and open/self targets. The language rejects forward/open references explicitly, while preserving native empty behavior for nonparticipating optional captures. Numeric references have a noncapturing emission boundary to prevent a following literal digit from extending the reference number. CLI, declarations, explanations and workshop compilation share the resolved metadata.
 
+## Assertions
+
+The same bounded block parser builds `assertion` nodes with `direction`, `negative` and child nodes. They carry no repetition. The emitter wraps those children in native positive/negative lookahead or lookbehind, preserving capture opening order and exact source spans. Typed start/end `AssertionSegment` trace entries explain the zero-width condition. The first behind assertion probes native support; failure returns a positioned `UNSUPPORTED_TARGET_FEATURE` without rewriting semantics. Source-order forward/open-reference and duplicate-name policies remain unchanged inside assertions.
+
+Reverse group parsing recognizes all four native assertion prefixes and retains their children as structural tokens under the existing budgets. Recursive dot normalization also visits assertion children. Native matching owns lookbehind direction, assertion atomicity and capture updates. The existing capture protocol validates spans against the complete input, so captures before/after the consumed match use the same worker, validation and explorer without a second matching path.
+
 ## Reverse translation
 
 Repetition retains the same discriminated kind and bounds, with optional `lazy: true` for shortest-count-first matching. The parser applies a single leading `lazy` modifier to a validated repeated item and preserves original source locations. Compilation adds JavaScript's `?` suffix in the shared quantifier emitter; explanations distinguish the count preference without simulating matching. Reverse tokens retain that preference through literal/group normalization, alternatives, empty groups and dot-all conversion.

@@ -175,11 +175,11 @@ test("different path-like classes keep their explicit membership and positioned 
   const rebuilt = toRegExp(compile(translated.rules));
   for (const value of ["Ax", "éx", "😀x", "/x", "\\x"])
     assert.deepEqual(rebuilt.exec(value), captured.exec(value));
-  assert.throws(() => regexToRules(new RegExp(`${prefix}(?=x)x$`, "u")), {
+  assert.throws(() => regexToRules(new RegExp(`${prefix}(?=[a-c])x$`, "u")), {
     code: "UNSUPPORTED_REGEX",
     line: 1,
-    column: prefix.length + 1,
-    message: "Lookahead assertions cannot be translated.",
+    column: prefix.length + 6,
+    message: "Character ranges are supported only for digit, letter, word and hex classes.",
   });
 });
 

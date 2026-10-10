@@ -93,10 +93,10 @@ test("editing and failed translation retain regex and explanation scroll positio
   const rules = await editor.inputValue();
   const output = await page.locator("#regex-output").textContent();
   await page.locator("#reverse-translator summary").click();
-  await page.locator("#reverse-regex").fill("/^(?=Hello)Hello$/u");
+  await page.locator("#reverse-regex").fill("/^(?=[a-c])Hello$/u");
   await page.locator("#reverse-regex").press("Control+Enter");
   await expect(page.locator("#reverse-feedback")).toContainText(
-    "Lookahead assertions cannot be translated",
+    "Character ranges are supported only for digit, letter, word and hex classes",
   );
   await expect(editor).toHaveValue(rules);
   await expect(page.locator("#regex-output")).toHaveText(output);
