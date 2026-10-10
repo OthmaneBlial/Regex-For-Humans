@@ -57,7 +57,8 @@ end
 | [编辑分组与高亮捕获范围](../LANGUAGE.md#editing-groups) | — |
 | [交互式结构图与SVG导出](../LANGUAGE.md#structural-diagrams) | — |
 | [结构风险检查](../LANGUAGE.md#structural-risk-review) | — |
-| 其他正则引擎、自由英文 | — |
+| [面向目标引擎的代码导出](../LANGUAGE.md#engine-exports) | — |
+| 自由英文 | — |
 
 **仅在源码版本中提供：**本地工作坊新增 **Edit groups and references**，可重命名捕获组、切换分组类型并定位引用。编号变化后，数字引用仍指向原来的捕获组；仍被引用的捕获组不能改为非捕获组，拒绝操作时保留原规则。**Highlight** 根据原生索引高亮捕获范围，支持空捕获和消耗的匹配范围之外的捕获。`editGroup` API 返回经过验证的规则。这些新增功能尚未包含在 npm `0.1.0-dev.5` 或线上工作坊中。参见[编辑分组](../LANGUAGE.md#editing-groups)。
 
@@ -72,6 +73,12 @@ end
 源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.5` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
 
 npm `0.1.0-dev.5` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
+
+## 🌍 导出到你的编程语言
+
+**仅限仓库源码：**在本地工作台打开 **Export to a programming language**，调用 `exportRegex(rules, { target: "python" })`，或运行 `node bin/regex-for-humans.js --target python --json rules.txt`。九种格式包括 JavaScript、TypeScript、Python、Rust、Go、Java、C#、PHP 和 Ruby。JavaScript/TypeScript 保留现有原生模式；其他目标先从 AST 转换支持的正则语义，再生成正确转义的源代码。
+
+生成代码已通过六个原生引擎的对比检查；**PHP 尚未经过原生运行验证**。请保留要求和捕获映射：其他引擎使用 `gN` 名称，未参与的捕获可能不存在。输入必须是格式正确的 Unicode。不支持的标志（`d/g/i/y`）、Unicode 属性，以及不兼容的断言、捕获或重复行为会返回带位置的诊断。可下载代码或完整 JSON；浏览器示例仍由 JavaScript 执行。这些功能尚未包含在 npm `0.1.0-dev.5` 或已发布的工作台中。详见[引擎配置与限制](../LANGUAGE.md#engine-exports)。
 
 ## 📦 安装预览版
 
@@ -315,6 +322,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--dot-all` | 开启 `s` |
 | `--flags` | 选择原生 JavaScript flags；u/v 不能同时使用 |
 | `--help` | 帮助 |
+| `--target` | 仅限仓库源码：导出到指定语言，详见[引擎配置](../LANGUAGE.md#engine-exports) |
 | `--version` | 包版本 |
 
 读取 UTF-8 文件或 stdin。以 `-` 开头的文件名之前加 `--`。退出码：成功/帮助/版本为 `0`，无效规则或输入输出错误为 `1`，参数错误为 `2`。

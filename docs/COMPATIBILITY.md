@@ -18,13 +18,33 @@ Preview `0.1.0-dev.5` targets native JavaScript `RegExp` in u or v mode. It incl
 | Nested native v sets, union, intersection and subtraction | Supported with typed blocks, exact member spans and structural complement validation | Supported; operators, native strings, captures and cursors preserved |
 | Empty character classes | Empty union block in v mode; u-mode empty classes remain unsupported | Supported in v mode; positioned unsupported diagnostic in u mode |
 | Flags | All eight native options; default u, exclusive v; m explicit or from line anchors | u or v required; d/g/i/m/s/v/y preserved without touching input `lastIndex` |
-| Other regex engines | No target | No translation claim |
+| Other regex engines | Source-only engine profiles through `exportRegex`; see below | Only JavaScript input is accepted; no foreign-regex reverse translation |
 
 Explicit flags, native u/v classes, v strings and nested sets are included in npm `0.1.0-dev.5`. Mixed anchors keep input boundaries absolute under m; native lookbehind is required for absolute input start in that mode. Nested set operations require v mode and retain native structural string-complement restrictions. Runtime flag support and Unicode editions are supplied by the target engine, with explicit capability diagnostics instead of fallback matching. The separate code-point sequence `\q{\u{d83d}\u{de00}}` matches a literal emoji in installed Node/Chromium/Firefox but does not in installed WebKit; its reverse translation retains both surrogate parts so it preserves the selected runtime's behavior. This does not promise identical native results across engines or Unicode editions.
 
 Groups are numbered in opening order, including named groups. Names are Unicode JavaScript identifiers and are unique across the document. Some newer JavaScript patterns allow duplicate names in disjoint alternatives; this DSL currently uses a stricter unique-name policy. A reference to an absent optional capture matches empty text, while a participating empty capture has value `""`. Repeated captures retain the final captured value. References inside or before their target are rejected by language policy, even when JavaScript permits them, including inside lookbehind.
 
 Assertions consume no characters; their native captures can lie before or after the consumed match. JavaScript evaluates lookbehind contents backwards, including variable-length supported subpatterns. Compilation probes lookbehind and reports `UNSUPPORTED_TARGET_FEATURE` instead of approximating it when unavailable. Direct assertion repetition is rejected; repeat its contents or a containing group instead. Assertion blocks share the 64-level nesting and translated source/line budgets.
+
+## Engine export evidence
+
+The source-only [engine export contract](LANGUAGE.md#engine-exports) is separate from the existing JavaScript compiler. Nine source formats cover eight engine families: JavaScript and TypeScript share ECMAScript. Foreign targets translate supported AST semantics and expose compatibility errors rather than substitute native defaults for Unicode classes, flags or capture behavior. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet.
+
+The native verification script compiles and executes the generated snippets in installed SDKs, compares full-match spans after converting offsets to UTF-16, and reads captures by mapped name. The corpus covers Unicode/RTL/astral input, ECMAScript whitespace/word membership, scalar ranges, finite-set operations, anchors, lazy/count repetition, absent/empty captures, references and supported lookarounds. A successful corpus does not prove every possible pattern, Unicode edition or runtime version.
+
+| Installed runtime | Patterns | Successful span/capture comparisons |
+| --- | ---: | ---: |
+| Python 3.14.7 | 27 | 1,359 |
+| Rust `regex` 1.13.1, Cargo 1.95.0 | 20 | 1,005 |
+| Go 1.22.0 | 20 | 1,005 |
+| OpenJDK 17.0.19 | 26 | 1,301 |
+| .NET SDK 10.0.400 | 29 | 1,475 |
+| Ruby 2.6.10 | 25 | 1,243 |
+| PHP / PCRE2 | — | **Unavailable; no native parity claim** |
+
+The six installed engines pass **7,388** comparisons. Java 17 supplementary lookbehind uses literal code points in the regex and Unicode escapes in Java source; hex-escaped supplementary lookbehind failed the comparison gate before this lowering was corrected. Rust can omit inactive `{0}` capture names, so original group indices remain identity metadata and target values are read by `gN` names. Nullable non-word-boundary searches with a possible surrogate-interior zero-width position fail explicitly instead of claiming scalar-position equivalence.
+
+Foreign profiles require well-formed Unicode, reject `d/g/i/y` and native Unicode properties, and diagnose unsupported assertion widths, capture resets and nullable repetition. The browser generates code and downloads metadata; its examples still run in the isolated JavaScript worker. Native snippets need the receiving application's own compilation limits and matching safeguards. PHP generation remains an unverified fixed-lookbehind profile, visibly identified in API requirements and the language selector.
 
 ## Structural review compatibility
 
@@ -42,10 +62,10 @@ Composable classes are included in npm `0.1.0-dev.5`: `character class:` unions 
 
 Word boundaries are included in npm `0.1.0-dev.5`. It keeps native zero-width behavior, input-edge handling, Unicode case folding and captures. It does not provide natural-language word segmentation. Direct quantification fails explicitly; repeated containing groups remain supported. The new `BoundarySegment` variant is declared for TypeScript consumers.
 
-- Host Node 25.9.0: all 320 Node tests plus a clean installed-package JavaScript/TypeScript/API/CLI consumer.
-- Minimum supported major, Node 22.23.3: all 19 selected diagram/group-editing/analysis checks plus a separate clean JavaScript/TypeScript/API/CLI consumer.
-- Bundled Chromium: all 402 desktop/mobile workshop checks, including native nested set/string imports, captures, cursors, trace/diagram/review navigation and isolated matching. Mobile viewport checks are not physical-device evidence.
-- Playwright Firefox and WebKit: all 172 compatibility checks, including native set/string/flag/class/property/assertion/capture flows and structural review.
+- Host Node 25.9.0: all 328 Node tests plus a clean installed-package JavaScript/TypeScript/API/CLI consumer.
+- Minimum supported major, Node 22.23.3: all 51 selected export/CLI/localization checks plus a separate clean JavaScript/TypeScript/API/CLI consumer; earlier source milestones also verify the selected diagram/group-editing/analysis checks.
+- Bundled Chromium: all 408 desktop/mobile workshop checks, including native nested set/string imports, captures, cursors, trace/diagram/review navigation, export code/metadata downloads and isolated matching. Mobile viewport checks are not physical-device evidence.
+- Playwright Firefox and WebKit: all 178 compatibility checks, including native set/string/flag/class/property/assertion/capture flows, structural review and export UI generation/downloads.
 - The complete `CI=1 npm run verify` command also passes the builds, 64 homepage checks and an audit with zero vulnerabilities. Final documentation records are rebuilt and checked afterward.
 - Group milestone: 54 desktop/mobile group, worker security and automated accessibility checks. Human screen-reader and usability reviews remain unverified.
 

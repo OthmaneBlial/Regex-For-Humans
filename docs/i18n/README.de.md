@@ -57,7 +57,8 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 | [Gruppen bearbeiten und Capture-Bereiche markieren](../LANGUAGE.md#editing-groups) | — |
 | [Interaktive Struktur und Export als SVG](../LANGUAGE.md#structural-diagrams) | — |
 | [Prüfung struktureller Risiken](../LANGUAGE.md#structural-risk-review) | — |
-| Andere Engines und freie englische Sätze | — |
+| [Codeexport mit Anpassung an die Engine](../LANGUAGE.md#engine-exports) | — |
+| Freie englische Sätze | — |
 
 **Nur im Quellcode:** Der lokale Workshop bietet **Edit groups and references**, um Captures umzubenennen, ihren Typ zu ändern und ihre Referenzen zu finden. Numerische Referenzen behalten bei einer neuen Nummerierung ihr ursprüngliches Ziel; ein referenziertes Capture lässt sich nicht entfernen, und die Regeln bleiben dabei unverändert. **Highlight** markiert den nativen Eingabebereich, auch bei leeren Captures oder außerhalb des konsumierten Treffers. Die API `editGroup` gibt validierte Regeln zurück. Diese Ergänzungen sind noch nicht in npm `0.1.0-dev.5` oder im gehosteten Workshop enthalten. Siehe [Gruppen bearbeiten](../LANGUAGE.md#editing-groups).
 
@@ -72,6 +73,12 @@ Der Quellcode akzeptiert außerdem `unicode property "L"` und `not unicode prope
 Der Quellcode unterstützt `range "α" to "ω"` und `character class: digit, "_"`. Eine Klasse vereint Literale mit genau einem Unicode-Codepunkt, Bereiche, einzelne Kurzformen und Unicode-Eigenschaften; `not character class:` negiert die gesamte Vereinigung. Wiederholungszahlen und `lazy` gelten für die Klasse. Eigenschaftskomplemente behalten die native `u`/`i`-Semantik. Verfügbar in npm `0.1.0-dev.5`; siehe [Zeichenklassen](../LANGUAGE.md#composable-character-classes).
 
 npm `0.1.0-dev.5` enthält Gruppen, Captures, Rückreferenzen und geordnete Alternativen in Bibliothek und CLI. Der Workshop ergänzt Capture-Ansichten und mehrere Suchtreffer. Siehe [Kompatibilität](../COMPATIBILITY.md) und [Veröffentlichungsnachweise](../DISTRIBUTION.md).
+
+## 🌍 In deine Sprache exportieren
+
+**Nur aus einer lokalen Repository-Kopie:** Öffne **Export to a programming language** im lokalen Workshop, rufe `exportRegex(rules, { target: "python" })` auf oder führe `node bin/regex-for-humans.js --target python --json rules.txt` aus. Die neun Formate sind JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP und Ruby. JavaScript/TypeScript behalten das native Muster; andere Ziele übersetzen unterstützte Verhaltensweisen aus dem AST und erzeugen danach korrekt maskierten Quellcode.
+
+Die Vergleiche mit generiertem Code bestehen für sechs native Engines; **PHP wurde nicht nativ geprüft**. Bewahre Anforderungen und Capture-Zuordnung auf: andere Engines verwenden Namen wie `gN`, und inaktive Captures können fehlen. Die Eingabe muss wohlgeformtes Unicode sein. Nicht unterstützte Flags (`d/g/i/y`), Unicode-Eigenschaften sowie inkompatible Assertions, Capture- oder Wiederholungsregeln liefern Diagnosen mit Position. Lade Code oder das vollständige JSON herunter; Browserbeispiele laufen weiterhin in JavaScript. Diese Ergänzungen fehlen noch in npm `0.1.0-dev.5` und im veröffentlichten Workshop. Siehe [Profile und Grenzen](../LANGUAGE.md#engine-exports).
 
 ## 📦 Vorschau installieren
 
@@ -315,6 +322,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--dot-all` | Flag `s` |
 | `--flags` | Native JavaScript-Flags wählen; u/v schließen sich aus |
 | `--help` | Hilfe |
+| `--target` | Nur aus dem Repository: Export in die angegebene Sprache; siehe [Profile](../LANGUAGE.md#engine-exports) |
 | `--version` | Paketversion |
 
 UTF-8-Datei oder stdin lesen. Vor Dateinamen mit `-` ein `--` setzen. Exitcodes: `0` Erfolg/Hilfe/Version, `1` ungültige Regeln oder E/A-Fehler, `2` ungültige Argumente.

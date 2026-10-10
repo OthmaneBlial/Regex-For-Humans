@@ -107,10 +107,19 @@ try {
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
-    `import { analyze, compile, editGroup, regexToRules, toRegExp, toSVG, CompileError } from "regex-for-humans";
+    `import { analyze, compile, editGroup, exportRegex, regexToRules, toRegExp, toSVG, CompileError } from "regex-for-humans";
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
 const editableRules = ${JSON.stringify('capture "word" {\nletter\n}\nsame as capture "word"')};
+const jsExport = exportRegex(editableRules, { flags: "dgy" });
+const exportedNative = runInNewContext(jsExport.code + "\\nregex");
+assert.equal(exportedNative.source, compile(editableRules, { flags: "dgy" }).source);
+assert.equal(exportedNative.flags, "dguy");
+const pythonExport = exportRegex(editableRules, { target: "python" });
+assert.equal(pythonExport.target, "python");
+assert.deepEqual(pythonExport.captures, [{ index: 1, name: "word", targetName: "g1" }]);
+assert.ok(pythonExport.code.includes("re.compile"));
+assert.throws(() => exportRegex(editableRules, { target: "go" }), error => error instanceof CompileError && error.code === "EXPORT_BACKREFERENCE");
 const editableGroup = compile(editableRules).segments.find(s => s.kind === "group" && s.edge === "start");
 const diagram = toSVG(editableRules, { flags: "dgu" });
 assert.ok(diagram.startsWith('<svg xmlns="http://www.w3.org/2000/svg"'));
@@ -402,9 +411,18 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   const typeSmoke = join(consumer, "type-smoke.mts");
   writeFileSync(
     typeSmoke,
-    `import { CompileError, analyze, compile, editGroup, regexMatchingThroughLines, regexToRules, toRegExp, toSVG } from "regex-for-humans";
-import type { AnalysisCode, AnalysisFinding, AnalysisResult, AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, ClassSetOperation, CompileOptions, CompileResult, GroupSegment, RegexSegment, Repetition, ReverseTranslation, SourceLocation, UnicodePropertySegment } from "regex-for-humans";
+    `import { CompileError, analyze, compile, editGroup, exportRegex, regexMatchingThroughLines, regexToRules, toRegExp, toSVG } from "regex-for-humans";
+import type { AnalysisCode, AnalysisFinding, AnalysisResult, AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, ClassSetOperation, CompileOptions, CompileResult, ExportOptions, ExportTarget, GroupSegment, RegexExport, RegexSegment, Repetition, ReverseTranslation, SourceLocation, UnicodePropertySegment } from "regex-for-humans";
 const editLocation: SourceLocation = { line: 1, column: 1 };
+const exportTarget: ExportTarget = "python";
+const exportOptions: ExportOptions = { target: exportTarget, flags: undefined };
+const exportedCode: RegexExport = exportRegex("digit", exportOptions);
+const captureMapping: RegexExport["captures"][number] | undefined = exportedCode.captures[0];
+console.log(exportedCode.code, exportedCode.requirements, captureMapping);
+// @ts-expect-error export input is readable rules, not a compiled JavaScript result
+exportRegex(compile("digit"));
+// @ts-expect-error source-code targets are explicitly enumerated
+exportRegex("digit", { target: "perl" });
 const editDefinition: Pick<GroupSegment, "capturing" | "name"> = { capturing: true, name: "label" };
 const editableRules: string = ${JSON.stringify('capture "word" {\nletter\n}\nsame as capture "word"')};
 const editedRules: string = editGroup(editableRules, editLocation, editDefinition, { flags: undefined });

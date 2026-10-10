@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add source-only `exportRegex`, typed export metadata, CLI `--target` and an on-demand workshop panel with code/JSON downloads for JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP and Ruby. Translate supported AST semantics separately from source-code quoting; expose mapped capture names and positioned diagnostics for unsupported flags, properties, assertions, repetition and capture lifetimes. Check generated code against six installed native runtimes; PHP parity remains unverified. Exported snippets do not inherit the workshop matching sandbox. npm and the hosted workshop remain at dev.5.
+
 - Add source-only structural risk review through the typed public `analyze` API and an on-demand workshop panel. Inspect nested/adjacent variable repetition, overlapping alternatives and selected character witnesses; surface wildcard, line-anchor and generated-size notes with source navigation and explicit limitations. Unknown witness sets do not certify disjointness, and no findings does not prove performance safety. Preserve isolated matching, deadlines and compiler diagnostics.
 
 - Add AST-driven structural railroad diagrams through the public `toSVG` API and an on-demand workshop panel. Show nested group boundaries, ordered alternatives, repetition bounds/lazy preference, anchors and separate zero-width lookaround checks. Keep set operations as semantic leaves instead of pretending they are ordered paths.

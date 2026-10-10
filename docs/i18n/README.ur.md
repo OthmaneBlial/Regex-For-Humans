@@ -75,7 +75,8 @@ end
 | [گروپ کی تدوین اور capture کی جگہ نمایاں کرنا](../LANGUAGE.md#editing-groups) | — |
 | [ساخت کا تعاملی خاکہ اور <code dir="ltr">SVG</code> ایکسپورٹ](../LANGUAGE.md#structural-diagrams) | — |
 | [ساختی خطرات کا جائزہ](../LANGUAGE.md#structural-risk-review) | — |
-| دوسرے regex انجن اور آزاد انگریزی | — |
+| [ہدف انجن کے مطابق کوڈ ایکسپورٹ](../LANGUAGE.md#engine-exports) | — |
+| آزاد انگریزی | — |
 
 **صرف سورس ورژن میں:** مقامی ورکشاپ میں capture کا نام یا گروپ کی قسم بدلیں اور اس کے references تک جائیں۔ یہ پینل کھولیں:
 
@@ -129,6 +130,26 @@ end
 ایک class میں ایک Unicode code point کے literals، ranges، singular shorthands اور Unicode properties جمع کیے جا سکتے ہیں۔ تیسری صورت پوری union کو negate کرتی ہے۔ Counts اور <code dir="ltr">lazy</code> پوری class پر لاگو ہوتے ہیں؛ property complements کا native <code dir="ltr">u</code>/<code dir="ltr">i</code> رویہ برقرار رہتا ہے۔npm <code dir="ltr">0.1.0-dev.5</code> میں دستیاب ہے؛ [character classes](../LANGUAGE.md#composable-character-classes) دیکھیں۔
 
 لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.5</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
+
+## 🌍 اپنی پروگرامنگ زبان میں ایکسپورٹ کریں
+
+**صرف ریپوزٹری کی مقامی نقل سے:** مقامی ورکشاپ میں ایکسپورٹ پینل کھولیں، یا درج ذیل API کال اور ٹرمینل کمانڈ استعمال کریں:
+
+<p dir="ltr" align="left"><code dir="ltr">Export to a programming language</code></p>
+<p dir="ltr" align="left"><code dir="ltr">exportRegex(rules, { target: "python" })</code></p>
+<p dir="ltr" align="left"><code dir="ltr">node bin/regex-for-humans.js --target python --json rules.txt</code></p>
+
+ان نو زبانوں کے لیے فارمیٹس دستیاب ہیں:
+
+<p dir="ltr" align="left">JavaScript · TypeScript · Python · Rust · Go · Java · C# · PHP · Ruby</p>
+
+جاوا اسکرپٹ اور ٹائپ اسکرپٹ اصل پیٹرن برقرار رکھتے ہیں۔ دوسرے اہداف پہلے ساختی درخت سے معاون regex رویہ تبدیل کرتے ہیں، پھر درست escaping کے ساتھ سورس کوڈ بناتے ہیں۔ چھ اصل انجنوں پر تیار شدہ کوڈ کے تقابلی ٹیسٹ کامیاب ہیں؛ **PHP کے اصل runtime کی تصدیق نہیں ہوئی**۔
+
+شرائط اور capture mapping ساتھ رکھیں: دوسرے انجن <code dir="ltr">gN</code> نام استعمال کرتے ہیں اور غیر شریک capture کا نام موجود نہ بھی ہو سکتا ہے۔ ان پٹ درست Unicode ہونا چاہیے۔ غیر معاون flags <code dir="ltr">d/g/i/y</code>، Unicode properties اور assertion، capture یا repetition کے غیر موافق رویے پر مقام سمیت diagnostic ملتا ہے۔ کوڈ یا مکمل <code dir="ltr">JSON</code> ڈاؤن لوڈ کریں؛ براؤزر کی مثالیں اب بھی جاوا اسکرپٹ میں چلتی ہیں۔ یہ اضافے ابھی npm یا شائع شدہ ورکشاپ میں نہیں ہیں۔ موجودہ شائع شدہ نسخہ:
+
+<p dir="ltr" align="left"><code dir="ltr">0.1.0-dev.5</code></p>
+
+تفصیل [انجن پروفائلز اور حدود](../LANGUAGE.md#engine-exports) میں ہے۔
 
 ## 📦 آزمائشی نسخہ انسٹال کریں
 
@@ -420,6 +441,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | <code dir="ltr">--dot-all</code> | <code dir="ltr">s</code> فعال کرتا ہے |
 | <code dir="ltr">--flags</code> | Native JavaScript flags منتخب کریں؛ u/v ساتھ نہیں دیے جا سکتے |
 | <code dir="ltr">--help</code> | مدد |
+| <code dir="ltr">--target</code> | صرف ریپوزٹری سے: منتخب زبان میں ایکسپورٹ؛ [پروفائلز](../LANGUAGE.md#engine-exports) دیکھیں |
 | <code dir="ltr">--version</code> | پیکیج کا ورژن |
 
 ان پٹ کے لیے UTF-8 فائل یا stdin پڑھیں۔ <code dir="ltr">-</code> سے شروع ہونے والے فائل نام سے پہلے <code dir="ltr">--</code> لگائیں۔ Exit codes: کامیابی، مدد اور ورژن کے لیے <code dir="ltr">0</code>؛ غلط قواعد یا input/output error کے لیے <code dir="ltr">1</code>؛ غلط arguments کے لیے <code dir="ltr">2</code>۔

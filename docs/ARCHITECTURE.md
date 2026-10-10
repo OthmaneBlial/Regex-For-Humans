@@ -10,6 +10,8 @@ The typed result carries review notes and limitations, without running matches o
 
 ## Compilation path
 
+The source-only `exportRegex` path parses once and validates with `compileAst` before target-specific emission in `src/export.js`. JavaScript/TypeScript reuse the exact native pattern; foreign backends translate scalar classes, finite sets, assertions, references and repetition with positioned compatibility checks. Capture identities are mapped to ASCII names; emitted regex syntax and language source-code quoting are separate operations. No second grammar, runtime dependency or foreign matcher is loaded by the package. The CLI and on-demand workshop panel call this same public API; changing rules/flags/groups/recipes invalidates exported code. Local code/JSON downloads use text blobs and contain no executed HTML. Native SDK execution exists only in the optional verification script. See [engine exports](LANGUAGE.md#engine-exports) for the supported profiles and input contract.
+
 ```text
 rules (string)
   → src/parser.js: parse and validate each line

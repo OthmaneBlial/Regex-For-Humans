@@ -2,6 +2,15 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+## Engine export source milestone
+
+- Implemented: typed `exportRegex`, CLI `--target` and an on-demand workshop panel with nine source formats, code/metadata downloads, capture-name mapping and requirements. Foreign backends translate supported AST semantics before source-code quoting; the existing JavaScript compiler and isolated matching remain authoritative for browser examples.
+- Native evidence: generated snippets pass 7,388 full-span/mapped-capture comparisons across installed Python, Rust, Go, Java, .NET and Ruby runtimes. PHP is unavailable and visibly unverified. Shared grammar/budgets and positioned errors reject unsupported folding, properties, cursors, assertions, capture resets and nullable repetition. Inactive Rust capture names and Java 17 supplementary lookbehind are handled without promising native numeric-group parity.
+- Documentation: all ten README guides explain source-only exports and retain canonical executable examples. Arabic/Urdu isolate English control names, API calls, commands and the published version with explicit LTR markup. Broader native-speaker, screen-reader and usability reviews remain unchecked.
+- Full verification: the corrected uninterrupted `CI=1 npm run verify` command passes 328 Node, 408 Chromium desktop/mobile, 178 Firefox/WebKit and 64 homepage checks (978 total), clean installed-package consumers, lint/types/docs, both builds and an audit with zero vulnerabilities. The first full attempt exposed a shared CSS selector affecting existing regex-scroll tests; code and regex boxes now have distinct classes with shared styling. Native checkbox hit areas and explicit code-region arrows correct the Firefox/WebKit interactions. All 12 new export flows pass across the four browser projects; the automatically captured 320px panel was visually inspected.
+- Focused verification: all 51 export/CLI/localization checks and a clean installed JavaScript/strict TypeScript/API/CLI consumer pass on Node 22.23.3. All 66 final CLI/API/README/link/localization checks pass after correcting the README's standalone `--target` option entry and clarifying unverified PHP support in CLI help. Final documentation receipts are checked, rebuilt and installed-consumer-verified separately from the full gate.
+- Source distribution: these exports are available from the source checkout. npm and the hosted workshop remain dev.5; their live version is verified and the frozen archive's SHA-256 is unchanged. PHP and human reviews remain unverified. The larger localization/theme/builder/example/release mission stays active.
+
 ## Structural visualization source milestone
 
 - Implemented: shared-AST `toSVG`, standalone SVG export and an on-demand workshop diagram for nested groups, ordered alternatives, empty branches, repetition bounds, zero-width assertions/anchors and references. Character sets remain single semantic leaves. Actual-size scrolling and a fit overview preserve both readable labels and a whole-pattern view.
@@ -43,8 +52,9 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Implement verified engine exports from the researched compatibility constraints.
-2. Workshop localization and the remaining mission waves.
+1. Add workshop localization for English, Simplified Chinese, Spanish and French while keeping the DSL grammar separate.
+2. Prepare the next npm preview and corresponding site/README publication after the next interface milestone.
+3. Continue the remaining theme, builder, debugger, example and developer-adoption requirements.
 
 ## Site and README milestone
 

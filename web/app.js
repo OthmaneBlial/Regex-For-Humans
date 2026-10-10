@@ -1,4 +1,12 @@
-import { analyze, CompileError, compile, editGroup, regexToRules, toSVG } from "../index.js";
+import {
+  analyze,
+  CompileError,
+  compile,
+  editGroup,
+  exportRegex,
+  regexToRules,
+  toSVG,
+} from "../index.js";
 import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
@@ -42,6 +50,16 @@ const ui = {
   compileState: requiredElement("compile-state", HTMLSpanElement),
   flagsSummary: requiredElement("flags-summary", HTMLSpanElement),
   copy: requiredElement("copy-button", HTMLButtonElement),
+  exportPanel: requiredElement("language-export", HTMLDetailsElement),
+  exportTarget: requiredElement("export-target", HTMLSelectElement),
+  exportStatus: requiredElement("export-status", HTMLParagraphElement),
+  exportCode: requiredElement("export-code", HTMLElement),
+  exportViewport: requiredElement("export-code-region", HTMLElement),
+  exportRequirements: requiredElement("export-requirements", HTMLUListElement),
+  exportCaptures: requiredElement("export-captures", HTMLUListElement),
+  exportError: requiredElement("export-error", HTMLButtonElement),
+  exportDownload: requiredElement("export-download", HTMLButtonElement),
+  exportJSON: requiredElement("export-json", HTMLButtonElement),
   diagnostic: requiredElement("diagnostic", HTMLDivElement),
   trace: requiredElement("trace-list", HTMLDivElement),
   review: requiredElement("pattern-review", HTMLDetailsElement),
@@ -89,6 +107,8 @@ let nextTestId = 1;
 let reverseErrorPosition = null;
 /** @type {ReturnType<typeof compile> | null} */
 let compiled = null;
+/** @type {ReturnType<typeof exportRegex> | null} */
+let exported = null;
 /** @type {import('../index.d.ts').GroupSegment[]} */
 let groupSegments = [];
 /** @type {RuleFocus|null} */
@@ -134,6 +154,62 @@ function setDiagnostic(message, invalidRules = false) {
   ui.diagnostic.hidden = !message;
   ui.diagnostic.textContent = message || "";
   ui.rules.setAttribute("aria-invalid", String(invalidRules));
+}
+
+function renderExport() {
+  exported = null;
+  ui.exportCode.textContent = "";
+  ui.exportRequirements.replaceChildren();
+  ui.exportCaptures.replaceChildren();
+  ui.exportDownload.disabled = true;
+  ui.exportJSON.disabled = true;
+  ui.exportError.hidden = true;
+  delete ui.exportStatus.dataset.state;
+  if (!compiled || !ui.exportPanel.open) {
+    ui.exportStatus.textContent = compiled
+      ? "Open this panel to generate source code for the selected language."
+      : "Compile valid rules to export source code.";
+    return;
+  }
+  try {
+    exported = exportRegex(ui.rules.value, {
+      target: /** @type {import('../index.d.ts').ExportTarget} */ (ui.exportTarget.value),
+      flags: compiled.flags,
+    });
+    ui.exportCode.textContent = exported.code;
+    ui.exportStatus.textContent = `${exported.engine}. Source code generated; this browser does not run the exported code.`;
+    for (const requirement of exported.requirements)
+      ui.exportRequirements.append(make("li", "", requirement));
+    for (const capture of exported.captures) {
+      const name = capture.name === null ? "unnamed" : quoteText(capture.name);
+      const target = capture.targetName === null ? `#${capture.index}` : capture.targetName;
+      ui.exportCaptures.append(make("li", "", `#${capture.index} ${name} → ${target}`));
+    }
+    ui.exportDownload.disabled = false;
+    ui.exportJSON.disabled = false;
+  } catch (error) {
+    ui.exportStatus.dataset.state = "error";
+    ui.exportStatus.textContent =
+      error instanceof CompileError
+        ? `${error.code} — line ${error.line}, column ${error.column}: ${error.message}${error.hint ? `\n${error.hint}` : ""}`
+        : `Export failed: ${error instanceof Error ? error.message : String(error)}`;
+    if (error instanceof CompileError) {
+      ui.exportError.hidden = false;
+      ui.exportError.onclick = () => selectLine(error.line, error.column);
+    }
+  }
+}
+
+/** @param {string} text @param {string} filename @param {string} type */
+function downloadText(text, filename, type) {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const link = make("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 /** @param {number} number @param {number} [column] */
@@ -989,6 +1065,7 @@ function compileRules() {
   renderGroupEditor();
   renderReview();
   renderDiagram();
+  renderExport();
   updateTestResults();
 }
 
@@ -1090,16 +1167,49 @@ ui.diagramViewport.addEventListener("keydown", (event) => {
 ui.diagramExport.addEventListener("click", () => {
   renderDiagram();
   if (!compiled || !diagramSVG) return;
-  const url = URL.createObjectURL(new Blob([diagramSVG], { type: "image/svg+xml" }));
-  const link = make("a");
-  link.href = url;
-  link.download = "regex-structure.svg";
-  document.body.append(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  downloadText(diagramSVG, "regex-structure.svg", "image/svg+xml");
   ui.diagramMessage.textContent =
     "SVG export started. The standalone file contains the current structure and flags.";
+});
+ui.exportPanel.addEventListener("toggle", renderExport);
+ui.exportTarget.addEventListener("change", renderExport);
+ui.exportViewport.addEventListener("keydown", (event) => {
+  if (
+    event.target !== ui.exportViewport ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.metaKey ||
+    event.shiftKey ||
+    (event.key !== "ArrowLeft" && event.key !== "ArrowRight") ||
+    ui.exportViewport.scrollWidth <= ui.exportViewport.clientWidth
+  )
+    return;
+  // WebKit does not consistently scroll a focused code region with native arrow keys.
+  event.preventDefault();
+  ui.exportViewport.scrollBy({ left: event.key === "ArrowRight" ? 40 : -40, behavior: "instant" });
+});
+ui.exportDownload.addEventListener("click", () => {
+  if (!exported) return;
+  const filenames = {
+    javascript: "regex-export.js",
+    typescript: "regex-export.ts",
+    python: "regex_export.py",
+    rust: "regex-export.rs",
+    go: "regex-export.go",
+    java: "RegexExample.java",
+    csharp: "RegexExport.cs",
+    php: "regex-export.php",
+    ruby: "regex_export.rb",
+  };
+  downloadText(`${exported.code}\n`, filenames[exported.target], "text/plain;charset=utf-8");
+});
+ui.exportJSON.addEventListener("click", () => {
+  if (!exported) return;
+  downloadText(
+    `${JSON.stringify(exported, null, 2)}\n`,
+    `regex-export-${exported.target}.json`,
+    "application/json",
+  );
 });
 ui.output.addEventListener("mouseup", () => {
   const selection = window.getSelection();

@@ -77,7 +77,8 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | [Group editing and capture highlighting](docs/LANGUAGE.md#editing-groups) | — |
 | [Interactive structure and SVG export](docs/LANGUAGE.md#structural-diagrams) | — |
 | [Structural risk review](docs/LANGUAGE.md#structural-risk-review) | — |
-| Other regex engines and free-form English | — |
+| [Engine-aware code exports](docs/LANGUAGE.md#engine-exports) | — |
+| Free-form English | — |
 
 **Source checkout only:** the local workshop now offers **Edit groups and references**: rename captures, change named/numbered/noncapturing forms and jump to their references. Numeric references keep their original targets when numbering changes; removing a referenced capture is rejected without changing the rules. **Highlight** selects a capture's native input range, including empty captures and captures outside the consumed match. The shared `editGroup` API returns validated rules. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet; see [group editing](docs/LANGUAGE.md#editing-groups).
 
@@ -94,6 +95,14 @@ The compiler also accepts `unicode property "L"` and `not unicode property "L"` 
 The compiler supports `range "α" to "ω"` and `character class: digit, "_"`. Combine one-code-point literals, ranges, singular shorthands and Unicode properties in one class; `not character class:` negates the whole union. Counts and `lazy` apply to the class. Property complements keep their native `u`/`i` behavior. Available in npm `0.1.0-dev.5`; see [character classes](docs/LANGUAGE.md#composable-character-classes).
 
 The `0.1.0-dev.5` preview includes groups, captures, backward references and ordered alternatives in the library and CLI. The browser workshop adds capture inspection and multiple search matches. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
+
+<a name="exports"></a>
+
+## 🌍 Export to your language
+
+**Source checkout only:** open **Export to a programming language** in the local workshop, call `exportRegex(rules, { target: "python" })`, or run `node bin/regex-for-humans.js --target python --json rules.txt`. Nine formats cover JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP and Ruby. JavaScript/TypeScript retain the existing native pattern; other targets translate supported AST semantics before quoting source code.
+
+Six native engines have passed generated-code comparisons; **PHP runtime parity is unverified**. Keep the returned requirements and capture mapping: foreign captures use `gN` names, and inactive names can be absent. Foreign input must be well-formed Unicode. Unsupported flags (`d/g/i/y`), Unicode properties and incompatible assertions or capture/repetition behavior produce positioned diagnostics. Download code or the complete export JSON; browser examples still run in JavaScript. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet. Read the [profiles and limits](docs/LANGUAGE.md#engine-exports).
 
 <a name="install"></a>
 
@@ -404,6 +413,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--flags` | Select native JavaScript flags; u/v are exclusive |
 | `--flags FLAGS` | Source only: select unique `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` flags |
 | `--help` | Show usage |
+| `--target` | Source checkout only: export supported semantics to the named language; see [profiles](docs/LANGUAGE.md#engine-exports) |
 | `--version` | Show the package version |
 
 Read UTF-8 rules from a file or stdin. Use `--` before a filename starting with `-`.

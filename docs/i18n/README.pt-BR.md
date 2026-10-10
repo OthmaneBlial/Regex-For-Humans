@@ -57,7 +57,8 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 | [Edição de grupos e destaque de capturas](../LANGUAGE.md#editing-groups) | — |
 | [Estrutura interativa e exportação SVG](../LANGUAGE.md#structural-diagrams) | — |
 | [Revisão de riscos estruturais](../LANGUAGE.md#structural-risk-review) | — |
-| Outros motores e inglês livre | — |
+| [Exportação de código adaptada ao motor](../LANGUAGE.md#engine-exports) | — |
+| Inglês livre | — |
 
 **Somente no código-fonte:** o workshop local oferece **Edit groups and references** para renomear capturas, mudar seu tipo e localizar suas referências. As referências numéricas mantêm seus destinos quando a numeração muda; remover uma captura referenciada é recusado sem alterar as regras. **Highlight** destaca o intervalo nativo de uma captura, mesmo vazia ou fora do texto consumido. A API `editGroup` retorna regras validadas. Essas mudanças ainda não estão no npm `0.1.0-dev.5` nem no workshop hospedado. Veja a [edição de grupos](../LANGUAGE.md#editing-groups).
 
@@ -72,6 +73,12 @@ O código-fonte também aceita `unicode property "L"` e `not unicode property "L
 O código-fonte aceita `range "α" to "ω"` e `character class: digit, "_"`. Uma classe combina literais de um ponto Unicode, intervalos, atalhos no singular e propriedades Unicode; `not character class:` nega a união inteira. Contagens e `lazy` se aplicam à classe. Complementos preservam o comportamento nativo `u`/`i`. Disponível no npm `0.1.0-dev.5`; veja [classes de caracteres](../LANGUAGE.md#composable-character-classes).
 
 O npm `0.1.0-dev.5` inclui grupos, capturas, referências anteriores e alternativas ordenadas na biblioteca e no CLI. A oficina acrescenta inspeção de capturas e múltiplas correspondências de busca. Veja [compatibilidade](../COMPATIBILITY.md) e [publicação](../DISTRIBUTION.md).
+
+## 🌍 Exportar para sua linguagem
+
+**Somente a partir de uma cópia do repositório:** abra **Export to a programming language** na oficina local, chame `exportRegex(rules, { target: "python" })` ou execute `node bin/regex-for-humans.js --target python --json rules.txt`. Os nove formatos são JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP e Ruby. JavaScript/TypeScript mantêm o padrão nativo; os outros destinos traduzem os comportamentos compatíveis a partir da AST antes de gerar o código-fonte com o escape correto.
+
+As comparações do código gerado passam em seis motores nativos; **PHP não tem validação nativa**. Preserve os requisitos e o mapa das capturas: os destinos externos usam nomes `gN`, e uma captura inativa pode estar ausente. A entrada deve ser Unicode bem formado. As opções `d/g/i/y`, propriedades Unicode e comportamentos incompatíveis de asserção, captura ou repetição geram diagnósticos com localização. Baixe o código ou o resultado JSON completo; os exemplos no navegador continuam em JavaScript. Estas mudanças ainda não estão no npm `0.1.0-dev.5` nem na oficina publicada. Veja os [perfis e limites](../LANGUAGE.md#engine-exports).
 
 ## 📦 Instalar a prévia
 
@@ -315,6 +322,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--dot-all` | Flag `s` |
 | `--flags` | Selecionar flags nativos de JavaScript; u/v são exclusivos |
 | `--help` | Ajuda |
+| `--target` | Somente pelo repositório: exportar para a linguagem indicada; veja os [perfis](../LANGUAGE.md#engine-exports) |
 | `--version` | Versão |
 
 Leia um arquivo UTF-8 ou stdin. Use `--` antes de nomes iniciados por `-`. Saídas: `0` para sucesso/ajuda/versão, `1` para regras inválidas ou falha de E/S, `2` para argumentos inválidos.

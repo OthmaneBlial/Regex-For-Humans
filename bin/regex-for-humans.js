@@ -3,7 +3,7 @@
 import { createReadStream, readFileSync } from "node:fs";
 import { stderr, stdin, stdout } from "node:process";
 import { fileURLToPath } from "node:url";
-import { CompileError, compile, regexToRules } from "../index.js";
+import { CompileError, compile, exportRegex, regexToRules } from "../index.js";
 import { escapeControls } from "../src/display.js";
 import { LIMITS, validateSourceLength } from "../src/parser.js";
 import {
@@ -25,6 +25,9 @@ Options:
   --ignore-case  Add the JavaScript i flag
   --dot-all      Add the JavaScript s flag
   --flags FLAGS  Select unique JavaScript d, g, i, m, s, u, v, y flags
+  --target NAME  Export source code: javascript, typescript, python, rust,
+                 go, java, csharp, php or ruby (target-specific limits;
+                 PHP runtime parity is unverified)
   --             Treat the next argument as the input path
   --help         Show this help
   --version      Show the package version
@@ -51,6 +54,8 @@ async function main() {
   }
   let explain = false;
   let reverse = false;
+  /** @type {string|undefined} */
+  let target;
   let flags = "";
   let aliasFlags = "";
   let flagsSupplied = false;
@@ -139,6 +144,14 @@ async function main() {
       if (!aliasFlags.includes("s")) aliasFlags += "s";
       continue;
     }
+    if (!optionsEnded && (arg === "--target" || arg.startsWith("--target="))) {
+      const supplied = arg === "--target" ? args[++argIndex] : arg.slice("--target=".length);
+      if (!supplied || supplied.startsWith("-"))
+        return usageError("--target needs a source-code target name.");
+      if (target !== undefined) return usageError("Only one --target is allowed.");
+      target = supplied;
+      continue;
+    }
     if (!optionsEnded && (arg === "--flags" || arg.startsWith("--flags="))) {
       const supplied = arg === "--flags" ? args[++argIndex] : arg.slice("--flags=".length);
       if (supplied === undefined || supplied.startsWith("-"))
@@ -158,11 +171,15 @@ async function main() {
 
   for (const flag of aliasFlags) if (!flags.includes(flag)) flags += flag;
 
-  if (reverse && (explain || flagsSupplied)) {
+  if (reverse && (explain || flagsSupplied || target !== undefined)) {
     return usageError(
-      "--reverse cannot be combined with --explain, --ignore-case, --dot-all or --flags.",
+      "--reverse cannot be combined with --explain, --ignore-case, --dot-all, --flags or --target.",
     );
   }
+  if (target !== undefined && explain)
+    return usageError(
+      "--target cannot be combined with --explain; target spans differ from the JavaScript explanation.",
+    );
 
   if (file === undefined && stdin.isTTY) {
     return usageError(
@@ -214,6 +231,20 @@ async function main() {
             `Compile these rules with ${options} to preserve the regex flags, or use --json.\n`,
           );
         }
+      }
+      return;
+    }
+    if (target !== undefined) {
+      const result = exportRegex(input, {
+        target: /** @type {import('../index.d.ts').ExportTarget} */ (target),
+        flags,
+      });
+      stdout.write(`${json ? escapeControls(JSON.stringify(result)) : result.code}\n`);
+      if (!json) {
+        for (const requirement of result.requirements)
+          stderr.write(`${escapeControls(requirement)}\n`);
+        if (result.captures.length)
+          stderr.write(`Capture mapping: ${escapeControls(JSON.stringify(result.captures))}\n`);
       }
       return;
     }

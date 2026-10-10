@@ -37,6 +37,7 @@
   "scripts": {
     "test": "node scripts/run-node-tests.js",
     "test:package": "node scripts/verify-package.js",
+    "test:exports": "node scripts/verify-exports.js",
     "format:check": "biome format .",
     "lint": "biome lint .",
     "typecheck": "tsc --noEmit",

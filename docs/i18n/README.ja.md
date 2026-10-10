@@ -57,7 +57,8 @@ end
 | [グループの編集とキャプチャ範囲の強調](../LANGUAGE.md#editing-groups) | — |
 | [対話型の構造図とSVG出力](../LANGUAGE.md#structural-diagrams) | — |
 | [構造上のリスクの確認](../LANGUAGE.md#structural-risk-review) | — |
-| 他の正規表現エンジンや自由な英文 | — |
+| [対象エンジンに合わせたコード出力](../LANGUAGE.md#engine-exports) | — |
+| 自由な英文 | — |
 
 **ソース版のみ：**ローカルのワークショップに **Edit groups and references** が追加され、キャプチャ名の変更、グループ種別の変更、参照位置への移動ができます。番号が変わっても数値参照は元のキャプチャを指します。参照されているキャプチャを非キャプチャに変更すると操作を拒否し、元のルールを保持します。**Highlight** はネイティブの入力範囲を強調し、空のキャプチャや消費したマッチの外側にあるキャプチャにも対応します。`editGroup` API は検証済みのルールを返します。npm `0.1.0-dev.5` と公開ワークショップにはまだ含まれていません。[グループ編集](../LANGUAGE.md#editing-groups)を参照してください。
 
@@ -72,6 +73,12 @@ end
 ソースは `range "α" to "ω"` と `character class: digit, "_"` をサポートします。1 Unicode コードポイントのリテラル、範囲、単数の略記、Unicode プロパティを一つのクラスにまとめられます。`not character class:` は和集合全体を否定し、回数指定と `lazy` はクラスに適用されます。プロパティの補集合はネイティブの `u`/`i` の挙動を保ちます。npm `0.1.0-dev.5` で利用できます。[文字クラス](../LANGUAGE.md#composable-character-classes)を参照してください。
 
 npm `0.1.0-dev.5` のライブラリと CLI は、グループ、キャプチャ、後方参照、順序付き選択肢に対応しています。ワークショップではキャプチャの確認と複数の検索一致も利用できます。[互換性](../COMPATIBILITY.md)と[公開の記録](../DISTRIBUTION.md)を確認してください。
+
+## 🌍 使用する言語に出力する
+
+**リポジトリのソース限定：**ローカルのワークショップで **Export to a programming language** を開くか、`exportRegex(rules, { target: "python" })` を呼び出すか、`node bin/regex-for-humans.js --target python --json rules.txt` を実行します。JavaScript、TypeScript、Python、Rust、Go、Java、C#、PHP、Ruby の9形式があります。JavaScript/TypeScript は既存のネイティブパターンを保持し、それ以外の対象は AST から対応する正規表現の意味を変換した後、正しくエスケープしたソースコードを生成します。
+
+生成コードの比較は6つのネイティブエンジンで通過しています。**PHP のネイティブ実行は未検証です。**要件とキャプチャ対応表を保存してください。他のエンジンでは `gN` という名前を使い、未参加のキャプチャ名が存在しない場合もあります。入力は正しい Unicode である必要があります。非対応のフラグ（`d/g/i/y`）、Unicode プロパティ、互換性のないアサーション・キャプチャ・繰り返しには位置付き診断を返します。コードまたは完全な JSON をダウンロードできますが、ブラウザの例は引き続き JavaScript で実行します。npm `0.1.0-dev.5` と公開済みワークショップにはまだ含まれていません。[エンジンと制限](../LANGUAGE.md#engine-exports)を確認してください。
 
 ## 📦 プレビューをインストールする
 
@@ -315,6 +322,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--dot-all` | `s` |
 | `--flags` | JavaScript のフラグを指定。u/v は同時に使えません |
 | `--help` | ヘルプ |
+| `--target` | リポジトリ限定：指定言語に出力。[エンジン](../LANGUAGE.md#engine-exports)を参照 |
 | `--version` | パッケージのバージョン |
 
 UTF-8 ファイルか stdin を読みます。`-` で始まるファイル名の前には `--` を使います。終了コードは成功・ヘルプ・バージョンが `0`、ルールや入出力のエラーが `1`、引数エラーが `2` です。

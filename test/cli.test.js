@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { compile, regexToRules, toRegExp } from "../index.js";
+import { compile, exportRegex, regexToRules, toRegExp } from "../index.js";
 import { LIMITS } from "../src/parser.js";
 
 const cli = fileURLToPath(new URL("../bin/regex-for-humans.js", import.meta.url));
@@ -983,8 +983,8 @@ test("CLI reverse reads UTF-8 files and accepts a leading-dash path after --", (
 
 test("CLI reverse rejects conflicting forward options before reading input", () => {
   const message =
-    "--reverse cannot be combined with --explain, --ignore-case, --dot-all or --flags.";
-  for (const flag of ["--explain", "--ignore-case", "--dot-all", "--flags=u"]) {
+    "--reverse cannot be combined with --explain, --ignore-case, --dot-all, --flags or --target.";
+  for (const flag of ["--explain", "--ignore-case", "--dot-all", "--flags=u", "--target=python"]) {
     for (const json of [false, true]) {
       const output = run([flag, "--reverse", ...(json ? ["--json"] : []), "-"], "not a regex");
       assert.equal(output.status, 2);
@@ -993,6 +993,56 @@ test("CLI reverse rejects conflicting forward options before reading input", () 
         assert.deepEqual(JSON.parse(output.stderr), { error: { code: "CLI_USAGE", message } });
       else assert.ok(output.stderr.startsWith(`${message}\nUsage:`));
     }
+  }
+});
+
+test("CLI exports source code, capture mappings and requirements without changing default compilation", () => {
+  const rules = 'capture "اسم" {\ndigits\n}';
+  for (const target of [
+    "javascript",
+    "typescript",
+    "python",
+    "rust",
+    "go",
+    "java",
+    "csharp",
+    "php",
+    "ruby",
+  ]) {
+    const expected = exportRegex(rules, { target });
+    const plain = run(["--target", target, "-"], rules);
+    assert.equal(plain.status, 0);
+    assert.equal(plain.stdout, `${expected.code}\n`);
+    assert.ok(plain.stderr.includes(expected.requirements[0]));
+    assert.ok(plain.stderr.includes("Capture mapping:"));
+    const json = run([`--target=${target}`, "--json", "-"], rules);
+    assert.equal(json.status, 0);
+    assert.equal(json.stderr, "");
+    assert.deepEqual(JSON.parse(json.stdout), expected);
+  }
+  assert.equal(run(["-"], "digit").stdout, "/\\d/u\n");
+});
+
+test("CLI target arguments and unsupported constructs report distinct usage/compiler errors", () => {
+  for (const args of [
+    ["--target"],
+    ["--target="],
+    ["--target=python", "--target=ruby"],
+    ["--target=python", "--explain"],
+  ]) {
+    const result = run(["--json", ...args, "-"], "digit");
+    assert.equal(result.status, 2);
+    assert.equal(result.stdout, "");
+    assert.equal(JSON.parse(result.stderr).error.code, "CLI_USAGE");
+  }
+  for (const [target, rules, code] of [
+    ["perl", "digit", "UNSUPPORTED_EXPORT_TARGET"],
+    ["go", 'followed by {\n"a"\n}', "EXPORT_LOOKAROUND"],
+  ]) {
+    const result = run([`--target=${target}`, "--json", "-"], rules);
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, "");
+    assert.equal(JSON.parse(result.stderr).error.code, code);
   }
 });
 

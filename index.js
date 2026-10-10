@@ -32,4 +32,5 @@ export { analyze } from "./src/analyze.js";
 export { CompileError } from "./src/diagnostics.js";
 export { toSVG } from "./src/diagram.js";
 export { editGroup } from "./src/edit-group.js";
+export { exportRegex } from "./src/export.js";
 export { regexToRules };

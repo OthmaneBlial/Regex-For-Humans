@@ -1,5 +1,7 @@
 # Security policy
 
+Source-only engine exports construct correctly quoted source code; they do not execute it or provide a foreign matching sandbox. Foreign profiles require well-formed Unicode and explicitly reject unsupported semantics. Keep the returned requirements and capture-name mapping with the code, bound untrusted matching in the receiving application and handle target compilation/resource errors. The .NET snippet supplies a 1,200ms native match timeout; callers must handle `RegexMatchTimeoutException`. PHP/PCRE2 runtime parity remains unverified. See [the export contract](docs/LANGUAGE.md#engine-exports).
+
 [regex-for-humans@0.1.0-dev.5](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.5) is an experimental npm preview. No stable release is supported yet. Security fixes target `main`; its current behavior can differ from the published preview.
 
 Please report a suspected vulnerability through GitHub's [private vulnerability reporting form](https://github.com/OthmaneBlial/Regex-For-Humans/security/advisories/new). Private reporting is enabled for this repository. Include the affected commit or version, reproduction steps, expected and observed behavior, and impact. Do not include real secrets or personal data in a reproducer. Please avoid posting exploitable details in a public issue before maintainers have had a chance to investigate.

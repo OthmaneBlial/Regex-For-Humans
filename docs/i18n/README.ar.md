@@ -75,7 +75,8 @@ end
 | [تحرير المجموعات وإبراز مواضع الالتقاط](../LANGUAGE.md#editing-groups) | — |
 | [بنية تفاعلية وتصدير <code dir="ltr">SVG</code>](../LANGUAGE.md#structural-diagrams) | — |
 | [مراجعة المخاطر البنيوية](../LANGUAGE.md#structural-risk-review) | — |
-| محركات أخرى والإنجليزية الحرة | — |
+| [تصدير شيفرة مناسبة للمحرك المستهدف](../LANGUAGE.md#engine-exports) | — |
+| الإنجليزية الحرة | — |
 
 **في نسخة المصدر فقط:** تتيح الورشة المحلية إعادة تسمية الالتقاط، وتغيير نوع المجموعة، والانتقال إلى مراجعها. افتح لوحة:
 
@@ -129,6 +130,26 @@ end
 تجمع الفئة محارف مفردة من نقطة Unicode واحدة ونطاقات واختصارات مفردة وخصائص Unicode. تنفي الصيغة الثالثة الاتحاد كله. تنطبق أعداد التكرار والمعدّل <code dir="ltr">lazy</code> على الفئة، مع الحفاظ على سلوك متمّمات الخصائص الأصلي مع <code dir="ltr">u</code>/<code dir="ltr">i</code>. متاح في npm <code dir="ltr">0.1.0-dev.5</code>؛ راجع [فئات المحارف](../LANGUAGE.md#composable-character-classes).
 
 تتضمن حزمة npm <code dir="ltr">0.1.0-dev.5</code> المجموعات والالتقاطات والمراجع السابقة والبدائل المرتبة في المكتبة وسطر الأوامر. تضيف الورشة فحص الالتقاطات ومطابقات البحث المتعددة. راجع [التوافق](../COMPATIBILITY.md) و[سجل النشر](../DISTRIBUTION.md).
+
+## 🌍 التصدير إلى لغة البرمجة التي تستخدمها
+
+**من نسخة المستودع المحلية فقط:** افتح لوحة التصدير في الورشة المحلية، أو استخدم واجهة البرمجة أو أمر الطرفية التاليين:
+
+<p dir="ltr" align="left"><code dir="ltr">Export to a programming language</code></p>
+<p dir="ltr" align="left"><code dir="ltr">exportRegex(rules, { target: "python" })</code></p>
+<p dir="ltr" align="left"><code dir="ltr">node bin/regex-for-humans.js --target python --json rules.txt</code></p>
+
+تتوفر تسع صيغ للغات التالية:
+
+<p dir="ltr" align="left">JavaScript · TypeScript · Python · Rust · Go · Java · C# · PHP · Ruby</p>
+
+تحتفظ صيغتا جافاسكربت وتايبسكربت بالتعبير الأصلي. تترجم الأهداف الأخرى السلوك المدعوم من شجرة البنية أولًا، ثم تنتج شيفرة مصدر مع محارف هروب صحيحة. نجحت مقارنات الشيفرة المولدة على ستة محركات أصلية؛ **لم يُتحقق من التنفيذ الأصلي في PHP**.
+
+احتفظ بالمتطلبات وخريطة الالتقاطات: تستخدم المحركات الأخرى أسماء <code dir="ltr">gN</code>، وقد يغيب اسم الالتقاط غير المشارك. يجب أن يكون النص Unicode سليمًا. تؤدي الرايات غير المدعومة <code dir="ltr">d/g/i/y</code> وخصائص Unicode والسلوك غير المتوافق للتوكيدات والالتقاطات والتكرار إلى تشخيص يحدد الموضع. يمكنك تنزيل الشيفرة أو نتيجة <code dir="ltr">JSON</code> الكاملة؛ تظل أمثلة المتصفح تعمل بجافاسكربت. هذه الإضافات ليست بعد في npm أو الورشة المنشورة، والإصدار المنشور حاليًا:
+
+<p dir="ltr" align="left"><code dir="ltr">0.1.0-dev.5</code></p>
+
+راجع [المحركات المدعومة والحدود](../LANGUAGE.md#engine-exports).
 
 ## 📦 تثبيت النسخة التجريبية
 
@@ -420,6 +441,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | <code dir="ltr">--dot-all</code> | يفعّل <code dir="ltr">s</code> |
 | <code dir="ltr">--flags</code> | اختيار رايات JavaScript الأصلية؛ لا يمكن الجمع بين u/v |
 | <code dir="ltr">--help</code> | المساعدة |
+| <code dir="ltr">--target</code> | من المستودع فقط: التصدير إلى اللغة المحددة؛ راجع [المحركات](../LANGUAGE.md#engine-exports) |
 | <code dir="ltr">--version</code> | إصدار الحزمة |
 
 اقرأ ملف UTF-8 أو الإدخال القياسي. استخدم <code dir="ltr">--</code> قبل اسم ملف يبدأ بـ <code dir="ltr">-</code>. رموز الخروج: <code dir="ltr">0</code> للنجاح والمساعدة والإصدار؛ <code dir="ltr">1</code> لقواعد غير صالحة أو خطأ إدخال/إخراج؛ <code dir="ltr">2</code> لوسائط غير صالحة.

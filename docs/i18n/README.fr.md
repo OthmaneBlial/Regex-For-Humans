@@ -61,7 +61,8 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 | [Édition des groupes et surlignage des captures](../LANGUAGE.md#editing-groups) | — |
 | [Structure interactive et export SVG](../LANGUAGE.md#structural-diagrams) | — |
 | [Revue des risques structurels](../LANGUAGE.md#structural-risk-review) | — |
-| Autres moteurs et anglais libre | — |
+| [Export de code adapté au moteur](../LANGUAGE.md#engine-exports) | — |
+| Anglais libre | — |
 
 **Uniquement dans le dépôt source :** l’atelier local propose **Edit groups and references** pour renommer une capture, changer son type et accéder à ses références. Les références numériques conservent leur cible après une renumérotation ; supprimer une capture référencée est refusé sans modifier les règles. **Highlight** surligne la position native d’une capture, même vide ou hors du texte consommé. L’API `editGroup` renvoie des règles validées. Ces ajouts ne sont pas encore dans npm `0.1.0-dev.5` ni dans l’atelier hébergé. Voir l’[édition des groupes](../LANGUAGE.md#editing-groups).
 
@@ -76,6 +77,12 @@ Le source accepte aussi `unicode property "L"` et `not unicode property "L"`, so
 Le source accepte `range "α" to "ω"` et `character class: digit, "_"`. Une classe combine des littéraux d’un point Unicode, des plages, des raccourcis singuliers et des propriétés Unicode ; `not character class:` nie l’union entière. Les comptes et `lazy` s’appliquent à la classe. Les compléments de propriétés conservent le comportement natif `u`/`i`. Disponible dans npm `0.1.0-dev.5`; voir les [classes de caractères](../LANGUAGE.md#composable-character-classes).
 
 npm `0.1.0-dev.5` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
+
+## 🌍 Exporter dans votre langage
+
+**Depuis une copie du dépôt uniquement :** ouvrez **Export to a programming language** dans l’atelier local, appelez `exportRegex(rules, { target: "python" })`, ou lancez `node bin/regex-for-humans.js --target python --json rules.txt`. Neuf formats couvrent JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP et Ruby. JavaScript/TypeScript conservent le motif natif ; les autres cibles traduisent les comportements pris en charge depuis l’AST, puis produisent le code source correctement échappé.
+
+Les comparaisons du code généré passent sur six moteurs natifs ; **PHP n’a pas de validation native**. Conservez les contraintes et la correspondance des captures : les cibles étrangères utilisent des noms `gN`, et une capture inactive peut être absente. Le texte doit être Unicode bien formé. Les options `d/g/i/y`, propriétés Unicode et comportements incompatibles d’assertion, capture ou répétition donnent un diagnostic situé. Téléchargez le code ou le résultat JSON complet ; les exemples du navigateur restent exécutés en JavaScript. Ces ajouts ne sont pas encore dans npm `0.1.0-dev.5` ni l’atelier publié. Consultez les [profils et limites](../LANGUAGE.md#engine-exports).
 
 ## 📦 Installer l’aperçu
 
@@ -319,6 +326,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--dot-all` | Active `s` |
 | `--flags` | Choisir les flags JavaScript natifs ; u/v sont exclusifs |
 | `--help` | Aide |
+| `--target` | Depuis le dépôt uniquement : exporter vers le langage demandé ; voir les [profils](../LANGUAGE.md#engine-exports) |
 | `--version` | Version du paquet |
 
 Lisez un fichier UTF-8 ou stdin. Utilisez `--` avant un nom de fichier commençant par `-`. Codes de sortie : `0` pour succès/aide/version, `1` pour règles invalides ou erreur d’entrée/sortie, `2` pour arguments invalides.

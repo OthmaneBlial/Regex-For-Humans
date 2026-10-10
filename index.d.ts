@@ -146,6 +146,32 @@ export interface CompileOptions {
   flags?: string | undefined;
 }
 
+export type ExportTarget =
+  | "javascript"
+  | "typescript"
+  | "python"
+  | "rust"
+  | "go"
+  | "java"
+  | "csharp"
+  | "php"
+  | "ruby";
+
+export interface ExportOptions extends CompileOptions {
+  target?: ExportTarget | undefined;
+}
+
+export interface RegexExport {
+  target: ExportTarget;
+  engine: string;
+  source: string;
+  flags: string;
+  originalFlags: string;
+  code: string;
+  captures: { index: number; name: string | null; targetName: string | null }[];
+  requirements: string[];
+}
+
 export type AnalysisCode =
   | "NESTED_REPETITION"
   | "ADJACENT_REPETITIONS"
@@ -189,6 +215,8 @@ export class CompileError extends Error {
 }
 
 export function compile(source: string, options?: CompileOptions): CompileResult;
+/** Generate source code and translate supported regex semantics for a selected engine. */
+export function exportRegex(source: string, options?: ExportOptions): RegexExport;
 /** Inspect validated rules with structural heuristics, without proving performance safety. */
 export function analyze(source: string, options?: CompileOptions): AnalysisResult;
 /** Render validated readable rules as a standalone structural SVG. */

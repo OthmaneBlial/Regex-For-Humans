@@ -57,7 +57,8 @@ end
 | [समूह संपादन और capture की जगह हाइलाइट करना](../LANGUAGE.md#editing-groups) | — |
 | [इंटरैक्टिव संरचना और SVG निर्यात](../LANGUAGE.md#structural-diagrams) | — |
 | [संरचना के जोखिमों की समीक्षा](../LANGUAGE.md#structural-risk-review) | — |
-| दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — |
+| [लक्षित इंजन के अनुसार कोड निर्यात](../LANGUAGE.md#engine-exports) | — |
+| मुक्त अंग्रेज़ी वाक्य | — |
 
 **केवल सोर्स संस्करण में:** स्थानीय वर्कशॉप में **Edit groups and references** से capture का नाम या समूह का प्रकार बदलें और उसके references तक जाएँ। नंबर बदलने पर भी संख्यात्मक references अपने मूल capture को इंगित करते हैं। जिस capture का reference मौजूद है, उसे noncapturing बनाने पर बदलाव अस्वीकार होता है और मूल नियम सुरक्षित रहते हैं। **Highlight** native indices से capture की जगह दिखाता है, चाहे capture खाली हो या consumed match से बाहर हो। `editGroup` API जाँचे गए नियम लौटाता है। ये सुविधाएँ अभी npm `0.1.0-dev.5` या होस्टेड वर्कशॉप में नहीं हैं। [समूह संपादन](../LANGUAGE.md#editing-groups) देखें।
 
@@ -72,6 +73,12 @@ end
 सोर्स में `range "α" to "ω"` और `character class: digit, "_"` उपलब्ध हैं। एक class में एक Unicode code point के literals, ranges, singular shorthands और Unicode properties जोड़ सकते हैं। `not character class:` पूरी union को नकारता है; counts और `lazy` पूरी class पर लागू होते हैं। Property complements का native `u`/`i` व्यवहार सुरक्षित रहता है।npm `0.1.0-dev.5` में उपलब्ध है; [character classes](../LANGUAGE.md#composable-character-classes) देखें।
 
 npm `0.1.0-dev.5` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
+
+## 🌍 अपनी प्रोग्रामिंग भाषा में निर्यात करें
+
+**केवल रिपॉज़िटरी के स्रोत से:** स्थानीय वर्कशॉप में **Export to a programming language** खोलें, `exportRegex(rules, { target: "python" })` कॉल करें या `node bin/regex-for-humans.js --target python --json rules.txt` चलाएँ। नौ प्रारूप हैं: JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP और Ruby। JavaScript/TypeScript मौजूदा native pattern रखते हैं; अन्य लक्ष्य AST से समर्थित regex व्यवहार बदलने के बाद सही escaping वाला source code बनाते हैं।
+
+छह native engines पर generated-code comparisons सफल हैं; **PHP का native runtime सत्यापित नहीं है**। आवश्यकताएँ और capture mapping सुरक्षित रखें: अन्य engines में नाम `gN` होते हैं और निष्क्रिय capture का नाम अनुपस्थित हो सकता है। इनपुट वैध Unicode होना चाहिए। असमर्थित flags (`d/g/i/y`), Unicode properties और असंगत assertion, capture या repetition व्यवहार स्थान सहित diagnostic देते हैं। कोड या पूरा JSON डाउनलोड करें; ब्राउज़र के उदाहरण अभी भी JavaScript में चलते हैं। ये सुविधाएँ npm `0.1.0-dev.5` या प्रकाशित वर्कशॉप में अभी नहीं हैं। [इंजन प्रोफ़ाइल और सीमाएँ](../LANGUAGE.md#engine-exports) देखें।
 
 ## 📦 प्रीव्यू इंस्टॉल करें
 
@@ -315,6 +322,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--dot-all` | `s` flag |
 | `--flags` | Native JavaScript flags चुनें; u/v साथ नहीं दिए जा सकते |
 | `--help` | सहायता |
+| `--target` | केवल रिपॉज़िटरी से: चुनी हुई भाषा में निर्यात; [प्रोफ़ाइल](../LANGUAGE.md#engine-exports) देखें |
 | `--version` | पैकेज संस्करण |
 
 UTF-8 फ़ाइल या stdin पढ़ें। `-` से शुरू फ़ाइल नाम से पहले `--` लगाएँ। Exit codes: सफलता/सहायता/संस्करण के लिए `0`, invalid rules या I/O errors के लिए `1`, invalid arguments के लिए `2`।

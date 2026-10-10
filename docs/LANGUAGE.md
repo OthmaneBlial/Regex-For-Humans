@@ -12,6 +12,47 @@ Input and line anchors can be combined. Each retains its own meaning, including 
 
 The [complex-examples guide](COMPLEX-EXAMPLES.md) combines these atoms into an access log, structured event, artifact manifest and multiline order. It includes complete regexes, every generated explanation, accepted/rejected inputs and capture/nested-group import examples.
 
+## Engine exports
+
+**Source checkout only:** `exportRegex`, CLI `--target` and the local workshop's **Export to a programming language** panel are not included in npm `0.1.0-dev.5` or the hosted workshop yet. JavaScript and TypeScript generate code for the existing ECMAScript pattern. The other targets translate supported regex semantics through the validated AST before quoting the resulting pattern as source code. Quoting alone is not an engine conversion.
+
+From the repository root:
+
+```js
+import { exportRegex } from "./index.js";
+
+const result = exportRegex('capture "field" {\n3 digits\n}', { target: "python" });
+console.log(result.code);
+console.log(result.captures); // [{ index: 1, name: "field", targetName: "g1" }]
+console.log(result.requirements);
+```
+
+```sh
+node bin/regex-for-humans.js --target python rules.txt
+node bin/regex-for-humans.js --target=python --json rules.txt
+```
+
+The API accepts `ExportOptions` with `target` and the existing `flags`; the default target is `javascript`. `RegexExport` returns `target`, `engine`, target regex `source`, target-native `flags`, canonical ECMAScript `originalFlags`, quoted source `code`, `captures` and `requirements`. It does not return JavaScript source spans for the translated pattern. CLI text mode writes code to stdout and requirements/capture mapping to stderr; JSON mode returns the full object. `--target` cannot be combined with `--reverse` or `--explain`. Positioned `CompileError` diagnostics retain the original rules' line/column.
+
+| Target | Engine profile | Assertions and references |
+| --- | --- | --- |
+| `javascript`, `typescript` | Existing runtime's ECMAScript RegExp | Existing compiler semantics and all supported flags |
+| `python` | Python 3.14 `re` | Lookahead; fixed-width lookbehind; conditional handling of unset backward references |
+| `rust` | Rust `regex` 1.13 | No lookaround/backreferences; no portable line anchors |
+| `go` | Go 1.22 `regexp` | No lookaround/backreferences; no portable line anchors; nested counted repetition respects the native 1,000-count limit |
+| `java` | Java 17 `Pattern` | Lookahead; finite-width lookbehind with capture restrictions; backward references only when the capture must participate |
+| `csharp` | .NET 10 `Regex` | Lookahead; backward lookbehind; conditional handling of unset references; 1,200ms constructor match timeout |
+| `php` | PHP 8 / PCRE2 fixed-lookbehind profile | Generated profile only, **native runtime unverified**; lookahead, fixed-width top-level lookbehind alternatives and conditional unset references |
+| `ruby` | Ruby 2.6 `Regexp` | Lookahead; fixed-width top-level lookbehind alternatives; no captures in negative lookbehind; references require capture participation |
+
+Foreign targets require **well-formed Unicode input**: lone surrogate code units and malformed UTF-8 are outside their contract. The backend emits explicit ECMAScript ASCII digit/word sets, whitespace and line terminators, translates finite Unicode-set algebra, and handles scalar atoms in .NET's UTF-16 engine. `m`, `s`, `u` and `v` are lowered through the AST; the native flags field is empty except PHP's `u`. JavaScript `d`, `g`, `i` and `y` are rejected with `UNSUPPORTED_EXPORT_FLAGS`: native indices, stateful cursors and Unicode case folding are not silently approximated. Native Unicode character/string properties remain unsupported because the engines' Unicode editions and membership have not been proved equivalent.
+
+Every foreign capture uses an ASCII `gN` name, including originally unnamed captures; `captures` maps the original opening-order index/name to that target name. Read target captures by **mapped name**, treating inactive or missing names as absent. Rust can remove a `{0}` capture and renumber later groups. Original numeric indices identify the ECMAScript groups; they do not promise native numbering, match-array shape, UTF-16 indices or `lastIndex` behavior. The workshop shows the mapping and requirements; **Download export JSON** retains them alongside the code. The downloaded code constructs a pattern and does not run the workshop's examples in the selected engine. Example matching still uses the isolated JavaScript worker.
+
+Unsupported translations explain their reason rather than emit approximate matching. Important diagnostics include `EXPORT_LOOKAROUND`, `EXPORT_LINE_ANCHOR`, `EXPORT_BACKREFERENCE`, `EXPORT_UNSET_REFERENCE`, `EXPORT_LOOKBEHIND_REFERENCE`, `EXPORT_LOOKBEHIND_WIDTH`, `EXPORT_LOOKBEHIND_CAPTURE`, `EXPORT_CAPTURE_RESET`, `EXPORT_NULLABLE_REPETITION`, `EXPORT_UNICODE_PROPERTY`, `EXPORT_LONE_SURROGATE`, `EXPORT_ZERO_WIDTH_POSITION`, `EXPORT_REPETITION_LIMIT` and `EXPORT_OUTPUT_TOO_LARGE`. A nullable non-word-boundary pattern can expose a surrogate-interior zero-width position in the source engine; foreign scalar profiles reject that case. Variable repetition over a nullable composite and captures that can disappear in a later iteration also fail until their semantics can be preserved. Shared input, depth, repetition and output budgets still apply; target compilers impose their own resource limits.
+
+`npm run test:exports` compiles and runs generated snippets with installed native SDKs, checking full match spans and mapped capture values against the JavaScript source patterns. Unavailable SDKs are explicitly skipped. To require the six currently verified runtimes, use `npm run test:exports -- --require=python,rust,go,java,csharp,ruby`. This separate gate does not add native SDKs to the npm package or make them mandatory for ordinary `npm run verify`. See [the verified engine evidence](COMPATIBILITY.md#engine-export-evidence).
+
 ## Instructions
 
 | Instruction | Generated source | Matches | Does not match |

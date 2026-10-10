@@ -100,6 +100,25 @@
           <section class="pattern-box" aria-label="Generated JavaScript regex" tabindex="0"><code id="regex-output">Select a recipe or write a rule</code></section>
           <div class="result-actions"><span id="flags-summary">Unicode mode always on</span><button id="copy-button" class="copy-button" type="button" disabled>Copy regex <span aria-hidden="true">↗</span></button></div>
           <div id="diagnostic" class="diagnostic" role="alert" hidden></div>
+          <details id="language-export" class="group-editor language-export">
+            <summary>Export to a programming language</summary>
+            <div class="group-edit-form export-controls">
+              <label for="export-target">Target language</label>
+              <select id="export-target" aria-describedby="export-help export-status">
+                <option value="javascript">JavaScript</option><option value="typescript">TypeScript</option>
+                <option value="python">Python</option><option value="rust">Rust</option><option value="go">Go</option>
+                <option value="java">Java</option><option value="csharp">C#</option><option value="php">PHP — runtime unverified</option><option value="ruby">Ruby</option>
+              </select>
+            </div>
+            <p id="export-help">Code generation translates supported regex semantics through the shared compiler. Unsupported flags or constructs explain why export is unavailable. Example tests below still use JavaScript.</p>
+            <p id="export-status" role="status">Compile valid rules to export source code.</p>
+            <button id="export-error" class="secondary-button" type="button" aria-controls="rules-input" hidden>Go to export error</button>
+            <!-- biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard focus enables native scrolling of generated source code. -->
+            <section id="export-code-region" class="export-code-box" aria-label="Generated source code" tabindex="0" dir="ltr"><code id="export-code"></code></section>
+            <ul id="export-requirements" class="review-limitations" aria-label="Export requirements"></ul>
+            <ul id="export-captures" class="review-limitations" aria-label="Export capture mapping" dir="ltr"></ul>
+            <div class="group-edit-actions"><button id="export-download" class="secondary-button" type="button" disabled>Download code</button><button id="export-json" class="secondary-button" type="button" disabled>Download export JSON</button></div>
+          </details>
           <details id="group-editor" class="group-editor" hidden>
             <summary>Edit groups and references</summary>
             <p id="group-edit-help">Rename a capture or change its type. Numbered references keep their original targets. A referenced capture cannot become noncapturing.</p>
