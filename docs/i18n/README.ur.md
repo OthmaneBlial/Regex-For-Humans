@@ -74,6 +74,7 @@ end
 | تمام آٹھ JavaScript flags | ✅ |
 | [گروپ کی تدوین اور capture کی جگہ نمایاں کرنا](../LANGUAGE.md#editing-groups) | — |
 | [ساخت کا تعاملی خاکہ اور <code dir="ltr">SVG</code> ایکسپورٹ](../LANGUAGE.md#structural-diagrams) | — |
+| [ساختی خطرات کا جائزہ](../LANGUAGE.md#structural-risk-review) | — |
 | دوسرے regex انجن اور آزاد انگریزی | — |
 
 **صرف سورس ورژن میں:** مقامی ورکشاپ میں capture کا نام یا گروپ کی قسم بدلیں اور اس کے references تک جائیں۔ یہ پینل کھولیں:
@@ -580,7 +581,21 @@ CI=1 npm run verify
 | [موازنہ](../COMPETITOR_GAPS.md) | Sources اور باقی صلاحیتیں |
 | [حصہ ڈالیں](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup اور conventions |
 
-**10 اکتوبر 2026 کو مقامی جانچ:** 301 Node tests، 378 desktop/mobile Chromium workshop checks، 148 Firefox/WebKit checks، 64 site checks اور صاف package installation کامیاب ہوئے؛ audit میں کوئی vulnerability رپورٹ نہیں ہوئی۔ گروپ، reference اور reverse translation کے 16 مخصوص tests Node 22.23.3 پر بھی کامیاب ہوئے۔ یہ اعداد اسی snapshot کے ہیں؛ ہر browser یا آئندہ version کی ضمانت نہیں۔ انسانی جائزے ابھی باقی ہیں۔
+**10 اکتوبر 2026 کو مقامی جانچ:** 320 Node tests، 402 desktop/mobile Chromium workshop checks، 172 Firefox/WebKit checks، 64 site checks اور صاف package installation کامیاب ہوئے؛ audit میں کوئی vulnerability رپورٹ نہیں ہوئی۔ خاکوں، گروپ کی تدوین اور تجزیے کے 19 مخصوص tests اور الگ سے نصب شدہ package consumer کی جانچ Node 22.23.3 پر بھی کامیاب ہوئی۔ یہ اعداد اسی snapshot کے ہیں؛ ہر browser یا آئندہ version کی ضمانت نہیں۔ انسانی جائزے ابھی باقی ہیں۔
+
+## ساختی خطرات کا جائزہ — صرف سورس نسخے میں
+
+مقامی ورکشاپ میں جائزے کا پینل کھول کر متغیر تکرار کی اندرونی یا ملحقہ تہیں، ایک دوسرے سے ملتے متبادل، وسیع وائلڈ کارڈز، سطر کے اینکرز اور بڑے پیٹرن دیکھیں۔ انٹرفیس میں پینل کا نام یہ ہے:
+
+<p dir="ltr" align="left"><code dir="ltr">Review the pattern</code></p>
+
+پوائنٹر رکھنے سے قاعدہ، ریجیکس کا حصہ، وضاحت اور خاکہ جڑتے ہیں، مگر تحریر کا کرسر نہیں بدلتا۔ نوٹ منتخب کرنے سے متعلقہ سورس سطر کھلتی ہے۔ قواعد، فلیگز، مثالوں کے نسخوں یا گروپس کی تبدیلی جائزہ تازہ کرتی ہے۔ مشترکہ انٹرفیس معیاری ترتیب کے فلیگز، سورس کے مقامات اور حدود والے ٹائپ شدہ نوٹس، اور تجزیے کی حدود واپس دیتا ہے:
+
+<p dir="ltr" align="left"><code dir="ltr">analyze(rules, { flags })</code></p>
+
+مثبت کریکٹر کلاسز اور رینجز کے معلوم حروف بعض اشتراک دکھاتے ہیں؛ نامعلوم مجموعے کو ثابت شدہ طور پر غیر مشترک نہیں سمجھا جاتا۔ یہ اندازوں پر مبنی تجزیہ مہنگے پیٹرن چھوڑ سکتا ہے یا غلط تنبیہ دے سکتا ہے؛ **نوٹس نہ ملنا کارکردگی کے محفوظ ہونے کا ثبوت نہیں**۔ تجزیہ میچنگ نہیں چلاتا اور بیک ٹریکنگ نہیں ناپتا۔ مثالوں کی میچنگ الگ ورکر میں وقت کی حد کے ساتھ رہتی ہے۔
+
+یہ اضافے ابھی <code dir="ltr">npm 0.1.0-dev.5</code> یا شائع شدہ ورکشاپ میں شامل نہیں۔ [ساختی جائزے کا معاہدہ](../LANGUAGE.md#structural-risk-review) دیکھیں۔
 
 ## ساخت کا خاکہ — صرف سورس نسخے میں
 

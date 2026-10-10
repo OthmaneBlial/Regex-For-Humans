@@ -398,6 +398,36 @@ Prefix a block with `not` to complement the complete set. Native structural stri
 
 `CharacterClassSegment.operation` identifies the root operation; nested `CharacterClassMember` values use `kind: "set"`, `operation`, `negative`, `members` and `endLocation`. Root and child spans preserve exact emitted source, including operator spacing and required range brackets. Explanations use the same typed tree. The reverse reader preserves operations through these blocks while retaining existing compact leaf normalization and original-regex diagnostic positions. Groups and set blocks share the 64-level depth budget and existing input/source limits. Invalid arity, operands, block forms, missing braces, modes, native capabilities and structural complements receive positioned errors.
 
+## Structural risk review
+
+The source checkout exports `analyze(source, options?)`, using the same readable rules, `CompileOptions`, parser budgets, canonical flags, capability probes and compiler diagnostics as `compile`. Invalid rules throw `CompileError`; the function does not return partial findings for invalid input. It inspects the validated AST without running regex matches.
+
+```js
+import { analyze } from "regex-for-humans";
+
+const review = analyze('one or more group {\none or more "a"\n}', { flags: "u" });
+console.log(review.warnings[0].code); // NESTED_REPETITION
+console.log(review.limitations);
+```
+
+This API and workshop panel are source-only; they are not yet in npm `0.1.0-dev.5` or the hosted workshop.
+
+`AnalysisResult` contains canonical `flags`, a `warnings` array of `AnalysisFinding` and a `limitations` array. A finding has an `AnalysisCode`, `severity` (`warning` or `info`), `message`, `hint`, 1-based `line`/`column` and zero-based UTF-16 `sourceStart`/`sourceEnd` offsets into the generated regex source without delimiters. A group or alternative finding spans its full block; a large-source note spans the full generated pattern. No safety boolean, risk score or runtime trace is returned.
+
+| Code | Review prompt |
+| --- | --- |
+| `NESTED_REPETITION` | Repeated single-child groups contain variable repetition of the same unit. |
+| `ADJACENT_REPETITIONS` | Neighboring variable repetitions share a known unit or one-character witness. |
+| `OVERLAPPING_ALTERNATIVES` | Choices share literal prefixes or known one-character matches; repeated choices get warning severity. |
+| `UNBOUNDED_WILDCARD` | A wildcard has no finite repetition maximum. |
+| `DOT_ALL_WILDCARD` | A wildcard includes line breaks with `s`. |
+| `LINE_ANCHORS` | A line anchor can match beside a line break; absolute input anchors do not get this note. |
+| `LARGE_GENERATED_SOURCE` | Generated source exceeds a 32,768 UTF-16-unit review threshold, independent of compiler rejection limits. |
+
+The witness model keeps known members of literals, positive classes/ranges/unions/intersections, selected ASCII shorthands and ASCII case pairs. It does not enumerate Unicode property data. Negation and subtraction return unknown witnesses instead of an incorrect complement; unknown is never evidence of disjointness. Exact-unit identity can still identify repeated identical atoms. Literal-prefix checks are structural, not a language-equivalence or runtime-cost proof. More complex bodies, references, lookaround execution, Unicode case/property aliases and search restart costs are not fully modeled. Findings can be false positives; expensive patterns can be missed. **No findings is not a proof of performance safety.**
+
+In the local workshop, open **Review the pattern** to analyze on demand. Hover or focus connects notes to source rows, generated fragments, explanations and structural diagrams; choosing a note returns to its source line. Source, flags, recipe and group edits invalidate cached results. Invalid source clears old findings. Notes do not block compilation, copying or isolated example matching. The worker deadline remains necessary regardless of the analysis result; copied regexes need appropriate deployment-engine limits and testing.
+
 ## Anchors and flags
 
 The source compiler accepts all eight native JavaScript flags: `d` (indices), `g` (global), `i` (ignore case), `m` (multiline), `s` (dot-all), `u` (Unicode), `v` (Unicode sets) and `y` (sticky). It emits `u` by default unless `v` is selected, adds `m` for any line anchor and returns canonical `dgimsuvy` ordering. `u` and `v` are mutually exclusive. The CLI accepts `--flags FLAGS` or `--flags=FLAGS`; `--ignore-case` / `--dot-all` remain aliases for i/s. Flags require native runtime support and are never dropped or approximated.

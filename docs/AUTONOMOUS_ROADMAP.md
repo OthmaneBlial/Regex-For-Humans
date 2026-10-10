@@ -10,11 +10,14 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Documentation: all ten guides describe the source-only feature, retain equal capability-matrix rows and preserve the 20 canonical code blocks. All 18 documentation/link/localization checks pass after aligning the translated matrices. Arabic/Urdu keep RTL prose and isolate the new English control/API labels in LTR fragments. Human language, screen-reader and usability gates remain unchecked.
 - Source distribution: the validated feature is available from the repository source checkout. npm and the hosted workshop remain dev.5; its retained archive is unchanged. The drawing describes AST structure, not runtime backtracking or proven performance safety. The larger mission, safety analysis, verified exports, workshop localization and remaining interface work stay open.
 
-## Safety-analysis foundation — local preparation
+## Structural risk review source milestone
 
-- An independent, unexported analysis module inspects the shared AST without running regex matches. It identifies canonical nested/adjacent repetition candidates and overlapping literal choices, plus wildcard, dot-all and generated-size review notes. Findings retain compiler locations/spans and actionable guidance; no result labels a pattern safe.
-- All six focused checks pass on Node 25 and Node 22.23.3, including 1,280 shared pattern/flag combinations, transparent nested groups, zero-count bodies, fixed/disjoint units and positioned compiler failures. Type checking and focused lint pass. These checks are separate from the SVG gate.
-- Remaining: strengthen overlap coverage, expose a typed API, integrate accessible source-linked review notes in the workshop, verify installed consumers/browser behavior and document the public contract in all ten guides. The module is uncommitted and is not available in npm or the hosted workshop. Static heuristics can miss expensive patterns and report false positives; enforceable worker deadlines remain necessary.
+- Implemented: the public typed `analyze` API inspects the validated shared AST without running matches. It reports nested/adjacent variable repetition, overlapping literal/known-character choices and informational wildcard, line-anchor and generated-size notes. Findings retain full compiler spans and actionable guidance; unknown witnesses do not certify disjointness, and no findings does not prove performance safety.
+- Workshop: on-demand source-linked review notes share navigation with explanations and diagrams. Source, flags, recipe and group edits invalidate cached analysis; invalid rules clear old findings. Notes do not block copying or isolated example matching. All ten guides document the source-only contract; their capability matrices have equal rows, 18 second-level headings and the 20 canonical code blocks. Arabic/Urdu preserve RTL prose and isolated LTR controls/signatures.
+- Full verification: the uninterrupted corrected `CI=1 npm run verify` gate passes 320 Node, 402 Chromium desktop/mobile, 172 Firefox/WebKit and 64 homepage checks (958 total), clean installed-package consumers, lint/types/docs, builds and an audit with zero reported vulnerabilities. The existing native horizontal-scroll test now settles the output position after each viewport resize before checking ArrowRight movement; ten independently served desktop/mobile repetitions pass. Final documentation evidence is checked and rebuilt separately.
+- Focused verification: 24 Node analysis/documentation/link/localization checks and all 19 diagram/group-editing/analysis checks on Node 22.23.3 pass. Clean installed-package JavaScript/TypeScript/API/CLI consumers pass on Node 25 and Node 22. The six analysis checks include 1,280 shared pattern/flag combinations. Corrected focused browser runs pass 22 Chromium desktop/mobile review/security checks and eight Firefox/WebKit review flows; all 16 new review flows pass across engines.
+- Visual evidence: the automatically captured 320-pixel review panel was inspected and is readable without horizontal overflow. Native Chrome inspection returned `Debugger unattached` and `cgWindowNotFound`; it was not recorded as a successful native interaction. Human language/screen-reader/usability reviews and the new 18-heading GitHub RTL views remain unchecked.
+- Source distribution: the validated feature is available from the repository source checkout. npm and the hosted workshop remain dev.5; scratch package candidates are unpublished and the frozen dev.5 archive is unchanged. The broader mission, verified exports, localization/themes and remaining builders stay open.
 
 ## Safe group-editing source milestone
 
@@ -40,7 +43,7 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Safety heuristics with honest limits and verified exports.
+1. Implement verified engine exports from the researched compatibility constraints.
 2. Workshop localization and the remaining mission waves.
 
 ## Site and README milestone

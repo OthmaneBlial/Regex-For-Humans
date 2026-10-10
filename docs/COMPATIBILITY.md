@@ -26,6 +26,10 @@ Groups are numbered in opening order, including named groups. Names are Unicode 
 
 Assertions consume no characters; their native captures can lie before or after the consumed match. JavaScript evaluates lookbehind contents backwards, including variable-length supported subpatterns. Compilation probes lookbehind and reports `UNSUPPORTED_TARGET_FEATURE` instead of approximating it when unavailable. Direct assertion repetition is rejected; repeat its contents or a containing group instead. Assertion blocks share the 64-level nesting and translated source/line budgets.
 
+## Structural review compatibility
+
+Source-only `analyze` and **Review the pattern** use the same JavaScript grammar, flags, native capability probes and budgets as compilation. Findings cover heuristic structural candidates and selected known character witnesses; they do not assert Unicode language equivalence, other-engine support or safe runtime complexity. Native v-set subtraction/negation remains unknown to the witness model, while literal/range/positive union/intersection and selected ASCII case pairs can establish overlaps. No findings does not prove safety. See [structural risk review](LANGUAGE.md#structural-risk-review). These additions are not yet in npm `0.1.0-dev.5` or the hosted workshop.
+
 ## Verified runtimes
 
 Source-only `toSVG` uses the same native feature probes and source/line/depth budgets as compilation. The local workshop adds interactive structural diagrams and standalone SVG export, including Unicode/RTL-safe literal display. There is no approximation for unavailable v features or lookbehind. Diagrams describe AST paths and constraints; they do not record engine backtracking, predict which path matched or enumerate class members. They are not included in npm `0.1.0-dev.5` or the hosted workshop yet. See [structural diagrams](LANGUAGE.md#structural-diagrams).
@@ -38,10 +42,10 @@ Composable classes are included in npm `0.1.0-dev.5`: `character class:` unions 
 
 Word boundaries are included in npm `0.1.0-dev.5`. It keeps native zero-width behavior, input-edge handling, Unicode case folding and captures. It does not provide natural-language word segmentation. Direct quantification fails explicitly; repeated containing groups remain supported. The new `BoundarySegment` variant is declared for TypeScript consumers.
 
-- Host Node 25.9.0: all 301 Node tests plus a clean installed-package JavaScript/TypeScript consumer.
-- Minimum supported major, Node 22.23.3: all 55 selected set/string/flag/class/property/reverse checks, including CLI paths and a separate clean consumer.
-- Bundled Chromium: all 378 desktop/mobile workshop checks, including native nested set/string imports, captures, cursors, trace navigation and isolated matching. Mobile viewport checks are not physical-device evidence.
-- Playwright Firefox and WebKit: all 148 compatibility checks, including native set/string/flag/class/property/assertion/capture flows.
+- Host Node 25.9.0: all 320 Node tests plus a clean installed-package JavaScript/TypeScript/API/CLI consumer.
+- Minimum supported major, Node 22.23.3: all 19 selected diagram/group-editing/analysis checks plus a separate clean JavaScript/TypeScript/API/CLI consumer.
+- Bundled Chromium: all 402 desktop/mobile workshop checks, including native nested set/string imports, captures, cursors, trace/diagram/review navigation and isolated matching. Mobile viewport checks are not physical-device evidence.
+- Playwright Firefox and WebKit: all 172 compatibility checks, including native set/string/flag/class/property/assertion/capture flows and structural review.
 - The complete `CI=1 npm run verify` command also passes the builds, 64 homepage checks and an audit with zero vulnerabilities. Final documentation records are rebuilt and checked afterward.
 - Group milestone: 54 desktop/mobile group, worker security and automated accessibility checks. Human screen-reader and usability reviews remain unverified.
 

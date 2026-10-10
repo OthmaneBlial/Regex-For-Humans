@@ -76,6 +76,7 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | All eight JavaScript flags | ✅ |
 | [Group editing and capture highlighting](docs/LANGUAGE.md#editing-groups) | — |
 | [Interactive structure and SVG export](docs/LANGUAGE.md#structural-diagrams) | — |
+| [Structural risk review](docs/LANGUAGE.md#structural-risk-review) | — |
 | Other regex engines and free-form English | — |
 
 **Source checkout only:** the local workshop now offers **Edit groups and references**: rename captures, change named/numbered/noncapturing forms and jump to their references. Numeric references keep their original targets when numbering changes; removing a referenced capture is rejected without changing the rules. **Highlight** selects a capture's native input range, including empty captures and captures outside the consumed match. The shared `editGroup` API returns validated rules. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet; see [group editing](docs/LANGUAGE.md#editing-groups).
@@ -556,7 +557,15 @@ Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; 
 | [Competitor gaps](docs/COMPETITOR_GAPS.md) | Source-backed comparison and remaining capability gaps |
 | [Contributing](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup, scope and contribution conventions |
 
-**Verified locally on 10 October 2026:** all verification components pass: 301 Node tests, 378 bundled Chromium desktop/mobile workshop checks, 148 Firefox/WebKit checks, 64 homepage checks, builds and a clean JavaScript/TypeScript package consumer. The audit reports zero vulnerabilities. All 26 focused group/reference/alternative/localization checks also pass on Node 22.23.3. These counts describe this snapshot, not every browser or future version. Human usability and screen reader review remain open.
+**Verified locally on 10 October 2026:** all verification components pass: 320 Node tests, 402 bundled Chromium desktop/mobile workshop checks, 172 Firefox/WebKit checks, 64 homepage checks, builds and a clean JavaScript/TypeScript package consumer. The audit reports zero vulnerabilities. All 19 focused diagram/group-editing/analysis checks and a separate clean consumer also pass on Node 22.23.3. These counts describe this snapshot, not every browser or future version. Human usability and screen reader review remain open.
+
+## Structural risk review — source checkout
+
+Open **Review the pattern** in the local workshop for source-linked notes on nested/adjacent variable repetitions, overlapping alternatives, broad wildcards, line anchors and large generated patterns. Hover connects the rule, regex fragment, explanation and diagram without moving the caret; selecting a note returns to its source line. Source, flag, recipe and group edits refresh the review.
+
+The shared `analyze(rules, { flags })` API returns canonical flags, typed findings with source locations/spans and explicit limitations. Positive class/range witnesses cover selected overlaps; an unknown set is not treated as proven disjoint. This is heuristic analysis: it may miss expensive patterns or report false positives, and **no findings does not prove performance safety**. Analysis does not run matches or measure backtracking. Example matching keeps its isolated worker and deadline.
+
+These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet. See the [structural risk review contract](docs/LANGUAGE.md#structural-risk-review).
 
 ## Structural diagrams — source checkout
 

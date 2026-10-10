@@ -2,6 +2,12 @@
 
 Regex For Humans is a dependency-free JavaScript ESM compiler with a CLI and a static browser workshop. The language is deliberately finite: each nonblank rule must match a documented instruction. There is no natural-language model, arbitrary regex passthrough or server-side compilation.
 
+## Structural review path
+
+Source-only `analyze` parses and compiles through the existing validated AST, then inspects structural repetition, literal-prefix relationships and conservative character witnesses. It uses the compiler's canonical flags and source spans; no alternate grammar or match engine is introduced. A positive witness is a known shared character, while an empty witness set means unknown. Negation/subtraction and incomplete Unicode case/property coverage never become disjointness or safety proofs.
+
+The typed result carries review notes and limitations, without running matches or measuring backtracking. The workshop computes it on demand, invalidates it on source/flag/recipe/group changes and shares source-navigation behavior with explanation buttons and diagrams. The match worker and deadline remain independent. See [the analysis contract](LANGUAGE.md#structural-risk-review).
+
 ## Compilation path
 
 ```text

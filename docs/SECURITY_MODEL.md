@@ -1,5 +1,13 @@
 # Security and performance boundaries
 
+## Heuristic structural review
+
+Source-only `analyze` inspects validated rules without executing matches. It reports candidates involving nested/adjacent variable repetition and overlapping choices, plus informational wildcard, line-anchor and generated-size notes. Findings carry compiler locations/spans and review guidance. The local workshop presents them on demand as source-linked buttons; edits invalidate cached results and invalid input clears old notes.
+
+These are review prompts, not proven ReDoS vulnerabilities, measured backtracking or certification of safety. The witness model recognizes selected literal/range/positive-class overlaps and ASCII case pairs; Unicode property aliases, complex bodies, negation/subtraction, backreferences, lookaround execution and search restart costs are not fully modeled. Unknown witnesses are not treated as disjoint sets. Both false positives and missed expensive patterns are possible. **No findings does not prove performance safety.**
+
+Nested repetition and overlapping alternatives are documented review patterns in [CWE-1333](https://cwe.mitre.org/data/definitions/1333.html) and [OWASP's ReDoS description](https://community.owasp.org/attacks/Regular_expression_Denial_of_Service_-_ReDoS). Their runtime effect depends on the engine, pattern, search context and input; the analyzer does not infer that effect. It preserves existing compiler budgets/capability errors and performs no matching on the UI thread. Example matching still uses a terminable isolated worker with an enforceable deadline. Copied patterns need deployment-engine controls regardless of findings. See [the API contract and limits](LANGUAGE.md#structural-risk-review).
+
 ## Inputs and compilation
 
 The version 1 parser accepts only the phrases in [LANGUAGE.md](LANGUAGE.md). It rejects unknown lines instead of returning a partial regex. Literal text and character-list items are escaped for their distinct regex contexts, and the compiler validates emitted source with JavaScript `RegExp` before returning it. Input rules are limited to 16,384 UTF-16 code units and 200 lines; numeric repetitions are limited to 1,000.

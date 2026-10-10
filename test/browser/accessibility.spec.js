@@ -166,6 +166,12 @@ test("generated regex is a named keyboard stop with native horizontal scrolling"
         expect(await output.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(
           true,
         );
+        // Each viewport starts with a settled position, independent of prior native scroll animation.
+        await output.evaluate((element) => {
+          element.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
+          element.scrollTo({ left: 0, behavior: "instant" });
+        });
+        await expect.poll(() => output.evaluate((element) => element.scrollLeft)).toBe(0);
         const before = await output.evaluate((element) => element.scrollLeft);
         await page.keyboard.press("ArrowRight");
         await expect

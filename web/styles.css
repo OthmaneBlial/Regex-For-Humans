@@ -944,6 +944,61 @@ a {
   grid-template-columns: minmax(0, 1fr);
   gap: 8px;
 }
+.pattern-review summary {
+  overflow-wrap: anywhere;
+}
+#review-count {
+  display: block;
+  margin: 6px 0 0 17px;
+  color: var(--ink-soft);
+  font: 11px / 1.5 var(--mono);
+  font-weight: 400;
+}
+.review-findings {
+  display: grid;
+  gap: 10px;
+  max-height: 320px;
+  overflow: auto;
+}
+.review-item {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink-soft);
+  border-radius: 6px;
+  background: var(--paper-light);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.review-item[data-severity="warning"] {
+  border-left-color: var(--red);
+}
+.review-item:hover,
+.review-item.is-related {
+  background: var(--paper);
+  border-color: var(--ink);
+}
+.review-label {
+  font: 10px / 1.5 var(--mono);
+}
+.review-message {
+  font-size: 13px;
+  font-weight: 600;
+}
+.review-hint,
+.review-limitations {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.review-limitations {
+  padding-left: 18px;
+  overflow-wrap: anywhere;
+}
 .group-edit-form label {
   font-size: 13px;
   font-weight: 600;

@@ -146,6 +146,30 @@ export interface CompileOptions {
   flags?: string | undefined;
 }
 
+export type AnalysisCode =
+  | "NESTED_REPETITION"
+  | "ADJACENT_REPETITIONS"
+  | "OVERLAPPING_ALTERNATIVES"
+  | "UNBOUNDED_WILDCARD"
+  | "DOT_ALL_WILDCARD"
+  | "LINE_ANCHORS"
+  | "LARGE_GENERATED_SOURCE";
+
+export interface AnalysisFinding extends SourceLocation {
+  code: AnalysisCode;
+  severity: "warning" | "info";
+  message: string;
+  hint: string;
+  sourceStart: number;
+  sourceEnd: number;
+}
+
+export interface AnalysisResult {
+  flags: string;
+  warnings: AnalysisFinding[];
+  limitations: string[];
+}
+
 export interface CompileErrorJSON {
   code: string;
   message: string;
@@ -165,6 +189,8 @@ export class CompileError extends Error {
 }
 
 export function compile(source: string, options?: CompileOptions): CompileResult;
+/** Inspect validated rules with structural heuristics, without proving performance safety. */
+export function analyze(source: string, options?: CompileOptions): AnalysisResult;
 /** Render validated readable rules as a standalone structural SVG. */
 export function toSVG(source: string, options?: CompileOptions): string;
 /** Edit a group at its opening location, updating references and validating the result. */

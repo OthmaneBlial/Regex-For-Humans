@@ -145,6 +145,12 @@ end</code></pre></div>
         <p>A fixed-width Unicode escape pair such as <code>\uD83D\uDE00</code> is one emoji atom, including inside a character class or before a repetition modifier. Separate surrogate atoms stay separate, including inside repeated group blocks. See the <a href="../docs/LANGUAGE.md">full language contract</a> for exact limits.</p>
       </section>
 
+      <section id="structural-risk-review" class="panel guide-panel" aria-labelledby="review-title">
+        <h2 id="review-title">Review the pattern</h2>
+        <p>Open <strong>Review the pattern</strong> in this source build for heuristic notes on nested/adjacent variable repetitions, overlapping alternatives, broad wildcards, line anchors and large generated patterns. Hover connects the source rule, regex fragment, explanation and diagram without moving the caret. Select a note to return to its source line. Rule, flag, recipe and group edits refresh the review.</p>
+        <p>The shared <code>analyze(rules, { flags })</code> API returns flags, typed source-linked findings and explicit limitations. Unknown character witnesses are not treated as disjointness proofs. Analysis does not run matches or measure backtracking; <strong>no findings does not prove performance safety</strong>. Example matching continues in an isolated worker with a time limit. These additions are not yet in npm <code>0.1.0-dev.5</code> or the hosted workshop. See the <a href="../docs/LANGUAGE.md#structural-risk-review">analysis contract</a>.</p>
+      </section>
+
       <section id="structural-diagrams" class="panel guide-panel" aria-labelledby="structure-title">
         <h2 id="structure-title">Explore the structure</h2>
         <p>In this source build, open <strong>Explore the pattern</strong> for an AST-driven railroad diagram: nested groups, ordered alternatives, repetition bounds and separate zero-width lookaround checks. Hover or focus a node or explanation to connect source rules and regex fragments without moving the source caret. Select a node with a click or Enter/Space to return to its rule. The source cursor and generated-regex selection also follow the structure.</p>

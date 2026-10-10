@@ -56,6 +56,7 @@ end
 | सभी आठ JavaScript flags | ✅ |
 | [समूह संपादन और capture की जगह हाइलाइट करना](../LANGUAGE.md#editing-groups) | — |
 | [इंटरैक्टिव संरचना और SVG निर्यात](../LANGUAGE.md#structural-diagrams) | — |
+| [संरचना के जोखिमों की समीक्षा](../LANGUAGE.md#structural-risk-review) | — |
 | दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — |
 
 **केवल सोर्स संस्करण में:** स्थानीय वर्कशॉप में **Edit groups and references** से capture का नाम या समूह का प्रकार बदलें और उसके references तक जाएँ। नंबर बदलने पर भी संख्यात्मक references अपने मूल capture को इंगित करते हैं। जिस capture का reference मौजूद है, उसे noncapturing बनाने पर बदलाव अस्वीकार होता है और मूल नियम सुरक्षित रहते हैं। **Highlight** native indices से capture की जगह दिखाता है, चाहे capture खाली हो या consumed match से बाहर हो। `editGroup` API जाँचे गए नियम लौटाता है। ये सुविधाएँ अभी npm `0.1.0-dev.5` या होस्टेड वर्कशॉप में नहीं हैं। [समूह संपादन](../LANGUAGE.md#editing-groups) देखें।
@@ -440,7 +441,15 @@ CI=1 npm run verify
 | [तुलना](../COMPETITOR_GAPS.md) | Sources और बाकी capabilities |
 | [योगदान](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup और conventions |
 
-**10 अक्टूबर 2026 को स्थानीय सत्यापन:** 301 Node tests, 378 Chromium desktop/mobile checks, 148 Firefox/WebKit, 64 website checks और clean consumer installation सफल; audit में शून्य vulnerabilities। Groups/references/reverse translation के 16 tests Node 22.23.3 पर भी सफल हैं। यह उस snapshot का परिणाम है, हर भविष्य के browser की गारंटी नहीं। मानवीय reviews बाकी हैं।
+**10 अक्टूबर 2026 को स्थानीय सत्यापन:** 320 Node tests, 402 Chromium desktop/mobile checks, 172 Firefox/WebKit, 64 website checks और clean consumer installation सफल; audit में शून्य vulnerabilities। आरेख, समूह संपादन और विश्लेषण के 19 tests तथा अलग से स्थापित package consumer Node 22.23.3 पर भी सफल हैं। यह इसी snapshot का परिणाम है, हर भविष्य के browser की गारंटी नहीं। मानवीय reviews बाकी हैं।
+
+## संरचना के जोखिमों की समीक्षा — केवल स्रोत संस्करण
+
+स्थानीय workshop में **Review the pattern** खोलकर nested या पास-पास की variable repetitions, overlapping alternatives, व्यापक wildcards, line anchors और बड़े patterns की समीक्षा करें। Hover से rule, regex fragment, explanation और diagram जुड़ते हैं, लेकिन cursor नहीं चलता। किसी note को चुनने पर उसकी source line खुलती है। Rules, flags, recipes और groups के संपादन से समीक्षा अपडेट होती है।
+
+साझा API `analyze(rules, { flags })` canonical flags, source positions और ranges वाले typed notes तथा विश्लेषण की सीमाएँ लौटाता है। Positive classes और ranges के ज्ञात characters कुछ overlaps पहचानते हैं; किसी unknown set को प्रमाणित रूप से disjoint नहीं माना जाता। यह heuristic analysis महँगे patterns छोड़ सकता है या false positives दे सकता है: **कोई finding न होना performance safety का प्रमाण नहीं है**। विश्लेषण matches नहीं चलाता और backtracking नहीं मापता। Examples का matching अलग worker में समय-सीमा के साथ चलता रहता है।
+
+ये बदलाव अभी npm `0.1.0-dev.5` या प्रकाशित workshop में नहीं हैं। [संरचनात्मक जोखिम समीक्षा का अनुबंध](../LANGUAGE.md#structural-risk-review) देखें।
 
 ## संरचना का आरेख — केवल स्रोत संस्करण
 

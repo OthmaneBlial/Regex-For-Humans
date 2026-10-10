@@ -56,6 +56,7 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 | Os oito flags JavaScript | ✅ |
 | [Edição de grupos e destaque de capturas](../LANGUAGE.md#editing-groups) | — |
 | [Estrutura interativa e exportação SVG](../LANGUAGE.md#structural-diagrams) | — |
+| [Revisão de riscos estruturais](../LANGUAGE.md#structural-risk-review) | — |
 | Outros motores e inglês livre | — |
 
 **Somente no código-fonte:** o workshop local oferece **Edit groups and references** para renomear capturas, mudar seu tipo e localizar suas referências. As referências numéricas mantêm seus destinos quando a numeração muda; remover uma captura referenciada é recusado sem alterar as regras. **Highlight** destaca o intervalo nativo de uma captura, mesmo vazia ou fora do texto consumido. A API `editGroup` retorna regras validadas. Essas mudanças ainda não estão no npm `0.1.0-dev.5` nem no workshop hospedado. Veja a [edição de grupos](../LANGUAGE.md#editing-groups).
@@ -440,7 +441,15 @@ A saída é **JavaScript `RegExp`**. Regex bruto como regra e inglês livre não
 | [Comparação](../COMPETITOR_GAPS.md) | Fontes e recursos pendentes |
 | [Contribuir](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Preparação e convenções |
 
-**Verificado localmente em 10 de outubro de 2026:** 301 testes Node, 378 controles Chromium desktop/móvel, 148 Firefox/WebKit, 64 do site e um consumidor limpo; zero vulnerabilidades. Os 16 testes de grupos/referências/conversão também passam no Node 22.23.3. São resultados desse snapshot, não garantia para qualquer navegador futuro. Avaliações humanas seguem abertas.
+**Verificado localmente em 10 de outubro de 2026:** 320 testes Node, 402 controles Chromium desktop/móvel, 172 Firefox/WebKit, 64 do site e um consumidor limpo; zero vulnerabilidades. Os 19 testes de diagramas, edição de grupos e análise, junto com um consumidor instalado separadamente, também passam no Node 22.23.3. São resultados desse snapshot, não garantia para qualquer navegador futuro. Avaliações humanas seguem abertas.
+
+## Revisão de riscos estruturais — código-fonte
+
+Abra **Review the pattern** no workshop local para revisar repetições variáveis aninhadas ou adjacentes, alternativas sobrepostas, curingas amplos, âncoras de linha e padrões grandes. Passar o ponteiro conecta regra, fragmento regex, explicação e diagrama sem mover o cursor; selecionar uma nota volta à linha de origem. Alterações em regras, flags, receitas e grupos atualizam a revisão.
+
+A API compartilhada `analyze(rules, { flags })` retorna flags canônicas, notas tipadas com posições e intervalos de origem e limitações explícitas. Caracteres conhecidos de classes e intervalos positivos revelam algumas sobreposições; um conjunto desconhecido não é considerado comprovadamente disjunto. A análise é heurística, pode deixar passar padrões caros ou gerar falsos positivos: **a ausência de notas não comprova segurança de desempenho**. Ela não executa correspondências nem mede backtracking. Os exemplos continuam no worker isolado com limite de tempo.
+
+Esses acréscimos ainda não estão no npm `0.1.0-dev.5` nem no workshop publicado. Veja o [contrato de revisão estrutural](../LANGUAGE.md#structural-risk-review).
 
 ## Diagrama da estrutura — código-fonte
 

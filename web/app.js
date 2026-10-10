@@ -1,4 +1,4 @@
-import { CompileError, compile, editGroup, regexToRules, toSVG } from "../index.js";
+import { analyze, CompileError, compile, editGroup, regexToRules, toSVG } from "../index.js";
 import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
@@ -44,6 +44,11 @@ const ui = {
   copy: requiredElement("copy-button", HTMLButtonElement),
   diagnostic: requiredElement("diagnostic", HTMLDivElement),
   trace: requiredElement("trace-list", HTMLDivElement),
+  review: requiredElement("pattern-review", HTMLDetailsElement),
+  reviewCount: requiredElement("review-count", HTMLSpanElement),
+  reviewStatus: requiredElement("review-status", HTMLParagraphElement),
+  reviewFindings: requiredElement("review-findings", HTMLDivElement),
+  reviewLimits: requiredElement("review-limitations", HTMLUListElement),
   ruleFocus: requiredElement("rule-focus", HTMLParagraphElement),
   diagram: requiredElement("structure-diagram", HTMLDetailsElement),
   diagramViewport: requiredElement("diagram-viewport", HTMLElement),
@@ -91,6 +96,8 @@ let selectedRule = null;
 /** @type {RuleFocus|null} */
 let visibleRule = null;
 let diagramSVG = "";
+/** @type {import('../index.d.ts').AnalysisResult|null} */
+let reviewResult = null;
 let hasEdits =
   ui.rules.value !== "" ||
   Object.values(flagInputs).some((input) => input.checked) ||
@@ -212,22 +219,81 @@ function renderTrace(segments) {
     );
     detail.append(make("span", "trace-meaning", segment.explanation));
     button.append(detail);
-    Object.assign(button.dataset, {
-      line: String(segment.line),
-      column: String(segment.column),
-      sourceStart: String(segment.sourceStart),
-      sourceEnd: String(segment.sourceEnd),
-    });
-    button.addEventListener("pointerenter", () => showRule(segment));
-    button.addEventListener("pointerleave", () => showRule(selectedRule));
-    button.addEventListener("focus", () => showRule(segment));
-    button.addEventListener("blur", () => showRule(selectedRule));
-    button.addEventListener("click", () => {
-      selectedRule = segment;
-      selectLine(segment.line);
-      showRule(segment);
-    });
+    connectRuleButton(button, segment);
     ui.trace.append(button);
+  }
+}
+
+/** @param {HTMLButtonElement} button @param {RuleFocus} rule */
+function connectRuleButton(button, rule) {
+  Object.assign(button.dataset, {
+    line: String(rule.line),
+    column: String(rule.column),
+    sourceStart: String(rule.sourceStart),
+    sourceEnd: String(rule.sourceEnd),
+  });
+  button.addEventListener("pointerenter", () => showRule(rule));
+  button.addEventListener("pointerleave", () => showRule(selectedRule));
+  button.addEventListener("focus", () => showRule(rule));
+  button.addEventListener("blur", () => showRule(selectedRule));
+  button.addEventListener("click", () => {
+    selectedRule = rule;
+    selectLine(rule.line);
+    showRule(rule);
+  });
+}
+
+function renderReview() {
+  ui.reviewFindings.replaceChildren();
+  ui.reviewLimits.replaceChildren();
+  if (!compiled) {
+    ui.reviewCount.textContent = "Needs valid rules";
+    ui.reviewStatus.textContent = "Compile valid rules to review the pattern.";
+    return;
+  }
+  if (!ui.review.open && !reviewResult) {
+    ui.reviewCount.textContent = "Open to review";
+    ui.reviewStatus.textContent = "Open this panel for a structural review.";
+    return;
+  }
+  try {
+    reviewResult ??= analyze(ui.rules.value, { flags: compiled.flags });
+    const count = reviewResult.warnings.length;
+    ui.reviewCount.textContent = count
+      ? `${count} review ${count === 1 ? "note" : "notes"}`
+      : "No findings";
+    ui.reviewStatus.textContent = count
+      ? "These are heuristic review notes, not measured runtime results. Select one to inspect its source rule."
+      : "No heuristic findings detected. This does not prove performance safety.";
+    for (const finding of reviewResult.warnings) {
+      const button = make("button", "review-item");
+      button.type = "button";
+      button.dataset.code = finding.code;
+      button.dataset.severity = finding.severity;
+      button.setAttribute(
+        "aria-label",
+        `${finding.severity === "warning" ? "Review" : "Information"} on line ${finding.line}: ${finding.message} Select source line.`,
+      );
+      button.append(
+        make(
+          "span",
+          "review-label",
+          `${finding.severity === "warning" ? "REVIEW" : "INFORMATION"} · LINE ${finding.line}`,
+        ),
+        make("span", "review-message", finding.message),
+        make("span", "review-hint", finding.hint),
+      );
+      connectRuleButton(button, finding);
+      ui.reviewFindings.append(button);
+    }
+    for (const limitation of reviewResult.limitations)
+      ui.reviewLimits.append(make("li", "", limitation));
+    showRule(visibleRule);
+  } catch (error) {
+    reviewResult = null;
+    ui.reviewFindings.replaceChildren();
+    ui.reviewCount.textContent = "Review unavailable";
+    ui.reviewStatus.textContent = `Pattern review failed: ${error instanceof Error ? error.message : String(error)} No performance conclusion is available.`;
   }
 }
 
@@ -300,6 +366,15 @@ function showRule(rule) {
     item.classList.toggle(
       "is-related",
       !!rule && meta.sourceStart >= rule.sourceStart && meta.sourceEnd <= rule.sourceEnd,
+    );
+  }
+  for (const item of ui.reviewFindings.querySelectorAll("[data-source-start]")) {
+    const meta = ruleFromElement(item);
+    item.classList.toggle(
+      "is-related",
+      !!rule &&
+        ((meta.sourceStart >= rule.sourceStart && meta.sourceEnd <= rule.sourceEnd) ||
+          (meta.sourceStart <= rule.sourceStart && meta.sourceEnd >= rule.sourceEnd)),
     );
   }
   const nodes = [...ui.diagramViewport.querySelectorAll("g.diagram-rule")];
@@ -853,6 +928,7 @@ function renderTests() {
 
 function compileRules() {
   diagramSVG = "";
+  reviewResult = null;
   selectedRule = null;
   visibleRule = null;
   ui.ruleFocus.hidden = true;
@@ -911,6 +987,7 @@ function compileRules() {
     renderTrace(null);
   }
   renderGroupEditor();
+  renderReview();
   renderDiagram();
   updateTestResults();
 }
@@ -976,6 +1053,7 @@ ui.rules.addEventListener("mouseup", followSourceCursor);
 ui.rules.addEventListener("scroll", highlightSourceRow);
 new ResizeObserver(highlightSourceRow).observe(ui.rules);
 ui.diagram.addEventListener("toggle", renderDiagram);
+ui.review.addEventListener("toggle", renderReview);
 ui.diagramScale.addEventListener("change", () => {
   ui.diagramViewport.dataset.scale = ui.diagramScale.value;
 });

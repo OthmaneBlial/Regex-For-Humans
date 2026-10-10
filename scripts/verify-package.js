@@ -107,7 +107,7 @@ try {
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
-    `import { compile, editGroup, regexToRules, toRegExp, toSVG, CompileError } from "regex-for-humans";
+    `import { analyze, compile, editGroup, regexToRules, toRegExp, toSVG, CompileError } from "regex-for-humans";
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
 const editableRules = ${JSON.stringify('capture "word" {\nletter\n}\nsame as capture "word"')};
@@ -118,6 +118,13 @@ assert.ok(diagram.includes('data-kind="group"'));
 assert.ok(diagram.includes('data-kind="backreference"'));
 assert.ok(diagram.includes('data-flags="dgu"'));
 assert.throws(() => toSVG("not a rule"), error => error instanceof CompileError);
+const reviewRules = regexToRules(/(a+)+$/u).rules;
+const review = analyze(reviewRules, { flags: "iu" });
+assert.equal(review.flags, "iu");
+assert.equal(review.warnings[0].code, "NESTED_REPETITION");
+assert.ok(review.limitations.some(limit => limit.includes("not a proof")));
+assert.equal("safe" in review, false);
+assert.throws(() => analyze("not a rule"), error => error instanceof CompileError);
 const renamedRules = editGroup(editableRules, editableGroup, { capturing: true, name: "label" });
 assert.equal(toRegExp(compile(renamedRules)).exec("AA").groups.label, "A");
 assert.ok(renamedRules.includes('same as capture "label"'));
@@ -395,12 +402,20 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   const typeSmoke = join(consumer, "type-smoke.mts");
   writeFileSync(
     typeSmoke,
-    `import { CompileError, compile, editGroup, regexMatchingThroughLines, regexToRules, toRegExp, toSVG } from "regex-for-humans";
-import type { AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, ClassSetOperation, CompileOptions, CompileResult, GroupSegment, RegexSegment, Repetition, ReverseTranslation, SourceLocation, UnicodePropertySegment } from "regex-for-humans";
+    `import { CompileError, analyze, compile, editGroup, regexMatchingThroughLines, regexToRules, toRegExp, toSVG } from "regex-for-humans";
+import type { AnalysisCode, AnalysisFinding, AnalysisResult, AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, ClassSetOperation, CompileOptions, CompileResult, GroupSegment, RegexSegment, Repetition, ReverseTranslation, SourceLocation, UnicodePropertySegment } from "regex-for-humans";
 const editLocation: SourceLocation = { line: 1, column: 1 };
 const editDefinition: Pick<GroupSegment, "capturing" | "name"> = { capturing: true, name: "label" };
 const editableRules: string = ${JSON.stringify('capture "word" {\nletter\n}\nsame as capture "word"')};
 const editedRules: string = editGroup(editableRules, editLocation, editDefinition, { flags: undefined });
+const review: AnalysisResult = analyze(editedRules, { flags: undefined });
+const reviewFinding: AnalysisFinding | undefined = review.warnings[0];
+const reviewCode: AnalysisCode | undefined = reviewFinding?.code;
+console.log(review.flags, review.limitations, reviewCode);
+// @ts-expect-error analysis requires readable rule text
+analyze(compile(editedRules));
+// @ts-expect-error findings do not certify safety
+review.safe;
 compile(editedRules);
 const diagram: string = toSVG(editedRules, { flags: undefined });
 console.log(diagram);

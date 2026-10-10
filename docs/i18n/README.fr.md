@@ -60,6 +60,7 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 | Les huit flags JavaScript | ✅ |
 | [Édition des groupes et surlignage des captures](../LANGUAGE.md#editing-groups) | — |
 | [Structure interactive et export SVG](../LANGUAGE.md#structural-diagrams) | — |
+| [Revue des risques structurels](../LANGUAGE.md#structural-risk-review) | — |
 | Autres moteurs et anglais libre | — |
 
 **Uniquement dans le dépôt source :** l’atelier local propose **Edit groups and references** pour renommer une capture, changer son type et accéder à ses références. Les références numériques conservent leur cible après une renumérotation ; supprimer une capture référencée est refusé sans modifier les règles. **Highlight** surligne la position native d’une capture, même vide ou hors du texte consommé. L’API `editGroup` renvoie des règles validées. Ces ajouts ne sont pas encore dans npm `0.1.0-dev.5` ni dans l’atelier hébergé. Voir l’[édition des groupes](../LANGUAGE.md#editing-groups).
@@ -444,7 +445,15 @@ La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’ang
 | [Comparaison](../COMPETITOR_GAPS.md) | Sources et capacités manquantes |
 | [Contribuer](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Installation et conventions |
 
-**Vérifié localement le 10 octobre 2026 :** 301 tests Node, 378 contrôles Chromium ordinateur/mobile, 148 Firefox/WebKit, 64 du site et installation du paquet réussis ; zéro vulnérabilité signalée. Les 16 tests dédiés aux groupes/références/traduction inverse passent aussi sur Node 22.23.3. Ces chiffres décrivent cet instantané, pas tous les navigateurs ni les versions futures. Les revues humaines restent ouvertes.
+**Vérifié localement le 10 octobre 2026 :** 320 tests Node, 402 contrôles Chromium ordinateur/mobile, 172 Firefox/WebKit, 64 du site et installation du paquet réussis ; zéro vulnérabilité signalée. Les 19 tests dédiés aux diagrammes, à l’édition des groupes et à l’analyse, ainsi qu’un consommateur installé séparément, passent aussi sur Node 22.23.3. Ces chiffres décrivent cet instantané, pas tous les navigateurs ni les versions futures. Les revues humaines restent ouvertes.
+
+## Revue des risques structurels — dépôt source
+
+Ouvrez **Review the pattern** dans l’atelier local pour examiner les répétitions variables imbriquées ou voisines, les alternatives qui se chevauchent, les jokers larges, les ancres de ligne et les expressions volumineuses. Le survol relie règle, fragment regex, explication et diagramme sans déplacer le curseur ; sélectionner une remarque revient à sa ligne source. Les modifications des règles, des flags, de la recette et des groupes actualisent la revue.
+
+L’API partagée `analyze(rules, { flags })` renvoie les flags canoniques, des remarques typées avec positions et plages source, ainsi que ses limites. Des caractères témoins dans les classes et intervalles positifs détectent certains chevauchements ; un ensemble inconnu n’est pas considéré comme disjoint. Cette analyse heuristique peut manquer des motifs coûteux ou produire de faux positifs : **l’absence de remarques ne prouve pas la sûreté des performances**. Elle ne lance aucun test de correspondance et ne mesure pas le backtracking. Les exemples conservent leur worker isolé et leur délai maximal.
+
+Ces ajouts ne sont pas encore dans npm `0.1.0-dev.5` ni dans l’atelier hébergé. Voir le [contrat de revue structurelle](../LANGUAGE.md#structural-risk-review).
 
 ## Diagramme de structure — dépôt source
 

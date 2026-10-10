@@ -112,6 +112,13 @@
             <p id="group-info"></p><ul id="group-references" class="group-edit-actions" aria-label="References to this group"></ul>
             <p id="group-feedback" role="status"></p>
           </details>
+          <details id="pattern-review" class="group-editor pattern-review">
+            <summary>Review the pattern <span id="review-count">Open to review</span></summary>
+            <p id="review-status" role="status">Compile valid rules to review the pattern.</p>
+            <div id="review-findings" class="review-findings"></div>
+            <p>Analysis inspects structure; it does not run matches or measure backtracking. Example matching still runs in an isolated worker with a time limit.</p>
+            <ul id="review-limitations" class="review-limitations" aria-label="Analysis limitations"></ul>
+          </details>
           <div class="trace-heading"><h3>How it was built</h3><span>RULE → FRAGMENT</span></div>
           <div id="trace-list" class="trace-list" aria-live="polite"><p class="empty-trace">Each rule will appear here with its generated fragment and meaning.</p></div>
         </section>

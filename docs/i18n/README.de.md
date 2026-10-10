@@ -56,6 +56,7 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 | Alle acht JavaScript-Flags | ✅ |
 | [Gruppen bearbeiten und Capture-Bereiche markieren](../LANGUAGE.md#editing-groups) | — |
 | [Interaktive Struktur und Export als SVG](../LANGUAGE.md#structural-diagrams) | — |
+| [Prüfung struktureller Risiken](../LANGUAGE.md#structural-risk-review) | — |
 | Andere Engines und freie englische Sätze | — |
 
 **Nur im Quellcode:** Der lokale Workshop bietet **Edit groups and references**, um Captures umzubenennen, ihren Typ zu ändern und ihre Referenzen zu finden. Numerische Referenzen behalten bei einer neuen Nummerierung ihr ursprüngliches Ziel; ein referenziertes Capture lässt sich nicht entfernen, und die Regeln bleiben dabei unverändert. **Highlight** markiert den nativen Eingabebereich, auch bei leeren Captures oder außerhalb des konsumierten Treffers. Die API `editGroup` gibt validierte Regeln zurück. Diese Ergänzungen sind noch nicht in npm `0.1.0-dev.5` oder im gehosteten Workshop enthalten. Siehe [Gruppen bearbeiten](../LANGUAGE.md#editing-groups).
@@ -440,7 +441,15 @@ Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sät
 | [Vergleich](../COMPETITOR_GAPS.md) | Quellen und offene Fähigkeiten |
 | [Mitwirken](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Einrichtung und Konventionen |
 
-**Lokal am 10. Oktober 2026 geprüft:** 301 Node-Tests, 378 Chromium-Desktop/Mobilprüfungen, 148 Firefox/WebKit-, 64 Websiteprüfungen und eine saubere Paketinstallation; keine Audit-Schwachstellen. Die 16 Gruppen-/Referenz-/Rückübersetzungstests bestehen auch unter Node 22.23.3. Das beschreibt diesen Stand, nicht jeden zukünftigen Browser. Menschliche Reviews bleiben offen.
+**Lokal am 10. Oktober 2026 geprüft:** 320 Node-Tests, 402 Chromium-Desktop/Mobilprüfungen, 172 Firefox/WebKit-, 64 Websiteprüfungen und eine saubere Paketinstallation; keine Audit-Schwachstellen. Die 19 Tests für Diagramme, Gruppenbearbeitung und Analyse sowie ein separat installierter Paketnutzer bestehen auch unter Node 22.23.3. Das beschreibt diesen Stand, nicht jeden zukünftigen Browser. Menschliche Reviews bleiben offen.
+
+## Prüfung struktureller Risiken — nur im Quellcode
+
+Öffne **Review the pattern** im lokalen Workshop, um verschachtelte oder benachbarte variable Wiederholungen, überlappende Alternativen, breite Wildcards, Zeilenanker und große Muster zu prüfen. Beim Hover werden Regel, Regex-Fragment, Erklärung und Diagramm verbunden, ohne den Cursor zu bewegen. Eine ausgewählte Notiz führt zur Quelltextzeile zurück. Änderungen an Regeln, Flags, Rezepten und Gruppen aktualisieren die Prüfung.
+
+Die gemeinsame API `analyze(rules, { flags })` liefert kanonische Flags, typisierte Hinweise mit Quelltextpositionen und Bereichen sowie ausdrückliche Grenzen der Analyse. Bekannte Zeichen aus positiven Klassen und Bereichen zeigen manche Überschneidungen; unbekannte Mengen gelten nicht als nachweislich disjunkt. Die heuristische Analyse kann aufwendige Muster übersehen oder Fehlalarme erzeugen: **Keine Hinweise sind kein Nachweis für sichere Laufzeit**. Sie führt keine Matches aus und misst kein Backtracking. Beispiele laufen weiterhin in einem isolierten Worker mit Zeitlimit.
+
+Diese Ergänzungen sind noch nicht in npm `0.1.0-dev.5` oder im veröffentlichten Workshop enthalten. Siehe den [Vertrag zur Strukturprüfung](../LANGUAGE.md#structural-risk-review).
 
 ## Strukturdiagramm — nur im Quellcode
 
