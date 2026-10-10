@@ -68,6 +68,7 @@ end
 | کم سے کم تکرار کو پہلے آزمانا، بذریعہ <code dir="ltr">lazy</code> | — | ✅ موجودہ سورس میں؛ ابھی شائع نہیں ہوا |
 | آگے یا پیچھے دیکھنے کی assertions | — | ✅ صرف موجودہ سورس میں؛ nested assertions اور اصل captures |
 | لفظ کی حدود | — | ✅ صرف سورس میں؛ متن consume کیے بغیر native assertions |
+| [Unicode properties](../LANGUAGE.md#unicode-properties) | — | ✅ u موڈ میں native aliases اور complements؛ صرف سورس میں |
 | دوسرے regex انجن اور آزاد انگریزی | — | موجودہ زبان کا حصہ نہیں |
 
 موجودہ سورس میں <code dir="ltr">lazy digits</code> سے <code dir="ltr">\d+?</code> بنتا ہے: پہلے ایک ہندسہ آزمائیں، پھر اگلے قواعد کی ضرورت کے مطابق تکرار بڑھائیں۔ یہ اضافہ npm <code dir="ltr">0.1.0-dev.4</code> میں ابھی شامل نہیں ہے۔ [تکرار کے قواعد](../LANGUAGE.md#repetition) دیکھیں۔
@@ -95,6 +96,13 @@ end
 </div>
 
 یہ assertions کوئی حرف consume نہیں کرتیں۔ JavaScript میں word characters سے مراد ASCII حروف، ہندسے اور underscore ہیں؛ <code dir="ltr">i</code> کے ساتھ case folding کے مساوی حروف بھی شامل ہوتے ہیں۔ یہ قدرتی زبان کے الفاظ کی تقسیم نہیں ہے۔ یہ فیچر ابھی npm <code dir="ltr">0.1.0-dev.4</code> میں شامل نہیں ہے۔ [لفظ کی حدود](../LANGUAGE.md#word-boundaries) دیکھیں۔
+
+سورس میں یہ دو قواعد بھی دستیاب ہیں:
+
+- <code dir="ltr">unicode property "L"</code>
+- <code dir="ltr">not unicode property "L"</code>
+
+پہلے سے <code dir="ltr">\p{L}</code> اور دوسرے سے <code dir="ltr">\P{L}</code> بنتا ہے۔ نام <code dir="ltr">L</code> حروف کی category ہے۔ Aliases میں بڑے اور چھوٹے حروف کا فرق اہم ہے؛ classification انجن کے Unicode data پر منحصر ہے۔ Counts اور <code dir="ltr">lazy</code> معمول کے مطابق کام کرتے ہیں۔ فلیگ <code dir="ltr">i</code> کے ساتھ native <code dir="ltr">u</code> complement میں case folding کے مساوی حروف بھی آ سکتے ہیں۔ یہ فیچر ابھی npm <code dir="ltr">0.1.0-dev.4</code> میں نہیں ہے۔ [Unicode properties](../LANGUAGE.md#unicode-properties) دیکھیں۔
 
 لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.4</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
 
@@ -494,7 +502,7 @@ CI=1 npm run verify
 
 متبادل قابلِ تدوین <code dir="ltr">either { … }</code> بلاک بنتے ہیں؛ ہر براہِ راست entry ایک انتخاب ہے جو ترتیب سے آزمایا جاتا ہے۔ کئی قواعد والے یا خالی انتخاب کے لیے <code dir="ltr">group { … }</code> استعمال کریں۔
 
-ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ Word boundaries، Unicode properties اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
+ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ Character classes کے اندر Unicode properties، v-set operations اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
 
 ## 💬 عام سوالات
 

@@ -37,6 +37,10 @@ The parser uses a stack for brace-delimited groups, sharing existing atom parsin
 
 References are resolved against the completed capture table after parsing. A reference carries its target token's location and the enclosing groups at that point; this distinguishes missing, forward and open/self targets. The language rejects forward/open references explicitly, while preserving native empty behavior for nonparticipating optional captures. Numeric references have a noncapturing emission boundary to prevent a following literal digit from extending the reference number. CLI, declarations, explanations and workshop compilation share the resolved metadata.
 
+## Unicode property atoms
+
+An explicit `unicodeProperty` atom keeps the native alias, complement polarity, repetition and original value location. The parser validates JSON quoting and ASCII alias shape; the generator probes native property support and validates actual aliases before emitting `\p{…}` or `\P{…}`. Runtime membership owns classification and Unicode edition, avoiding a bundled property table or ASCII approximation. Typed `UnicodePropertySegment` metadata carries the alias and exact source trace through explanations, CLI and the existing isolated workshop worker. Reverse escape parsing preserves standalone aliases and complements; properties inside character classes fail at their original escape until the class AST can express them without changing `u`/`i` complement semantics. Modern v sets, string properties and broader flags remain open work.
+
 ## Assertions
 
 The same bounded block parser builds `assertion` nodes with `direction`, `negative` and child nodes. They carry no repetition. The emitter wraps those children in native positive/negative lookahead or lookbehind, preserving capture opening order and exact source spans. Typed start/end `AssertionSegment` trace entries explain the zero-width condition. The first behind assertion probes native support; failure returns a positioned `UNSUPPORTED_TARGET_FEATURE` without rewriting semantics. Source-order forward/open-reference and duplicate-name policies remain unchanged inside assertions.

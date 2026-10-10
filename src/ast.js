@@ -16,7 +16,8 @@ export const PATH_SEGMENT_EXCLUDED = Object.freeze([
  * @typedef {{kind: 'boundary', negative: boolean, repetition: null, location: Location, text: string}} BoundaryNode
  * @typedef {{kind: 'atom', atomType: 'wildcard'|'shorthand'|'literal', value: string, negative?: boolean, repetition: Repetition|null, location: Location, text: string}} TextAtomNode
  * @typedef {{kind: 'atom', atomType: 'charSet', value: string[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} SetAtomNode
- * @typedef {TextAtomNode|SetAtomNode} AtomNode
+ * @typedef {{kind: 'atom', atomType: 'unicodeProperty', value: string, negative: boolean, repetition: Repetition|null, location: Location, propertyLocation: Location, text: string}} PropertyAtomNode
+ * @typedef {TextAtomNode|SetAtomNode|PropertyAtomNode} AtomNode
  * @typedef {{kind: 'group', capturing: boolean, name: string|null, captureIndex: number|null, nodes: RuleNode[], repetition: Repetition|null, location: Location, text: string, endLocation: Location}} GroupNode
  * @typedef {{kind: 'alternation', branches: RuleNode[][], repetition: Repetition|null, location: Location, text: string, endLocation: Location}} AlternationNode
  * @typedef {{kind: 'assertion', direction: 'ahead'|'behind', negative: boolean, nodes: RuleNode[], repetition: null, location: Location, text: string, endLocation: Location}} AssertionNode
@@ -30,7 +31,7 @@ export function anchor(edge, mode, location, text) {
   return { kind: "anchor", edge, mode, location, text };
 }
 
-/** @param {AtomNode['atomType']} atomType @param {string|string[]} value @param {Repetition|null} repetition @param {Location} location @param {string} text @param {boolean} negative @returns {AtomNode} */
+/** @param {(TextAtomNode|SetAtomNode)['atomType']} atomType @param {string|string[]} value @param {Repetition|null} repetition @param {Location} location @param {string} text @param {boolean} negative @returns {AtomNode} */
 export function atom(atomType, value, repetition, location, text, negative = false) {
   if (atomType === "charSet") {
     if (!Array.isArray(value)) throw new TypeError("A character set needs a list of characters.");

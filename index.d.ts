@@ -45,6 +45,14 @@ export interface CharacterSetSegment extends SegmentBase {
   negative: boolean;
 }
 
+export interface UnicodePropertySegment extends SegmentBase {
+  kind: "atom";
+  atomType: "unicodeProperty";
+  property: string;
+  negative: boolean;
+  repetition: Repetition | null;
+}
+
 export interface GroupSegment extends SegmentBase {
   kind: "group";
   edge: "start" | "end";
@@ -80,6 +88,7 @@ export type RegexSegment =
   | BoundarySegment
   | TextSegment
   | CharacterSetSegment
+  | UnicodePropertySegment
   | GroupSegment
   | AlternationSegment
   | AssertionSegment

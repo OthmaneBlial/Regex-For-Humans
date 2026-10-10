@@ -743,7 +743,7 @@ test("rejects features it cannot preserve and non-Unicode matching", () => {
     [/(?=[a-c])a/u, 6],
     [/\b[a-c]/u, 5],
     [/ab(?=[a-c])/u, 8],
-    [/\p{L}/u, 1],
+    [/[\p{L}]/u, 2],
   ]) {
     assert.throws(() => regexToRules(regex), {
       code: "UNSUPPORTED_REGEX",

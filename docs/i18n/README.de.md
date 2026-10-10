@@ -50,6 +50,7 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 | Nicht gierige Wiederholung mit `lazy` | — | ✅ Im Quellcode; noch nicht veröffentlicht |
 | Lookarounds | — | ✅ Nur im Quellcode; Verschachtelung und native Captures |
 | Wortgrenzen | — | ✅ Nur im Quellcode; native Bedingungen ohne Zeichenverbrauch |
+| [Unicode-Eigenschaften](../LANGUAGE.md#unicode-properties) | — | ✅ Native Aliase und Komplemente im u-Modus; nur im Quellcode |
 | Andere Engines und freie englische Sätze | — | Außerhalb der aktuellen Sprache |
 
 Im Quellcode erzeugt `lazy digits` den Ausdruck `\d+?`: zuerst eine Ziffer versuchen, dann bei Bedarf für die folgenden Regeln mehr Wiederholungen. Diese Ergänzung ist noch nicht in npm `0.1.0-dev.4` enthalten. Siehe [Wiederholungsregeln](../LANGUAGE.md#repetition).
@@ -57,6 +58,8 @@ Im Quellcode erzeugt `lazy digits` den Ausdruck `\d+?`: zuerst eine Ziffer versu
 Der Quellcode unterstützt auch `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Sie prüfen den Text um die aktuelle Position, ohne Zeichen zu verbrauchen. Captures behalten native Werte und Positionen, auch außerhalb des verbrauchten Treffers; Lookbehind benötigt Laufzeitunterstützung. Diese Funktionen sind noch nicht in npm `0.1.0-dev.4` enthalten. Siehe [Lookaround-Assertions](../LANGUAGE.md#lookaround-assertions).
 
 Der Quellcode unterstützt `word boundary` (`\b`) und `not word boundary` (`\B`). Sie verbrauchen keine Zeichen. JavaScript zählt ASCII-Buchstaben, Ziffern und Unterstriche als Wortzeichen; mit `i` kommen entsprechende Unicode-Zeichen durch Groß-/Kleinschreibungsfaltung hinzu. Das ist keine sprachliche Wortsegmentierung. Noch nicht in npm `0.1.0-dev.4` enthalten; siehe [Wortgrenzen](../LANGUAGE.md#word-boundaries).
+
+Der Quellcode akzeptiert außerdem `unicode property "L"` und `not unicode property "L"` für natives `\p{L}` und `\P{L}`. `L` bedeutet Letter; Aliase unterscheiden Groß- und Kleinschreibung, die Zuordnung nutzt die Unicode-Daten der Laufzeit. Zählwerte und `lazy` funktionieren wie gewohnt. Mit `i` kann das native Komplement im `u`-Modus auch durch Groß-/Kleinschreibungsfaltung äquivalente Buchstaben umfassen. Noch nicht in npm `0.1.0-dev.4`; siehe [Unicode-Eigenschaften](../LANGUAGE.md#unicode-properties).
 
 npm `0.1.0-dev.4` enthält Gruppen, Captures, Rückreferenzen und geordnete Alternativen in Bibliothek und CLI. Der Workshop ergänzt Capture-Ansichten und mehrere Suchtreffer. Siehe [Kompatibilität](../COMPATIBILITY.md) und [Veröffentlichungsnachweise](../DISTRIBUTION.md).
 
@@ -386,7 +389,7 @@ Enthalten sind Formatierung, Lint, Typen, Links, Node, Pages-Build, saubere Pake
 
 Alternativen werden zu bearbeitbaren `either { … }`-Blöcken: Jeder Eintrag ist eine Auswahl, die in Reihenfolge ausprobiert wird. Ein `group { … }`-Block bildet eine Auswahl aus mehreren Regeln oder eine leere Auswahl.
 
-Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sätze werden nicht akzeptiert. Rückübersetzung ist auf den dokumentierten Teilumfang begrenzt. Wortgrenzen, Unicode-Eigenschaften und Vorwärts-/Offenverweise bleiben abgelehnt. Der Workshop hat einen Worker-Zeitrahmen; kopierte Regex brauchen die Schutzmaßnahmen ihrer Anwendung. Siehe [Sicherheitsmodell](../SECURITY_MODEL.md).
+Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sätze werden nicht akzeptiert. Rückübersetzung ist auf den dokumentierten Teilumfang begrenzt. Unicode-Eigenschaften innerhalb von Zeichenklassen, v-Mengenoperationen und Vorwärts-/Offenverweise bleiben abgelehnt. Der Workshop hat einen Worker-Zeitrahmen; kopierte Regex brauchen die Schutzmaßnahmen ihrer Anwendung. Siehe [Sicherheitsmodell](../SECURITY_MODEL.md).
 
 ## 💬 Häufige Fragen
 

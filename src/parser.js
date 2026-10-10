@@ -506,6 +506,49 @@ function parseItem(text, location, rawLine) {
     };
   }
 
+  const property = /^(not\s+)?unicode\s+property(?:\s+|$)/iu.exec(remaining);
+  if (property) {
+    const suffix = remaining.slice(property[0].length);
+    const quoteLocation = {
+      line: location.line,
+      column: location.column + offset + property[0].length,
+    };
+    if (!suffix.startsWith('"'))
+      fail(
+        "INVALID_UNICODE_PROPERTY",
+        "A Unicode property needs one JSON-quoted name or name=value pair.",
+        quoteLocation,
+        'Use `unicode property "Letter"` or `not unicode property "Script=Greek"`.',
+      );
+    const quoted = readQuoted(rawLine.slice(quoteLocation.column - 1), quoteLocation);
+    if (quoted.length !== suffix.length) {
+      const trailing = suffix.slice(quoted.length);
+      fail("TRAILING_TEXT", "Unexpected text after the Unicode property.", {
+        line: location.line,
+        column:
+          quoteLocation.column + quoted.length + trailing.length - trailing.trimStart().length,
+      });
+    }
+    const propertyLocation = { line: location.line, column: quoteLocation.column + 1 };
+    if (!/^(?:[A-Za-z0-9_]+|[A-Za-z_]+=[A-Za-z0-9_]+)$/u.test(quoted.value))
+      fail(
+        "INVALID_UNICODE_PROPERTY",
+        "Use an ASCII Unicode property alias or a property=value pair, without spaces.",
+        propertyLocation,
+        "Use `Letter`, `General_Category=Letter` or `Script_Extensions=Greek`; aliases are case-sensitive.",
+      );
+    return {
+      kind: "atom",
+      atomType: "unicodeProperty",
+      value: quoted.value,
+      negative: property[1] !== undefined,
+      repetition,
+      location,
+      propertyLocation,
+      text,
+    };
+  }
+
   const textWithout = /^text without:\s*/i.exec(remaining);
   if (textWithout || /^any text$/i.test(remaining)) {
     if (repetition) {

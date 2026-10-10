@@ -50,6 +50,7 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 | Repetición no codiciosa con `lazy` | — | ✅ En el código fuente; aún no publicada |
 | Aserciones de anticipación y retrospección | — | ✅ Solo en el código fuente; anidación y capturas nativas |
 | Límites de palabra | — | ✅ Solo en el código fuente; aserciones nativas de ancho cero |
+| [Propiedades Unicode](../LANGUAGE.md#unicode-properties) | — | ✅ Alias y complementos nativos en modo u; solo en el código fuente |
 | Otros motores e inglés libre | — | Fuera del lenguaje actual |
 
 En el código fuente, `lazy digits` genera `\d+?`: prueba primero un dígito y amplía la repetición si las reglas siguientes lo requieren. Esta función aún no está en npm `0.1.0-dev.4`. Consulta las [reglas de repetición](../LANGUAGE.md#repetition).
@@ -57,6 +58,8 @@ En el código fuente, `lazy digits` genera `\d+?`: prueba primero un dígito y a
 El código fuente también admite `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Comprueban el texto alrededor de la posición actual sin consumirlo. Las capturas conservan sus valores y posiciones nativos, incluso fuera del texto consumido; la retrospección requiere un motor compatible. Estas funciones aún no están en npm `0.1.0-dev.4`. Consulta las [aserciones](../LANGUAGE.md#lookaround-assertions).
 
 El código fuente acepta `word boundary` (`\b`) y `not word boundary` (`\B`). No consumen caracteres. JavaScript considera caracteres de palabra las letras ASCII, los dígitos y el guion bajo, además de sus equivalentes al ignorar mayúsculas con `i`. Esto no segmenta palabras del lenguaje natural. Aún no está en npm `0.1.0-dev.4`; consulta los [límites de palabra](../LANGUAGE.md#word-boundaries).
+
+El código fuente también acepta `unicode property "L"` y `not unicode property "L"` como `\p{L}` y `\P{L}` nativos. `L` significa Letter; los alias distinguen mayúsculas y la clasificación usa los datos Unicode del motor. Los recuentos y `lazy` funcionan normalmente. Con `i`, el complemento nativo en modo `u` puede incluir letras equivalentes al ignorar mayúsculas. Aún no está en npm `0.1.0-dev.4`; consulta las [propiedades Unicode](../LANGUAGE.md#unicode-properties).
 
 npm `0.1.0-dev.4` incluye grupos, capturas, referencias anteriores y alternativas ordenadas en la biblioteca y el CLI. El taller añade inspección de capturas y múltiples coincidencias de búsqueda. Consulta [compatibilidad](../COMPATIBILITY.md) y [publicación](../DISTRIBUTION.md).
 
@@ -386,7 +389,7 @@ Incluye formato, lint, tipos, enlaces, Node, construcción Pages, consumidor lim
 
 Las alternativas se convierten en bloques editables `either { … }`: cada entrada es una opción, probada en orden. Usa `group { … }` para una opción con varias reglas o una opción vacía.
 
-La salida apunta a **JavaScript `RegExp`**. No admite regex bruto como reglas ni inglés libre. La conversión inversa acepta solo el subconjunto documentado. Los límites de palabra, las propiedades Unicode y las referencias futuras/abiertas siguen rechazados. El taller usa un worker con plazo; un regex copiado necesita las protecciones de su aplicación. Consulta el [modelo de seguridad](../SECURITY_MODEL.md).
+La salida apunta a **JavaScript `RegExp`**. No admite regex bruto como reglas ni inglés libre. La conversión inversa acepta solo el subconjunto documentado. Las propiedades Unicode dentro de clases de caracteres, las operaciones de conjuntos v y las referencias futuras/abiertas siguen rechazadas. El taller usa un worker con plazo; un regex copiado necesita las protecciones de su aplicación. Consulta el [modelo de seguridad](../SECURITY_MODEL.md).
 
 ## 💬 Preguntas frecuentes
 

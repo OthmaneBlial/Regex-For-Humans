@@ -2231,7 +2231,7 @@ test("reverse syntax errors select their source character and reveal wrapped or 
     [" \r\n\t/^😀(?=[a-c])AB$/u \n", "-"],
     ["/^(?:😀(?=[a-c])AB)$/u", "-"],
     ["/^[a-c]+$/u", "-"],
-    ["/^(?:😀)\\p{L}$/u", "\\"],
+    ["/^(?:😀)[\\p{L}]$/u", "\\"],
     [` \n\t/^${"A".repeat(700)}😀(?=[a-c])B$/u \n`, "-"],
   ]) {
     await reverse.fill(literal);

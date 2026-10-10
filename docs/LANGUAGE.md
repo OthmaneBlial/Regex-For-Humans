@@ -242,6 +242,40 @@ Choices follow [ECMAScript disjunction semantics](https://tc39.es/ecma262/2025/m
 
 Alternative trace segments use `kind: "alternation"`, `edge: "start" | "branch" | "end"`, `alternatives` and `repetition`, plus the existing source/location/explanation fields. Separator segments navigate to the next choice's rule. Consumers switching on `segments[].kind` should handle this variant. Ordered alternatives and their reverse translation are included in npm `0.1.0-dev.4` and the hosted workshop.
 
+## Unicode properties
+
+This source addition is unreleased beyond npm `0.1.0-dev.4`. A property rule consumes one Unicode code point selected by the target runtime:
+
+| Rule | JavaScript source |
+| --- | --- |
+| `unicode property "Letter"` | `\p{Letter}` |
+| `unicode property "L"` | `\p{L}` |
+| `unicode property "General_Category=Letter"` | `\p{General_Category=Letter}` |
+| `unicode property "Script=Greek"` | `\p{Script=Greek}` |
+| `unicode property "Script_Extensions=Greek"` | `\p{Script_Extensions=Greek}` |
+| `not unicode property "Lowercase_Letter"` | `\P{Lowercase_Letter}` |
+
+Use one JSON-quoted alias or `property=value` pair. Rule keywords are case-insensitive, but native property names and values are case-sensitive: `Script=Greek` works, while `script=Greek`, `Script=greek` and lone `Greek` fail. General-category aliases such as `L`, binary properties such as `ASCII`, and native aliases such as `sc=Grek` or `scx=Grek` are accepted when the runtime recognizes them. Script and script extensions differ: `٢` does not match `Script=Thaana`, but does match `Script_Extensions=Thaana`.
+
+Counts and `lazy` use their existing semantics: `lazy between 1 and 3 unicode property "Decimal_Number"` emits `\p{Decimal_Number}{1,3}?`. Properties work inside groups, captures, alternatives and lookarounds. For letters followed by optional combining marks:
+
+```text
+start
+capture "text" {
+  one or more group {
+    unicode property "L"
+    zero or more unicode property "M"
+  }
+}
+end
+```
+
+This accepts `é`, `e` followed by a combining accent, `中文`, `عربي` and `اردو`. It describes a code-point pattern, not complete rules for a language, grapheme segmentation or Unicode normalization. `Letter` alone excludes combining marks, decimal digits and emoji. Classification follows the runtime's Unicode data and can change between Unicode editions. Existing `letter`, `digit` and `word` rules keep their ASCII/native shorthand semantics.
+
+The compiler keeps complements as native `\P` escapes. In `u` mode with `i`, case folding happens after complementing: `/\P{Lowercase_Letter}/iu` matches `a`, whereas `/[^\p{Lowercase_Letter}]/iu` does not. Replacing one with the other would change matching. See [MDN's native property semantics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Unicode_character_class_escape) and the [ECMAScript property alias rules](https://tc39.es/ecma262/multipage/text-processing.html#sec-runtime-semantics-unicodematchproperty).
+
+Compilation probes native property support and reports `UNSUPPORTED_TARGET_FEATURE` at the rule when unavailable. Unknown aliases report `INVALID_UNICODE_PROPERTY` at the quoted value; malformed quotes and trailing text retain their existing positioned diagnostics. The typed `UnicodePropertySegment` carries the exact property alias, complement polarity, repetition and source span. Reverse translation preserves standalone `\p{…}` / `\P{…}` aliases, counts, flags and capture behavior. Property escapes combined inside character classes, Unicode string properties such as `RGI_Emoji`, `v` sets, intersection and subtraction still require further implementation and fail explicitly. They are separate open mission requirements, not approximated by ASCII classes or alternation.
+
 ## Anchors and flags
 
 The compiler emits `u` by default for Unicode code-point behavior. It adds `m` when a line anchor is used. It allows `i` (ignore case) and `s` (dot matches newline) as explicit options. It rejects a mix of input anchors and line anchors in one document because JavaScript's `m` flag would change the meaning of `^` and `$` for both. Global and sticky flags (`g`, `y`) are outside version 1 because repeated `.test()` calls with them are stateful.
@@ -252,7 +286,7 @@ Without `m`, JavaScript `^` and `$` match only the true start and end of input. 
 
 ## Reverse translation
 
-The JavaScript API `regexToRules(regex)` and the workshop's **Already have a regex?** control translate a bounded subset back into editable rules. The input must be a JavaScript `RegExp` using `u`; `i` and `s` return as compile options, while `m` becomes `line start` / `line end` rules. Supported input includes literals, edge anchors, `\d`/`\w`/`\s` and their complements, common ASCII digit/letter/word/hex classes, simple character lists, greedy/lazy repetition, capturing/noncapturing groups, nested groups, positive/negative lookahead/lookbehind and backward named/numbered references. Open-ended repetition becomes `zero or more`, `one or more` or `at least N`. Captures retain names, numbering and values, including empty and absent groups; Unicode escapes in capture names are decoded to identifiers. Literal-only noncapturing groups keep their compact literal-rule normalization. Composite groups become editable blocks.
+The JavaScript API `regexToRules(regex)` and the workshop's **Already have a regex?** control translate a bounded subset back into editable rules. The input must be a JavaScript `RegExp` using `u`; `i` and `s` return as compile options, while `m` becomes `line start` / `line end` rules. Supported input includes literals, edge anchors, word/non-word boundaries, standalone Unicode character properties, `\d`/`\w`/`\s` and their complements, common ASCII digit/letter/word/hex classes, simple character lists, greedy/lazy repetition, capturing/noncapturing groups, nested groups, positive/negative lookahead/lookbehind and backward named/numbered references. Open-ended repetition becomes `zero or more`, `one or more` or `at least N`. Captures retain names, numbering and values, including empty and absent groups; Unicode escapes in capture names are decoded to identifiers. Literal-only noncapturing groups keep their compact literal-rule normalization. Composite groups become editable blocks.
 
 The workshop expects a slash-delimited JavaScript literal, such as `/^a\nb$/u`. Physical LF, CR, U+2028 and U+2029 line breaks inside its pattern are rejected with an escape hint, including inside character classes or after a backslash. Escaped line breaks remain valid matching data. Whitespace outside the literal is ignored for translation but counts toward the input budget of 16,392 UTF-16 code units, together with delimiters and flags. The workshop and CLI reject larger input before trimming or native syntax validation; the independent regex-source ceiling remains 16,384 code units. The library accepts genuine `RegExp` objects directly, including those created in another JavaScript context such as an iframe or Node's `vm`. Lookalike objects are rejected with `TypeError`; translation does not run the input pattern or change its `lastIndex`. Native getters supply the stored pattern and flags without serializing the regex or reading overridden metadata or custom `Symbol.match` getters, so subclass and own-property overrides are ignored; unsupported native flags and syntax still receive the same diagnostics.
 
@@ -272,7 +306,7 @@ Empty non-capturing groups such as `(?:)` translate to `0 any character`, genera
 
 The empty negative class `[^]` matches any Unicode code point, including line breaks, so it becomes `any character` with the returned `s` option enabled. When the same regex also contains ordinary `.` atoms, those rules become `none of: "\\n", "\\r", "\\u2028", "\\u2029"` so they still exclude JavaScript line terminators under `s`. The empty positive class `[]`, which matches nothing, remains unsupported.
 
-Unsupported syntax is rejected with a column diagnostic; it is never dropped or approximated. This includes forward/open references, word boundaries, Unicode properties, unknown character ranges and flags other than `i`, `m`, `s`, `u`. The translator requires `u` because this language always matches Unicode code points. Nested groups, alternatives and assertions share the 64-level translated-block budget and the translated source/line budgets. Forward/open reference failures report `UNSUPPORTED_REGEX` at the original reference escape; they are not silently replaced by empty text.
+Unsupported syntax is rejected with a column diagnostic; it is never dropped or approximated. This includes forward/open references, properties inside character classes, v-set operations, unknown character ranges and flags other than `i`, `m`, `s`, `u`. The translator requires `u` because this language always matches Unicode code points. Nested groups, alternatives and assertions share the 64-level translated-block budget and the translated source/line budgets. Forward/open reference failures report `UNSUPPORTED_REGEX` at the original reference escape; they are not silently replaced by empty text.
 
 Top-level and grouped `|` alternatives translate to ordered `either` blocks, including alternatives inside captures. Sequence choices become noncapturing `group` blocks; empty choices become empty group blocks. For example, `/cat|dog|bird/u` becomes an `either` block with three quoted entries, while `/^a|b$/u` retains its separately anchored branches. Additional editable blocks can reach the translated-depth budget before the native group-depth budget; that error points into the original regex and names the translated limit. Escaped pipes such as `\|` and character-class pipes such as `[|]` stay literal matching data. Misplaced anchors retain their own anchor diagnostic.
 

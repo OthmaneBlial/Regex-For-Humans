@@ -131,6 +131,14 @@ assert.equal(toRegExp(boundaryResult).test("cat"), true);
 assert.equal(toRegExp(boundaryResult).test("é"), false);
 assert.equal(toRegExp(compile("not word boundary")).test(""), true);
 assert.equal(regexToRules(toRegExp(boundaryResult)).rules, "word boundary");
+const propertyResult = compile('one or more unicode property "L"');
+assert.equal(propertyResult.segments[0].atomType, "unicodeProperty");
+assert.equal(propertyResult.segments[0].property, "L");
+assert.equal(toRegExp(propertyResult).exec("😀اردو")[0], "اردو");
+const propertyComplement = compile('not unicode property "Lowercase_Letter"', { flags: "i" });
+assert.equal(propertyComplement.segments[0].negative, true);
+assert.equal(toRegExp(propertyComplement).test("a"), true);
+assert.deepEqual(regexToRules(toRegExp(propertyComplement)), { rules: 'not unicode property "Lowercase_Letter"', flags: "i" });
 if (toRegExp(lazyForward).exec("1234")?.[0] !== "1" || lazyForward.segments[0].repetition?.lazy !== true) throw new Error("Installed lazy compilation changed its preferred count or metadata");
 for (const source of ["(?<number>[0-9]+?)", "(?<optional>a)??a", "(?:AB){1,3}?", "(?:)*?"]) {
   const original = new RegExp(source, "du");
@@ -315,7 +323,7 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   writeFileSync(
     typeSmoke,
     `import { CompileError, compile, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
-import type { AssertionSegment, BoundarySegment, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
+import type { AssertionSegment, BoundarySegment, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation, UnicodePropertySegment } from "regex-for-humans";
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
 const lazyResult: CompileResult = compile("lazy digits");
 const lazyRange: Repetition = { kind: "range", min: 2, max: 4, lazy: true };
@@ -335,6 +343,13 @@ const cachedRegex: RegExp = toRegExp(cached);
 const pairRegex: RegExp = toRegExp({ source: result.source, flags: result.flags });
 const fullRegex: RegExp = toRegExp({ source: result.source, flags: result.flags, segments: result.segments });
 const segment: RegexSegment = result.segments[0];
+if (segment.kind === "atom" && segment.atomType === "unicodeProperty") {
+  const property: UnicodePropertySegment = segment;
+  const alias: string = property.property;
+  const negative: boolean = property.negative;
+  const repetition: Repetition | null = property.repetition;
+  console.log(alias, negative, repetition);
+}
 if (segment.kind === "boundary") {
   const boundary: BoundarySegment = segment;
   const negative: boolean = boundary.negative;
@@ -499,6 +514,28 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
   );
   if (boundaryImport.rules !== "not word boundary" || boundaryImport.flags !== "i")
     throw new Error("Installed CLI lost non-word boundary import semantics.");
+  const propertyCli = JSON.parse(
+    run([...cliArgs, "--json", "--ignore-case", "-"], {
+      cwd: consumer,
+      input: 'not unicode property "Lowercase_Letter"',
+    }),
+  );
+  if (
+    propertyCli.segments[0].property !== "Lowercase_Letter" ||
+    !new RegExp(propertyCli.source, propertyCli.flags).test("a")
+  )
+    throw new Error("Installed CLI lost Unicode property complement semantics.");
+  const propertyImport = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], {
+      cwd: consumer,
+      input: String.raw`/\p{Script=Greek}+?/iu`,
+    }),
+  );
+  if (
+    propertyImport.rules !== 'lazy one or more unicode property "Script=Greek"' ||
+    propertyImport.flags !== "i"
+  )
+    throw new Error("Installed CLI lost Unicode property import semantics.");
   const paddedLiteral = `${"\u00a0".repeat(REGEX_LITERAL_INPUT_LIMIT - literalInput.length)}${literalInput}`;
   const paddedReverse = JSON.parse(
     run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: paddedLiteral }),

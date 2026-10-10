@@ -79,6 +79,18 @@ function readEscape(source, index, inClass = false) {
     return { end: index + 2, category: escaped };
   }
 
+  if (escaped === "p" || escaped === "P") {
+    if (inClass)
+      unsupported("Unicode properties inside character classes cannot yet be translated.", index);
+    const close = source.indexOf("}", index + 3);
+    if (source[index + 2] !== "{" || close < 0)
+      unsupported("The Unicode property escape is incomplete.", index);
+    return {
+      end: close + 1,
+      phrase: `${escaped === "P" ? "not " : ""}unicode property ${quoteText(source.slice(index + 3, close))}`,
+    };
+  }
+
   if (escaped === "u") {
     if (source[index + 2] === "{") {
       const close = source.indexOf("}", index + 3);

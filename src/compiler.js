@@ -1,5 +1,5 @@
 import { fail } from "./diagnostics.js";
-import { escapeControls } from "./display.js";
+import { escapeControls, quoteText } from "./display.js";
 import { explainNode } from "./explain.js";
 
 /** @typedef {import('./ast.js').AtomNode} AtomNode */
@@ -76,6 +76,9 @@ function atomSource(node) {
     case "charSet":
       source = `[${node.negative ? "^" : ""}${escapeClass(node.value)}]`;
       break;
+    case "unicodeProperty":
+      source = `\\${node.negative ? "P" : "p"}{${node.value}}`;
+      break;
     default:
       throw new TypeError("Unknown atom type.");
   }
@@ -107,10 +110,37 @@ export function compileAst(parsed, options = {}) {
   /** @type {import('../index.d.ts').RegexSegment[]} */
   const segments = [];
   let checkedLookbehind = false;
+  let checkedUnicodeProperties = false;
 
   /** @param {import('./ast.js').RuleNode[]} nodes */
   function emit(nodes) {
     for (const [index, node] of nodes.entries()) {
+      if (node.kind === "atom" && node.atomType === "unicodeProperty") {
+        if (!checkedUnicodeProperties) {
+          try {
+            // biome-ignore lint/complexity/useRegexLiterals: feature detection must catch unsupported syntax at runtime.
+            new RegExp("\\p{ASCII}", "u");
+          } catch {
+            fail(
+              "UNSUPPORTED_TARGET_FEATURE",
+              "This JavaScript runtime does not support Unicode property escapes.",
+              node.location,
+              "Use a runtime with native Unicode property support; the property cannot be approximated.",
+            );
+          }
+          checkedUnicodeProperties = true;
+        }
+        try {
+          new RegExp(`\\${node.negative ? "P" : "p"}{${node.value}}`, flags);
+        } catch {
+          fail(
+            "INVALID_UNICODE_PROPERTY",
+            `The Unicode property ${quoteText(node.value)} is not recognized by this JavaScript runtime.`,
+            node.propertyLocation,
+            "Use a case-sensitive character property such as `Letter`, `Script=Greek` or `Script_Extensions=Greek` supported in u mode.",
+          );
+        }
+      }
       if (node.kind === "assertion") {
         if (node.direction === "behind" && !checkedLookbehind) {
           try {
@@ -284,18 +314,26 @@ export function compileAst(parsed, options = {}) {
             ? { kind: "anchor", edge: node.edge, mode: node.mode }
             : node.kind === "boundary"
               ? { kind: "boundary", negative: node.negative }
-              : node.atomType === "charSet"
+              : node.atomType === "unicodeProperty"
                 ? {
                     kind: "atom",
-                    atomType: "charSet",
-                    repetition: node.repetition,
+                    atomType: "unicodeProperty",
+                    property: node.value,
                     negative: node.negative,
-                  }
-                : {
-                    kind: "atom",
-                    atomType: node.atomType,
                     repetition: node.repetition,
-                  }),
+                  }
+                : node.atomType === "charSet"
+                  ? {
+                      kind: "atom",
+                      atomType: "charSet",
+                      repetition: node.repetition,
+                      negative: node.negative,
+                    }
+                  : {
+                      kind: "atom",
+                      atomType: node.atomType,
+                      repetition: node.repetition,
+                    }),
       });
     }
   }

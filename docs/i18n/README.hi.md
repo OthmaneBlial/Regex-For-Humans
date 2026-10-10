@@ -50,6 +50,7 @@ end
 | `lazy` के साथ non-greedy दोहराव | — | ✅ वर्तमान source में; अभी रिलीज़ नहीं हुआ |
 | Lookaround assertions | — | ✅ केवल सोर्स में; nested assertions और native captures |
 | शब्द सीमाएँ | — | ✅ केवल सोर्स में; native zero-width assertions |
+| [Unicode properties](../LANGUAGE.md#unicode-properties) | — | ✅ u मोड में native aliases और complements; केवल सोर्स में |
 | दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — | वर्तमान भाषा के दायरे से बाहर |
 
 वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ। यह सुविधा npm `0.1.0-dev.4` में अभी शामिल नहीं है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
@@ -57,6 +58,8 @@ end
 सोर्स में `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }` भी उपलब्ध हैं। ये वर्तमान स्थान के आसपास के टेक्स्ट को जाँचते हैं, बिना अक्षर consume किए। Captures की native values और positions बनी रहती हैं, भले वे match के बाहर हों; lookbehind के लिए runtime support चाहिए। ये सुविधाएँ अभी npm `0.1.0-dev.4` में नहीं हैं। [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) देखें।
 
 सोर्स में `word boundary` (`\b`) और `not word boundary` (`\B`) उपलब्ध हैं। ये कोई अक्षर consume नहीं करते। JavaScript में word characters ASCII अक्षर, अंक और underscore हैं; `i` के साथ case folding के समकक्ष अक्षर भी शामिल होते हैं। यह प्राकृतिक भाषा के शब्दों का विभाजन नहीं है। यह सुविधा अभी npm `0.1.0-dev.4` में नहीं है। [शब्द सीमाएँ](../LANGUAGE.md#word-boundaries) देखें।
+
+सोर्स में `unicode property "L"` और `not unicode property "L"` से native `\p{L}` और `\P{L}` बनते हैं। `L` का अर्थ Letter है; aliases case-sensitive हैं और वर्गीकरण runtime के Unicode data पर निर्भर करता है। Counts और `lazy` सामान्य रूप से काम करते हैं। `i` के साथ native `u` complement में case-folding के समकक्ष अक्षर भी शामिल हो सकते हैं। यह सुविधा अभी npm `0.1.0-dev.4` में नहीं है। [Unicode properties](../LANGUAGE.md#unicode-properties) देखें।
 
 npm `0.1.0-dev.4` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
 
@@ -386,7 +389,7 @@ CI=1 npm run verify
 
 विकल्प संपादन योग्य `either { … }` ब्लॉक बनते हैं: हर सीधे entry को एक विकल्प मानकर क्रम से आज़माया जाता है। कई नियमों वाले या खाली विकल्प के लिए `group { … }` इस्तेमाल करें।
 
-लक्ष्य **JavaScript `RegExp`** है। Raw regex को rules की तरह और मुक्त अंग्रेज़ी को instructions की तरह स्वीकार नहीं करता। Reverse translation सिर्फ़ दस्तावेज़ित subset के लिए है। Word boundaries, Unicode properties और future/open references अस्वीकृत हैं। वर्कशॉप का worker समय-सीमित है; कॉपी किए regex को अपने application की सुरक्षा चाहिए। [सुरक्षा मॉडल](../SECURITY_MODEL.md) देखें।
+लक्ष्य **JavaScript `RegExp`** है। Raw regex को rules की तरह और मुक्त अंग्रेज़ी को instructions की तरह स्वीकार नहीं करता। Reverse translation सिर्फ़ दस्तावेज़ित subset के लिए है। Character classes के अंदर Unicode properties, v-set operations और future/open references अस्वीकृत हैं। वर्कशॉप का worker समय-सीमित है; कॉपी किए regex को अपने application की सुरक्षा चाहिए। [सुरक्षा मॉडल](../SECURITY_MODEL.md) देखें।
 
 ## 💬 सामान्य प्रश्न
 

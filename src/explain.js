@@ -167,6 +167,12 @@ function describeNode(node, flags, hasFollowingRule) {
     case "literal":
       meaning = `Literal text ${quoteText(node.value)}${caseNote}.`;
       break;
+    case "unicodeProperty":
+      meaning = node.negative
+        ? `Unicode complement of property ${quoteText(node.value)} (u).${flags.includes("i") ? " With i, case folding happens after complementing and can admit characters with this property." : ""}`
+        : `Unicode code point selected by property ${quoteText(node.value)} (u).${flags.includes("i") ? " With i, case-folded equivalents may also match." : ""}`;
+      meaning += " Classification uses this runtime's Unicode data.";
+      break;
     case "charSet":
       meaning = node.negative
         ? `Any character except ${node.value.map(quoteText).join(", ")}${caseNote}.`

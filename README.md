@@ -70,6 +70,7 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | Lazy repetition with `lazy` | — | ✅ Unreleased; atoms, blocks, alternatives and references |
 | Lookaround | — | ✅ Unreleased; nested assertions and native captures |
 | Word boundaries | — | ✅ Unreleased; native zero-width word status |
+| [Unicode character properties](docs/LANGUAGE.md#unicode-properties) | — | ✅ Native aliases and complements in u mode; source only |
 | Other regex engines and free-form English | — | Outside the current language |
 
 From the source checkout, `lazy digits` generates `\d+?`: try one digit first, then expand if following rules need more. `lazy any text` generates `.*?`. These additions are **unreleased** and are not in npm `0.1.0-dev.4`; see [greedy and lazy repetition](docs/LANGUAGE.md#repetition).
@@ -77,6 +78,8 @@ From the source checkout, `lazy digits` generates `\d+?`: try one digit first, t
 The source also supports `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. They test surrounding text without consuming it. Captures keep native values and positions, which can lie outside the consumed match; lookbehind requires runtime support. These assertions are **unreleased** beyond npm `0.1.0-dev.4`; see [lookaround assertions](docs/LANGUAGE.md#lookaround-assertions).
 
 The source supports `word boundary` (`\b`) and `not word boundary` (`\B`). These zero-width checks use native JavaScript word status: ASCII letters, digits and underscore, plus case-folding equivalents with `i`. They do not segment natural-language words. This is unreleased beyond npm `0.1.0-dev.4`; see [word boundaries](docs/LANGUAGE.md#word-boundaries).
+
+The source also accepts `unicode property "L"` and `not unicode property "L"` for native `\p{L}` and `\P{L}`. `L` means Letter; aliases are case-sensitive and classification uses the runtime’s Unicode data. Counts and `lazy` work as usual. With `i`, the native `u` complement can include case-folded letters. These additions are not in npm `0.1.0-dev.4`; see [Unicode properties](docs/LANGUAGE.md#unicode-properties).
 
 The `0.1.0-dev.4` preview includes groups, captures, backward references and ordered alternatives in the library and CLI. The browser workshop adds capture inspection and multiple search matches. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
 
@@ -497,7 +500,7 @@ CI=1 npm run verify
 
 ## 🧭 Know the boundaries
 
-Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, word boundaries, Unicode properties and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
+Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, Unicode properties inside character classes, v-set operations and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
 
 <a name="faq"></a>
 

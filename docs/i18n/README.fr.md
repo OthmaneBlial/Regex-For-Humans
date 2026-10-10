@@ -54,6 +54,7 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 | Répétition paresseuse avec `lazy` | — | ✅ Dans le code source ; non publiée |
 | Assertions avant/arrière | — | ✅ Dans le source ; captures natives et imbrication |
 | Limites de mot | — | ✅ Dans le source ; assertions natives sans consommation |
+| [Propriétés Unicode](../LANGUAGE.md#unicode-properties) | — | ✅ Alias et compléments natifs en mode u ; source uniquement |
 | Autres moteurs et anglais libre | — | Hors du langage actuel |
 
 Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord, puis augmenter le nombre si les règles suivantes le demandent. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [règles de répétition](../LANGUAGE.md#repetition).
@@ -61,6 +62,8 @@ Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord
 Le source accepte aussi `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Ces assertions vérifient le texte autour de la position courante sans le consommer. Les captures gardent leurs valeurs et positions natives, parfois hors du texte consommé ; les assertions arrière exigent un moteur compatible. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [assertions avant/arrière](../LANGUAGE.md#lookaround-assertions).
 
 Le source accepte `word boundary` (`\b`) et `not word boundary` (`\B`). Ces assertions ne consomment aucun caractère. JavaScript considère comme caractères de mot les lettres ASCII, les chiffres et le tiret bas, ainsi que leurs équivalents de casse avec `i`. Il ne s’agit pas d’une segmentation linguistique. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [limites de mot](../LANGUAGE.md#word-boundaries).
+
+Le source accepte aussi `unicode property "L"` et `not unicode property "L"`, soit `\p{L}` et `\P{L}` natifs. `L` signifie Letter ; les alias sont sensibles à la casse et le classement dépend des données Unicode du moteur. Les comptes et `lazy` s’appliquent normalement. Avec `i`, le complément natif en mode `u` peut inclure des lettres équivalentes en casse. Ces ajouts ne sont pas dans npm `0.1.0-dev.4`. Voir les [propriétés Unicode](../LANGUAGE.md#unicode-properties).
 
 npm `0.1.0-dev.4` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
 
@@ -390,7 +393,7 @@ La vérification comprend formatage, lint, types, liens, tests Node, constructio
 
 Les alternatives deviennent des blocs modifiables `either { … }` : chaque entrée est un choix, essayé dans l’ordre. Utilisez `group { … }` pour un choix composé de plusieurs règles ou un choix vide.
 
-La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’anglais libre. La traduction inverse traite seulement le sous-ensemble documenté. Les frontières de mots, propriétés Unicode et références futures/ouvertes restent refusées. L’atelier utilise un worker avec délai ; un regex copié nécessite les protections de sa propre application. Consultez le [modèle de sécurité](../SECURITY_MODEL.md).
+La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’anglais libre. La traduction inverse traite seulement le sous-ensemble documenté. Les propriétés Unicode dans les classes de caractères, les opérations d’ensembles v et les références futures/ouvertes restent refusées. L’atelier utilise un worker avec délai ; un regex copié nécessite les protections de sa propre application. Consultez le [modèle de sécurité](../SECURITY_MODEL.md).
 
 ## 💬 Questions fréquentes
 

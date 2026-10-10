@@ -13,7 +13,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Modern Unicode/flags and explicit target-capability diagnostics.
+1. Unicode properties inside character classes, generic ranges, native v sets/string properties and complete flags/capability handling.
 2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 3. Workshop localization and the remaining mission waves.
 
@@ -72,5 +72,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Preserve the earlier roadmap's unchecked human reviews, screen-reader testing and usability gates. Automated checks do not satisfy them.
 - Compiler architecture and language details stay in [ARCHITECTURE.md](ARCHITECTURE.md) and [LANGUAGE.md](LANGUAGE.md); security policy stays in [SECURITY_MODEL.md](SECURITY_MODEL.md). Avoid duplicate policy documents.
 - Competitive research is recorded separately; do not import competitor code or assets.
+
+## Unicode-property milestone
+
+- Implemented in the source checkout: standalone `unicode property "…"` and `not unicode property "…"` atoms, native case-sensitive aliases and u-mode emission, counts/lazy preference, nested group/assertion support and exact reverse translation. Typed `UnicodePropertySegment` exposes the alias, polarity, repetition and source span. Unknown aliases and missing runtime capability have separate positioned diagnostics; no ASCII approximation or property table is introduced.
+- Native parity: 40 patterns × eight flag sets × 46 inputs give 14,720 full match/capture/indices comparisons. The corpus includes general-category/binary/script/script-extension aliases, multilingual letters/digits, combining marks, astral/lone surrogates, empty/absent captures, references, lookarounds, multiline data and u/i complement behavior. Shared browser checks add 3,840 comparisons per engine/viewport, inspect Arabic/Urdu capture values and UTF-16 spans, and verify source selection, invalid-alias/class recovery, zero accessibility violations and no overflow at 320px.
+- Verification: `CI=1 npm run verify` passes in one uninterrupted command: 274 Node tests, 312 bundled Chromium desktop/mobile checks, 82 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds, a clean installed-package JavaScript/TypeScript consumer and zero audit vulnerabilities. All 43 selected checks and a separate clean consumer also pass on Node 22.23.3. Installed CLI checks cover both property directions and TypeScript narrows the new segment variant. Final documentation records are checked and rebuilt after the full gate.
+- Documentation: all ten README guides distinguish source-only properties from npm dev.4 and retain the 20 canonical code blocks. Arabic/Urdu place the two property commands on separate LTR lines within RTL prose. The language/architecture/compatibility guides describe native alias rules, runtime Unicode data and why `\P` must not be rewritten as a negated `\p` class. Human/native-language/screen-reader review gates stay unchecked.
+- Distribution and remaining mission: this does not publish a new npm archive or Pages build. Character-class property combinations, generic ranges, v sets/intersection/subtraction/string properties, broader flags, visualization, safety analysis, verified exports, workshop localization and later waves remain open. The next class AST must keep property complement and outer-class negation separate; a native u/i probe confirms that `[\P{Lowercase_Letter}]` matches `a`, while `[^\p{Lowercase_Letter}]` does not.
 
 This file records progress, not completion of the entire mission. Remaining advanced syntax, visualization, workshop localization and later waves still need implementation and verification.
