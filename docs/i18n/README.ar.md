@@ -107,9 +107,9 @@ end
 
 يدعم المصدر هذه الصيغ أيضًا:
 
-- <code dir="ltr">range "α" to "ω"</code>
-- <code dir="ltr">character class: digit, "_"</code>
-- <code dir="ltr">not character class: digit</code>
+<p dir="ltr" align="left"><code dir="ltr">range "α" to "ω"</code></p>
+<p dir="ltr" align="left"><code dir="ltr">character class: digit, "_"</code></p>
+<p dir="ltr" align="left"><code dir="ltr">not character class: digit</code></p>
 
 تجمع الفئة محارف مفردة من نقطة Unicode واحدة ونطاقات واختصارات مفردة وخصائص Unicode. تنفي الصيغة الثالثة الاتحاد كله. تنطبق أعداد التكرار والمعدّل <code dir="ltr">lazy</code> على الفئة، مع الحفاظ على سلوك متمّمات الخصائص الأصلي مع <code dir="ltr">u</code>/<code dir="ltr">i</code>. هذه الإضافة غير منشورة في npm <code dir="ltr">0.1.0-dev.4</code>؛ راجع [فئات المحارف](../LANGUAGE.md#composable-character-classes).
 

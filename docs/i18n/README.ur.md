@@ -107,9 +107,9 @@ end
 
 سورس میں یہ صورتیں بھی دستیاب ہیں:
 
-- <code dir="ltr">range "α" to "ω"</code>
-- <code dir="ltr">character class: digit, "_"</code>
-- <code dir="ltr">not character class: digit</code>
+<p dir="ltr" align="left"><code dir="ltr">range "α" to "ω"</code></p>
+<p dir="ltr" align="left"><code dir="ltr">character class: digit, "_"</code></p>
+<p dir="ltr" align="left"><code dir="ltr">not character class: digit</code></p>
 
 ایک class میں ایک Unicode code point کے literals، ranges، singular shorthands اور Unicode properties جمع کیے جا سکتے ہیں۔ تیسری صورت پوری union کو negate کرتی ہے۔ Counts اور <code dir="ltr">lazy</code> پوری class پر لاگو ہوتے ہیں؛ property complements کا native <code dir="ltr">u</code>/<code dir="ltr">i</code> رویہ برقرار رہتا ہے۔ یہ اضافہ ابھی npm <code dir="ltr">0.1.0-dev.4</code> میں نہیں ہے؛ [character classes](../LANGUAGE.md#composable-character-classes) دیکھیں۔
 
