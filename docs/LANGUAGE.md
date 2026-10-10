@@ -1,6 +1,6 @@
 # The Regex For Humans language
 
-Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the current source checkout; lazy repetition and lookaround assertions are unreleased additions beyond npm `0.1.0-dev.4`.
+Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the current source checkout; lazy repetition, lookaround assertions and word boundaries are unreleased additions beyond npm `0.1.0-dev.4`.
 
 Write one rule per line. `start` or `line start` can prefix the first rule. Keywords are case-insensitive; quoted text keeps its case. Leading and trailing spaces are ignored.
 
@@ -26,6 +26,8 @@ The [complex-examples guide](COMPLEX-EXAMPLES.md) combines these atoms into an a
 | `word character` | `\w` | `A`, `_`, `3` | `-`, `é` |
 | `word characters` | `\w+` | one or more letters, digits or underscores | empty string, `-`, `é` |
 | `not word` | `\W` | `-`, `é` | `A`, `_` |
+| `word boundary` | `\b` | a transition between word and non-word status | two adjacent word characters or two non-word characters |
+| `not word boundary` | `\B` | equal word/non-word status on both sides | a word/non-word transition |
 | `digit` | `\d` | `3` | `A`, `٣` |
 | `not digit` | `\D` | `A`, `٣` | `3` |
 | `letter` | `[A-Za-z]` | `A`, `z` | `3`, `_`, `é` |
@@ -80,6 +82,24 @@ Unicode direction controls (`Bidi_Control`) remain literal matching data. Genera
 C0/C1 control characters, DEL and Unicode line separators are also displayed as escapes instead of raw control characters. C1 values such as U+009B emit `\u009b` in literals and character lists. Existing source escapes for C0, DEL and line separators keep their braced form, such as `\u{a}` and `\u{2028}`; quoted explanations and match feedback use visible JSON-style escapes. Matching and original source metadata remain unchanged.
 
 `start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`.
+
+## Word boundaries
+
+`word boundary` emits `\b`; `not word boundary` emits `\B`. They test the current position without consuming characters and can appear inside groups, captures, alternatives and lookarounds. Their `BoundarySegment` metadata includes `negative` and the exact original location/generated span. Both directions preserve native JavaScript behavior.
+
+```text
+word boundary
+"cat"
+word boundary
+```
+
+This generates `/\bcat\b/u`. It finds `cat` in `😀cat!` and `écaté`, but does not match `scat`, `cats`, `_cat_` or `1cat2`. Here a word character is an ASCII letter, digit or underscore. With `i`, characters that fold to these ASCII word characters, such as `K` and `ſ`, also count. Other Unicode letters and combining marks do not become word characters merely because `u` is enabled. These assertions do not segment natural-language words; see the [native word-boundary semantics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Word_boundary_assertion).
+
+Input edges have non-word status. Therefore `/\B/u` matches the empty input at position 0, while `/\b/u` does not. Search mode advances empty matches by Unicode code point through the existing worker; for `😀`, `\B` yields empty matches at UTF-16 positions 0 and 2.
+
+Direct repetition reports `BOUNDARY_REPETITION`: `optional word boundary`, `3 not word boundary` and their lazy forms are invalid. Repeat a group containing the boundary and consuming items instead. Bare `lazy word boundary` reports `INVALID_LAZY_REPETITION`. Existing first/last anchor rules remain unchanged.
+
+The quoted rule `"\b"` and a native class escape `[\b]` still mean backspace, not a boundary. A literal backslash followed by `b` is written `"\\b"`. The reverse translator distinguishes these contexts without approximating them.
 
 <a name="groups-and-captures-unreleased-on-main"></a>
 

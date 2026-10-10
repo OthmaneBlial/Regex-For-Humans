@@ -8,6 +8,7 @@ import { quoteText } from "./display.js";
 /** @typedef {import('./ast.js').GroupNode} GroupNode */
 /** @typedef {import('./ast.js').AlternationNode} AlternationNode */
 /** @typedef {import('./ast.js').AssertionNode} AssertionNode */
+/** @typedef {import('./ast.js').BoundaryNode} BoundaryNode */
 /** @typedef {import('./ast.js').BackreferenceNode} BackreferenceNode */
 /** @typedef {import('./ast.js').RuleNode} RuleNode */
 /** @typedef {import('./ast.js').ParsedRules} ParsedRules */
@@ -208,7 +209,7 @@ function readCharacterList(text, location, rawLine) {
   return items;
 }
 
-/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|AssertionNode|BackreferenceNode} */
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|AssertionNode|BoundaryNode|BackreferenceNode} */
 function parseAtom(text, location, rawLine) {
   const lazy = /^lazy(?:\s+|$)/iu.exec(text);
   if (!lazy) return parseItem(text, location, rawLine);
@@ -237,7 +238,7 @@ function parseAtom(text, location, rawLine) {
   return node;
 }
 
-/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|AssertionNode|BackreferenceNode} */
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|AssertionNode|BoundaryNode|BackreferenceNode} */
 function parseItem(text, location, rawLine) {
   let remaining = text;
   /** @type {Repetition|null} */
@@ -367,6 +368,24 @@ function parseItem(text, location, rawLine) {
       { line: location.line, column: location.column + offset },
       'Remove the modifier or apply it to an item, such as `3 digits` or `optional "-"`.',
     );
+  }
+
+  const boundary = /^(not\s+)?word\s+boundary$/iu.exec(remaining);
+  if (boundary) {
+    if (repetition)
+      fail(
+        "BOUNDARY_REPETITION",
+        "Word boundaries do not consume characters and cannot be repeated directly.",
+        { line: location.line, column: location.column + offset },
+        "Repeat a group containing the boundary and consuming items instead.",
+      );
+    return {
+      kind: "boundary",
+      negative: boundary[1] !== undefined,
+      repetition: null,
+      location,
+      text,
+    };
   }
 
   const assertion = /^(not\s+)?(followed\s+by|preceded\s+by)(?=\s|\{|$)\s*/iu.exec(remaining);

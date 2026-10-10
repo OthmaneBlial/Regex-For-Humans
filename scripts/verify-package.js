@@ -124,6 +124,13 @@ for (const source of ["(?<currency>USD)(?=(?<amount>[0-9]+))", "(?<=([ab]+)([bc]
   for (const sample of ["", "USD123", "123", "abc", "b", "a", "😀"]) assert.deepEqual(rebuilt.exec(sample), original.exec(sample));
 }
 const lazyForward = compile("lazy digits");
+const boundaryResult = compile("word boundary");
+assert.equal(boundaryResult.segments[0].kind, "boundary");
+assert.equal(boundaryResult.segments[0].negative, false);
+assert.equal(toRegExp(boundaryResult).test("cat"), true);
+assert.equal(toRegExp(boundaryResult).test("é"), false);
+assert.equal(toRegExp(compile("not word boundary")).test(""), true);
+assert.equal(regexToRules(toRegExp(boundaryResult)).rules, "word boundary");
 if (toRegExp(lazyForward).exec("1234")?.[0] !== "1" || lazyForward.segments[0].repetition?.lazy !== true) throw new Error("Installed lazy compilation changed its preferred count or metadata");
 for (const source of ["(?<number>[0-9]+?)", "(?<optional>a)??a", "(?:AB){1,3}?", "(?:)*?"]) {
   const original = new RegExp(source, "du");
@@ -308,7 +315,7 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   writeFileSync(
     typeSmoke,
     `import { CompileError, compile, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
-import type { AssertionSegment, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
+import type { AssertionSegment, BoundarySegment, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
 const lazyResult: CompileResult = compile("lazy digits");
 const lazyRange: Repetition = { kind: "range", min: 2, max: 4, lazy: true };
@@ -328,6 +335,11 @@ const cachedRegex: RegExp = toRegExp(cached);
 const pairRegex: RegExp = toRegExp({ source: result.source, flags: result.flags });
 const fullRegex: RegExp = toRegExp({ source: result.source, flags: result.flags, segments: result.segments });
 const segment: RegexSegment = result.segments[0];
+if (segment.kind === "boundary") {
+  const boundary: BoundarySegment = segment;
+  const negative: boolean = boundary.negative;
+  console.log(negative);
+}
 if (segment.kind === "assertion") {
   const assertion: AssertionSegment = segment;
   const direction: "ahead" | "behind" = assertion.direction;
@@ -477,6 +489,16 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
   );
   if (assertionImport.rules !== '"USD"\nfollowed by {\none or more digit\n}')
     throw new Error("Installed CLI lost lookahead import semantics.");
+  const boundaryCli = JSON.parse(
+    run([...cliArgs, "--json", "-"], { cwd: consumer, input: "word boundary" }),
+  );
+  if (boundaryCli.source !== "\\b" || boundaryCli.segments[0].kind !== "boundary")
+    throw new Error("Installed CLI lost word boundary semantics or metadata.");
+  const boundaryImport = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: "/\\B/iu" }),
+  );
+  if (boundaryImport.rules !== "not word boundary" || boundaryImport.flags !== "i")
+    throw new Error("Installed CLI lost non-word boundary import semantics.");
   const paddedLiteral = `${"\u00a0".repeat(REGEX_LITERAL_INPUT_LIMIT - literalInput.length)}${literalInput}`;
   const paddedReverse = JSON.parse(
     run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: paddedLiteral }),

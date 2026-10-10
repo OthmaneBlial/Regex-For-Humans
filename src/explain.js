@@ -36,6 +36,8 @@ export function explainNode(node, flags, hasFollowingRule = false) {
 
 /** @param {import('./ast.js').RuleNode} node @param {string} flags @param {boolean} hasFollowingRule */
 function describeNode(node, flags, hasFollowingRule) {
+  if (node.kind === "boundary")
+    return `${node.negative ? "Require the same" : "Require different"} word/non-word status on either side of the current position, without consuming characters. Word characters are ASCII letters, digits and underscore; input edges are non-word.${flags.includes("i") ? " With i, Unicode characters folding to ASCII word characters also count." : ""} This is not natural-language word segmentation.`;
   if (node.kind === "assertion")
     return `${node.negative ? "Require no match" : "Require a match"} ${node.direction === "ahead" ? "starting" : "ending"} at the current position, without consuming characters.${node.direction === "behind" ? " JavaScript tests this subpattern backwards." : ""}`;
   if (node.kind === "anchor") {

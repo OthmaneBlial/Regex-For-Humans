@@ -49,11 +49,14 @@ end
 | `either { … }` के साथ क्रमबद्ध विकल्प | ✅ | ✅ नेस्टेड विकल्प और reverse translation |
 | `lazy` के साथ non-greedy दोहराव | — | ✅ वर्तमान source में; अभी रिलीज़ नहीं हुआ |
 | Lookaround assertions | — | ✅ केवल सोर्स में; nested assertions और native captures |
+| शब्द सीमाएँ | — | ✅ केवल सोर्स में; native zero-width assertions |
 | दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — | वर्तमान भाषा के दायरे से बाहर |
 
 वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ। यह सुविधा npm `0.1.0-dev.4` में अभी शामिल नहीं है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
 
 सोर्स में `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }` भी उपलब्ध हैं। ये वर्तमान स्थान के आसपास के टेक्स्ट को जाँचते हैं, बिना अक्षर consume किए। Captures की native values और positions बनी रहती हैं, भले वे match के बाहर हों; lookbehind के लिए runtime support चाहिए। ये सुविधाएँ अभी npm `0.1.0-dev.4` में नहीं हैं। [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) देखें।
+
+सोर्स में `word boundary` (`\b`) और `not word boundary` (`\B`) उपलब्ध हैं। ये कोई अक्षर consume नहीं करते। JavaScript में word characters ASCII अक्षर, अंक और underscore हैं; `i` के साथ case folding के समकक्ष अक्षर भी शामिल होते हैं। यह प्राकृतिक भाषा के शब्दों का विभाजन नहीं है। यह सुविधा अभी npm `0.1.0-dev.4` में नहीं है। [शब्द सीमाएँ](../LANGUAGE.md#word-boundaries) देखें।
 
 npm `0.1.0-dev.4` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
 

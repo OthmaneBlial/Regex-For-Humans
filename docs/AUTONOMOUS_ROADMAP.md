@@ -13,7 +13,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Boundaries, modern Unicode/flags and explicit target-capability diagnostics.
+1. Modern Unicode/flags and explicit target-capability diagnostics.
 2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 3. Workshop localization and the remaining mission waves.
 
@@ -35,12 +35,20 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Evidence and constraints
 
+### Word-boundary milestone
+
+- Implemented in the source checkout: explicit `word boundary` and `not word boundary` nodes, native zero-width emission, both translation directions, typed `BoundarySegment`, exact source spans and explanations. Direct counts fail with `BOUNDARY_REPETITION`; bare lazy fails with the existing modifier diagnostic. Groups containing boundaries remain repeatable, and anchor positioning is unchanged.
+- Native parity: 28 patterns × eight flag sets × 42 inputs compare complete match arrays, named values and capture indices, including empty input, input edges, nested captures, alternatives, references, lookarounds, multiline data, combining marks, astral/lone surrogates, case-folded word characters and literal/class backspace. Shared browser checks add 2,496 comparisons per engine/viewport and inspect native empty capture values, Unicode empty-match positions, i-folding, keyboard rule navigation, recovery, accessibility and 320px layout.
+- Verification: `CI=1 npm run verify` completes successfully in one command: 268 Node tests, 308 bundled Chromium desktop/mobile checks, 78 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds, a clean installed-package JavaScript/TypeScript consumer and zero audit vulnerabilities. All 43 focused checks and a separate clean consumer pass on Node 22.23.3. Final documentation records are rebuilt and checked after the full run. All ten README guides identify the unreleased boundary and preserve the canonical code blocks, with separate LTR command lines inside the RTL Arabic/Urdu prose.
+- Distribution: npm `0.1.0-dev.4` and its exact published archive remain unchanged. Unicode properties/set operations, broader flags, structural visualization, exports and later mission waves remain open; human review gates remain unchecked.
+
 ### Lookaround milestone
 
 - Implemented in the source checkout: four positive/negative ahead/behind block forms, nesting, captures, native backwards lookbehind behavior and both translation directions. Typed assertion edges retain exact locations and source spans. Direct assertion repetition and unsupported runtime capability fail explicitly; source-order reference and duplicate-name policies remain unchanged.
 - Native parity: 35 patterns × eight flag sets × 39 inputs preserve complete capture arrays, named values and native indices. Shared browser checks add 1,728 comparisons per engine/viewport and inspect captures before/after the consumed match, absent captures, Unicode empty matches, keyboard navigation, accessibility and 320px layout.
 - Verification: all components pass: 263 Node tests, 304 bundled Chromium desktop/mobile checks, 74 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds, clean JavaScript/TypeScript consumers and zero audit vulnerabilities. The 38 focused checks and a separate clean consumer pass on Node 22.23.3. The first full command reached compatibility and found two obsolete parenthesis-selection expectations; after selecting the unsupported child's range marker instead, all 74 compatibility checks and the remaining homepage/audit stages pass. This is successful component verification, not one uninterrupted full-command pass. Final documentation records are rebuilt and checked afterward.
 - All ten README guides and source language/site documentation distinguish this unreleased support from published npm `0.1.0-dev.4`. Existing native worker/controller span validation supports assertion captures without a second execution path. There is no new npm or Pages publication for this milestone yet. Human review remains open.
+- Source `ee6296a` and the RTL layout refinement `b4485a0` are pushed to `main`. Public raw Arabic/Urdu files match the checkout bytes. Both refined GitHub guides pass at 1280/390/320px: 16 RTL headings, seven RTL tables, 20 canonical LTR blocks, 180 LTR inline fragments and four assertion forms on single LTR lines, with no document overflow. All six screenshots were visually inspected. The first Urdu page URL returned HTTP 503; GitHub's equivalent lowercase-owner URL served the same published guide and completed the proof. This does not claim a new npm or Pages release.
 
 ### Lazy repetition milestone
 

@@ -27,7 +27,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css?v=c36c50783b5b">
   <link rel="preload" href="./assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <script type="module" src="./app.js?v=15daf6638321"></script>
+  <script type="module" src="./app.js?v=3e2e5bfb033b"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -142,7 +142,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js --explain</
     <section class="faq-section section" id="questions" aria-labelledby="questions-title">
       <div class="section-heading"><p class="eyebrow">CLEAR RULES. HONEST LIMITS.</p><h2 id="questions-title">A few things to know.</h2></div>
       <details><summary>Does it understand any English sentence?</summary><p>It uses a fixed, documented vocabulary. Unknown instructions receive a line, column and repair hint. There is no AI interpretation or remote prompt.</p></details>
-      <details><summary>Can I import every regex?</summary><p>The translator accepts the documented JavaScript subset. Groups, captures, ordered alternatives and backward references are supported in npm 0.1.0-dev.4. The source checkout also imports lazy repetition and positive/negative lookahead/lookbehind; these additions are unreleased. Word boundaries, Unicode properties and forward/open references still fail explicitly. Unsupported syntax is never silently removed.</p></details>
+      <details><summary>Can I import every regex?</summary><p>The translator accepts the documented JavaScript subset. Groups, captures, ordered alternatives and backward references are supported in npm 0.1.0-dev.4. The source checkout also imports lazy repetition, positive/negative lookahead/lookbehind and word/non-word boundaries; these additions are unreleased. Unicode properties and forward/open references still fail explicitly. Unsupported syntax is never silently removed.</p></details>
       <details><summary>Are my test strings sent anywhere?</summary><p>The workshop matches in your browser's isolated worker. Rules and examples stay local. The page and its static assets are served by the hosting provider; no application backend receives your matching inputs.</p></details>
       <details><summary>Does a passing example prove a regex is safe?</summary><p>Examples establish selected behavior. The workshop bounds input and terminates a worker after 1,200 ms. A regex copied into another application needs that application's own execution safeguards.</p></details>
       <details><summary>Which version should I use?</summary><p>npm 0.1.0-dev.4 is the development preview, including groups, captures, ordered alternatives and references. Install regex-for-humans@preview or try the browser workshop. Node.js 22+ is required by the library and CLI. Human usability and screen reader reviews remain open.</p></details>

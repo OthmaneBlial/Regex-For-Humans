@@ -49,11 +49,14 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 | Alternativas ordenadas com `either { … }` | ✅ | ✅ Opções aninhadas e conversão inversa |
 | Repetição não gulosa com `lazy` | — | ✅ No código-fonte; ainda não publicada |
 | Asserções de antecipação e retrospecção | — | ✅ Apenas no código-fonte; aninhamento e capturas nativas |
+| Limites de palavra | — | ✅ Apenas no código-fonte; asserções nativas sem consumo |
 | Outros motores e inglês livre | — | Fora do idioma de regras atual |
 
 No código-fonte, `lazy digits` gera `\d+?`: tenta um dígito primeiro e aumenta a repetição se as regras seguintes precisarem. Esse recurso ainda não está no npm `0.1.0-dev.4`. Consulte as [regras de repetição](../LANGUAGE.md#repetition).
 
 O código-fonte também aceita `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Elas verificam o texto ao redor da posição atual sem consumi-lo. Capturas mantêm valores e posições nativos, inclusive fora do texto consumido; a retrospecção exige um motor compatível. Essas funções ainda não estão no npm `0.1.0-dev.4`. Veja as [asserções](../LANGUAGE.md#lookaround-assertions).
+
+O código-fonte aceita `word boundary` (`\b`) e `not word boundary` (`\B`). Essas asserções não consomem caracteres. No JavaScript, caracteres de palavra são letras ASCII, dígitos e sublinhado, além dos equivalentes de maiúsculas e minúsculas com `i`. Isso não faz segmentação de palavras em linguagem natural. Ainda não está no npm `0.1.0-dev.4`; veja os [limites de palavra](../LANGUAGE.md#word-boundaries).
 
 O npm `0.1.0-dev.4` inclui grupos, capturas, referências anteriores e alternativas ordenadas na biblioteca e no CLI. A oficina acrescenta inspeção de capturas e múltiplas correspondências de busca. Veja [compatibilidade](../COMPATIBILITY.md) e [publicação](../DISTRIBUTION.md).
 

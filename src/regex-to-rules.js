@@ -128,6 +128,8 @@ function readEscape(source, index, inClass = false) {
     return { end: index + 2, literal: "\0" };
   }
   if (inClass && escaped === "b") return { end: index + 2, literal: "\b" };
+  if (!inClass && (escaped === "b" || escaped === "B"))
+    return { end: index + 2, phrase: escaped === "b" ? "word boundary" : "not word boundary" };
 
   const special = inClass ? "\\[]^-/" : "\\^$.*+?()[]{}|/";
   if (special.includes(escaped)) return { end: index + 2, literal: escaped };

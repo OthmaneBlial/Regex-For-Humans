@@ -13,6 +13,7 @@ export const PATH_SEGMENT_EXCLUDED = Object.freeze([
  * @typedef {{line: number, column: number}} Location
  * @typedef {({kind: 'exact', min: number}|{kind: 'range', min: number, max: number}|{kind: 'atLeast', min: number}|{kind: 'zeroOrMore'}|{kind: 'oneOrMore'}) & {lazy?: boolean}} Repetition
  * @typedef {{kind: 'anchor', edge: 'start'|'end', mode: 'input'|'line', location: Location, text: string}} AnchorNode
+ * @typedef {{kind: 'boundary', negative: boolean, repetition: null, location: Location, text: string}} BoundaryNode
  * @typedef {{kind: 'atom', atomType: 'wildcard'|'shorthand'|'literal', value: string, negative?: boolean, repetition: Repetition|null, location: Location, text: string}} TextAtomNode
  * @typedef {{kind: 'atom', atomType: 'charSet', value: string[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} SetAtomNode
  * @typedef {TextAtomNode|SetAtomNode} AtomNode
@@ -20,7 +21,7 @@ export const PATH_SEGMENT_EXCLUDED = Object.freeze([
  * @typedef {{kind: 'alternation', branches: RuleNode[][], repetition: Repetition|null, location: Location, text: string, endLocation: Location}} AlternationNode
  * @typedef {{kind: 'assertion', direction: 'ahead'|'behind', negative: boolean, nodes: RuleNode[], repetition: null, location: Location, text: string, endLocation: Location}} AssertionNode
  * @typedef {{kind: 'backreference', reference: string|number, captureIndex: number, referenceLocation: Location, repetition: Repetition|null, location: Location, text: string}} BackreferenceNode
- * @typedef {AnchorNode|AtomNode|GroupNode|AlternationNode|AssertionNode|BackreferenceNode} RuleNode
+ * @typedef {AnchorNode|BoundaryNode|AtomNode|GroupNode|AlternationNode|AssertionNode|BackreferenceNode} RuleNode
  * @typedef {{nodes: RuleNode[], anchorMode: 'input'|'line'|null}} ParsedRules
  */
 

@@ -254,11 +254,15 @@ export function compileAst(parsed, options = {}) {
           ? node.edge === "start"
             ? "^"
             : "$"
-          : node.kind === "backreference"
-            ? (typeof node.reference === "string"
-                ? `\\k<${node.reference}>`
-                : `(?:\\${node.captureIndex})`) + repetitionSource(node.repetition)
-            : atomSource(node);
+          : node.kind === "boundary"
+            ? node.negative
+              ? "\\B"
+              : "\\b"
+            : node.kind === "backreference"
+              ? (typeof node.reference === "string"
+                  ? `\\k<${node.reference}>`
+                  : `(?:\\${node.captureIndex})`) + repetitionSource(node.repetition)
+              : atomSource(node);
       const sourceStart = source.length;
       source += fragment;
       segments.push({
@@ -278,18 +282,20 @@ export function compileAst(parsed, options = {}) {
             }
           : node.kind === "anchor"
             ? { kind: "anchor", edge: node.edge, mode: node.mode }
-            : node.atomType === "charSet"
-              ? {
-                  kind: "atom",
-                  atomType: "charSet",
-                  repetition: node.repetition,
-                  negative: node.negative,
-                }
-              : {
-                  kind: "atom",
-                  atomType: node.atomType,
-                  repetition: node.repetition,
-                }),
+            : node.kind === "boundary"
+              ? { kind: "boundary", negative: node.negative }
+              : node.atomType === "charSet"
+                ? {
+                    kind: "atom",
+                    atomType: "charSet",
+                    repetition: node.repetition,
+                    negative: node.negative,
+                  }
+                : {
+                    kind: "atom",
+                    atomType: node.atomType,
+                    repetition: node.repetition,
+                  }),
       });
     }
   }

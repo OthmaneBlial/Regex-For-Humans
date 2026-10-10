@@ -27,6 +27,11 @@ export interface AnchorSegment extends SegmentBase {
   mode: "input" | "line";
 }
 
+export interface BoundarySegment extends SegmentBase {
+  kind: "boundary";
+  negative: boolean;
+}
+
 export interface TextSegment extends SegmentBase {
   kind: "atom";
   atomType: "wildcard" | "shorthand" | "literal";
@@ -72,6 +77,7 @@ export interface AssertionSegment extends SegmentBase {
 
 export type RegexSegment =
   | AnchorSegment
+  | BoundarySegment
   | TextSegment
   | CharacterSetSegment
   | GroupSegment

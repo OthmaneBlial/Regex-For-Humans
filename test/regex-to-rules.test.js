@@ -741,7 +741,7 @@ test("unsupported assertion contents retain their original regex columns", () =>
 test("rejects features it cannot preserve and non-Unicode matching", () => {
   for (const [regex, column] of [
     [/(?=[a-c])a/u, 6],
-    [/\bword/u, 1],
+    [/\b[a-c]/u, 5],
     [/ab(?=[a-c])/u, 8],
     [/\p{L}/u, 1],
   ]) {

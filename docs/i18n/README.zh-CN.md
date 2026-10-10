@@ -49,11 +49,14 @@ end
 | 使用 `either { … }` 的有序分支 | ✅ | ✅ 嵌套选择与逆向转换 |
 | 非贪婪重复（`lazy`） | — | ✅ 源码已支持，尚未发布 |
 | 环视 | — | ✅ 仅源码；支持嵌套及原生捕获 |
+| 单词边界 | — | ✅ 仅源码；原生零宽边界 |
 | 其他正则引擎、自由英文 | — | 不在当前语言范围内 |
 
 当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。此功能尚未包含在 npm `0.1.0-dev.4` 中。参见[重复规则](../LANGUAGE.md#repetition)。
 
 源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。这些功能尚未包含在 npm `0.1.0-dev.4` 中。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
+
+源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。此功能尚未包含在 npm `0.1.0-dev.4` 中，参见[单词边界](../LANGUAGE.md#word-boundaries)。
 
 npm `0.1.0-dev.4` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
 

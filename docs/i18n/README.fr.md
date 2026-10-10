@@ -53,11 +53,14 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 | Alternatives ordonnées avec `either { … }` | ✅ | ✅ Choix imbriqués et traduction inverse |
 | Répétition paresseuse avec `lazy` | — | ✅ Dans le code source ; non publiée |
 | Assertions avant/arrière | — | ✅ Dans le source ; captures natives et imbrication |
+| Limites de mot | — | ✅ Dans le source ; assertions natives sans consommation |
 | Autres moteurs et anglais libre | — | Hors du langage actuel |
 
 Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord, puis augmenter le nombre si les règles suivantes le demandent. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [règles de répétition](../LANGUAGE.md#repetition).
 
 Le source accepte aussi `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Ces assertions vérifient le texte autour de la position courante sans le consommer. Les captures gardent leurs valeurs et positions natives, parfois hors du texte consommé ; les assertions arrière exigent un moteur compatible. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [assertions avant/arrière](../LANGUAGE.md#lookaround-assertions).
+
+Le source accepte `word boundary` (`\b`) et `not word boundary` (`\B`). Ces assertions ne consomment aucun caractère. JavaScript considère comme caractères de mot les lettres ASCII, les chiffres et le tiret bas, ainsi que leurs équivalents de casse avec `i`. Il ne s’agit pas d’une segmentation linguistique. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [limites de mot](../LANGUAGE.md#word-boundaries).
 
 npm `0.1.0-dev.4` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
 

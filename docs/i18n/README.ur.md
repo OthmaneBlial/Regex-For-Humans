@@ -67,6 +67,7 @@ end
 | ترتیب وار متبادل بذریعہ <code dir="ltr">either { … }</code> | ✅ | ✅ اندرونی انتخاب اور reverse translation |
 | کم سے کم تکرار کو پہلے آزمانا، بذریعہ <code dir="ltr">lazy</code> | — | ✅ موجودہ سورس میں؛ ابھی شائع نہیں ہوا |
 | آگے یا پیچھے دیکھنے کی assertions | — | ✅ صرف موجودہ سورس میں؛ nested assertions اور اصل captures |
+| لفظ کی حدود | — | ✅ صرف سورس میں؛ متن consume کیے بغیر native assertions |
 | دوسرے regex انجن اور آزاد انگریزی | — | موجودہ زبان کا حصہ نہیں |
 
 موجودہ سورس میں <code dir="ltr">lazy digits</code> سے <code dir="ltr">\d+?</code> بنتا ہے: پہلے ایک ہندسہ آزمائیں، پھر اگلے قواعد کی ضرورت کے مطابق تکرار بڑھائیں۔ یہ اضافہ npm <code dir="ltr">0.1.0-dev.4</code> میں ابھی شامل نہیں ہے۔ [تکرار کے قواعد](../LANGUAGE.md#repetition) دیکھیں۔
@@ -83,6 +84,17 @@ end
 </div>
 
 یہ اردگرد کے متن کو جانچتے ہیں، اسے match میں شامل نہیں کرتے۔ Captures کی اصل values اور positions برقرار رہتی ہیں، چاہے وہ match کے باہر ہوں؛ lookbehind کے لیے انجن کی معاونت ضروری ہے۔ یہ فیچر ابھی npm <code dir="ltr">0.1.0-dev.4</code> میں شامل نہیں ہے۔ [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) دیکھیں۔
+
+سورس میں لفظ کی حدود کے لیے یہ صورتیں بھی دستیاب ہیں:
+
+<div dir="ltr" align="left">
+
+- <code dir="ltr">word boundary</code> → <code dir="ltr">\b</code>
+- <code dir="ltr">not word boundary</code> → <code dir="ltr">\B</code>
+
+</div>
+
+یہ assertions کوئی حرف consume نہیں کرتیں۔ JavaScript میں word characters سے مراد ASCII حروف، ہندسے اور underscore ہیں؛ <code dir="ltr">i</code> کے ساتھ case folding کے مساوی حروف بھی شامل ہوتے ہیں۔ یہ قدرتی زبان کے الفاظ کی تقسیم نہیں ہے۔ یہ فیچر ابھی npm <code dir="ltr">0.1.0-dev.4</code> میں شامل نہیں ہے۔ [لفظ کی حدود](../LANGUAGE.md#word-boundaries) دیکھیں۔
 
 لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.4</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
 
