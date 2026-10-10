@@ -49,8 +49,8 @@ test("reverse translation exposes invalid input and clears stale errors on edit 
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
   for (const [literal, message] of [
     ["not a regex", "Paste a slash-delimited JavaScript regex literal"],
-    ["/^a(?=[a-c])$/u", "Column 8: Character ranges"],
-    ["/^(?:😀(?=[a-c]))$/u", "Column 12: Character ranges"],
+    ["/^a(?=ab[])$/u", "Column 8: An empty character class"],
+    ["/^(?:😀(?=ab[]))$/u", "Column 12: An empty character class"],
     [String.raw`/^\d+$/gu`, "Only the i, s, m and u flags can be translated."],
   ]) {
     await reverse.fill(literal);

@@ -39,7 +39,13 @@ References are resolved against the completed capture table after parsing. A ref
 
 ## Unicode property atoms
 
-An explicit `unicodeProperty` atom keeps the native alias, complement polarity, repetition and original value location. The parser validates JSON quoting and ASCII alias shape; the generator probes native property support and validates actual aliases before emitting `\p{…}` or `\P{…}`. Runtime membership owns classification and Unicode edition, avoiding a bundled property table or ASCII approximation. Typed `UnicodePropertySegment` metadata carries the alias and exact source trace through explanations, CLI and the existing isolated workshop worker. Reverse escape parsing preserves standalone aliases and complements; properties inside character classes fail at their original escape until the class AST can express them without changing `u`/`i` complement semantics. Modern v sets, string properties and broader flags remain open work.
+An explicit `unicodeProperty` atom keeps the native alias, complement polarity, repetition and original value location. The parser validates JSON quoting and ASCII alias shape; the generator probes native property support and validates actual aliases before emitting `\p{…}` or `\P{…}`. Runtime membership owns classification and Unicode edition, avoiding a bundled property table or ASCII approximation. Typed `UnicodePropertySegment` metadata carries the alias and exact source trace through explanations, CLI and the existing isolated workshop worker. Reverse escape parsing preserves aliases and complements both standalone and inside composable classes. Modern v sets, string properties and broader flags remain open work.
+
+## Composable character-class atoms
+
+The `characterClass` atom stores a member union of one-code-point literals, inclusive ranges, native shorthands and property escapes. Outer-class `negative` and each property's complement remain separate fields. A class consumes one native u-mode code point; no alternation expansion or negation distribution can change u/i semantics. Parsing reuses the existing JSON reader, repetition rules and property validation. Member commas are recognized only outside quoted strings, and nested/repeated members are rejected with positioned diagnostics.
+
+Generation escapes literals and range endpoints in class context and probes every property through the same native capability/alias validation as standalone atoms. `CharacterClassSegment.members` retains each member's original location/text and exact generated-source fragment/offsets for future structural consumers. Reverse class parsing identifies ranges from unescaped operator positions and preserves property complements, shorthand unions, surrogate distinctions and outer negation. Existing compact shorthand/list normalizations remain intact.
 
 ## Assertions
 

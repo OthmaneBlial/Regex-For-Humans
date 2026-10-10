@@ -87,7 +87,7 @@ test("translation confirmation follows the current rules and options", async ({ 
     await expect(reverse).not.toHaveAccessibleDescription(/Translated/);
   }
 
-  await reverse.fill("/^(?=[a-c])Hello$/u");
+  await reverse.fill("/^(?=ab[])Hello$/u");
   await reverse.press("Control+Enter");
   const error = await feedback.textContent();
   await page.locator("#rules-input").fill('start\n"Hi"\nend');
@@ -97,9 +97,9 @@ test("translation confirmation follows the current rules and options", async ({ 
   await expect(feedback).toBeVisible();
   await expect(feedback).toHaveText(error);
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
-  await expect(reverse).toHaveValue("/^(?=[a-c])Hello$/u");
+  await expect(reverse).toHaveValue("/^(?=ab[])Hello$/u");
   await expect(reverse).toHaveAccessibleDescription(
-    /Character ranges are supported only for digit, letter, word and hex classes/,
+    /An empty character class has no rule-language equivalent/,
   );
   await page.locator("#reverse-error").press("Enter");
   await expect(reverse).toBeFocused();
@@ -133,13 +133,13 @@ test("Control and Meta Enter translate regexes without replacing edits on failur
     await expect(page.locator("#test-list .test-result").first()).toHaveText(
       '✓ Matched "😀ab" at 0',
     );
-    await reverse.fill("/^(?=😀[a-c])😀AB$/isu");
+    await reverse.fill("/^(?=😀ab[])😀AB$/isu");
     await reverse.press(`${modifier}+Enter`);
     await expect(reverse).toBeFocused();
-    await expect(reverse).toHaveValue("/^(?=😀[a-c])😀AB$/isu");
+    await expect(reverse).toHaveValue("/^(?=😀ab[])😀AB$/isu");
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(page.locator("#reverse-feedback")).toContainText(
-      "Character ranges are supported only for digit, letter, word and hex classes",
+      "An empty character class has no rule-language equivalent",
     );
     await expect(rules).toHaveValue('start\n"😀AB"\nend');
     await expect(output).toHaveText(literal);
@@ -354,15 +354,16 @@ test("equivalent letter and hex range orders become editable rules with the same
   }
   await reverse.fill("/^[a-z0-9]{2}$/u");
   await page.locator("#reverse-button").click();
-  await expect(reverse).toHaveAttribute("aria-invalid", "true");
-  await expect(page.locator("#reverse-feedback")).toContainText(
-    "Character ranges are supported only",
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(editor).toHaveValue(
+    'start\n2 character class: range "a" to "z", range "0" to "9"\nend',
   );
-  await expect(editor).toHaveValue("start\nbetween 2 and 3 hex digit\nend");
+  await sample.fill("a9");
+  await expect(result).toHaveText('✓ Matched "a9" at 0');
   await expect(page.locator("#copy-button")).toBeEnabled();
 });
 
-test("literal edge hyphens translate without accepting unsupported ranges", async ({ page }) => {
+test("literal edge hyphens translate and ranges preserve native classes", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#test-list textarea")).toHaveCount(4);
   await page.locator("#reverse-translator summary").click();
@@ -410,13 +411,13 @@ test("literal edge hyphens translate without accepting unsupported ranges", asyn
     await sample.fill(negative);
     await expect(result).toHaveText("! No match");
   }
-  const previous = await editor.inputValue();
   for (const literal of ["/^[a-c-]+$/u", "/^[--a]+$/u", "/^[---]+$/u"]) {
     await reverse.fill(literal);
     await button.press("Enter");
-    await expect(reverse).toHaveAttribute("aria-invalid", "true");
-    await expect(page.locator("#reverse-feedback")).toContainText("Column 4: Character ranges");
-    await expect(editor).toHaveValue(previous);
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(editor).toHaveValue(/character class: range/u);
+    await sample.fill("-");
+    await expect(result).toHaveText('✓ Matched "-" at 0');
     await expect(page.locator("#copy-button")).toBeEnabled();
   }
 });
@@ -2155,31 +2156,11 @@ test("unsupported assertion contents identify the feature and preserve edited ru
   const reverse = page.locator("#reverse-regex");
   const help = await page.locator("#reverse-help").innerText();
   for (const [literal, column, message] of [
-    [
-      "/^😀(?=[a-c])AB/u",
-      9,
-      "Character ranges are supported only for digit, letter, word and hex classes.",
-    ],
-    [
-      "/^(?![a-c])CD/u",
-      7,
-      "Character ranges are supported only for digit, letter, word and hex classes.",
-    ],
-    [
-      "/😀(?<=[a-c])B/u",
-      9,
-      "Character ranges are supported only for digit, letter, word and hex classes.",
-    ],
-    [
-      "/(?<![a-c])B/u",
-      7,
-      "Character ranges are supported only for digit, letter, word and hex classes.",
-    ],
-    [
-      "/^(?:😀(?<=[a-c])B)/u",
-      13,
-      "Character ranges are supported only for digit, letter, word and hex classes.",
-    ],
+    ["/^😀(?=ab[])AB/u", 9, "An empty character class has no rule-language equivalent."],
+    ["/^(?!ab[])CD/u", 7, "An empty character class has no rule-language equivalent."],
+    ["/😀(?<=ab[])B/u", 9, "An empty character class has no rule-language equivalent."],
+    ["/(?<!ab[])B/u", 7, "An empty character class has no rule-language equivalent."],
+    ["/^(?:😀(?<=ab[])B)/u", 13, "An empty character class has no rule-language equivalent."],
   ]) {
     await reverse.fill(literal);
     await expect(reverse).toHaveAttribute("aria-invalid", "false");
@@ -2227,12 +2208,12 @@ test("reverse syntax errors select their source character and reveal wrapped or 
   const original = await editor.inputValue();
   await expect(jump).toBeHidden();
   for (const [literal, character] of [
-    ["/^😀a(?=[a-c])b$/u", "-"],
-    [" \r\n\t/^😀(?=[a-c])AB$/u \n", "-"],
-    ["/^(?:😀(?=[a-c])AB)$/u", "-"],
-    ["/^[a-c]+$/u", "-"],
-    ["/^(?:😀)[\\p{L}]$/u", "\\"],
-    [` \n\t/^${"A".repeat(700)}😀(?=[a-c])B$/u \n`, "-"],
+    ["/^😀a(?=ab[])b$/u", "["],
+    [" \r\n\t/^😀(?=ab[])AB$/u \n", "["],
+    ["/^(?:😀(?=ab[])AB)$/u", "["],
+    ["/^ab[]+$/u", "["],
+    ["/^(?:😀)a[]$/u", "["],
+    [` \n\t/^${"A".repeat(700)}😀(?=ab[])B$/u \n`, "["],
   ]) {
     await reverse.fill(literal);
     await expect(jump).toBeHidden();
@@ -2261,7 +2242,7 @@ test("reverse syntax errors select their source character and reveal wrapped or 
   await reverse.evaluate((field) => {
     field.style.height = "1400px";
   });
-  await reverse.fill("/^😀a(?=[a-c])b$/u");
+  await reverse.fill("/^😀a(?=ab[])b$/u");
   await page.locator("#reverse-button").press("Enter");
   await jump.focus();
   await jump.press("Enter");

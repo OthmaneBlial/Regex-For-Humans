@@ -48,11 +48,11 @@ test("Unicode properties expose native multilingual captures, alias errors and c
   await page.locator("#ignore-case").uncheck();
   await expect(row.locator(".test-result")).toHaveText("! No match");
   const retained = await rules.inputValue();
-  await reverse.fill("/[\\p{L}]/u");
+  await reverse.fill("/a[]/u");
   await page.locator("#reverse-button").press("Enter");
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
   await expect(rules).toHaveValue(retained);
-  await expect(page.locator("#reverse-feedback")).toContainText("inside character classes");
+  await expect(page.locator("#reverse-feedback")).toContainText("empty character class");
   await reverse.fill("/\\p{L}{0}/u");
   await page.locator("#reverse-button").press("Enter");
   await expect(reverse).toHaveAttribute("aria-invalid", "false");

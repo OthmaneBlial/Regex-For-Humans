@@ -53,6 +53,27 @@ export interface UnicodePropertySegment extends SegmentBase {
   repetition: Repetition | null;
 }
 
+export type CharacterClassMember = (
+  | { kind: "literal"; value: string }
+  | { kind: "range"; from: string; to: string }
+  | { kind: "shorthand"; value: string }
+  | { kind: "unicodeProperty"; value: string; negative: boolean; propertyLocation: SourceLocation }
+) & {
+  location: SourceLocation;
+  text: string;
+  source: string;
+  sourceStart: number;
+  sourceEnd: number;
+};
+
+export interface CharacterClassSegment extends SegmentBase {
+  kind: "atom";
+  atomType: "characterClass";
+  negative: boolean;
+  repetition: Repetition | null;
+  members: CharacterClassMember[];
+}
+
 export interface GroupSegment extends SegmentBase {
   kind: "group";
   edge: "start" | "end";
@@ -89,6 +110,7 @@ export type RegexSegment =
   | TextSegment
   | CharacterSetSegment
   | UnicodePropertySegment
+  | CharacterClassSegment
   | GroupSegment
   | AlternationSegment
   | AssertionSegment

@@ -92,8 +92,8 @@ try {
   const unicodePairSource = String.raw`^[\uD83D\uDE00]{2}$`;
   const controlLetterSource = String.raw`^[\cjX]{2}$`;
   const reverseGroupCases = [
-    ["^😀[a-c]", 6, "Character ranges are supported only for digit, letter, word and hex classes."],
-    ["😀[x-z]", 5, "Character ranges are supported only for digit, letter, word and hex classes."],
+    ["^😀ab[]", 6, "An empty character class has no rule-language equivalent."],
+    ["😀ab[]", 5, "An empty character class has no rule-language equivalent."],
   ];
   const reverseLimitCases = [
     [String.raw`\d`.repeat(201), "LINE_LIMIT", "Translated rules cannot exceed 200 lines."],
@@ -139,6 +139,13 @@ const propertyComplement = compile('not unicode property "Lowercase_Letter"', { 
 assert.equal(propertyComplement.segments[0].negative, true);
 assert.equal(toRegExp(propertyComplement).test("a"), true);
 assert.deepEqual(regexToRules(toRegExp(propertyComplement)), { rules: 'not unicode property "Lowercase_Letter"', flags: "i" });
+const classResult = compile('one or more character class: unicode property "L", unicode property "M", "_"');
+assert.equal(classResult.segments[0].atomType, "characterClass");
+assert.equal(classResult.segments[0].members[1].value, "M");
+assert.equal(toRegExp(classResult).exec("😀e\\u0301 اردو")[0], "e\\u0301");
+const classOuter = compile('not character class: unicode property "Lowercase_Letter"', { flags: "i" });
+assert.equal(toRegExp(classOuter).test("a"), false);
+assert.deepEqual(regexToRules(toRegExp(classOuter)), { rules: 'not character class: unicode property "Lowercase_Letter"', flags: "i" });
 if (toRegExp(lazyForward).exec("1234")?.[0] !== "1" || lazyForward.segments[0].repetition?.lazy !== true) throw new Error("Installed lazy compilation changed its preferred count or metadata");
 for (const source of ["(?<number>[0-9]+?)", "(?<optional>a)??a", "(?:AB){1,3}?", "(?:)*?"]) {
   const original = new RegExp(source, "du");
@@ -265,8 +272,10 @@ for (const body of ["A-Za-z0-9_", "^_0-9a-zA-Z_"]) {
     if (actual?.[0] !== expected?.[0] || actual?.index !== expected?.index || rebuilt.flags !== original.flags) throw new Error("Installed word-class matching changed");
   }
 }
-try { regexToRules(/^[A-Za-z0-9_.]+$/u); throw new Error("Extended word class accepted"); }
-catch (error) { if (!(error instanceof CompileError) || error.code !== "UNSUPPORTED_REGEX" || error.column !== 4) throw error; }
+const extendedWord = regexToRules(/^[A-Za-z0-9_.]+$/u);
+assert.match(extendedWord.rules, /character class/);
+const extendedWordRegex = toRegExp(compile(extendedWord.rules));
+for (const input of ["A_7", "a.b", "é", "😀", "_"]) assert.deepEqual(extendedWordRegex.exec(input), /^[A-Za-z0-9_.]+$/u.exec(input));
 const path = compile(${JSON.stringify(pathRules)});
 if (path.source !== ${JSON.stringify(pathSource)} || !toRegExp(path).test("Équipe 😀") || toRegExp(path).test("folder/name") || toRegExp(path).test("a\\nname") || !path.segments[1].explanation.includes("Path segment character")) throw new Error("Wrong readable path behavior");
 if (regexToRules(toRegExp(path)).rules !== "start\\nbetween 1 and 32 path segment character\\nend") throw new Error("Wrong readable path reverse translation");
@@ -323,7 +332,7 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   writeFileSync(
     typeSmoke,
     `import { CompileError, compile, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
-import type { AssertionSegment, BoundarySegment, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation, UnicodePropertySegment } from "regex-for-humans";
+import type { AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation, UnicodePropertySegment } from "regex-for-humans";
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
 const lazyResult: CompileResult = compile("lazy digits");
 const lazyRange: Repetition = { kind: "range", min: 2, max: 4, lazy: true };
@@ -343,6 +352,14 @@ const cachedRegex: RegExp = toRegExp(cached);
 const pairRegex: RegExp = toRegExp({ source: result.source, flags: result.flags });
 const fullRegex: RegExp = toRegExp({ source: result.source, flags: result.flags, segments: result.segments });
 const segment: RegexSegment = result.segments[0];
+if (segment.kind === "atom" && segment.atomType === "characterClass") {
+  const characterClass: CharacterClassSegment = segment;
+  const member: CharacterClassMember = characterClass.members[0];
+  const sourceStart: number = member.sourceStart;
+  if (member.kind === "range") { const from: string = member.from; console.log(from); }
+  if (member.kind === "unicodeProperty") { const negative: boolean = member.negative; console.log(negative, member.propertyLocation); }
+  console.log(sourceStart, characterClass.negative);
+}
 if (segment.kind === "atom" && segment.atomType === "unicodeProperty") {
   const property: UnicodePropertySegment = segment;
   const alias: string = property.property;
@@ -537,6 +554,25 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
   )
     throw new Error("Installed CLI lost Unicode property import semantics.");
   const paddedLiteral = `${"\u00a0".repeat(REGEX_LITERAL_INPUT_LIMIT - literalInput.length)}${literalInput}`;
+  const classCli = JSON.parse(
+    run([...cliArgs, "--json", "-"], {
+      cwd: consumer,
+      input: 'character class: range "α" to "ω", digit',
+    }),
+  );
+  if (classCli.source !== "[α-ω\\d]" || classCli.segments[0].members[0].kind !== "range")
+    throw new Error("Installed CLI lost character-class range metadata.");
+  const classImport = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], {
+      cwd: consumer,
+      input: String.raw`/[^\p{L}\p{M}_]/iu`,
+    }),
+  );
+  if (
+    classImport.rules !== 'not character class: unicode property "L", unicode property "M", "_"' ||
+    classImport.flags !== "i"
+  )
+    throw new Error("Installed CLI lost character-class property negation.");
   const paddedReverse = JSON.parse(
     run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: paddedLiteral }),
   );

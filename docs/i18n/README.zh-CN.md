@@ -51,6 +51,7 @@ end
 | 环视 | — | ✅ 仅源码；支持嵌套及原生捕获 |
 | 单词边界 | — | ✅ 仅源码；原生零宽边界 |
 | [Unicode 属性](../LANGUAGE.md#unicode-properties) | — | ✅ u 模式的原生别名与补集；仅源码支持 |
+| [组合字符类](../LANGUAGE.md#composable-character-classes) | — | ✅ 原生范围、简写和 Unicode 并集；仅源码支持 |
 | 其他正则引擎、自由英文 | — | 不在当前语言范围内 |
 
 当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。此功能尚未包含在 npm `0.1.0-dev.4` 中。参见[重复规则](../LANGUAGE.md#repetition)。
@@ -60,6 +61,8 @@ end
 源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。此功能尚未包含在 npm `0.1.0-dev.4` 中，参见[单词边界](../LANGUAGE.md#word-boundaries)。
 
 源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。这些新增功能尚未包含在 npm `0.1.0-dev.4` 中，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
+
+源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.4` 尚未包含此功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
 
 npm `0.1.0-dev.4` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
 
@@ -389,7 +392,7 @@ CI=1 npm run verify
 
 分支会转换为可编辑的 `either { … }` 块：每个直接条目是一个选择，按顺序尝试。使用 `group { … }` 可以将多条规则组成一个选择，也可以表示空选择。
 
-目标是 **JavaScript `RegExp`**。不接受把原始正则当规则，也不理解自由英文。逆向转换仅限文档中的子集。目前拒绝字符类内的 Unicode 属性、v 模式集合运算、前向及未闭合引用。工作台的 worker 有执行期限；复制出去的正则需由使用它的应用自行防护。参阅[安全模型](../SECURITY_MODEL.md)。
+目标是 **JavaScript `RegExp`**。不接受把原始正则当规则，也不理解自由英文。逆向转换仅限文档中的子集。自由英语、空字符类、v 集合运算、前向引用及对尚未闭合组的引用仍不支持。工作台的 worker 有执行期限；复制出去的正则需由使用它的应用自行防护。参阅[安全模型](../SECURITY_MODEL.md)。
 
 ## 💬 常见问题
 

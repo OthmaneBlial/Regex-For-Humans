@@ -17,7 +17,9 @@ export const PATH_SEGMENT_EXCLUDED = Object.freeze([
  * @typedef {{kind: 'atom', atomType: 'wildcard'|'shorthand'|'literal', value: string, negative?: boolean, repetition: Repetition|null, location: Location, text: string}} TextAtomNode
  * @typedef {{kind: 'atom', atomType: 'charSet', value: string[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} SetAtomNode
  * @typedef {{kind: 'atom', atomType: 'unicodeProperty', value: string, negative: boolean, repetition: Repetition|null, location: Location, propertyLocation: Location, text: string}} PropertyAtomNode
- * @typedef {TextAtomNode|SetAtomNode|PropertyAtomNode} AtomNode
+ * @typedef {({kind: 'literal', value: string}|{kind: 'range', from: string, to: string}|{kind: 'shorthand', value: string}|{kind: 'unicodeProperty', value: string, negative: boolean, propertyLocation: Location}) & {location: Location, text: string}} ClassMember
+ * @typedef {{kind: 'atom', atomType: 'characterClass', members: ClassMember[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} ClassAtomNode
+ * @typedef {TextAtomNode|SetAtomNode|PropertyAtomNode|ClassAtomNode} AtomNode
  * @typedef {{kind: 'group', capturing: boolean, name: string|null, captureIndex: number|null, nodes: RuleNode[], repetition: Repetition|null, location: Location, text: string, endLocation: Location}} GroupNode
  * @typedef {{kind: 'alternation', branches: RuleNode[][], repetition: Repetition|null, location: Location, text: string, endLocation: Location}} AlternationNode
  * @typedef {{kind: 'assertion', direction: 'ahead'|'behind', negative: boolean, nodes: RuleNode[], repetition: null, location: Location, text: string, endLocation: Location}} AssertionNode

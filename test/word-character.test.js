@@ -186,16 +186,17 @@ test("complete ASCII word classes translate across range orders, duplicates, fla
     "A-Ya-z0-9_",
   ]) {
     for (const negative of [false, true]) {
-      assert.throws(() => regexToRules(new RegExp(`^[${negative ? "^" : ""}${body}]+$`, "u")), {
-        code: "UNSUPPORTED_REGEX",
-        line: 1,
-        column: negative ? 5 : 4,
-      });
+      const original = new RegExp(`^[${negative ? "^" : ""}${body}]+$`, "u");
+      const translated = regexToRules(original);
+      const rebuilt = toRegExp(compile(translated.rules));
+      assert.match(translated.rules, /character class/u);
+      for (const input of ["A_7", "abc", "é", "😀", "a-b", "\ud800", "_"])
+        assert.deepEqual(rebuilt.exec(input), original.exec(input));
     }
   }
 });
 
-test("CLI reverse emits reusable complete word classes and rejects nearby unsupported ranges", () => {
+test("CLI reverse emits reusable complete word classes and preserves nearby class unions", () => {
   for (const body of ["A-Za-z0-9_", "_0-9a-zA-Z_", "^A-Za-z0-9_", "^_0-9a-zA-Z_"]) {
     const original = new RegExp(`^[${body}]{2,4}$`, "iu");
     const translated = regexToRules(original);
@@ -228,13 +229,11 @@ test("CLI reverse emits reusable complete word classes and rejects nearby unsupp
     input: "/^[A-Za-z0-9_.]+$/u",
     encoding: "utf8",
   });
-  assert.equal(result.status, 1);
-  assert.equal(result.stdout, "");
-  assert.deepEqual(JSON.parse(result.stderr).error, {
-    code: "UNSUPPORTED_REGEX",
-    message: "Character ranges are supported only for digit, letter, word and hex classes.",
-    line: 1,
-    column: 4,
-    hint: "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and i/s/u/m flags. Forward/open references are not supported.",
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, "");
+  assert.deepEqual(JSON.parse(result.stdout), {
+    rules:
+      'start\none or more character class: range "A" to "Z", range "a" to "z", range "0" to "9", "_", "."\nend',
+    flags: "",
   });
 });

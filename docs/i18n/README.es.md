@@ -51,6 +51,7 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 | Aserciones de anticipación y retrospección | — | ✅ Solo en el código fuente; anidación y capturas nativas |
 | Límites de palabra | — | ✅ Solo en el código fuente; aserciones nativas de ancho cero |
 | [Propiedades Unicode](../LANGUAGE.md#unicode-properties) | — | ✅ Alias y complementos nativos en modo u; solo en el código fuente |
+| [Clases de caracteres combinadas](../LANGUAGE.md#composable-character-classes) | — | ✅ Rangos, abreviaturas y uniones Unicode nativos; solo en el código fuente |
 | Otros motores e inglés libre | — | Fuera del lenguaje actual |
 
 En el código fuente, `lazy digits` genera `\d+?`: prueba primero un dígito y amplía la repetición si las reglas siguientes lo requieren. Esta función aún no está en npm `0.1.0-dev.4`. Consulta las [reglas de repetición](../LANGUAGE.md#repetition).
@@ -60,6 +61,8 @@ El código fuente también admite `followed by { … }`, `not followed by { … 
 El código fuente acepta `word boundary` (`\b`) y `not word boundary` (`\B`). No consumen caracteres. JavaScript considera caracteres de palabra las letras ASCII, los dígitos y el guion bajo, además de sus equivalentes al ignorar mayúsculas con `i`. Esto no segmenta palabras del lenguaje natural. Aún no está en npm `0.1.0-dev.4`; consulta los [límites de palabra](../LANGUAGE.md#word-boundaries).
 
 El código fuente también acepta `unicode property "L"` y `not unicode property "L"` como `\p{L}` y `\P{L}` nativos. `L` significa Letter; los alias distinguen mayúsculas y la clasificación usa los datos Unicode del motor. Los recuentos y `lazy` funcionan normalmente. Con `i`, el complemento nativo en modo `u` puede incluir letras equivalentes al ignorar mayúsculas. Aún no está en npm `0.1.0-dev.4`; consulta las [propiedades Unicode](../LANGUAGE.md#unicode-properties).
+
+El código fuente admite `range "α" to "ω"` y `character class: digit, "_"`. Una clase combina literales de un punto Unicode, rangos, abreviaturas singulares y propiedades Unicode; `not character class:` niega toda la unión. Los recuentos y `lazy` se aplican a la clase. Los complementos conservan el comportamiento nativo `u`/`i`. Aún no está en npm `0.1.0-dev.4`; consulta [clases de caracteres](../LANGUAGE.md#composable-character-classes).
 
 npm `0.1.0-dev.4` incluye grupos, capturas, referencias anteriores y alternativas ordenadas en la biblioteca y el CLI. El taller añade inspección de capturas y múltiples coincidencias de búsqueda. Consulta [compatibilidad](../COMPATIBILITY.md) y [publicación](../DISTRIBUTION.md).
 
@@ -389,7 +392,7 @@ Incluye formato, lint, tipos, enlaces, Node, construcción Pages, consumidor lim
 
 Las alternativas se convierten en bloques editables `either { … }`: cada entrada es una opción, probada en orden. Usa `group { … }` para una opción con varias reglas o una opción vacía.
 
-La salida apunta a **JavaScript `RegExp`**. No admite regex bruto como reglas ni inglés libre. La conversión inversa acepta solo el subconjunto documentado. Las propiedades Unicode dentro de clases de caracteres, las operaciones de conjuntos v y las referencias futuras/abiertas siguen rechazadas. El taller usa un worker con plazo; un regex copiado necesita las protecciones de su aplicación. Consulta el [modelo de seguridad](../SECURITY_MODEL.md).
+La salida apunta a **JavaScript `RegExp`**. No admite regex bruto como reglas ni inglés libre. La conversión inversa acepta solo el subconjunto documentado. El inglés libre, las clases de caracteres vacías, las operaciones de conjuntos v y las referencias adelantadas o a grupos abiertos siguen sin admitirse. El taller usa un worker con plazo; un regex copiado necesita las protecciones de su aplicación. Consulta el [modelo de seguridad](../SECURITY_MODEL.md).
 
 ## 💬 Preguntas frecuentes
 

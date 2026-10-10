@@ -51,6 +51,7 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 | Lookarounds | — | ✅ Nur im Quellcode; Verschachtelung und native Captures |
 | Wortgrenzen | — | ✅ Nur im Quellcode; native Bedingungen ohne Zeichenverbrauch |
 | [Unicode-Eigenschaften](../LANGUAGE.md#unicode-properties) | — | ✅ Native Aliase und Komplemente im u-Modus; nur im Quellcode |
+| [Zusammengesetzte Zeichenklassen](../LANGUAGE.md#composable-character-classes) | — | ✅ Native Bereiche, Kurzformen und Unicode-Vereinigungen; nur im Quellcode |
 | Andere Engines und freie englische Sätze | — | Außerhalb der aktuellen Sprache |
 
 Im Quellcode erzeugt `lazy digits` den Ausdruck `\d+?`: zuerst eine Ziffer versuchen, dann bei Bedarf für die folgenden Regeln mehr Wiederholungen. Diese Ergänzung ist noch nicht in npm `0.1.0-dev.4` enthalten. Siehe [Wiederholungsregeln](../LANGUAGE.md#repetition).
@@ -60,6 +61,8 @@ Der Quellcode unterstützt auch `followed by { … }`, `not followed by { … }`
 Der Quellcode unterstützt `word boundary` (`\b`) und `not word boundary` (`\B`). Sie verbrauchen keine Zeichen. JavaScript zählt ASCII-Buchstaben, Ziffern und Unterstriche als Wortzeichen; mit `i` kommen entsprechende Unicode-Zeichen durch Groß-/Kleinschreibungsfaltung hinzu. Das ist keine sprachliche Wortsegmentierung. Noch nicht in npm `0.1.0-dev.4` enthalten; siehe [Wortgrenzen](../LANGUAGE.md#word-boundaries).
 
 Der Quellcode akzeptiert außerdem `unicode property "L"` und `not unicode property "L"` für natives `\p{L}` und `\P{L}`. `L` bedeutet Letter; Aliase unterscheiden Groß- und Kleinschreibung, die Zuordnung nutzt die Unicode-Daten der Laufzeit. Zählwerte und `lazy` funktionieren wie gewohnt. Mit `i` kann das native Komplement im `u`-Modus auch durch Groß-/Kleinschreibungsfaltung äquivalente Buchstaben umfassen. Noch nicht in npm `0.1.0-dev.4`; siehe [Unicode-Eigenschaften](../LANGUAGE.md#unicode-properties).
+
+Der Quellcode unterstützt `range "α" to "ω"` und `character class: digit, "_"`. Eine Klasse vereint Literale mit genau einem Unicode-Codepunkt, Bereiche, einzelne Kurzformen und Unicode-Eigenschaften; `not character class:` negiert die gesamte Vereinigung. Wiederholungszahlen und `lazy` gelten für die Klasse. Eigenschaftskomplemente behalten die native `u`/`i`-Semantik. Noch nicht in npm `0.1.0-dev.4`; siehe [Zeichenklassen](../LANGUAGE.md#composable-character-classes).
 
 npm `0.1.0-dev.4` enthält Gruppen, Captures, Rückreferenzen und geordnete Alternativen in Bibliothek und CLI. Der Workshop ergänzt Capture-Ansichten und mehrere Suchtreffer. Siehe [Kompatibilität](../COMPATIBILITY.md) und [Veröffentlichungsnachweise](../DISTRIBUTION.md).
 
@@ -389,7 +392,7 @@ Enthalten sind Formatierung, Lint, Typen, Links, Node, Pages-Build, saubere Pake
 
 Alternativen werden zu bearbeitbaren `either { … }`-Blöcken: Jeder Eintrag ist eine Auswahl, die in Reihenfolge ausprobiert wird. Ein `group { … }`-Block bildet eine Auswahl aus mehreren Regeln oder eine leere Auswahl.
 
-Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sätze werden nicht akzeptiert. Rückübersetzung ist auf den dokumentierten Teilumfang begrenzt. Unicode-Eigenschaften innerhalb von Zeichenklassen, v-Mengenoperationen und Vorwärts-/Offenverweise bleiben abgelehnt. Der Workshop hat einen Worker-Zeitrahmen; kopierte Regex brauchen die Schutzmaßnahmen ihrer Anwendung. Siehe [Sicherheitsmodell](../SECURITY_MODEL.md).
+Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sätze werden nicht akzeptiert. Rückübersetzung ist auf den dokumentierten Teilumfang begrenzt. Freies Englisch, leere Zeichenklassen, v-Mengenoperationen sowie Vorwärtsreferenzen und Referenzen auf noch offene Gruppen bleiben nicht unterstützt. Der Workshop hat einen Worker-Zeitrahmen; kopierte Regex brauchen die Schutzmaßnahmen ihrer Anwendung. Siehe [Sicherheitsmodell](../SECURITY_MODEL.md).
 
 ## 💬 Häufige Fragen
 

@@ -239,20 +239,19 @@ test("invalid property names, quotes, aliases and class contexts keep positioned
     line: 1,
     column: 1,
   });
-  for (const [source, column] of [
-    [String.raw`[\p{L}]`, 2],
-    [String.raw`[^\p{L}]`, 3],
-    [String.raw`[a\p{L}]`, 3],
-    [String.raw`[\P{Lowercase_Letter}]`, 2],
+  for (const source of [
+    String.raw`[\p{L}]`,
+    String.raw`[^\p{L}]`,
+    String.raw`[a\p{L}]`,
+    String.raw`[\P{Lowercase_Letter}]`,
   ]) {
-    assert.throws(() => regexToRules(new RegExp(source, "iu")), {
-      code: "UNSUPPORTED_REGEX",
-      line: 1,
-      column,
-      message: "Unicode properties inside character classes cannot yet be translated.",
-    });
+    const original = new RegExp(source, "iu");
+    const translated = regexToRules(original);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const input of ["a", "A", "é", "اردو", "٣", "😀", "\ud83d", ""])
+      assert.deepEqual(rebuilt.exec(input), original.exec(input));
   }
-  assert.throws(() => regexToRules(new RegExp(String.raw`\p{RGI_Emoji}`, "v")), {
+  assert.throws(() => regexToRules(/\p{RGI_Emoji}/v), {
     code: "UNSUPPORTED_REGEX_FLAGS",
   });
 });
@@ -278,6 +277,11 @@ test("Unicode property capability fails explicitly without ASCII or category app
       column: 1,
     });
     assert.equal(toRegExp(compile("letter")).test("a"), true);
+    assert.throws(() => compile('start\n  character class: digit, unicode property "L"\nend'), {
+      code: "UNSUPPORTED_TARGET_FEATURE",
+      line: 2,
+      column: 3,
+    });
   } finally {
     globalThis.RegExp = NativeRegExp;
   }

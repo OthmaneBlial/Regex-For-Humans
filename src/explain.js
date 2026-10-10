@@ -178,6 +178,33 @@ function describeNode(node, flags, hasFollowingRule) {
         ? `Any character except ${node.value.map(quoteText).join(", ")}${caseNote}.`
         : `One of ${node.value.map(quoteText).join(", ")}${caseNote}.`;
       break;
+    case "characterClass": {
+      const members = node.members
+        .map((member) => {
+          if (member.kind === "range")
+            return `code points ${quoteText(member.from)} through ${quoteText(member.to)} (inclusive)`;
+          if (member.kind === "unicodeProperty")
+            return `${member.negative ? "the Unicode complement of" : "Unicode property"} ${quoteText(member.value)}`;
+          if (member.kind === "shorthand")
+            return {
+              "\\d": "ASCII digits 0–9",
+              "\\D": "non-ASCII-digit characters",
+              "\\w": "ASCII word characters",
+              "\\W": "non-word characters",
+              "\\s": "whitespace including line breaks",
+              "\\S": "non-whitespace characters",
+            }[member.value];
+          return quoteText(member.value);
+        })
+        .join("; ");
+      meaning = `${node.negative ? "One Unicode code point outside" : "One Unicode code point in"} the union of: ${members}.`;
+      if (flags.includes("i"))
+        meaning +=
+          " Native u-mode case folding applies; property complements and outer-class negation remain distinct.";
+      if (node.members.some((member) => member.kind === "unicodeProperty"))
+        meaning += " Property classification uses this runtime's Unicode data.";
+      break;
+    }
     default:
       throw new TypeError("Unknown atom type.");
   }

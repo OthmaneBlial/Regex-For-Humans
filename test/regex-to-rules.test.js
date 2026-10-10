@@ -65,7 +65,7 @@ test("genuine regexes from another context translate with the same rules, flags 
   for (const [source, flags] of [
     ["a", ""],
     ["a", "gu"],
-    ["^😀(?=[a-c])AB$", "u"],
+    ["^😀(?=ab[])AB$", "u"],
     ["a".repeat(16_385), "u"],
   ]) {
     let expected;
@@ -153,7 +153,7 @@ test("translation uses the stored native pattern and flags instead of overridden
   for (const [source, flags, code] of [
     ["a", "", "UNICODE_FLAG_REQUIRED"],
     ["a", "gu", "UNSUPPORTED_REGEX_FLAGS"],
-    ["(?=[a-c])a", "u", "UNSUPPORTED_REGEX"],
+    ["(?=ab[])a", "u", "UNSUPPORTED_REGEX"],
     ["a".repeat(16_385), "u", "REGEX_SOURCE_LIMIT"],
   ]) {
     const original = new AnnotatedRegExp(source, flags);
@@ -280,7 +280,7 @@ test("empty non-capturing groups translate to zero-count rules with equivalent m
     }
   }
   for (const [source, column] of [
-    ["(?:)[a-c]", 7],
+    ["(?:)ab[]", 7],
     ["(?:){1001}", 5],
     ["[]", 1],
   ]) {
@@ -343,7 +343,10 @@ test("letter and hex range orders translate with equivalent matching and canonic
     }
   }
   for (const regex of [/^[a-c]+$/u, /^[0-9a-f]+$/u, /^[^a-zA-Z]+$/u, /^[a-zA-Z0-9]+$/u]) {
-    assert.throws(() => regexToRules(regex), { code: "UNSUPPORTED_REGEX" });
+    const translated = regexToRules(regex);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const input of ["", "abc", "0f", "A0", "é", "😀", "K", "_"])
+      assert.deepEqual(rebuilt.exec(input), regex.exec(input));
   }
 });
 
@@ -398,13 +401,11 @@ test("edge hyphens stay literal in positive and negative character lists", () =>
       }
     }
   }
-  for (const [regex, column] of [
-    [/^[a-c-]+$/u, 4],
-    [/^[--a]+$/u, 4],
-    [/^[---]+$/u, 4],
-    [/^[\u002d-a]+$/u, 9],
-  ]) {
-    assert.throws(() => regexToRules(regex), { code: "UNSUPPORTED_REGEX", line: 1, column });
+  for (const regex of [/^[a-c-]+$/u, /^[--a]+$/u, /^[---]+$/u, /^[\u002d-a]+$/u]) {
+    const translated = regexToRules(regex);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const input of ["", "-", "a", "b", "d", "/", "9", "😀"])
+      assert.deepEqual(rebuilt.exec(input), regex.exec(input));
   }
 });
 
@@ -691,10 +692,10 @@ test("ordered alternatives and literal pipes round-trip without changing precede
 
 test("unsupported assertion contents retain their original regex columns", () => {
   for (const [source, message] of [
-    ["(?=[a-c])AB", "Character ranges are supported only for digit, letter, word and hex classes."],
-    ["(?![a-c])CD", "Character ranges are supported only for digit, letter, word and hex classes."],
-    ["(?<=[a-c])B", "Character ranges are supported only for digit, letter, word and hex classes."],
-    ["(?<![a-c])B", "Character ranges are supported only for digit, letter, word and hex classes."],
+    ["(?=ab[])AB", "An empty character class has no rule-language equivalent."],
+    ["(?!ab[])CD", "An empty character class has no rule-language equivalent."],
+    ["(?<=ab[])B", "An empty character class has no rule-language equivalent."],
+    ["(?<!ab[])B", "An empty character class has no rule-language equivalent."],
   ]) {
     for (const [prefix, suffix] of [
       ["", ""],
@@ -714,7 +715,7 @@ test("unsupported assertion contents retain their original regex columns", () =>
               code: "UNSUPPORTED_REGEX",
               message,
               line: 1,
-              column: prefix.length + source.indexOf("-") + 1,
+              column: prefix.length + source.lastIndexOf("[") + 1,
               hint: "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and i/s/u/m flags. Forward/open references are not supported.",
             });
             return true;
@@ -739,13 +740,13 @@ test("unsupported assertion contents retain their original regex columns", () =>
 });
 
 test("rejects features it cannot preserve and non-Unicode matching", () => {
-  for (const [regex, column] of [
-    [/(?=[a-c])a/u, 6],
-    [/\b[a-c]/u, 5],
-    [/ab(?=[a-c])/u, 8],
-    [/[\p{L}]/u, 2],
+  for (const [source, column] of [
+    ["(?=ab[])a", 6],
+    [String.raw`\bab[]`, 5],
+    ["ab(?=ab[])", 8],
+    ["a[]", 2],
   ]) {
-    assert.throws(() => regexToRules(regex), {
+    assert.throws(() => regexToRules(new RegExp(source, "u")), {
       code: "UNSUPPORTED_REGEX",
       line: 1,
       column,

@@ -56,7 +56,12 @@ test("UUID shape explains fixed hex groups, keeps semantic limits and round-trip
   const literal = `/${recipe.source}/isu`;
   await page.locator("#copy-button").click();
   await expect.poll(() => page.evaluate(() => window.copiedText)).toBe(literal);
-  await page.locator("#reverse-translator summary").click();
+  const reversePanel = page.locator("#reverse-translator");
+  const reverseSummary = reversePanel.locator("summary");
+  await reverseSummary.scrollIntoViewIfNeeded();
+  if (!(await reversePanel.evaluate((panel) => panel.open))) await reverseSummary.press("Enter");
+  await expect(reversePanel).toHaveJSProperty("open", true);
+  await expect(page.locator("#reverse-regex")).toBeVisible();
   await page.locator("#reverse-regex").fill(literal);
   await page.locator("#reverse-button").click();
   await expect(editor).toBeFocused();

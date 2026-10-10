@@ -71,6 +71,7 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | Lookaround | — | ✅ Unreleased; nested assertions and native captures |
 | Word boundaries | — | ✅ Unreleased; native zero-width word status |
 | [Unicode character properties](docs/LANGUAGE.md#unicode-properties) | — | ✅ Native aliases and complements in u mode; source only |
+| [Composable character classes](docs/LANGUAGE.md#composable-character-classes) | — | ✅ Native ranges, shorthands and Unicode unions; source only |
 | Other regex engines and free-form English | — | Outside the current language |
 
 From the source checkout, `lazy digits` generates `\d+?`: try one digit first, then expand if following rules need more. `lazy any text` generates `.*?`. These additions are **unreleased** and are not in npm `0.1.0-dev.4`; see [greedy and lazy repetition](docs/LANGUAGE.md#repetition).
@@ -80,6 +81,8 @@ The source also supports `followed by { … }`, `not followed by { … }`, `prec
 The source supports `word boundary` (`\b`) and `not word boundary` (`\B`). These zero-width checks use native JavaScript word status: ASCII letters, digits and underscore, plus case-folding equivalents with `i`. They do not segment natural-language words. This is unreleased beyond npm `0.1.0-dev.4`; see [word boundaries](docs/LANGUAGE.md#word-boundaries).
 
 The source also accepts `unicode property "L"` and `not unicode property "L"` for native `\p{L}` and `\P{L}`. `L` means Letter; aliases are case-sensitive and classification uses the runtime’s Unicode data. Counts and `lazy` work as usual. With `i`, the native `u` complement can include case-folded letters. These additions are not in npm `0.1.0-dev.4`; see [Unicode properties](docs/LANGUAGE.md#unicode-properties).
+
+The source supports `range "α" to "ω"` and `character class: digit, "_"`. Combine one-code-point literals, ranges, singular shorthands and Unicode properties in one class; `not character class:` negates the whole union. Counts and `lazy` apply to the class. Property complements keep their native `u`/`i` behavior. This is unreleased beyond npm `0.1.0-dev.4`; see [character classes](docs/LANGUAGE.md#composable-character-classes).
 
 The `0.1.0-dev.4` preview includes groups, captures, backward references and ordered alternatives in the library and CLI. The browser workshop adds capture inspection and multiple search matches. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
 
@@ -140,7 +143,7 @@ Separator lists such as `[._-]` and `[-._]` translate too: a hyphen at either en
 
 Alternatives become editable `either { … }` blocks: each entry is one ordered choice. Use `group { … }` for a sequence or an empty choice. Literal pipes such as `\|` or `[|]` remain matching data.
 
-Unsupported contents inside assertions remain errors: `/^😀(?=[a-c])a/u` points to the range’s `-` at column 9. Unsupported forward/open references point to their escape. Use **Go to regex error** to select that character in your pasted pattern and bring it into view. Failed translation preserves your current rules and options.
+Unsupported contents inside assertions remain errors: `/^😀(?=ab[])a/u` points to the empty class’s `[` at column 9. Unsupported forward/open references point to their escape. Use **Go to regex error** to select that character in your pasted pattern and bring it into view. Failed translation preserves your current rules and options.
 
 Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. Search mode finds an empty match at position 0, including in nonempty input; Entire string mode accepts only blank input for this pattern.
 
@@ -500,7 +503,7 @@ CI=1 npm run verify
 
 ## 🧭 Know the boundaries
 
-Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, Unicode properties inside character classes, v-set operations and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
+Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, empty character classes, v-set operations and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
 
 <a name="faq"></a>
 

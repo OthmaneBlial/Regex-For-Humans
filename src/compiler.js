@@ -35,6 +35,24 @@ function escapeClass(values) {
   return values.map((character) => escapeCharacter(character, true)).join("");
 }
 
+/** @param {import('./ast.js').ClassMember} member */
+function classMemberSource(member) {
+  switch (member.kind) {
+    case "literal":
+      return escapeControls(escapeCharacter(member.value, true));
+    case "range":
+      return escapeControls(
+        `${escapeCharacter(member.from, true)}-${escapeCharacter(member.to, true)}`,
+      );
+    case "shorthand":
+      return member.value;
+    case "unicodeProperty":
+      return `\\${member.negative ? "P" : "p"}{${member.value}}`;
+    default:
+      throw new TypeError("Unknown character-class member.");
+  }
+}
+
 /** @param {Repetition|null} repetition */
 function repetitionSource(repetition) {
   if (!repetition) return "";
@@ -79,6 +97,9 @@ function atomSource(node) {
     case "unicodeProperty":
       source = `\\${node.negative ? "P" : "p"}{${node.value}}`;
       break;
+    case "characterClass":
+      source = `[${node.negative ? "^" : ""}${node.members.map(classMemberSource).join("")}]`;
+      break;
     default:
       throw new TypeError("Unknown atom type.");
   }
@@ -112,35 +133,43 @@ export function compileAst(parsed, options = {}) {
   let checkedLookbehind = false;
   let checkedUnicodeProperties = false;
 
+  /** @param {import('./ast.js').PropertyAtomNode|Extract<import('./ast.js').ClassMember, {kind: 'unicodeProperty'}>} property @param {import('./ast.js').Location} location */
+  function checkProperty(property, location) {
+    if (!checkedUnicodeProperties) {
+      try {
+        // biome-ignore lint/complexity/useRegexLiterals: feature detection must catch unsupported syntax at runtime.
+        new RegExp("\\p{ASCII}", "u");
+      } catch {
+        fail(
+          "UNSUPPORTED_TARGET_FEATURE",
+          "This JavaScript runtime does not support Unicode property escapes.",
+          location,
+          "Use a runtime with native Unicode property support; the property cannot be approximated.",
+        );
+      }
+      checkedUnicodeProperties = true;
+    }
+    try {
+      new RegExp(`\\${property.negative ? "P" : "p"}{${property.value}}`, flags);
+    } catch {
+      fail(
+        "INVALID_UNICODE_PROPERTY",
+        `The Unicode property ${quoteText(property.value)} is not recognized by this JavaScript runtime.`,
+        property.propertyLocation,
+        "Use a case-sensitive character property such as `Letter`, `Script=Greek` or `Script_Extensions=Greek` supported in u mode.",
+      );
+    }
+  }
+
   /** @param {import('./ast.js').RuleNode[]} nodes */
   function emit(nodes) {
     for (const [index, node] of nodes.entries()) {
       if (node.kind === "atom" && node.atomType === "unicodeProperty") {
-        if (!checkedUnicodeProperties) {
-          try {
-            // biome-ignore lint/complexity/useRegexLiterals: feature detection must catch unsupported syntax at runtime.
-            new RegExp("\\p{ASCII}", "u");
-          } catch {
-            fail(
-              "UNSUPPORTED_TARGET_FEATURE",
-              "This JavaScript runtime does not support Unicode property escapes.",
-              node.location,
-              "Use a runtime with native Unicode property support; the property cannot be approximated.",
-            );
-          }
-          checkedUnicodeProperties = true;
-        }
-        try {
-          new RegExp(`\\${node.negative ? "P" : "p"}{${node.value}}`, flags);
-        } catch {
-          fail(
-            "INVALID_UNICODE_PROPERTY",
-            `The Unicode property ${quoteText(node.value)} is not recognized by this JavaScript runtime.`,
-            node.propertyLocation,
-            "Use a case-sensitive character property such as `Letter`, `Script=Greek` or `Script_Extensions=Greek` supported in u mode.",
-          );
-        }
+        checkProperty(node, node.location);
       }
+      if (node.kind === "atom" && node.atomType === "characterClass")
+        for (const member of node.members)
+          if (member.kind === "unicodeProperty") checkProperty(member, node.location);
       if (node.kind === "assertion") {
         if (node.direction === "behind" && !checkedLookbehind) {
           try {
@@ -295,6 +324,10 @@ export function compileAst(parsed, options = {}) {
               : atomSource(node);
       const sourceStart = source.length;
       source += fragment;
+      let memberCursor =
+        sourceStart +
+        1 +
+        Number(node.kind === "atom" && node.atomType === "characterClass" && node.negative);
       segments.push({
         sourceStart,
         sourceEnd: source.length,
@@ -314,26 +347,44 @@ export function compileAst(parsed, options = {}) {
             ? { kind: "anchor", edge: node.edge, mode: node.mode }
             : node.kind === "boundary"
               ? { kind: "boundary", negative: node.negative }
-              : node.atomType === "unicodeProperty"
+              : node.atomType === "characterClass"
                 ? {
                     kind: "atom",
-                    atomType: "unicodeProperty",
-                    property: node.value,
+                    atomType: "characterClass",
                     negative: node.negative,
                     repetition: node.repetition,
+                    members: node.members.map((member) => {
+                      const memberSource = classMemberSource(member);
+                      const memberStart = memberCursor;
+                      memberCursor += memberSource.length;
+                      return {
+                        ...member,
+                        source: memberSource,
+                        sourceStart: memberStart,
+                        sourceEnd: memberCursor,
+                      };
+                    }),
                   }
-                : node.atomType === "charSet"
+                : node.atomType === "unicodeProperty"
                   ? {
                       kind: "atom",
-                      atomType: "charSet",
-                      repetition: node.repetition,
+                      atomType: "unicodeProperty",
+                      property: node.value,
                       negative: node.negative,
-                    }
-                  : {
-                      kind: "atom",
-                      atomType: node.atomType,
                       repetition: node.repetition,
-                    }),
+                    }
+                  : node.atomType === "charSet"
+                    ? {
+                        kind: "atom",
+                        atomType: "charSet",
+                        repetition: node.repetition,
+                        negative: node.negative,
+                      }
+                    : {
+                        kind: "atom",
+                        atomType: node.atomType,
+                        repetition: node.repetition,
+                      }),
       });
     }
   }

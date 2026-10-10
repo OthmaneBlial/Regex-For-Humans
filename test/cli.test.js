@@ -1001,9 +1001,9 @@ test("CLI reverse rejects conflicting forward options before reading input", () 
 test("CLI reverse preserves positioned translator errors and reports literal syntax failures", () => {
   for (const [input, code, message, column] of [
     [
-      "/^😀[a-c]/u",
+      "/^😀ab[]/u",
       "UNSUPPORTED_REGEX",
-      "Character ranges are supported only for digit, letter, word and hex classes.",
+      "An empty character class has no rule-language equivalent.",
       6,
     ],
     [

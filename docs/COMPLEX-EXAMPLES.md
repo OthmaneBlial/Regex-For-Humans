@@ -524,7 +524,7 @@ These rows are the compiler's actual `segments` output, in order.
 
 ## Captures and nested groups
 
-The checkout compiles and reverse-translates numbered, named and nested capture blocks, noncapturing blocks, repetitions of whole blocks and backward capture references. See the [group language reference](LANGUAGE.md#groups-and-captures-unreleased-on-main). The published `0.1.0-dev.3` package does not yet include this extension. The flat examples above still work unchanged. Unsupported constructs still reject the entire translation instead of returning approximate or partial rules.
+The checkout compiles and reverse-translates numbered, named and nested capture blocks, noncapturing blocks, repetitions of whole blocks and backward capture references. See the [group language reference](LANGUAGE.md#groups-and-captures-unreleased-on-main). These groups are included in npm `0.1.0-dev.4`. The flat examples above still work unchanged. Unsupported constructs still reject the entire translation instead of returning approximate or partial rules.
 
 | JavaScript pattern | Import | What is preserved |
 | --- | --- | --- |
@@ -543,7 +543,7 @@ one or more digit
 }
 ```
 
-Lookaround, alternation and forward/open references remain unsupported. Diagnostics use one-based UTF-16 positions in `regex.source`, excluding slashes and flags. The workshop's **Go to regex error** action selects the relevant source character; rejected translations preserve current rules and options. Removing a capture or assertion can change matching, so unsupported constructs are never stripped to force conversion.
+Ordered alternatives are included in npm `0.1.0-dev.4`; lookaround, boundaries, Unicode properties and composable classes are source-only additions. Forward/open references, empty character classes and v-set operations remain unsupported. Diagnostics use one-based UTF-16 positions in `regex.source`, excluding slashes and flags. The workshop's **Go to regex error** action selects the relevant source character; rejected translations preserve current rules and options. Removing a capture or assertion can change matching, so unsupported constructs are never stripped to force conversion.
 
 For full protocol grammars or recursively nested data, use the corresponding parser. The [language reference](LANGUAGE.md) describes the supported constructs and limits; captures provide extraction from the supported regex shapes, not a complete protocol parser.
 

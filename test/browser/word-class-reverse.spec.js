@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("complete word classes translate, preserve native matching and recover from nearby unsupported ranges", async ({
+test("complete word classes and partial unions preserve native matching and recover from unsupported classes", async ({
   page,
 }) => {
   const errors = [];
@@ -90,14 +90,28 @@ test("complete word classes translate, preserve native matching and recover from
     await sample.fill(rejected);
     await expect(result).toHaveText("! No match");
   }
+  for (const [body, accepted, rejected] of [
+    ["A-Za-z0-9", "A7", "__"],
+    ["A-Za-z0-9_.", "_.", "éé"],
+    ["^A-Za-z0-9_é", "😀😀", "éé"],
+  ]) {
+    await reverse.fill(`/^[${body}]{2,4}$/u`);
+    await page.locator("#reverse-button").click();
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(editor).toHaveValue(/character class/u);
+    await sample.fill(accepted);
+    await expect(result).toHaveText(`✓ Matched "${accepted}" at 0`);
+    await sample.fill(rejected);
+    await expect(result).toHaveText("! No match");
+  }
   const previousRules = await editor.inputValue();
   const previousOutput = await output.textContent();
-  for (const body of ["A-Za-z0-9", "A-Za-z0-9_.", "^A-Za-z0-9_é"]) {
-    await reverse.fill(`/^[${body}]{2,4}$/u`);
+  for (const literal of ["/^ab[]{2,4}$/u", "/^(?:😀)ab[]$/u", "/^A(?=ab[])$/u"]) {
+    await reverse.fill(literal);
     await page.locator("#reverse-button").click();
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(page.locator("#reverse-feedback")).toContainText(
-      "Character ranges are supported only for digit, letter, word and hex classes.",
+      "An empty character class has no rule-language equivalent.",
     );
     await expect(editor).toHaveValue(previousRules);
     await expect(output).toHaveText(previousOutput);
@@ -108,7 +122,7 @@ test("complete word classes translate, preserve native matching and recover from
       await reverse.evaluate((field) =>
         field.value.slice(field.selectionStart, field.selectionEnd),
       ),
-    ).toBe("-");
+    ).toBe("[");
   }
   await reverse.fill("/^[_0-9a-zA-Z]{2,4}$/iu");
   await page.locator("#reverse-button").click();

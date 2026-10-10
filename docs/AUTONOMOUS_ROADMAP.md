@@ -13,7 +13,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Unicode properties inside character classes, generic ranges, native v sets/string properties and complete flags/capability handling.
+1. Native v sets/string properties and complete flags/capability handling, preserving the implemented u-mode class semantics.
 2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 3. Workshop localization and the remaining mission waves.
 
@@ -83,3 +83,11 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Distribution and remaining mission: this does not publish a new npm archive or Pages build. Character-class property combinations, generic ranges, v sets/intersection/subtraction/string properties, broader flags, visualization, safety analysis, verified exports, workshop localization and later waves remain open. The next class AST must keep property complement and outer-class negation separate; a native u/i probe confirms that `[\P{Lowercase_Letter}]` matches `a`, while `[^\p{Lowercase_Letter}]` does not.
 
 This file records progress, not completion of the entire mission. Remaining advanced syntax, visualization, workshop localization and later waves still need implementation and verification.
+
+## Composable-character-class milestone
+
+- Implemented in the source checkout: `character class:` unions single-code-point literals, ranges, singular native shorthands and Unicode properties; `not character class:` negates the whole union. Standalone `range "α" to "ω"` and all existing counts/lazy preferences work. Existing simple lists and compact known-shorthand imports keep their behavior.
+- Architecture: typed class/member AST and public `CharacterClassSegment`/`CharacterClassMember` retain per-member values, original rule locations/text and generated fragments/spans. Native property complements remain separate from outer negation. Class-context escaping preserves punctuation, controls, astral points and lone-surrogate distinctions; the shared native property probe/alias diagnostics also cover class members. The CLI and isolated workshop use the shared compiler.
+- Verification: the final uninterrupted `CI=1 npm run verify` command passes 281 Node tests, 316 bundled Chromium desktop/mobile checks, 86 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds, a clean package consumer and a zero-vulnerability audit. All 50 selected checks and a separate clean consumer pass on Node 22.23.3. The shared corpus compares 19,800 native full match/capture/indices results in Node and per browser engine/viewport, plus 7,040 seeded Node comparisons. Shared flows cover multilingual/combining captures, exact UTF-16 spans, keyboard navigation, error recovery, complement behavior, accessibility and 320px overflow. An obsolete word-class rejection fixture now tests accepted unions natively; an isolated UUID panel timeout passed four repetitions, and its test explicitly verifies the panel is open. Public Arabic/Urdu rendering will be recorded after the source push.
+- Documentation: all ten README guides distinguish this source-only feature from npm dev.4, with three separate LTR command lines inside Arabic/Urdu RTL prose. The language, architecture, compatibility and changelog records explain member syntax, code-point range order, native u/i negation and precise unsupported limits. Old unsupported-range/property fixtures now use still-unsupported empty classes while retaining their error-position, accessibility, preservation and scrolling assertions; accepted cases become native-equivalence checks.
+- Remaining mission: v set operations/string properties, complete flags, visualization, safety analysis, exports, workshop localization and later waves remain open. This milestone does not publish npm or Pages and does not close human language/screen-reader gates.

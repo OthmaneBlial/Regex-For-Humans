@@ -1,10 +1,10 @@
 # Regex compatibility
 
-Current checkout evidence, 2026-10-10. Output targets JavaScript `RegExp` in Unicode mode. The `0.1.0-dev.4` development preview includes groups, references and ordered alternatives. Greedy/lazy repetition, lookaround, boundaries and standalone Unicode properties below describe the source checkout; lazy, assertion, boundary and property support are unreleased and absent from that npm version. Stable support and human reviews remain open.
+Current checkout evidence, 2026-10-10. Output targets JavaScript `RegExp` in Unicode mode. The `0.1.0-dev.4` development preview includes groups, references and ordered alternatives. Greedy/lazy repetition, lookaround, boundaries, Unicode properties and composable classes below describe the source checkout; lazy, assertion, boundary, property and class support are unreleased and absent from that npm version. Stable support and human reviews remain open.
 
 | Construct | Rules → regex | Regex → rules |
 | --- | --- | --- |
-| Documented literals, shorthands, simple sets and greedy/lazy repetitions | Supported | Supported subset; unknown ranges fail explicitly |
+| Documented literals, shorthands, simple sets and greedy/lazy repetitions | Supported | Supported subset; unsupported constructs fail explicitly |
 | Numbered, named, nested and empty captures | Supported | Supported; capture values and indices preserved |
 | Composite/nested noncapturing groups and whole-block repetitions | Supported | Supported; literal-only noncapturing groups retain compact normalization |
 | Named/numbered backward references | Supported after the target closes | Supported under the same policy |
@@ -13,7 +13,8 @@ Current checkout evidence, 2026-10-10. Output targets JavaScript `RegExp` in Uni
 | Positive/negative lookahead and lookbehind, including nesting and captures | Supported; lookbehind requires native capability | Supported subset; native zero-width behavior and capture spans preserved |
 | Word/non-word boundaries | Supported with native ASCII word status and i-folding | Supported; class backspace stays literal |
 | Standalone Unicode character properties and complements | Supported with native aliases and runtime capability checks in u mode | Supported; aliases, polarity, flags and capture behavior preserved |
-| Unicode properties inside character classes; v sets and string properties | Not yet supported | Unsupported |
+| Composable character classes with literals, inclusive code-point ranges, singular shorthands and Unicode properties | Supported in native u mode; outer and property negation stay distinct | Supported; escaping, unions, captures, flags and source metadata preserved |
+| Empty character classes; v sets and string properties | Not yet supported | Unsupported |
 | Flags | `u` always; `m` through line anchors; `i`/`s` options | Only `i`/`m`/`s`/`u`; `u` required |
 | Other regex engines | No target | No translation claim |
 
@@ -25,12 +26,14 @@ Assertions consume no characters; their native captures can lie before or after 
 
 Standalone property rules are an unreleased source addition beyond npm `0.1.0-dev.4`. Names and values remain case-sensitive; membership uses the runtime's Unicode data. Native `\P` complements retain `u`/`i` behavior and are not rewritten as negated `\p` classes. Compilation probes support; unavailable properties report `UNSUPPORTED_TARGET_FEATURE`, while an unrecognized alias reports `INVALID_UNICODE_PROPERTY` at its quoted value. `UnicodePropertySegment` exposes the alias, polarity and repetition to typed consumers. These checks do not imply legacy runtimes can load the whole compiler or that all engines use the same Unicode edition.
 
+Composable classes are another source-only addition: `character class:` unions literals/ranges/native shorthands/properties and `not character class:` negates that union. Range endpoints are one Unicode code point, in ascending code-point order; a range is not locale collation. `CharacterClassSegment.members` retains typed values, individual source locations and exact generated spans. Native u/i property complements remain separate from outer-class negation. The shared CLI, reverse translator and isolated workshop use this AST; no other-engine or v-mode claim follows from these u-mode checks.
+
 Word-boundary support is an unreleased source addition beyond npm `0.1.0-dev.4`. It keeps native zero-width behavior, input-edge handling, Unicode case folding and captures. It does not provide natural-language word segmentation. Direct quantification fails explicitly; repeated containing groups remain supported. The new `BoundarySegment` variant is declared for TypeScript consumers.
 
-- Host Node 25.9.0: all 274 Node tests plus a clean installed-package JavaScript/TypeScript consumer.
-- Minimum supported major, Node 22.23.3: all 43 focused group/reference/alternative/lazy/assertion/boundary/property/localization checks, including CLI paths and a separate clean consumer.
-- Bundled Chromium: all 312 desktop/mobile workshop checks, including group/reference/alternative/lazy/assertion/boundary/property imports, capture exploration, trace navigation and isolated matching. Installed Chrome also passes the release version/date/alternative flow at 1280/390px. Mobile viewport checks are not physical-device evidence.
-- Playwright Firefox and WebKit: all 82 compatibility checks, including the same group/reference/alternative/lazy/assertion/boundary/property/capture flows.
+- Host Node 25.9.0: all 281 Node tests plus a clean installed-package JavaScript/TypeScript consumer.
+- Minimum supported major, Node 22.23.3: all 50 selected group/reference/alternative/lazy/assertion/boundary/property/class/localization checks, including CLI paths and a separate clean consumer.
+- Bundled Chromium: all 316 desktop/mobile workshop checks, including group/reference/alternative/lazy/assertion/boundary/property/class imports, capture exploration, trace navigation and isolated matching. Installed Chrome also passes the release version/date/alternative flow at 1280/390px. Mobile viewport checks are not physical-device evidence.
+- Playwright Firefox and WebKit: all 86 compatibility checks, including the same group/reference/alternative/lazy/assertion/boundary/property/class/capture flows.
 - The complete `CI=1 npm run verify` command also passes the builds, 64 homepage checks and an audit with zero vulnerabilities. Final documentation records are rebuilt and checked afterward.
 - Group milestone: 54 desktop/mobile group, worker security and automated accessibility checks. Human screen-reader and usability reviews remain unverified.
 

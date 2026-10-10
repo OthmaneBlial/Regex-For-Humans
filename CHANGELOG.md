@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- Compile and reverse-translate standalone native Unicode character properties and complements, preserving case-sensitive aliases, counts/lazy preference, flags, capture values/indices and native u/i complement behavior. Add positioned alias/capability diagnostics and typed `UnicodePropertySegment` metadata through the shared CLI and workshop. Unicode properties inside character classes and v sets/string properties remain explicit unsupported cases. This addition is not in npm `0.1.0-dev.4`.
+- Support native u-mode composable character classes and inclusive Unicode code-point ranges in both directions, combining single-point literals, ranges, singular shorthands and property escapes. Preserve property complements separately from outer negation, class-context escaping, captures, flags and repetition. Add positioned member/range diagnostics and typed `CharacterClassSegment`/`CharacterClassMember` source metadata through the shared CLI and isolated workshop. This addition is not in npm `0.1.0-dev.4`; v sets/string properties remain open work.
+
+- Compile and reverse-translate standalone native Unicode character properties and complements, preserving case-sensitive aliases, counts/lazy preference, flags, capture values/indices and native u/i complement behavior. Add positioned alias/capability diagnostics and typed `UnicodePropertySegment` metadata through the shared CLI and workshop. This addition is not in npm `0.1.0-dev.4`.
 
 - Support `word boundary` and `not word boundary` in both translation directions, including groups, captures, alternatives and assertions. Preserve native zero-width behavior, ASCII word status, Unicode case folding, input-edge semantics and literal/class backspace distinctions. Add typed `BoundarySegment` source metadata and positioned direct-repetition errors. This addition is not in npm `0.1.0-dev.4`.
 

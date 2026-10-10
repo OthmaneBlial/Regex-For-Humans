@@ -80,8 +80,6 @@ function readEscape(source, index, inClass = false) {
   }
 
   if (escaped === "p" || escaped === "P") {
-    if (inClass)
-      unsupported("Unicode properties inside character classes cannot yet be translated.", index);
     const close = source.indexOf("}", index + 3);
     if (source[index + 2] !== "{" || close < 0)
       unsupported("The Unicode property escape is incomplete.", index);
@@ -184,36 +182,48 @@ function readCharacterClass(source, start) {
 
   /** @type {string[]} */
   const values = [];
+  /** @type {string[]} */
+  const members = [];
+  let complex = false;
+  /** @param {number} index @returns {AtomToken} */
+  const readItem = (index) => {
+    if (source[index] === "\\") return readEscape(source, index, true);
+    const point = source.codePointAt(index);
+    if (point === undefined) unsupported("Invalid character class.", index);
+    const value = String.fromCodePoint(point);
+    return { end: index + value.length, literal: value };
+  };
   for (let index = contentStart; index < end; ) {
-    if (source[index] === "-" && index !== contentStart && index !== end - 1) {
-      unsupported(
-        "Character ranges are supported only for digit, letter, word and hex classes.",
-        index,
-      );
-    }
-    if (source[index] === "\\") {
-      const item = readEscape(source, index, true);
-      if (item.category) {
-        unsupported("A shorthand cannot be combined with other character-class items.", index);
-      }
-      if (item.phrase) unsupported("This character-class escape is not supported.", index);
-      if (item.literal === undefined)
-        unsupported("This character-class escape is not supported.", index);
+    const item = readItem(index);
+    if (source[item.end] === "-" && item.end + 1 < end) {
+      const upper = readItem(item.end + 1);
+      if (item.literal === undefined || upper.literal === undefined)
+        unsupported("A character range needs two single-code-point endpoints.", item.end);
+      members.push(`range ${quoteText(item.literal)} to ${quoteText(upper.literal)}`);
+      complex = true;
+      index = upper.end;
+    } else if (item.literal !== undefined) {
       values.push(item.literal);
+      members.push(quoteText(item.literal));
       index = item.end;
     } else {
-      const point = source.codePointAt(index);
-      if (point === undefined) unsupported("Invalid character class.", index);
-      const value = String.fromCodePoint(point);
-      values.push(value);
-      index += value.length;
+      const phrase = item.category ? ESCAPED_ATOMS.get(item.category) : item.phrase;
+      if (!phrase) unsupported("This character-class escape is not supported.", index);
+      members.push(phrase);
+      complex = true;
+      index = item.end;
     }
   }
 
-  if (values.length === 0) {
+  if (members.length === 0) {
     if (negative) return { end: end + 1, phrase: "any character", allCharacters: true };
     unsupported("An empty character class has no rule-language equivalent.", start);
   }
+  if (complex)
+    return {
+      end: end + 1,
+      phrase: `${negative ? "not " : ""}character class: ${members.join(", ")}`,
+    };
   if (negative) {
     const excluded = new Set(values);
     if (
