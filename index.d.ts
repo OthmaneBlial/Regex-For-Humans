@@ -49,6 +49,7 @@ export interface UnicodePropertySegment extends SegmentBase {
   kind: "atom";
   atomType: "unicodeProperty";
   property: string;
+  propertyType: "character" | "string";
   negative: boolean;
   repetition: Repetition | null;
 }
@@ -57,7 +58,15 @@ export type CharacterClassMember = (
   | { kind: "literal"; value: string }
   | { kind: "range"; from: string; to: string }
   | { kind: "shorthand"; value: string }
-  | { kind: "unicodeProperty"; value: string; negative: boolean; propertyLocation: SourceLocation }
+  | { kind: "strings"; values: string[] }
+  | { kind: "stringCodePoints"; codePoints: string[] }
+  | {
+      kind: "unicodeProperty";
+      value: string;
+      propertyType: "character" | "string";
+      negative: boolean;
+      propertyLocation: SourceLocation;
+    }
 ) & {
   location: SourceLocation;
   text: string;

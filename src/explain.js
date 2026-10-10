@@ -168,9 +168,12 @@ function describeNode(node, flags, hasFollowingRule) {
       meaning = `Literal text ${quoteText(node.value)}${caseNote}.`;
       break;
     case "unicodeProperty":
-      meaning = node.negative
-        ? `Unicode complement of property ${quoteText(node.value)} (${flags.includes("v") ? "v" : "u"}).${flags.includes("i") ? (flags.includes("v") ? " With i in v mode, case folding happens before complementing." : " With i, case folding happens after complementing and can admit characters with this property.") : ""}`
-        : `Unicode code point selected by property ${quoteText(node.value)} (${flags.includes("v") ? "v" : "u"}).${flags.includes("i") ? " With i, case-folded equivalents may also match." : ""}`;
+      meaning =
+        node.propertyType === "string"
+          ? `Unicode string selected by property ${quoteText(node.value)} (v). One match can contain multiple code points; native longer members are tried first.`
+          : node.negative
+            ? `Unicode complement of property ${quoteText(node.value)} (${flags.includes("v") ? "v" : "u"}).${flags.includes("i") ? (flags.includes("v") ? " With i in v mode, case folding happens before complementing." : " With i, case folding happens after complementing and can admit characters with this property.") : ""}`
+            : `Unicode code point selected by property ${quoteText(node.value)} (${flags.includes("v") ? "v" : "u"}).${flags.includes("i") ? " With i, case-folded equivalents may also match." : ""}`;
       meaning += " Classification uses this runtime's Unicode data.";
       break;
     case "charSet":
@@ -183,6 +186,10 @@ function describeNode(node, flags, hasFollowingRule) {
         .map((member) => {
           if (member.kind === "range")
             return `code points ${quoteText(member.from)} through ${quoteText(member.to)} (inclusive)`;
+          if (member.kind === "strings")
+            return `finite strings ${member.values.map(quoteText).join(", ")}`;
+          if (member.kind === "stringCodePoints")
+            return `native code-point sequence ${member.codePoints.map(quoteText).join(" + ")}`;
           if (member.kind === "unicodeProperty")
             return `${member.negative ? "the Unicode complement of" : "Unicode property"} ${quoteText(member.value)}`;
           if (member.kind === "shorthand")
@@ -197,7 +204,18 @@ function describeNode(node, flags, hasFollowingRule) {
           return quoteText(member.value);
         })
         .join("; ");
-      meaning = `${node.negative ? "One Unicode code point outside" : "One Unicode code point in"} the union of: ${members}.`;
+      const containsStrings = node.members.some(
+        (member) =>
+          member.kind === "strings" ||
+          member.kind === "stringCodePoints" ||
+          (member.kind === "unicodeProperty" && member.propertyType === "string"),
+      );
+      meaning = `${node.negative ? "One Unicode code point outside" : containsStrings ? "One native string or Unicode code point in" : "One Unicode code point in"} the union of: ${members}.`;
+      if (containsStrings && !node.negative)
+        meaning +=
+          " Native v sets try longer members first; later rules can require a shorter member.";
+      if (node.members.some((member) => member.kind === "strings" && member.values.includes("")))
+        meaning += " An empty member can match without consuming input.";
       if (flags.includes("i"))
         meaning += ` Native ${flags.includes("v") ? "v" : "u"}-mode case folding applies; property complements and outer-class negation remain distinct.`;
       if (node.members.some((member) => member.kind === "unicodeProperty"))

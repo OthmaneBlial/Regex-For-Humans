@@ -363,7 +363,9 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | Match em `lastIndex`; para na primeira lacuna |
 | `v` | `{ flags: 'v' }` | Classes Unicode e complementos nativos no modo v |
 
-**Somente no código-fonte:** os oito flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` são aceitos, com `{ flags: 'dgiv' }` ou `--flags dgiv`. A saída usa `dgimsuvy`; duplicatas e u/v juntos são rejeitados, e u é o padrão. m pode ser explícito ou ativado por âncoras de linha; âncoras de entrada continuam absolutas ao misturar os modos. A tradução inversa preserva opções sem alterar `lastIndex`. O workshop começa cada exemplo em 0 e lista até 100 matches; regexes g/y copiados continuam com estado. Recursos nativos ausentes, conjuntos v aninhados e propriedades Unicode de strings recebem diagnósticos explícitos. npm `0.1.0-dev.4` mantém as opções i/s, u automático e m pelas âncoras de linha.
+**Somente no código-fonte:** os oito flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` são aceitos, com `{ flags: 'dgiv' }` ou `--flags dgiv`. A saída usa `dgimsuvy`; duplicatas e u/v juntos são rejeitados, e u é o padrão. m pode ser explícito ou ativado por âncoras de linha; âncoras de entrada continuam absolutas ao misturar os modos. A tradução inversa preserva opções sem alterar `lastIndex`. O workshop começa cada exemplo em 0 e lista até 100 matches; regexes g/y copiados continuam com estado. Recursos nativos ausentes e conjuntos v aninhados recebem diagnósticos explícitos. npm `0.1.0-dev.4` mantém as opções i/s, u automático e m pelas âncoras de linha.
+
+**Somente no código-fonte:** selecione `v` para `one of strings: "a", "ab", ""` ou `unicode property "RGI_Emoji"`. Os conjuntos nativos tentam primeiro os membros mais longos, independentemente da ordem da lista; regras posteriores podem exigir um membro mais curto. Strings vazias são permitidas. Use `string "ab"` dentro de uma classe. Propriedades de strings e membros vazios ou com vários pontos de código não podem ser complementados. Essas funções não estão no npm `0.1.0-dev.4`.
 
 ## 🛠️ Desenvolvimento local
 

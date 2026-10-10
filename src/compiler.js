@@ -50,6 +50,12 @@ function classMemberSource(member, unicodeSets) {
       );
     case "shorthand":
       return member.value;
+    case "strings":
+      return escapeControls(
+        `\\q{${member.values.map((value) => escapeClass([...value], true)).join("|")}}`,
+      );
+    case "stringCodePoints":
+      return escapeControls(`\\q{${escapeClass(member.codePoints, true)}}`);
     case "unicodeProperty":
       return `\\${member.negative ? "P" : "p"}{${member.value}}`;
     default:
@@ -157,6 +163,7 @@ export function compileAst(parsed, options = {}) {
   const segments = [];
   let checkedLookbehind = false;
   let checkedUnicodeProperties = false;
+  let checkedStringSets = false;
 
   /** @param {import('./ast.js').Location} location */
   function checkLookbehind(location) {
@@ -176,6 +183,33 @@ export function compileAst(parsed, options = {}) {
 
   /** @param {import('./ast.js').PropertyAtomNode|Extract<import('./ast.js').ClassMember, {kind: 'unicodeProperty'}>} property @param {import('./ast.js').Location} location */
   function checkProperty(property, location) {
+    if (property.propertyType === "string") {
+      if (!unicodeSets)
+        fail(
+          "UNICODE_SETS_REQUIRED",
+          "Unicode string properties require the v flag.",
+          property.propertyLocation,
+          "Select v mode; the compiler cannot replace a string property with characters.",
+        );
+      if (property.negative)
+        fail(
+          "INVALID_STRING_COMPLEMENT",
+          "Unicode string properties cannot be complemented.",
+          property.propertyLocation,
+          "Use a positive string property or complement a character property instead.",
+        );
+      try {
+        new RegExp(`\\p{${property.value}}`, flags);
+      } catch {
+        fail(
+          "UNSUPPORTED_TARGET_FEATURE",
+          `This JavaScript runtime does not support Unicode string property ${quoteText(property.value)}.`,
+          property.propertyLocation,
+          "Use a runtime with native support for this string property.",
+        );
+      }
+      return;
+    }
     if (!checkedUnicodeProperties) {
       try {
         new RegExp("\\p{ASCII}", unicodeMode);
@@ -199,18 +233,6 @@ export function compileAst(parsed, options = {}) {
         `Use a case-sensitive character property such as \`Letter\`, \`Script=Greek\` or \`Script_Extensions=Greek\` supported in ${unicodeMode} mode.`,
       );
     }
-    if (unicodeSets) {
-      try {
-        new RegExp(`\\p{${property.value}}`, "u");
-      } catch {
-        fail(
-          "UNSUPPORTED_UNICODE_STRING_PROPERTY",
-          "Unicode string properties need string-set rules, which are not implemented yet.",
-          property.propertyLocation,
-          "Use a Unicode character property; a string property cannot be replaced by a character class.",
-        );
-      }
-    }
   }
 
   /** @param {import('./ast.js').RuleNode[]} nodes */
@@ -219,9 +241,46 @@ export function compileAst(parsed, options = {}) {
       if (node.kind === "atom" && node.atomType === "unicodeProperty") {
         checkProperty(node, node.location);
       }
-      if (node.kind === "atom" && node.atomType === "characterClass")
-        for (const member of node.members)
+      if (node.kind === "atom" && node.atomType === "characterClass") {
+        for (const member of node.members) {
           if (member.kind === "unicodeProperty") checkProperty(member, node.location);
+          if (member.kind === "strings" || member.kind === "stringCodePoints") {
+            if (!unicodeSets)
+              fail(
+                "UNICODE_SETS_REQUIRED",
+                "Finite string sets require the v flag.",
+                member.location,
+                "Select v mode; string sets use native longest-first matching.",
+              );
+            if (!checkedStringSets) {
+              try {
+                new RegExp("[\\q{ab}]", flags);
+              } catch {
+                fail(
+                  "UNSUPPORTED_TARGET_FEATURE",
+                  "This JavaScript runtime does not support finite string sets.",
+                  member.location,
+                  "Use a runtime with native v-mode string-set support.",
+                );
+              }
+              checkedStringSets = true;
+            }
+          }
+          if (
+            node.negative &&
+            ((member.kind === "unicodeProperty" && member.propertyType === "string") ||
+              (member.kind === "strings" &&
+                member.values.some((value) => [...value].length !== 1)) ||
+              (member.kind === "stringCodePoints" && member.codePoints.length !== 1))
+          )
+            fail(
+              "INVALID_STRING_COMPLEMENT",
+              "A negated class cannot contain empty or multi-code-point strings or string properties.",
+              node.location,
+              "Complement a class containing only single Unicode code points.",
+            );
+        }
+      }
       if (node.kind === "assertion") {
         if (node.direction === "behind") checkLookbehind(node.location);
         const sourceStart = source.length;
@@ -421,6 +480,7 @@ export function compileAst(parsed, options = {}) {
                       kind: "atom",
                       atomType: "unicodeProperty",
                       property: node.value,
+                      propertyType: node.propertyType,
                       negative: node.negative,
                       repetition: node.repetition,
                     }

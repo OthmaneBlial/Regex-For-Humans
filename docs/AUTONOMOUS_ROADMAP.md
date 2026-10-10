@@ -13,7 +13,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Native nested v sets, intersection/subtraction and Unicode string properties, preserving implemented u/v class and eight-flag semantics.
+1. Native nested v sets and intersection/subtraction, preserving implemented finite strings, Unicode string properties and eight-flag semantics.
 2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 3. Workshop localization and the remaining mission waves.
 
@@ -34,6 +34,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Site/README: Pages commit `1dfaf1c` built successfully; all 58 public files match local hashes. Chrome desktop/mobile, Firefox and WebKit pass version, date capture, alternative/import and source-navigation checks without page errors or 320px overflow. The ten README guides and real screenshots reflect dev.4; actual Arabic/Urdu GitHub views retain RTL prose/tables and all 20 canonical LTR code blocks at 1280/390px. Independent language review remains open. This milestone does not close the larger mission, stable-release or human review gates.
 
 ## Evidence and constraints
+
+### Native v-string milestone
+
+- Implemented: JSON-quoted finite string sets and class string members, all seven standard Unicode properties of strings, and explicit code-point sequences for separately escaped surrogates. Parser, compiler, reverse translation, explanations, source/member spans, declarations, API, CLI and workshop use native v syntax and capability checks. Structural complement validation preserves the distinction between characters, empty strings and multi-point strings.
+- Native behavior: longer strings are tried first, shorter members remain available to later-rule backtracking, empty members keep Unicode advancement, and captures/indices/global/sticky cursors follow the chosen engine. Separately escaped surrogate sequences remain distinct from literal emoji when the runtime makes that distinction; this preserves WebKit behavior without approximations.
+- Verification: the complete local gate passes 295 Node, 344 Chromium desktop/mobile, 114 Firefox/WebKit and 64 homepage tests (817 total), plus lint/types/docs, builds, clean package checks and zero audit vulnerabilities. A shared 645,120-comparison native corpus per engine/viewport is split into eight browser shards without dropping cases or increasing deadlines. Another 48 worker batches per engine/viewport retain the 100-match limit and 1,200ms deadline. Node 22 passes 49 selected tests and a clean installed JavaScript/TypeScript/API/CLI consumer. All ten source guides retain identical 20 code blocks; Arabic/Urdu have 226 explicitly LTR inline fragments. Public rendering and human reviews are separate gates.
+- Distribution: npm/Pages remain dev.4. Native nested sets and intersection/subtraction are next, followed by the verified dev.5 package/site milestone; visualization, exports, workshop localization and later mission waves remain open.
 
 ### Eight-flag and native Unicode-mode milestone
 

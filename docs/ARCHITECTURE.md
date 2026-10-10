@@ -25,7 +25,9 @@ The internal `TestRunner.run(payload)` reports worker construction and message-s
 
 The workshop counter uses the parser's shared source-length limit before splitting rules. Oversized input shows “Over limit” and remains editable. Source navigation splits at most the limit plus one UTF-16 code unit, retaining the first excess unit for the existing source-limit diagnostic. Valid counters and selections retain the compiler's logical-line semantics.
 
-Compiler option validation compares the requested flags with the five exact allowed values (`""`, `"i"`, `"s"`, `"is"`, `"si"`). It avoids scanning or deduplicating arbitrarily long option strings while preserving the existing error and canonical flag order.
+Compiler option validation checks a maximum of eight unique native flag letters, rejects u/v combinations before emission, then probes native support. It avoids scanning arbitrarily long option strings and preserves canonical flag ordering.
+
+Finite v strings reuse class members: `strings` holds JSON-decoded values and emits native `\q` members, while `stringCodePoints` retains explicit code-point sequences. Reverse parsing detects adjacent separately escaped surrogates before concatenating their UTF-16 values and preserves those boundaries through the sequence rule. Unicode property nodes and members carry `propertyType`; the seven standard string properties require v and a native capability probe. Structural negation rejects string properties, empty/multi-point strings and multi-part sequences. Native emission owns longest-first matching, shorter-member backtracking, capture updates and cursor state; the explanation uses the same typed data. These features require no second matching path or new dependency.
 
 ## Structured groups
 
@@ -39,7 +41,7 @@ References are resolved against the completed capture table after parsing. A ref
 
 ## Unicode property atoms
 
-An explicit `unicodeProperty` atom keeps the native alias, complement polarity, repetition and original value location. The parser validates JSON quoting and ASCII alias shape; the generator probes native property support and validates actual aliases before emitting `\p{…}` or `\P{…}`. Runtime membership owns classification and Unicode edition, avoiding a bundled property table or ASCII approximation. Typed `UnicodePropertySegment` metadata carries the alias and exact source trace through explanations, CLI and the existing isolated workshop worker. Reverse escape parsing preserves aliases and complements both standalone and inside composable classes. Modern v sets, string properties and broader flags remain open work.
+An explicit `unicodeProperty` atom keeps the native alias, complement polarity, repetition and original value location. The parser validates JSON quoting and ASCII alias shape; the generator probes native property support and validates actual aliases before emitting `\p{…}` or `\P{…}`. Runtime membership owns classification and Unicode edition, avoiding a bundled property table or ASCII approximation. Typed `UnicodePropertySegment` metadata carries the alias and exact source trace through explanations, CLI and the existing isolated workshop worker. Reverse escape parsing preserves aliases and complements both standalone and inside composable classes. Nested v sets and intersection/subtraction remain open work.
 
 ## Composable character-class atoms
 

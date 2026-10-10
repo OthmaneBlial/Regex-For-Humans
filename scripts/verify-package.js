@@ -153,6 +153,22 @@ assert.equal(regexToRules(toRegExp(boundaryResult)).rules, "word boundary");
 const propertyResult = compile('one or more unicode property "L"');
 assert.equal(propertyResult.segments[0].atomType, "unicodeProperty");
 assert.equal(propertyResult.segments[0].property, "L");
+assert.equal(propertyResult.segments[0].propertyType, "character");
+const emojiString = compile('unicode property "RGI_Emoji"', { flags: "dv" });
+assert.equal(emojiString.segments[0].propertyType, "string");
+assert.equal(toRegExp(emojiString).exec("x👨‍👩‍👧y")[0], "👨‍👩‍👧");
+assert.deepEqual(toRegExp(emojiString).exec("x👨‍👩‍👧y").indices[0], [1, 9]);
+const stringSet = compile(${JSON.stringify('one of strings: "a", "ab", ""')}, { flags: "v" });
+assert.equal(stringSet.segments[0].members[0].kind, "strings");
+assert.deepEqual(stringSet.segments[0].members[0].values, ["a", "ab", ""]);
+assert.equal(toRegExp(stringSet).exec("ab")[0], "ab");
+assert.equal(toRegExp(stringSet).exec("")[0], "");
+for (const source of ${JSON.stringify([String.raw`[\q{a|ab|}]b`, String.raw`(?<emoji>\p{RGI_Emoji})?`, String.raw`[\q{\u{d83d}\u{de00}|\u{d83d}}]`])}) {
+  const native = new RegExp(source, "dgv");
+  const translated = regexToRules(native);
+  const result = toRegExp(compile(translated.rules, { flags: translated.flags }));
+  for (const input of ["", "ab", "a", "😀", "👨‍👩‍👧"]) { native.lastIndex = 0; result.lastIndex = 0; assert.deepEqual(result.exec(input), native.exec(input)); assert.equal(result.lastIndex, native.lastIndex); }
+}
 assert.equal(toRegExp(propertyResult).exec("😀اردو")[0], "اردو");
 const propertyComplement = compile('not unicode property "Lowercase_Letter"', { flags: "i" });
 assert.equal(propertyComplement.segments[0].negative, true);
@@ -377,14 +393,17 @@ if (segment.kind === "atom" && segment.atomType === "characterClass") {
   const sourceStart: number = member.sourceStart;
   if (member.kind === "range") { const from: string = member.from; console.log(from); }
   if (member.kind === "unicodeProperty") { const negative: boolean = member.negative; console.log(negative, member.propertyLocation); }
+  if (member.kind === "strings") { const values: string[] = member.values; console.log(values); }
+  if (member.kind === "stringCodePoints") { const points: string[] = member.codePoints; console.log(points); }
   console.log(sourceStart, characterClass.negative);
 }
 if (segment.kind === "atom" && segment.atomType === "unicodeProperty") {
   const property: UnicodePropertySegment = segment;
   const alias: string = property.property;
+  const propertyType: "character" | "string" = property.propertyType;
   const negative: boolean = property.negative;
   const repetition: Repetition | null = property.repetition;
-  console.log(alias, negative, repetition);
+  console.log(alias, propertyType, negative, repetition);
 }
 if (segment.kind === "boundary") {
   const boundary: BoundarySegment = segment;
@@ -461,6 +480,26 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
     { cwd: consumer },
   );
   const cliArgs = [npmCli, "exec", "--offline", "--yes=false", "--", "regex-for-humans"];
+  const installedStrings = JSON.parse(
+    run([...cliArgs, "--flags=dgv", "--json", "-"], {
+      cwd: consumer,
+      input: 'capture "value" {\n  one of strings: "a", "ab", ""\n}',
+    }),
+  );
+  const stringMatch = new RegExp(installedStrings.source, installedStrings.flags).exec("ab");
+  if (installedStrings.flags !== "dgv" || stringMatch?.groups.value !== "ab")
+    throw new Error("Installed CLI changed native string-set matching or flags.");
+  const installedStringReverse = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], {
+      cwd: consumer,
+      input: String.raw`/[\q{a|ab|}]/dgv`,
+    }),
+  );
+  if (
+    installedStringReverse.flags !== "dgv" ||
+    installedStringReverse.rules !== 'character class: string "a", string "ab", string ""'
+  )
+    throw new Error("Installed CLI reverse lost native string-set members or flags.");
   for (const reverse of [false, true]) {
     const invalidUtf8 = spawnSync(
       process.execPath,

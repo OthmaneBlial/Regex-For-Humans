@@ -363,7 +363,9 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | 从 `lastIndex` 匹配，遇到间隙即停止 |
 | `v` | `{ flags: 'v' }` | 原生 v 模式 Unicode 字符类与补集 |
 
-**仅源码版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力、嵌套 v 集合和 Unicode 字符串属性会明确报错。npm `0.1.0-dev.4` 仍使用原有 i/s 选项、自动 u 和行锚点控制的 m。
+**仅源码版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力和嵌套 v 集合会明确报错。npm `0.1.0-dev.4` 仍使用原有 i/s 选项、自动 u 和行锚点控制的 m。
+
+**仅限源码版本：**选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.4` 尚未包含这些功能。
 
 ## 🛠️ 本地开发
 

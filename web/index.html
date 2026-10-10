@@ -80,7 +80,7 @@
             <label class="flag-toggle"><input id="indices-flag" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Match indices <code>d</code></span></label>
             <label class="flag-toggle" for="unicode-mode">Unicode mode <select id="unicode-mode"><option value="u">Unicode u</option><option value="v">Unicode sets v</option></select></label>
           </fieldset>
-          <p id="flags-help" class="field-hint">Each example starts at position 0. Sticky matching starts there and stops at the first gap. Search lists up to 100 matches; global and sticky flags make repeated calls to the copied regex stateful. Input anchors remain absolute with multiline mode. Nested v sets and Unicode string properties are currently unsupported.</p>
+          <p id="flags-help" class="field-hint">Each example starts at position 0. Sticky matching starts there and stops at the first gap. Search lists up to 100 matches; global and sticky flags make repeated calls to the copied regex stateful. Input anchors remain absolute with multiline mode. Finite strings and Unicode string properties require v. Nested v sets and intersection/subtraction are not supported yet.</p>
           <details id="reverse-translator" class="reverse-translator">
             <summary>Already have a regex? Translate it ↙</summary>
             <p id="reverse-help">Paste a JavaScript regex literal with <code>u</code> or <code>v</code>, such as <code>/^[A-Z]{2}-\d{4}$/u</code>. Supported patterns become editable rules with their flags; unsupported syntax is explained. Limit: 16,392 UTF-16 code units, including outer whitespace. Press Ctrl/Cmd + Enter in this field to translate.</p>

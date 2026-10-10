@@ -191,7 +191,6 @@ test("invalid property names, quotes, aliases and class contexts keep positioned
     "script=Greek",
     "Script=greek",
     "Bidi_Class=Left_To_Right",
-    "RGI_Emoji",
     "ASCII=Yes",
     "Letter|Digit",
     "Letter}",
@@ -251,8 +250,9 @@ test("invalid property names, quotes, aliases and class contexts keep positioned
     for (const input of ["a", "A", "é", "اردو", "٣", "😀", "\ud83d", ""])
       assert.deepEqual(rebuilt.exec(input), original.exec(input));
   }
-  assert.throws(() => regexToRules(/\p{RGI_Emoji}/v), {
-    code: "UNSUPPORTED_REGEX",
+  assert.deepEqual(regexToRules(/\p{RGI_Emoji}/v), {
+    rules: 'unicode property "RGI_Emoji"',
+    flags: "v",
   });
 });
 

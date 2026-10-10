@@ -1,4 +1,4 @@
-import { anchor, atom, PATH_SEGMENT_SOURCE } from "./ast.js";
+import { anchor, atom, PATH_SEGMENT_SOURCE, UNICODE_STRING_PROPERTIES } from "./ast.js";
 import { fail } from "./diagnostics.js";
 import { quoteText } from "./display.js";
 
@@ -156,8 +156,8 @@ function readQuoted(text, location) {
   return failAt("Missing closing double quote.", text.length);
 }
 
-/** @param {string} text @param {Location} location @param {string} rawLine @returns {string[]} */
-function readCharacterList(text, location, rawLine) {
+/** @param {string} text @param {Location} location @param {string} rawLine @param {boolean} [strings] @returns {string[]} */
+function readCharacterList(text, location, rawLine, strings = false) {
   const items = [];
   let index = 0;
   while (index < text.length) {
@@ -165,6 +165,16 @@ function readCharacterList(text, location, rawLine) {
     if (index >= text.length) break;
     const itemStart = index;
     let value;
+    if (strings && text[index] !== '"')
+      fail(
+        "INVALID_STRING_LIST",
+        "String-set items must use JSON double quotes.",
+        {
+          line: location.line,
+          column: location.column + itemStart,
+        },
+        QUOTE_HINT,
+      );
     if (text[index] === '"') {
       const quoted = readQuoted(rawLine.slice(location.column - 1 + index), {
         line: location.line,
@@ -178,7 +188,7 @@ function readCharacterList(text, location, rawLine) {
       value = text.slice(index, end).trim();
       index = end;
     }
-    if ([...value].length !== 1) {
+    if (!strings && [...value].length !== 1) {
       fail(
         "INVALID_CHARACTER",
         "Each character-list item must be one Unicode code point.",
@@ -190,24 +200,77 @@ function readCharacterList(text, location, rawLine) {
     while (/\s/u.test(text[index] ?? "")) index += 1;
     if (index === text.length) break;
     if (text[index] !== ",") {
-      fail("INVALID_CHARACTER_LIST", "Separate character-list items with commas.", {
-        line: location.line,
-        column: location.column + index,
-      });
+      fail(
+        strings ? "INVALID_STRING_LIST" : "INVALID_CHARACTER_LIST",
+        strings
+          ? "Separate string-set items with commas."
+          : "Separate character-list items with commas.",
+        {
+          line: location.line,
+          column: location.column + index,
+        },
+      );
     }
     const commaIndex = index;
     index += 1;
     while (/\s/u.test(text[index] ?? "")) index += 1;
     if (index === text.length) {
-      fail("INVALID_CHARACTER_LIST", "A character list cannot end with a comma.", {
-        line: location.line,
-        column: location.column + commaIndex,
-      });
+      fail(
+        strings ? "INVALID_STRING_LIST" : "INVALID_CHARACTER_LIST",
+        strings
+          ? "A string list cannot end with a comma."
+          : "A character list cannot end with a comma.",
+        {
+          line: location.line,
+          column: location.column + commaIndex,
+        },
+      );
     }
   }
   if (items.length === 0)
-    fail("EMPTY_CHARACTER_LIST", "A character list needs at least one item.", location);
+    fail(
+      strings ? "EMPTY_STRING_LIST" : "EMPTY_CHARACTER_LIST",
+      strings
+        ? "A string list needs at least one item."
+        : "A character list needs at least one item.",
+      location,
+    );
   return items;
+}
+
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {string[]} */
+function readStringCodePoints(text, location, rawLine) {
+  const points = [];
+  let cursor = 0;
+  while (cursor < text.length) {
+    const pointLocation = { line: location.line, column: location.column + cursor };
+    const quoted = readQuoted(rawLine.slice(pointLocation.column - 1), pointLocation);
+    if ([...quoted.value].length !== 1)
+      fail(
+        "INVALID_STRING_SEQUENCE",
+        "Each sequence item must be one Unicode code point.",
+        pointLocation,
+      );
+    points.push(quoted.value);
+    cursor += quoted.length;
+    while (/\s/u.test(text[cursor] ?? "")) cursor += 1;
+    if (cursor === text.length) break;
+    if (text[cursor] !== "+")
+      fail("INVALID_STRING_SEQUENCE", "Separate quoted sequence code points with `+`.", {
+        line: location.line,
+        column: location.column + cursor,
+      });
+    const separator = cursor++;
+    while (/\s/u.test(text[cursor] ?? "")) cursor += 1;
+    if (cursor === text.length)
+      fail("INVALID_STRING_SEQUENCE", "A code-point sequence cannot end with `+`.", {
+        line: location.line,
+        column: location.column + separator,
+      });
+  }
+  if (!points.length)
+    fail("EMPTY_STRING_SEQUENCE", "A string sequence needs at least one code point.", location);
+  return points;
 }
 
 /** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|AssertionNode|BoundaryNode|BackreferenceNode} */
@@ -507,6 +570,59 @@ function parseItem(text, location, rawLine, inClass = false) {
     };
   }
 
+  const pointSequence = /^string\s+code\s+points:\s*/iu.exec(remaining);
+  if (pointSequence) {
+    const pointLocation = {
+      line: location.line,
+      column: location.column + offset + pointSequence[0].length,
+    };
+    return {
+      kind: "atom",
+      atomType: "characterClass",
+      negative: false,
+      repetition,
+      location,
+      text,
+      members: [
+        {
+          kind: "stringCodePoints",
+          codePoints: readStringCodePoints(
+            remaining.slice(pointSequence[0].length),
+            pointLocation,
+            rawLine,
+          ),
+          location: pointLocation,
+          text: remaining.slice(pointSequence[0].length),
+        },
+      ],
+    };
+  }
+  const stringList = /^one\s+of\s+strings:\s*/iu.exec(remaining);
+  const stringPrefix = /^string(?:\s+|$)/iu.exec(remaining);
+  const stringsPrefix = stringList ?? stringPrefix;
+  if (stringsPrefix) {
+    const prefixLength = stringsPrefix[0].length;
+    const memberLocation = { line: location.line, column: location.column + offset + prefixLength };
+    const values = readCharacterList(remaining.slice(prefixLength), memberLocation, rawLine, true);
+    if (stringPrefix && values.length !== 1)
+      fail(
+        "INVALID_STRING_LIST",
+        "Use one quoted value after `string`, or use `one of strings:`.",
+        memberLocation,
+      );
+    return {
+      kind: "atom",
+      atomType: "characterClass",
+      negative: false,
+      members: [
+        { kind: "strings", values, location: memberLocation, text: remaining.slice(prefixLength) },
+      ],
+      repetition,
+      location,
+      text,
+    };
+  }
+
   const classPrefix = /^(not\s+)?character\s+class:\s*/iu.exec(remaining);
   if (classPrefix) {
     if (inClass)
@@ -628,6 +744,7 @@ function parseItem(text, location, rawLine, inClass = false) {
       kind: "atom",
       atomType: "unicodeProperty",
       value: quoted.value,
+      propertyType: UNICODE_STRING_PROPERTIES.includes(quoted.value) ? "string" : "character",
       negative: property[1] !== undefined,
       repetition,
       location,
@@ -792,6 +909,7 @@ function readClassMembers(text, location, rawLine) {
         ...base,
         kind: "unicodeProperty",
         value: node.value,
+        propertyType: node.propertyType,
         negative: node.negative,
         propertyLocation: node.propertyLocation,
       });

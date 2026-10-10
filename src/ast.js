@@ -9,6 +9,17 @@ export const PATH_SEGMENT_EXCLUDED = Object.freeze([
   "\u2029",
 ]);
 
+// ECMAScript binary properties of strings; membership still comes from the native runtime.
+export const UNICODE_STRING_PROPERTIES = Object.freeze([
+  "Basic_Emoji",
+  "Emoji_Keycap_Sequence",
+  "RGI_Emoji_Modifier_Sequence",
+  "RGI_Emoji_Flag_Sequence",
+  "RGI_Emoji_Tag_Sequence",
+  "RGI_Emoji_ZWJ_Sequence",
+  "RGI_Emoji",
+]);
+
 /**
  * @typedef {{line: number, column: number}} Location
  * @typedef {({kind: 'exact', min: number}|{kind: 'range', min: number, max: number}|{kind: 'atLeast', min: number}|{kind: 'zeroOrMore'}|{kind: 'oneOrMore'}) & {lazy?: boolean}} Repetition
@@ -16,8 +27,8 @@ export const PATH_SEGMENT_EXCLUDED = Object.freeze([
  * @typedef {{kind: 'boundary', negative: boolean, repetition: null, location: Location, text: string}} BoundaryNode
  * @typedef {{kind: 'atom', atomType: 'wildcard'|'shorthand'|'literal', value: string, negative?: boolean, repetition: Repetition|null, location: Location, text: string}} TextAtomNode
  * @typedef {{kind: 'atom', atomType: 'charSet', value: string[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} SetAtomNode
- * @typedef {{kind: 'atom', atomType: 'unicodeProperty', value: string, negative: boolean, repetition: Repetition|null, location: Location, propertyLocation: Location, text: string}} PropertyAtomNode
- * @typedef {({kind: 'literal', value: string}|{kind: 'range', from: string, to: string}|{kind: 'shorthand', value: string}|{kind: 'unicodeProperty', value: string, negative: boolean, propertyLocation: Location}) & {location: Location, text: string}} ClassMember
+ * @typedef {{kind: 'atom', atomType: 'unicodeProperty', value: string, propertyType: 'character'|'string', negative: boolean, repetition: Repetition|null, location: Location, propertyLocation: Location, text: string}} PropertyAtomNode
+ * @typedef {({kind: 'literal', value: string}|{kind: 'range', from: string, to: string}|{kind: 'shorthand', value: string}|{kind: 'strings', values: string[]}|{kind: 'stringCodePoints', codePoints: string[]}|{kind: 'unicodeProperty', value: string, propertyType: 'character'|'string', negative: boolean, propertyLocation: Location}) & {location: Location, text: string}} ClassMember
  * @typedef {{kind: 'atom', atomType: 'characterClass', members: ClassMember[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} ClassAtomNode
  * @typedef {TextAtomNode|SetAtomNode|PropertyAtomNode|ClassAtomNode} AtomNode
  * @typedef {{kind: 'group', capturing: boolean, name: string|null, captureIndex: number|null, nodes: RuleNode[], repetition: Repetition|null, location: Location, text: string, endLocation: Location}} GroupNode

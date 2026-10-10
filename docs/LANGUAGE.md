@@ -274,11 +274,11 @@ This accepts `é`, `e` followed by a combining accent, `中文`, `عربي` and 
 
 The compiler keeps complements as native `\P` escapes. In `u` mode with `i`, case folding happens after complementing: `/\P{Lowercase_Letter}/iu` matches `a`, whereas `/[^\p{Lowercase_Letter}]/iu` does not. Replacing one with the other would change matching. See [MDN's native property semantics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Unicode_character_class_escape) and the [ECMAScript property alias rules](https://tc39.es/ecma262/multipage/text-processing.html#sec-runtime-semantics-unicodematchproperty).
 
-Compilation probes native property support and reports `UNSUPPORTED_TARGET_FEATURE` at the rule when unavailable. Unknown aliases report `INVALID_UNICODE_PROPERTY` at the quoted value; malformed quotes and trailing text retain their existing positioned diagnostics. The typed `UnicodePropertySegment` carries the exact property alias, complement polarity, repetition and source span. Reverse translation preserves standalone `\p{…}` / `\P{…}` aliases, counts, flags and capture behavior. Properties also work inside the composable classes below. Unicode string properties such as `RGI_Emoji`, `v` sets, intersection and subtraction still require further implementation and fail explicitly. They are separate open mission requirements, not approximated by ASCII classes or alternation.
+Compilation probes native property support and reports `UNSUPPORTED_TARGET_FEATURE` at the rule when unavailable. Unknown aliases report `INVALID_UNICODE_PROPERTY` at the quoted value; malformed quotes and trailing text retain their existing positioned diagnostics. The typed `UnicodePropertySegment` carries the exact property alias, `propertyType` (`character` or `string`), complement polarity, repetition and source span. Reverse translation preserves standalone `\p{…}` / `\P{…}` aliases, counts, flags and capture behavior. Properties also work inside the composable classes below. String properties require explicit v mode and follow the native string semantics documented below.
 
 ## Composable character classes
 
-This source addition is unreleased beyond npm `0.1.0-dev.4`. A class unions its members and consumes one Unicode code point. Keep the existing `one of:` and `none of:` literal lists, or combine ranges, native shorthands and properties:
+This source addition is unreleased beyond npm `0.1.0-dev.4`. A u-mode class unions its members and consumes one Unicode code point. Keep the existing `one of:` and `none of:` literal lists, or combine ranges, native shorthands and character properties:
 
 ```text
 start
@@ -299,6 +299,7 @@ This emits `^(?<word>[\p{L}\p{M}_]+)$` with `u`, accepting `e` followed by a com
 | `space`, `not space` | `\s`, `\S` | Native whitespace, including line breaks, and its complement. |
 | `unicode property "L"` | `\p{L}` | Native property membership with a case-sensitive alias. |
 | `not unicode property "Ll"` | `\P{Ll}` | The native property complement, kept distinct from outer-class negation. |
+| `string "ab"` | `\q{ab}` | A finite string member, requiring v mode; `string ""` permits an empty match. |
 
 The standalone rule `range "😀" to "🙏"` emits `[😀-🙏]`. Ranges follow code-point order, not alphabetical or locale order; `range "E" to "f"` includes punctuation between the uppercase and lowercase ASCII blocks. JSON escapes may express controls or lone surrogates. Escaping depends on class context; quoted `-`, `]`, `\\`, `^`, `/` and comma remain literal members.
 
@@ -306,7 +307,27 @@ The standalone rule `range "😀" to "🙏"` emits `[😀-🙏]`. Ranges follow 
 
 The typed `CharacterClassSegment` exposes `negative`, `repetition` and `members`. Each `CharacterClassMember` retains its discriminator, literal/range/shorthand/property data, original `location` and `text`, and exact generated `sourceStart`, `sourceEnd` and `source`. Property members additionally retain their value location and complement polarity. The CLI and isolated workshop use the shared compiler and explanation trace.
 
-Reverse translation preserves native u-mode unions, ranges, shorthand/property complements and outer negation, including captures, counts and flags. Existing recognized ASCII classes and simple literal lists keep their compact output. Empty classes `[]`, nested v classes, set intersection/subtraction and string properties remain explicitly unsupported. Invalid rule members, bounds, missing commas, quotes and property aliases receive positioned diagnostics. [MDN's class reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Character_class) describes the native range, union and context-sensitive escape rules.
+Reverse translation preserves native u/v-mode unions, ranges, shorthand/property complements and outer negation, including captures, counts and flags. Existing recognized ASCII classes and simple literal lists keep their compact output. Empty classes `[]`, nested v classes and set intersection/subtraction remain explicitly unsupported. Invalid rule members, bounds, missing commas, quotes and property aliases receive positioned diagnostics. [MDN's class reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Character_class) describes the native range, union and context-sensitive escape rules.
+
+## Native Unicode string sets
+
+This source feature is not in npm `0.1.0-dev.4` or the hosted playground. Select `{ flags: "v" }`, CLI `--flags v` or the workshop's v mode. A finite list uses JSON-quoted strings; the original `one of:` list continues to require single code points:
+
+```text
+capture "value" {
+  one of strings: "a", "ab", ""
+}
+```
+
+This emits `(?<value>[\q{a|ab|}])` with v. The native set tries longer members first, regardless of list order: searching `ab` captures `ab`. Adding a following `"b"` rule can require the shorter `a` member. This differs from ordered `either` branches, where the first successful branch wins. Empty strings are permitted and may match without consuming input; worker enumeration still advances a whole Unicode code point and retains its deadline. Repetition, lazy count preference, captures, assertions and global/sticky cursor behavior remain native. A class can combine finite strings with characters or properties, such as `character class: string "ab", digit, unicode property "RGI_Emoji"`.
+
+`unicode property "RGI_Emoji"` emits native `\p{RGI_Emoji}`. The seven ECMAScript string properties are `Basic_Emoji`, `Emoji_Keycap_Sequence`, `RGI_Emoji_Modifier_Sequence`, `RGI_Emoji_Flag_Sequence`, `RGI_Emoji_Tag_Sequence`, `RGI_Emoji_ZWJ_Sequence` and `RGI_Emoji`. One match may consume several code points, including a complete family emoji. Membership follows the runtime's Unicode edition; this is not a general grapheme segmenter or emoji-normalization API. Property aliases are case-sensitive. A missing v flag reports `UNICODE_SETS_REQUIRED`; a missing native feature reports positioned `UNSUPPORTED_TARGET_FEATURE`.
+
+String properties cannot use `not unicode property`. A negated class may contain finite strings only when every member is exactly one code point: `not character class: string "a", string "😀"` is valid. An empty or multi-code-point member, or any string property, reports `INVALID_STRING_COMPLEMENT`. This is a structural restriction, independent of which strings happen to match.
+
+Reverse translation preserves `\q{…}` strings and native property aliases. Separate surrogate code-point escapes inside one native string retain their boundaries using `string code points: "\ud83d" + "\ude00"`, also permitted as a class member. Each quoted sequence item must be one code point; `+` separates items and does not mean repetition. The emitted `\q{\u{d83d}\u{de00}}` remains distinct from a literal emoji. Installed WebKit treats these sources differently; retaining the native code-point sequence avoids changing an imported match. A sequence with two parts also remains structurally non-complementable, even when concatenating its UTF-16 values would form one emoji. Typed class members expose `kind: "strings"` with `values`, or `kind: "stringCodePoints"` with `codePoints`, plus their original location and exact output span.
+
+See the [ECMAScript string-property table](https://tc39.es/ecma262/multipage/text-processing.html#table-binary-unicode-properties-of-strings), [native structural string checks](https://tc39.es/ecma262/multipage/text-processing.html#sec-static-semantics-maycontainstrings) and [MDN's native string-set examples](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Character_class#v-mode_character_class). Nested sets and intersection/subtraction are the next implementation step.
 
 ## Anchors and flags
 
@@ -318,7 +339,7 @@ With `m`, input `start` emits `^(?<![\s\S])` and input `end` emits `$(?![\s\S])`
 
 Native g/y regexes are stateful: repeated `.exec()` / `.test()` calls use and update `lastIndex`, and failure resets it to zero. Sticky y requires a match exactly at that cursor. The workshop starts each example at 0, resets both its matcher and whole-string fallback between examples, and uses internal g/d flags once for capture enumeration/indices. Search lists up to 100 matches; y stops at the first gap, and empty matches advance by one Unicode code point. Copied regexes retain the selected flags and native cursor behavior.
 
-Native v mode uses its own class escaping and case-folding/complement semantics. For example, `not unicode property "Lowercase_Letter"` with i/u can match `a`, while i/v cannot: native u folds after complementing and native v folds before. Outer class negation remains separate. Supported literals, ranges, shorthands and character properties work in either mode. Nested v sets, intersection/subtraction, `\q{…}` strings and Unicode string properties such as `RGI_Emoji` remain explicit unsupported features. A v string property in a forward character-property rule reports `UNSUPPORTED_UNICODE_STRING_PROPERTY`; no character approximation is emitted.
+Native v mode uses its own class escaping and case-folding/complement semantics. For example, `not unicode property "Lowercase_Letter"` with i/u can match `a`, while i/v cannot: native u folds after complementing and native v folds before. Outer class negation remains separate. Supported literals, ranges, shorthands and character properties work in either mode; finite strings and string properties require v. Nested v sets and intersection/subtraction remain explicit unsupported features.
 
 Without `m`, JavaScript `^` and `$` match only the true start and end of input. For example, `start "A"` / `end` rejects `A` followed by a line break. With `m`, line anchors match line boundaries. Other regex engines may behave differently.
 

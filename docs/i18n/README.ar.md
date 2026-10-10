@@ -470,7 +470,13 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | <code dir="ltr">y</code> | <code dir="ltr">{ flags: 'y' }</code> | مطابقة عند <code dir="ltr">lastIndex</code> والتوقف عند أول فجوة |
 | <code dir="ltr">v</code> | <code dir="ltr">{ flags: 'v' }</code> | فئات Unicode ومتمماتها الأصلية في نمط v |
 
-**في الشفرة المصدرية فقط:** تُقبل الرايات الثماني <code dir="ltr">d</code> و<code dir="ltr">g</code> و<code dir="ltr">i</code> و<code dir="ltr">m</code> و<code dir="ltr">s</code> و<code dir="ltr">u</code> و<code dir="ltr">v</code> و<code dir="ltr">y</code>. ترتيب الناتج <code dir="ltr">dgimsuvy</code>؛ تُرفض التكرارات والجمع بين u/v، ويبقى u الافتراضي. يمكن تفعيل m مباشرة أو بمراسي الأسطر؛ وتبقى مراسي الإدخال مطلقة حتى عند خلط النمطين. يحافظ التحويل العكسي على الخيارات دون تعديل <code dir="ltr">lastIndex</code>. يبدأ كل مثال في الورشة عند 0 وتُعرض حتى 100 مطابقة؛ وتحتفظ تعبيرات g/y المنسوخة بحالتها. تُبلَّغ القدرات الأصلية المفقودة ومجموعات v المتداخلة وخصائص Unicode للسلاسل بوضوح. يحتفظ npm <code dir="ltr">0.1.0-dev.4</code> بخيارات i/s السابقة وu التلقائي وm عبر مراسي الأسطر.
+**في الشفرة المصدرية فقط:** تُقبل الرايات الثماني <code dir="ltr">d</code> و<code dir="ltr">g</code> و<code dir="ltr">i</code> و<code dir="ltr">m</code> و<code dir="ltr">s</code> و<code dir="ltr">u</code> و<code dir="ltr">v</code> و<code dir="ltr">y</code>. ترتيب الناتج <code dir="ltr">dgimsuvy</code>؛ تُرفض التكرارات والجمع بين u/v، ويبقى u الافتراضي. يمكن تفعيل m مباشرة أو بمراسي الأسطر؛ وتبقى مراسي الإدخال مطلقة حتى عند خلط النمطين. يحافظ التحويل العكسي على الخيارات دون تعديل <code dir="ltr">lastIndex</code>. يبدأ كل مثال في الورشة عند 0 وتُعرض حتى 100 مطابقة؛ وتحتفظ تعبيرات g/y المنسوخة بحالتها. تُبلَّغ القدرات الأصلية المفقودة ومجموعات v المتداخلة بوضوح. يحتفظ npm <code dir="ltr">0.1.0-dev.4</code> بخيارات i/s السابقة وu التلقائي وm عبر مراسي الأسطر.
+
+<p dir="rtl"><strong>في الشفرة المصدرية فقط:</strong> اختر <code dir="ltr">v</code> لاستخدام مجموعات السلاسل وخصائص Unicode للسلاسل. يجرّب المحرك الأعضاء الأطول أولًا، بغض النظر عن ترتيب القائمة؛ وقد تتطلب القواعد التالية الرجوع إلى عضو أقصر. السلاسل الفارغة مسموحة. استخدم الصيغة الثالثة داخل فئة محارف. لا يمكن أخذ متمّم لخاصية سلاسل أو لفئة تحتوي سلسلة فارغة أو عضوًا متعدد نقاط Unicode. هذه الإضافات غير موجودة في npm <code dir="ltr">0.1.0-dev.4</code>.</p>
+
+<p dir="ltr" align="left"><code dir="ltr">one of strings: "a", "ab", ""</code></p>
+<p dir="ltr" align="left"><code dir="ltr">unicode property "RGI_Emoji"</code></p>
+<p dir="ltr" align="left"><code dir="ltr">string "ab"</code></p>
 
 <p dir="ltr" align="left"><code dir="ltr">{ flags: 'dgiv' }</code></p>
 

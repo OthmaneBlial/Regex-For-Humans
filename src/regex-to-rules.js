@@ -39,7 +39,7 @@ const UNSUPPORTED_HINT =
   "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and d/g/i/m/s/u/v/y flags. Forward/open references are not supported.";
 const LINE_TERMINATORS = ["\n", "\r", "\u2028", "\u2029"];
 
-/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, assertion?: {direction: 'ahead'|'behind', negative: boolean, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
+/** @typedef {{end: number, literal?: string, phrase?: string, strings?: {value: string, codePoints?: string[]}[], empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, assertion?: {direction: 'ahead'|'behind', negative: boolean, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
 /** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number, lazy?: boolean}} QuantifierToken */
 /** @typedef {AtomToken & QuantifierToken & {index: number}} PositionedAtom */
 
@@ -79,20 +79,12 @@ function readEscape(source, index, inClass = false, unicodeSets = false) {
     return { end: index + 2, category: escaped };
   }
 
+  if (inClass && unicodeSets && escaped === "q") return readStringSet(source, index);
+
   if (escaped === "p" || escaped === "P") {
     const close = source.indexOf("}", index + 3);
     if (source[index + 2] !== "{" || close < 0)
       unsupported("The Unicode property escape is incomplete.", index);
-    if (unicodeSets) {
-      try {
-        new RegExp(`\\p{${source.slice(index + 3, close)}}`, "u");
-      } catch {
-        unsupported(
-          "Unicode string properties cannot yet be represented by character-property rules.",
-          index,
-        );
-      }
-    }
     return {
       end: close + 1,
       phrase: `${escaped === "P" ? "not " : ""}unicode property ${quoteText(source.slice(index + 3, close))}`,
@@ -161,6 +153,44 @@ function readEscape(source, index, inClass = false, unicodeSets = false) {
 }
 
 /** @param {string} source @param {number} start @returns {AtomToken} */
+function readStringSet(source, start) {
+  if (source[start + 2] !== "{") unsupported("The string set needs an opening brace.", start);
+  const values = [];
+  let value = "";
+  /** @type {string[]} */
+  let points = [];
+  let separateSurrogates = false;
+  let cursor = start + 3;
+  for (; cursor < source.length; ) {
+    if (source[cursor] === "|" || source[cursor] === "}") {
+      values.push({ value, ...(separateSurrogates ? { codePoints: points } : {}) });
+      value = "";
+      points = [];
+      separateSurrogates = false;
+      if (source[cursor] === "}") return { end: cursor + 1, strings: values };
+      cursor += 1;
+    } else if (source[cursor] === "\\") {
+      const escaped = readEscape(source, cursor, true, true);
+      if (escaped.literal === undefined)
+        unsupported("String-set members contain only literals.", cursor);
+      separateSurrogates ||= joinsSurrogates(value, escaped.literal);
+      points.push(escaped.literal);
+      value += escaped.literal;
+      cursor = escaped.end;
+    } else {
+      const point = source.codePointAt(cursor);
+      if (point === undefined) unsupported("Invalid string-set character.", cursor);
+      const character = String.fromCodePoint(point);
+      separateSurrogates ||= joinsSurrogates(value, character);
+      points.push(character);
+      value += character;
+      cursor += character.length;
+    }
+  }
+  unsupported("The string set is not closed.", start);
+}
+
+/** @param {string} source @param {number} start @param {boolean} [unicodeSets] @returns {AtomToken} */
 function readCharacterClass(source, start, unicodeSets = false) {
   let contentStart = start + 1;
   let negative = false;
@@ -175,8 +205,10 @@ function readCharacterClass(source, start, unicodeSets = false) {
     const character = source[end];
     if (escaped) escaped = false;
     else if (character === "\\") {
-      if (unicodeSets && source[end + 1] === "q")
-        unsupported("Unicode string-set escapes cannot yet be translated.", end);
+      if (unicodeSets && source[end + 1] === "q") {
+        end = readStringSet(source, end).end - 1;
+        continue;
+      }
       escaped = true;
     } else if (
       unicodeSets &&
@@ -232,6 +264,18 @@ function readCharacterClass(source, start, unicodeSets = false) {
       members.push(quoteText(item.literal));
       index = item.end;
     } else {
+      if (item.strings) {
+        members.push(
+          ...item.strings.map((string) =>
+            string.codePoints
+              ? `string code points: ${string.codePoints.map(quoteText).join(" + ")}`
+              : `string ${quoteText(string.value)}`,
+          ),
+        );
+        complex = true;
+        index = item.end;
+        continue;
+      }
       const phrase = item.category ? ESCAPED_ATOMS.get(item.category) : item.phrase;
       if (!phrase) unsupported("This character-class escape is not supported.", index);
       members.push(phrase);

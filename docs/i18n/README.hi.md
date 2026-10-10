@@ -363,7 +363,9 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | `lastIndex` पर match; पहली खाली जगह पर रुकता है |
 | `v` | `{ flags: 'v' }` | Native v-mode Unicode classes और complements |
 
-**केवल source checkout:** आठों flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` स्वीकार हैं, जैसे `{ flags: 'dgiv' }` या `--flags dgiv`। आउटपुट क्रम `dgimsuvy` है; duplicates और u/v को साथ देना त्रुटि है, तथा u डिफ़ॉल्ट रहता है। m स्पष्ट option या line anchors से सक्रिय होता है; दोनों प्रकार मिलाने पर input anchors पूर्ण सीमाएँ बनाए रखते हैं। Reverse translation options बचाता है और `lastIndex` नहीं बदलता। Workshop हर उदाहरण 0 से शुरू करता है और अधिकतम 100 matches दिखाता है; copied g/y regex में state बनी रहती है। अनुपलब्ध native क्षमताएँ, nested v sets और Unicode string properties स्पष्ट diagnostics देते हैं। npm `0.1.0-dev.4` में पुराने i/s options, automatic u और line anchors से m ही हैं।
+**केवल source checkout:** आठों flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` स्वीकार हैं, जैसे `{ flags: 'dgiv' }` या `--flags dgiv`। आउटपुट क्रम `dgimsuvy` है; duplicates और u/v को साथ देना त्रुटि है, तथा u डिफ़ॉल्ट रहता है। m स्पष्ट option या line anchors से सक्रिय होता है; दोनों प्रकार मिलाने पर input anchors पूर्ण सीमाएँ बनाए रखते हैं। Reverse translation options बचाता है और `lastIndex` नहीं बदलता। Workshop हर उदाहरण 0 से शुरू करता है और अधिकतम 100 matches दिखाता है; copied g/y regex में state बनी रहती है। अनुपलब्ध native क्षमताएँ और nested v sets स्पष्ट diagnostics देते हैं। npm `0.1.0-dev.4` में पुराने i/s options, automatic u और line anchors से m ही हैं।
+
+**केवल source checkout में:** `v` चुनकर `one of strings: "a", "ab", ""` या `unicode property "RGI_Emoji"` इस्तेमाल करें। Native sets सूची के क्रम से स्वतंत्र होकर लंबे सदस्यों को पहले आज़माते हैं; आगे के नियम छोटे सदस्य पर वापस जाने की माँग कर सकते हैं। खाली strings भी मान्य हैं। Class में `string "ab"` इस्तेमाल करें। String properties और खाली या कई code points वाले सदस्यों का complement नहीं बनाया जा सकता। ये सुविधाएँ npm `0.1.0-dev.4` में नहीं हैं।
 
 ## 🛠️ स्थानीय development
 
