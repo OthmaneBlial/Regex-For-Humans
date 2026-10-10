@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Load shared frozen budgets directly in the match worker, avoiding parser/AST/diagnostic startup dependencies while preserving source limits, cancellation, validation and the 1,200 ms deadline.
+
+- Keep long literal explanations within WebKit's narrow trace panel by disabling kerning there, preserving full text and keyboard source selection.
+
+- Share plain-arrow scrolling between generated-regex and source-export regions, retaining modifier shortcuts and keyboard copy/navigation in desktop and mobile contexts.
+
+- Add a source-only four-language workshop interface (English, Simplified Chinese, Spanish and French), including recipes, status feedback, accessible labels and navigation. Change language in place while retaining rules, examples, selections, open panels, capture data and exported code. Remember the choice locally when storage is available and handle denied storage. Keep the controlled English grammar and English compiler/engine technical detail separate from translated UI.
+
 - Add source-only `exportRegex`, typed export metadata, CLI `--target` and an on-demand workshop panel with code/JSON downloads for JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP and Ruby. Translate supported AST semantics separately from source-code quoting; expose mapped capture names and positioned diagnostics for unsupported flags, properties, assertions, repetition and capture lifetimes. Check generated code against six installed native runtimes; PHP parity remains unverified. Exported snippets do not inherit the workshop matching sandbox. npm and the hosted workshop remain at dev.5.
 
 - Add source-only structural risk review through the typed public `analyze` API and an on-demand workshop panel. Inspect nested/adjacent variable repetition, overlapping alternatives and selected character witnesses; surface wildcard, line-anchor and generated-size notes with source navigation and explicit limitations. Unknown witness sets do not certify disjointness, and no findings does not prove performance safety. Preserve isolated matching, deadlines and compiler diagnostics.

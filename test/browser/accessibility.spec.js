@@ -128,9 +128,7 @@ test("keyboard can reach the editor, options, copy and test controls", async ({ 
   await expect(page.locator("#match-mode")).toBeFocused();
 });
 
-test("generated regex is a named keyboard stop with native horizontal scrolling", async ({
-  page,
-}) => {
+test("generated regex is a named keyboard stop with horizontal scrolling", async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "clipboard", {
       value: {
@@ -177,6 +175,11 @@ test("generated regex is a named keyboard stop with native horizontal scrolling"
         await expect
           .poll(() => output.evaluate((element) => element.scrollLeft))
           .toBeGreaterThan(before);
+        const right = await output.evaluate((element) => element.scrollLeft);
+        await page.keyboard.press("ArrowLeft");
+        await expect
+          .poll(() => output.evaluate((element) => element.scrollLeft))
+          .toBeLessThan(right);
       }
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
@@ -552,6 +555,10 @@ test("skip link focuses the workshop without resetting edited rules", async ({ p
   await expect(page).toHaveURL(/\/\?example=line-rule#main$/u);
   await expect(page.locator("#main")).toBeFocused();
   await expect(editor).toHaveValue('start "XYZ"\nend');
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("combobox", { name: "Interface language", exact: true }),
+  ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(editor).toBeFocused();
 });

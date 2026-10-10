@@ -1,21 +1,22 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-test("example selections and scroll positions follow their identities through row changes", async ({
-  page,
-}) => {
-  const errors = [];
-  page.on("pageerror", (error) => errors.push(error.message));
-  const viewport = page.viewportSize();
-  const view = (input) => ({
-    value: input.value,
-    height: input.style.height,
-    selection: [input.selectionStart, input.selectionEnd, input.selectionDirection],
-    top: input.scrollTop,
-    left: input.scrollLeft,
-    description: input.getAttribute("aria-describedby"),
-  });
-  for (const width of [viewport.width, 320]) {
+for (const narrow of [false, true]) {
+  test(`example selections and scroll positions follow their identities through row changes at ${narrow ? "320px" : "the project viewport"}`, async ({
+    page,
+  }) => {
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    const viewport = page.viewportSize();
+    const view = (input) => ({
+      value: input.value,
+      height: input.style.height,
+      selection: [input.selectionStart, input.selectionEnd, input.selectionDirection],
+      top: input.scrollTop,
+      left: input.scrollLeft,
+      description: input.getAttribute("aria-describedby"),
+    });
+    const width = narrow ? 320 : viewport.width;
     await page.setViewportSize({ width, height: viewport.height });
     await page.goto("/");
     await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
@@ -123,5 +124,5 @@ test("example selections and scroll positions follow their identities through ro
       ),
     ).toBe(true);
     expect(errors).toEqual([]);
-  }
-});
+  });
+}

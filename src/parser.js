@@ -7,6 +7,9 @@ import {
 } from "./ast.js";
 import { fail } from "./diagnostics.js";
 import { quoteText } from "./display.js";
+import { LIMITS } from "./limits.js";
+
+export { LIMITS };
 
 /** @typedef {import('./ast.js').Location} Location */
 /** @typedef {import('./ast.js').Repetition} Repetition */
@@ -20,15 +23,6 @@ import { quoteText } from "./display.js";
 /** @typedef {import('./ast.js').BackreferenceNode} BackreferenceNode */
 /** @typedef {import('./ast.js').RuleNode} RuleNode */
 /** @typedef {import('./ast.js').ParsedRules} ParsedRules */
-
-const MAX_SOURCE_LENGTH = 16_384;
-export const LIMITS = Object.freeze({
-  sourceLength: MAX_SOURCE_LENGTH,
-  regexSourceLength: MAX_SOURCE_LENGTH * 8, // U+2028 and U+2029 each escape to eight code units.
-  lines: 200,
-  repetition: 1_000,
-  groupDepth: 64,
-});
 
 /** @param {string} source @returns {string[]} */
 export function splitLines(source) {

@@ -64,6 +64,27 @@ a {
   top: 12px;
 }
 
+.topbar-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.topbar-tools select {
+  max-width: 100%;
+  padding: 5px;
+  border: 1px solid var(--line);
+  background: var(--paper-light);
+  color: var(--ink);
+}
+.interface-language-help {
+  margin: 12px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .app-shell {
   display: grid;
   grid-template-columns: 256px minmax(0, 1fr);
@@ -694,6 +715,8 @@ a {
   font-size: 12px;
   line-height: 1.35;
   overflow-wrap: anywhere;
+  /* WebKit can overflow long kerned literals even when wrapping is enabled. */
+  font-kerning: none;
 }
 
 .structure-diagram {

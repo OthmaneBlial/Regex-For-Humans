@@ -5,48 +5,49 @@ const scenarios = JSON.parse(
   readFileSync(new URL("../fixtures/product-scenarios.json", import.meta.url), "utf8"),
 );
 
-test("malformed workshop recipes keep manual editing usable and valid reloads recover", async ({
-  page,
-}) => {
-  const errors = [];
-  page.on("pageerror", (error) => errors.push(error.message));
-  const editor = page.locator("#rules-input");
-  const output = page.locator("#regex-output");
-  const buttons = page.locator("#example-list button");
-  await page.addInitScript(() => {
-    Object.defineProperty(navigator, "clipboard", {
-      value: {
-        writeText: async (text) => {
-          window.copiedPattern = text;
+const last = scenarios.at(-1);
+const invalid = [
+  null,
+  {},
+  [],
+  [null],
+  [...scenarios, null],
+  [...scenarios, scenarios[0]],
+  ...[
+    { id: " " },
+    { title: null },
+    { title: " " },
+    { note: null },
+    { rules: null },
+    { rules: "unsupported recipe rule" },
+    { matchMode: "unknown" },
+    { positive: null },
+    { positive: [null] },
+    { negative: null },
+    { negative: [false] },
+    { positive: Array(101).fill("a") },
+    { negative: ["a".repeat(2049)] },
+  ].map((patch) => [...scenarios.slice(0, -1), { ...last, ...patch }]),
+];
+
+for (const [index, payload] of invalid.entries()) {
+  test(`malformed workshop recipes keep manual editing usable and valid reloads recover: case ${index + 1}`, async ({
+    page,
+  }) => {
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    const editor = page.locator("#rules-input");
+    const output = page.locator("#regex-output");
+    const buttons = page.locator("#example-list button");
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        value: {
+          writeText: async (text) => {
+            window.copiedPattern = text;
+          },
         },
-      },
+      });
     });
-  });
-  const last = scenarios.at(-1);
-  const invalid = [
-    null,
-    {},
-    [],
-    [null],
-    [...scenarios, null],
-    [...scenarios, scenarios[0]],
-    ...[
-      { id: " " },
-      { title: null },
-      { title: " " },
-      { note: null },
-      { rules: null },
-      { rules: "unsupported recipe rule" },
-      { matchMode: "unknown" },
-      { positive: null },
-      { positive: [null] },
-      { negative: null },
-      { negative: [false] },
-      { positive: Array(101).fill("a") },
-      { negative: ["a".repeat(2049)] },
-    ].map((patch) => [...scenarios.slice(0, -1), { ...last, ...patch }]),
-  ];
-  for (const payload of invalid) {
     await page.route("**/product-scenarios.json*", (route) => route.fulfill({ json: payload }));
     await page.goto("/");
     await expect(page.locator("#example-list")).toContainText("Example recipes could not load");
@@ -66,13 +67,13 @@ test("malformed workshop recipes keep manual editing usable and valid reloads re
     await page.locator("#test-list textarea").first().fill("Other");
     await expect(page.locator("#test-list .test-result").first()).toHaveText("! No match");
     await page.unroute("**/product-scenarios.json*");
-  }
-  await page.reload();
-  await expect(buttons).toHaveCount(scenarios.length);
-  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
-  await expect(editor).toHaveValue(scenarios[0].rules);
-  expect(errors).toEqual([]);
-});
+    await page.reload();
+    await expect(buttons).toHaveCount(scenarios.length);
+    await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+    await expect(editor).toHaveValue(scenarios[0].rules);
+    expect(errors).toEqual([]);
+  });
+}
 
 test("late malformed recipes preserve edits and valid normalized boundary data loads", async ({
   page,

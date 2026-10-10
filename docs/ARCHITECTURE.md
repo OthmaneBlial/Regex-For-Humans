@@ -31,6 +31,8 @@ The browser imports the same `index.js` from the static build. `web/app.js` hand
 
 The internal `TestRunner.run(payload)` reports worker construction and message-send failures through rejected `WORKER_ERROR` promises. Starting a run cancels the previous one, including when the new worker cannot start; later attempts remain available. The controller assigns the request ID after copying payload fields so an extra caller-supplied `id` cannot interfere with reply routing. Example IDs inside `cases` are preserved separately.
 
+Frozen source, line, repetition and nesting budgets live in the dependency-free `src/limits.js`; the parser re-exports the same object for existing internal callers. The match worker imports this leaf directly, so cold matching does not fetch or evaluate the parser, AST or diagnostics. Request validation, the generated-source budget and the 1,200 ms deadline are unchanged. A browser recovery check blocks those compiler modules while verifying Unicode capture spans, rejection above the source budget and a fresh successful worker after rejection.
+
 The workshop counter uses the parser's shared source-length limit before splitting rules. Oversized input shows “Over limit” and remains editable. Source navigation splits at most the limit plus one UTF-16 code unit, retaining the first excess unit for the existing source-limit diagnostic. Valid counters and selections retain the compiler's logical-line semantics.
 
 Compiler option validation checks a maximum of eight unique native flag letters, rejects u/v combinations before emission, then probes native support. It avoids scanning arbitrarily long option strings and preserves canonical flag ordering.
@@ -48,6 +50,12 @@ The workshop requests capture exploration with an optional internal `captureCoun
 The parser uses a stack for brace-delimited groups, sharing existing atom parsing and repetition validation. Capture numbering is assigned in opening order; names are validated as Unicode JavaScript identifiers and duplicates are rejected globally. Each stack frame retains its enclosing sequence and anchor position state. The source and line budgets still apply, with an additional 64-level nesting budget. The emitter traverses this bounded tree and emits a flat, ordered trace of group openings, child rules and group closings. Existing flat-rule result shapes are preserved; the new group segment variant is declared in `index.d.ts`. The explanation, CLI JSON and workshop trace share those same nodes and numbering. Matching continues inside the terminable worker.
 
 References are resolved against the completed capture table after parsing. A reference carries its target token's location and the enclosing groups at that point; this distinguishes missing, forward and open/self targets. The language rejects forward/open references explicitly, while preserving native empty behavior for nonparticipating optional captures. Numeric references have a noncapturing emission boundary to prevent a following literal digit from extending the reference number. CLI, declarations, explanations and workshop compilation share the resolved metadata.
+
+## Workshop localization
+
+`web/translations.js` supplies Simplified Chinese, Spanish and French messages with English keys. `web/i18n.js` binds trusted initial UI text and explicit dynamic messages to text nodes, and accessible names to attributes. Language changes update those bindings in place without compiling, posting worker messages, rebuilding test inputs or resetting open panels. Weak maps let removed rows and their closures be collected. Substitution runs once and assigns text, never HTML; code, capture names, captured values and user inputs are not scanned for translations.
+
+The four-language selector updates the document language and remembers its choice in local storage when available; denied storage and unknown saved languages keep the workshop usable. Controlled English grammar remains independent of interface translation. Compiler explanations, diagnostic detail, exported engine requirements and diagram labels remain English and are called out beside the selector. This source feature is not yet in the hosted dev.5 workshop. Native-speaker and real screen-reader review remain separate gates.
 
 ## Structural visualization
 

@@ -2,6 +2,58 @@ import { expect, test } from "@playwright/test";
 import { compile } from "../../index.js";
 import { LIMITS } from "../../src/parser.js";
 
+test("cold matching starts without parser modules and keeps the source budget and recovery", async ({
+  page,
+}) => {
+  const blocked = [];
+  await page.route(/\/src\/(?:parser|ast|diagnostics)\.js(?:\?|$)/u, (route) => {
+    blocked.push(route.request().url());
+    return route.abort();
+  });
+  await page.goto("/web/language.html");
+  const outcome = await page.evaluate(async (maxSourceLength) => {
+    const { TestRunner } = await import("/web/test-runner.js");
+    const runner = new TestRunner(() => new Worker("/web/match-worker.js", { type: "module" }));
+    const payload = {
+      source: "^(?<value>😀)$",
+      flags: "u",
+      mode: "full",
+      captureCount: 1,
+      cases: [
+        { id: 1, text: "😀", expected: true },
+        { id: 2, text: "", expected: false },
+      ],
+    };
+    try {
+      const cold = await runner.run(payload);
+      let rejected;
+      try {
+        await runner.run({
+          source: "a".repeat(maxSourceLength + 1),
+          flags: "u",
+          mode: "full",
+          cases: [],
+        });
+      } catch (error) {
+        rejected = { code: error.code, message: error.message };
+      }
+      const recovered = await runner.run(payload);
+      return { cold, rejected, recovered };
+    } finally {
+      runner.cancel();
+    }
+  }, LIMITS.regexSourceLength);
+  expect(blocked).toEqual([]);
+  expect(outcome.cold.map((result) => result.pass)).toEqual([true, true]);
+  expect(outcome.cold[0].matches[0].range).toEqual({ start: 0, end: 2 });
+  expect(outcome.cold[0].matches[0].captures[0].value).toBe("😀");
+  expect(outcome.rejected).toEqual({
+    code: "WORKER_ERROR",
+    message: "Invalid regex test request.",
+  });
+  expect(outcome.recovered.map((result) => result.pass)).toEqual([true, true]);
+});
+
 test("pathological and compiler-generated bounded regexes time out without blocking recovery", async ({
   page,
 }) => {

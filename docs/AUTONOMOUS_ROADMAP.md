@@ -2,6 +2,17 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+## Workshop localization source milestone
+
+- Current regression gate: the uninterrupted `CI=1 env -u PACK_OUTPUT_DIR npm run verify` command passes 334 Node tests, 464 Chromium desktop/mobile checks, 248 Firefox/WebKit checks and 64 homepage checks (1,110 total), clean installed JavaScript/strict TypeScript/API/CLI consumers, lint/types/docs, both builds and an audit with zero reported vulnerabilities. Separately, all 44 selected parser/localization checks pass on Node 22.23.3. The earlier pre-bootstrap compatibility run finished with 189 passes and five Firefox failures; all 16 localization flows passed. An alternating Firefox probe passes six pre-localization and six localized capture/alternative flows below 750 ms; intermittent failure causes remain unproven.
+- Bootstrap/recovery changes: frozen limits now live in a dependency-free module imported directly by the worker, retaining the parser re-export and unchanged 1,200 ms guard. Eight cold Firefox contexts per variant succeed in a separate experiment; the runner/worker path loads 65,197 bytes with the parser versus 15,068 with the leaf module. All 19 recipe fixtures and both viewport flows keep independent 30-second deadlines and every assertion; each malformed recipe verifies normal reload recovery. The cold-worker check blocks compiler modules and retains Unicode captures, source-budget rejection and fresh-worker recovery. All 64 focused Firefox/WebKit recovery checks pass, including the five previously failed flows.
+- Wrapping and keyboard corrections: a new compatibility wrapper covers all eight worker/security flows in both engines; all 16 checks pass after scoped font-kerning fixes WebKit's long trace-literal overflow without clipping text. Both code regions share explicit left/right arrow scrolling only for unmodified keys on overflowing content. All four targeted desktop/mobile checks pass, and the final full gate includes these corrections after an earlier 463/464 Chromium attempt. Budgets, deadlines and assertions are retained.
+
+- Implemented: English, Simplified Chinese, Spanish and French interface selection with 243 message entries, translated recipes/status/navigation and accessible names. Text/attribute bindings update existing nodes in place; code, capture names/values and user inputs are never scanned. Language changes preserve input/capture/diagram state and make no worker requests. Weak maps avoid retaining removed rows. The choice is stored locally when possible; blocked storage and invalid saved languages fall back safely.
+- Scope: rules keep controlled English grammar. Compiler explanations/diagnostic detail, SVG labels and exported engine requirements stay English, with a visible scope note. All ten README guides describe this boundary, including explicit LTR language labels in Arabic/Urdu. The frozen dev.5 archive confirms existing lazy/lookaround imports, correcting an outdated English README sentence.
+- Focused evidence: six new catalog/grammar/data checks pass, along with the existing three README localization checks; 16 Firefox/WebKit flows verify retained selections, flags/options/open panels, error navigation, exact downloads, startup/storage recovery and per-language 320px accessibility. Each locale keeps its own 30-second deadline after a combined WebKit audit reached that limit. French/Chinese hero captures were visually inspected. The full source regression command passes as recorded above; human reviews and hosted publication remain separate gates.
+- Remaining mission: finish the broader workshop/theme/builder/debugger/example work and a verified npm/Pages release. Keep PHP parity and human review gates explicitly unverified until actual evidence exists.
+
 ## Engine export source milestone
 
 - Implemented: typed `exportRegex`, CLI `--target` and an on-demand workshop panel with nine source formats, code/metadata downloads, capture-name mapping and requirements. Foreign backends translate supported AST semantics before source-code quoting; the existing JavaScript compiler and isolated matching remain authoritative for browser examples.
@@ -52,9 +63,9 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Add workshop localization for English, Simplified Chinese, Spanish and French while keeping the DSL grammar separate.
+1. Add accessible light/dark themes with a local preference while preserving workshop state.
 2. Prepare the next npm preview and corresponding site/README publication after the next interface milestone.
-3. Continue the remaining theme, builder, debugger, example and developer-adoption requirements.
+3. Continue structured syntax highlighting, builder, debugger, example and developer-adoption requirements.
 
 ## Site and README milestone
 

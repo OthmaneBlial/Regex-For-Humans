@@ -124,6 +124,8 @@ This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1
 
 ## 🎮 Play with a pattern
 
+**Source checkout only:** choose **Interface language** for English, Simplified Chinese, Spanish or French. Labels, recipes, match feedback and navigation controls update without changing your rules, examples, selections, open panels or generated code. The choice is remembered locally when storage is available. Rules still use controlled English; compiler explanations, diagram labels and exported technical requirements stay in English. This interface is not yet in the hosted dev.5 workshop. See [workshop localization](docs/ARCHITECTURE.md#workshop-localization).
+
 1. **Pick a recipe** or write one instruction per line.
 2. **Follow the fragments** to see what every rule means.
 3. **Try your examples** and mark what should match.
@@ -147,7 +149,7 @@ start
 end
 ```
 
-The workshop expects a slash-delimited literal with `u` or `v`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. The published preview also imports numbered/named captures, nested groups, ordered alternatives and backward references, preserving capture values and numbering. npm `0.1.0-dev.5` rejects lookaround, forward/open references and lazy quantifiers. The current source checkout adds exact lazy-quantifier and lookaround imports; see the [language guide](docs/LANGUAGE.md) for its limits.
+The workshop expects a slash-delimited literal with `u` or `v`; write line breaks as escapes such as `\n`. The reverse translator preserves supported flags. The published `0.1.0-dev.5` preview imports numbered/named captures, nested groups, ordered alternatives, backward references, lookaround and lazy quantifiers, preserving capture values and numbering. Forward/open references remain unsupported; see the [language guide](docs/LANGUAGE.md) for its limits.
 
 Reverse translation also handles JavaScript's empty negative class `[^]`, which includes line breaks. When ordinary `.` atoms appear beside it, their output rules explicitly exclude line terminators so matching stays the same.
 

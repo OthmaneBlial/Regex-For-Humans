@@ -96,6 +96,8 @@ Imprime `/^ABC\d{3}$/u`. Para fijar la versión, usa `regex-for-humans@0.1.0-dev
 
 ## 🎮 Experimentar con un patrón
 
+**Solo en el código fuente:** elige **Interface language** para usar inglés, chino simplificado, español o francés. Las etiquetas, ejemplos, resultados y controles de navegación cambian sin modificar reglas, entradas, selecciones, paneles abiertos ni código generado. La elección se guarda localmente si el almacenamiento está disponible. Las reglas siguen en inglés controlado; las explicaciones del compilador, etiquetas del diagrama y requisitos técnicos exportados siguen en inglés. Esta interfaz aún no está en el taller dev.5 alojado. Consulta [la localización del taller](../ARCHITECTURE.md#workshop-localization).
+
 1. Elige una receta o escribe una instrucción por línea.
 2. Examina cada fragmento generado y su explicación.
 3. Añade ejemplos e indica cuáles deberían coincidir.
