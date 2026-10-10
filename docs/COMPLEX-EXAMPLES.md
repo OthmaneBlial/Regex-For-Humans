@@ -2,7 +2,7 @@
 
 Long records deserve more than a three-digit demo. These four examples combine bounded variable fields, separators, quoted text, Unicode and optional pieces using the existing deterministic language. Each includes the exact generated regex, the compiler's explanation for every rule, and accepted/rejected inputs.
 
-**Scope:** this version validates a selected format's shape. It does not extract captures, parse arbitrary nested structures or translate every JavaScript regex. See [captures and nested groups](#captures-and-nested-groups) for concrete diagnostics.
+**Scope:** the four flat worked examples validate selected format shapes. They do not extract fields or parse arbitrary nested structures. The checkout also supports [captures and nested groups](#captures-and-nested-groups), with exact imports for the documented regex subset.
 
 ## 🏃 Run an example
 
@@ -524,23 +524,32 @@ These rows are the compiler's actual `segments` output, in order.
 
 ## Captures and nested groups
 
-The checkout now compiles numbered, named and nested capture blocks, noncapturing blocks and repetitions of whole blocks. See the [group language reference](LANGUAGE.md#groups-and-captures-unreleased-on-main). The published `0.1.0-dev.3` package does not yet include this extension. The flat examples above still work unchanged. Reverse translation remains limited at this milestone and rejects the entire unsupported pattern instead of returning approximate or partial rules.
+The checkout compiles and reverse-translates numbered, named and nested capture blocks, noncapturing blocks, repetitions of whole blocks and backward capture references. See the [group language reference](LANGUAGE.md#groups-and-captures-unreleased-on-main). The published `0.1.0-dev.3` package does not yet include this extension. The flat examples above still work unchanged. Unsupported constructs still reject the entire translation instead of returning approximate or partial rules.
 
-| JavaScript pattern | Diagnostic | Column | Message |
-| --- | --- | --- | --- |
-| `/^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})$/u` | `UNSUPPORTED_REGEX` | 2 | Capturing groups cannot be translated. |
-| `/^(?:AB(?:CD)?)$/u` | `UNSUPPORTED_REGEX` | 7 | Groups can contain literal text only. |
-| `/^(?:[A-Z]{2}(?:-\d{4})?)$/u` | `UNSUPPORTED_REGEX` | 5 | Groups can contain literal text only. |
+| JavaScript pattern | Import | What is preserved |
+| --- | --- | --- |
+| `/^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})$/u` | Supported | Names, opening-order numbering and captured date fields. |
+| `/^(?:AB(?:CD)?)$/u` | Supported | Optional suffix within the outer group. |
+| `/^(?:[A-Z]{2}(?:-\d{4})?)$/u` | Supported | Character classes and the complete optional digit suffix. |
 
-Columns are one-based UTF-16 positions in `regex.source`, excluding the surrounding slashes and flags. In the third pattern the character class inside the outer group is rejected before the nested group is reached. The workshop's **Go to regex error** action selects the relevant source character; a failed translation preserves existing rules and options.
+Captures remain part of the imported rules. Against `2026-10-10`, the first example captures `year: "2026"`, `month: "10"` and `day: "10"`. It still checks a shape rather than calendar validity. Optional captures preserve the difference between absent (`undefined`) and participating empty (`""`) values. Repeated captures preserve their final values.
 
-A literal-only group such as `(?: retry=true)?` is supported: it becomes `optional " retry=true"`. A composite group such as `(?: retry=\d+)?` is not. Removing a capture, assertion or grouping operation can change behavior, so these examples do not recommend stripping unsupported syntax to force conversion.
+A literal-only group such as `(?: retry=true)?` keeps its compact output, `optional " retry=true"`. A composite group such as `(?: retry=\d+)?` becomes an editable block:
 
-For structured extraction, full protocol grammars or nested data, use the corresponding parser or keep the original regex. The [language reference](LANGUAGE.md) describes the supported atoms and limits.
+```text
+optional group {
+" retry="
+one or more digit
+}
+```
+
+Lookaround, alternation and forward/open references remain unsupported. Diagnostics use one-based UTF-16 positions in `regex.source`, excluding slashes and flags. The workshop's **Go to regex error** action selects the relevant source character; rejected translations preserve current rules and options. Removing a capture or assertion can change matching, so unsupported constructs are never stripped to force conversion.
+
+For full protocol grammars or recursively nested data, use the corresponding parser. The [language reference](LANGUAGE.md) describes the supported constructs and limits; captures provide extraction from the supported regex shapes, not a complete protocol parser.
 
 ## 🧪 Evidence you can reproduce
 
-The [executable documentation checks](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/test/complex-examples.test.js) read this Markdown directly. They compile each Rules block, compare the complete generated source and every explanation row, test all listed inputs, run the same rules through CLI JSON/explanation output, and check reverse-translation matching and positions. They also verify the exact capture/nested-group diagnostics above. No separate example copy can silently drift away from the guide.
+The [executable documentation checks](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/test/complex-examples.test.js) read this Markdown directly. They compile each Rules block, compare the complete generated source and every explanation row, test all listed inputs, run the same rules through CLI JSON/explanation output, and check reverse-translation matching and positions. They also compare the capture/nested-group imports above against native match arrays and captured values. No separate example copy can silently drift away from the guide.
 
 From the checkout:
 

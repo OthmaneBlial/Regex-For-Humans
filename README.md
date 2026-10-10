@@ -83,7 +83,7 @@ start
 end
 ```
 
-The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. It rejects syntax it cannot express, including alternation, lookaround, backreferences and lazy quantifiers; see the [language guide](docs/LANGUAGE.md) for its exact limits.
+The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. The checkout also imports numbered/named captures, nested groups and backward references, preserving capture values and numbering. It rejects syntax it cannot express, including alternation, lookaround, forward/open references and lazy quantifiers; see the [language guide](docs/LANGUAGE.md) for its exact limits. Group/reference additions are not yet included in the published npm preview.
 
 Reverse translation also handles JavaScript's empty negative class `[^]`, which includes line breaks. When ordinary `.` atoms appear beside it, their output rules explicitly exclude line terminators so matching stays the same.
 
@@ -97,7 +97,7 @@ Separator lists such as `[._-]` and `[-._]` translate too: a hyphen at either en
 
 Alternation errors point to `|` and suggest translating each alternative separately. Literal pipes such as `\|` or `[|]` remain supported.
 
-Capturing groups, including named captures, lookahead and lookbehind each get a specific error at their opening `(`. Use **Go to regex error** to select that character in your pasted pattern and bring it into view. Failed translation preserves your current rules and options.
+Lookahead and lookbehind get a specific error at their opening `(`; unsupported forward/open references point to their escape. Use **Go to regex error** to select that character in your pasted pattern and bring it into view. Failed translation preserves your current rules and options.
 
 Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. Search mode finds an empty match at position 0, including in nonempty input; Entire string mode accepts only blank input for this pattern.
 
@@ -233,7 +233,7 @@ end
 
 </details>
 
-**Captures on main:** the checkout now supports numbered and named `capture` blocks, nested `group` blocks, repetition of whole blocks and [named/numbered references](docs/LANGUAGE.md#capture-references-unreleased-on-main). These additions are unreleased; see the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures-unreleased-on-main). Reverse translation of named/numbered captures and composite or nested groups remains unsupported at this milestone. These existing worked examples still validate shapes without extracting fields.
+**Captures on main:** the checkout supports numbered and named `capture` blocks, nested `group` blocks, repetition of whole blocks and [named/numbered references](docs/LANGUAGE.md#capture-references-unreleased-on-main), including reverse translation of the supported subset. These additions are unreleased; see the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures-unreleased-on-main). These existing flat worked examples still validate shapes without extracting fields.
 
 ## 🧩 Your pocket cheat sheet
 
@@ -382,7 +382,7 @@ CI=1 npm run verify
 
 ## 🧭 Know the boundaries
 
-Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented safe subset back into rules. Free-form English, alternation, lookaround and backreferences remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
+Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, alternation, lookaround and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
 
 ---
 

@@ -28,8 +28,6 @@ test("the workshop compiles rules and reports example results", async ({ page })
   await expect(reverse).toHaveAccessibleDescription(/Column 7: Alternation/);
   await expect(output).toHaveText("/^Hello$/u");
   for (const [literal, diagnostic] of [
-    ["/^😀(AB)/u", "Column 4: Capturing groups cannot be translated."],
-    ["/^(?<letters>AB)/u", "Column 2: Capturing groups cannot be translated."],
     ["/^😀(?=AB)AB/u", "Column 4: Lookahead assertions cannot be translated."],
     ["/😀(?<!A)B/u", "Column 3: Lookbehind assertions cannot be translated."],
   ]) {
@@ -37,7 +35,7 @@ test("the workshop compiles rules and reports example results", async ({ page })
     await page.locator("#reverse-button").press("Enter");
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(page.locator("#reverse-feedback")).toContainText(diagnostic);
-    await expect(reverse).toHaveAccessibleDescription(/non-capturing literal or empty groups/);
+    await expect(reverse).toHaveAccessibleDescription(/nested groups, captures/);
     await expect(output).toHaveText("/^Hello$/u");
     await page.getByRole("button", { name: "Go to regex error", exact: true }).press("Enter");
     await expect(reverse).toBeFocused();
@@ -264,12 +262,12 @@ test("long recipes retain matching and focus while resetting rules, explanation 
   await expect(page.locator("#reverse-feedback")).toBeHidden();
   await expect(page.locator("#reverse-feedback")).toHaveText("");
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
-  await reverse.fill("/^(Hello)$/u");
+  await reverse.fill("/^(?=Hello)Hello$/u");
   await reverse.press("Control+Enter");
   await page.locator("#ignore-case").check();
   await recipe.press("Enter");
   await expect(page.locator("#reverse-feedback")).toContainText(
-    "Capturing groups cannot be translated",
+    "Lookahead assertions cannot be translated",
   );
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
   await expect(page.locator("#reverse-error")).toBeVisible();

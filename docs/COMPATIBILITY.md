@@ -5,9 +5,9 @@ Current checkout evidence, 2026-10-10. Output targets JavaScript `RegExp` in Uni
 | Construct | Rules → regex | Regex → rules |
 | --- | --- | --- |
 | Documented literals, shorthands, simple sets and greedy atom repetitions | Supported | Supported subset; unknown ranges fail explicitly |
-| Numbered, named, nested and empty captures | Supported | Not yet supported |
-| Composite/nested noncapturing groups and whole-block repetitions | Supported | Literal-only and empty noncapturing groups only |
-| Named/numbered backward references | Supported after the target closes | Not yet supported |
+| Numbered, named, nested and empty captures | Supported | Supported; capture values and indices preserved |
+| Composite/nested noncapturing groups and whole-block repetitions | Supported | Supported; literal-only noncapturing groups retain compact normalization |
+| Named/numbered backward references | Supported after the target closes | Supported under the same policy |
 | Forward/open references | Positioned rule-language diagnostic | Unsupported |
 | Alternation, lookaround, boundaries, lazy quantifiers, Unicode properties and v-set operations | Not yet supported | Unsupported |
 | Flags | `u` always; `m` through line anchors; `i`/`s` options | Only `i`/`m`/`s`/`u`; `u` required |
@@ -17,10 +17,11 @@ Groups are numbered in opening order, including named groups. Names are Unicode 
 
 ## Verified runtimes
 
-- Host Node 25.9.0: all 233 Node tests plus a clean installed-package JavaScript/TypeScript consumer.
-- Minimum supported major, Node 22.23.3: all 11 dedicated group/reference and CLI tests.
-- Installed Chrome: group/reference editing, trace navigation and isolated matching in desktop and mobile viewports (4 checks). Mobile viewport checks are not physical-device evidence.
-- Playwright Firefox and WebKit: the same 4 group/reference checks.
+- Host Node 25.9.0: all 238 Node tests plus a clean installed-package JavaScript/TypeScript consumer.
+- Minimum supported major, Node 22.23.3: all 16 dedicated group/reference/reverse and CLI tests.
+- Installed Chrome: all 282 desktop/mobile workshop checks, including group/reference imports, trace navigation and isolated matching. Mobile viewport checks are not physical-device evidence.
+- Playwright Firefox and WebKit: all 52 compatibility checks, including the same group/reference/import flows.
+- Complete local verification also passes the builds, all 62 homepage checks and an audit with zero vulnerabilities.
 - Group milestone: 54 desktop/mobile group, worker security and automated accessibility checks. Human screen-reader and usability reviews remain unverified.
 
 These results cover the checked constructs and versions. They do not establish every historical browser/version or all-platform CLI behavior. The broader workflow and reproducible commands are in [TESTING.md](TESTING.md); exact syntax and limitations are in [LANGUAGE.md](LANGUAGE.md). Matching copied regexes requires the receiving application's own execution safeguards.

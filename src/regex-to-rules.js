@@ -36,12 +36,12 @@ const CONTROL_ESCAPES = new Map([
 ]);
 
 const UNSUPPORTED_HINT =
-  "Supported syntax includes literals, anchors, common character classes, repetition, non-capturing literal or empty groups and i/s/u/m flags. Capturing or complex groups, alternation, lookaround and backreferences are not supported.";
+  "Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references and i/s/u/m flags. Alternation, lookaround, lazy quantifiers and forward/open references are not supported.";
 const ALTERNATION_MESSAGE = "Alternation (`|`) cannot be translated.";
 const ALTERNATION_HINT = "Translate each alternative as a separate regex.";
 const LINE_TERMINATORS = ["\n", "\r", "\u2028", "\u2029"];
 
-/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}}} AtomToken */
+/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}}} AtomToken */
 /** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number}} QuantifierToken */
 /** @typedef {AtomToken & QuantifierToken & {index: number}} PositionedAtom */
 
@@ -59,6 +59,20 @@ function joinsSurrogates(left, right) {
 function readEscape(source, index, inClass = false) {
   const escaped = source[index + 1];
   if (escaped === undefined) unsupported("The regex ends with an incomplete escape.", index);
+
+  if (!inClass && /^[1-9]$/u.test(escaped)) {
+    let end = index + 2;
+    while (/^[0-9]$/u.test(source[end] ?? "")) end += 1;
+    return { end, phrase: `same as capture ${Number(source.slice(index + 1, end))}` };
+  }
+  if (!inClass && source.startsWith("\\k<", index)) {
+    const close = source.indexOf(">", index + 3);
+    if (close < 0) unsupported("The named reference is not closed.", index);
+    return {
+      end: close + 1,
+      phrase: `same as capture ${quoteText(readCaptureName(source, index + 3, close))}`,
+    };
+  }
 
   if (!inClass && ESCAPED_ATOMS.has(escaped)) {
     return { end: index + 2, phrase: ESCAPED_ATOMS.get(escaped) };
@@ -212,60 +226,63 @@ function swapClassCategory(category) {
   return { d: "D", D: "d", w: "W", W: "w", s: "S", S: "s" }[category] ?? category;
 }
 
-/** @param {string} source @param {number} start */
-function checkGroupSyntax(source, start) {
-  if (source.startsWith("(?:", start)) return;
+/** @param {string} source @param {number} start @param {number} end */
+function readCaptureName(source, start, end) {
+  let name = "";
+  for (let index = start; index < end; ) {
+    if (source[index] === "\\") {
+      const escaped = readEscape(source, index);
+      if (escaped.literal === undefined) unsupported("Unsupported capture-name escape.", index);
+      name += escaped.literal;
+      index = escaped.end;
+    } else {
+      name += source[index];
+      index += 1;
+    }
+  }
+  return name;
+}
+
+/** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @returns {AtomToken} */
+function readGroup(source, start, multiline, depth) {
+  if (depth >= LIMITS.groupDepth) {
+    fail("GROUP_DEPTH_LIMIT", `Groups cannot nest more than ${LIMITS.groupDepth} levels.`, {
+      line: 1,
+      column: start + 1,
+    });
+  }
   if (source.startsWith("(?=", start) || source.startsWith("(?!", start)) {
     unsupported("Lookahead assertions cannot be translated.", start);
   }
   if (source.startsWith("(?<=", start) || source.startsWith("(?<!", start)) {
     unsupported("Lookbehind assertions cannot be translated.", start);
   }
-  if (source[start + 1] !== "?" || source.startsWith("(?<", start)) {
-    unsupported("Capturing groups cannot be translated.", start);
+  const capturing = !source.startsWith("(?:", start);
+  let name = null;
+  let contentStart = start + (capturing ? 1 : 3);
+  if (source.startsWith("(?<", start)) {
+    const close = source.indexOf(">", start + 3);
+    if (close < 0) unsupported("The capture name is not closed.", start);
+    name = readCaptureName(source, start + 3, close);
+    contentStart = close + 1;
+  } else if (capturing && source[start + 1] === "?") {
+    unsupported("Only capturing and noncapturing groups can be translated.", start);
   }
-  unsupported("Only non-capturing literal or empty groups can be translated.", start);
-}
+  const { atoms, end: close } = readSequence(source, contentStart, multiline, depth + 1);
+  if (source[close] !== ")") unsupported("The group is not closed.", start);
+  const end = close + 1;
+  if (capturing) return { end, group: { capturing, name, atoms, close } };
+  if (atoms.length === 0) return { end, phrase: "any character", empty: true };
 
-/** @param {string} source @param {number} start @returns {AtomToken} */
-function readLiteralGroup(source, start) {
-  checkGroupSyntax(source, start);
+  // Keep the existing compact literal-group output when merging cannot join surrogate atoms.
   let value = "";
-  for (let index = start + 3; index < source.length; ) {
-    const atomStart = index;
-    const character = source[index];
-    if (character === ")") {
-      if (!value) return { end: index + 1, phrase: "any character", empty: true };
-      return { end: index + 1, literal: value };
+  for (const atom of atoms) {
+    if (atom.literal === undefined || atom.kind !== null || joinsSurrogates(value, atom.literal)) {
+      return { end, group: { capturing, name, atoms, close } };
     }
-    if (character === "|") unsupported(ALTERNATION_MESSAGE, index, ALTERNATION_HINT);
-    let literal;
-    if (character === "\\") {
-      const escapeResult = readEscape(source, index);
-      if (escapeResult.literal === undefined) {
-        unsupported("Groups can contain literal text only.", index);
-      }
-      literal = escapeResult.literal;
-      index = escapeResult.end;
-    } else if (".^$*+?()[]{}".includes(character)) {
-      if (character === "(") checkGroupSyntax(source, index);
-      unsupported("Groups can contain literal text only.", index);
-    } else {
-      const point = source.codePointAt(index);
-      if (point === undefined) unsupported("Invalid character in group.", index);
-      literal = String.fromCodePoint(point);
-      index += literal.length;
-    }
-    if (joinsSurrogates(value, literal)) {
-      unsupported(
-        "Separate surrogate atoms in a literal group have no literal-rule equivalent.",
-        atomStart,
-        "Fixed-width surrogate pairs such as \\uD83D\\uDE00 and code-point escapes such as \\u{1f600} are supported.",
-      );
-    }
-    value += literal;
+    value += atom.literal;
   }
-  unsupported("The non-capturing group is not closed.", start);
+  return { end, literal: value };
 }
 
 /** @param {string} source @param {number} index @returns {QuantifierToken} */
@@ -295,6 +312,58 @@ function readQuantifier(source, index) {
     unsupported("The repetition's upper bound is smaller than its lower bound.", index);
   if (min === 0 && max === 1) return { end: index + match[0].length, kind: "optional" };
   return { end: index + match[0].length, kind: "range", min, max };
+}
+
+/** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @returns {{atoms: PositionedAtom[], end: number}} */
+function readSequence(source, start, multiline, depth) {
+  /** @type {PositionedAtom[]} */
+  const atoms = [];
+  let cursor = start;
+  while (cursor < source.length) {
+    const index = cursor;
+    const character = source[cursor];
+    if (character === ")" && depth > 0) break;
+    if (character === "^" && atoms.length === 0) {
+      atoms.push({ phrase: multiline ? "line start" : "start", kind: null, index, end: ++cursor });
+      continue;
+    }
+    if (
+      character === "$" &&
+      (cursor === source.length - 1 || (depth > 0 && source[cursor + 1] === ")"))
+    ) {
+      atoms.push({ phrase: multiline ? "line end" : "end", kind: null, index, end: ++cursor });
+      continue;
+    }
+    if (character === "|") unsupported(ALTERNATION_MESSAGE, index, ALTERNATION_HINT);
+    if (character === "^" || character === "$" || character === ")") {
+      unsupported(
+        "Only a start anchor at the beginning and an end anchor at the end can be translated.",
+        index,
+      );
+    }
+    /** @type {AtomToken} */
+    let atom;
+    if (character === "[") atom = readCharacterClass(source, cursor);
+    else if (character === "\\") atom = readEscape(source, cursor);
+    else if (character === "(") atom = readGroup(source, cursor, multiline, depth);
+    else if (character === ".")
+      atom = { phrase: "any character", end: cursor + 1, nativeDot: true };
+    else if ("*+?{}]".includes(character)) unsupported("Unexpected regex operator.", cursor);
+    else {
+      const point = source.codePointAt(cursor);
+      if (point === undefined) unsupported("Invalid regex character.", cursor);
+      const literal = String.fromCodePoint(point);
+      atom = { literal, end: cursor + literal.length };
+    }
+    cursor = atom.end;
+    let quantifier = readQuantifier(source, cursor);
+    cursor = quantifier.end;
+    if (source[cursor] === "?")
+      unsupported("Lazy quantifiers are not supported by the rule language.", cursor);
+    if (atom.empty) quantifier = { end: cursor, kind: "exact", min: 0 };
+    atoms.push({ ...atom, ...quantifier, index });
+  }
+  return { atoms, end: cursor };
 }
 
 /** Convert a supported Unicode JavaScript RegExp into controlled-English rules.
@@ -339,60 +408,8 @@ export function regexToRules(regex) {
     );
   }
 
-  /** @type {PositionedAtom[]} */
-  const atoms = [];
   const multiline = nativeValue("multiline");
-  let cursor = 0;
-  if (source[cursor] === "^") {
-    atoms.push({
-      phrase: multiline ? "line start" : "start",
-      kind: null,
-      index: cursor,
-      end: cursor + 1,
-    });
-    cursor += 1;
-  }
-
-  while (cursor < source.length) {
-    const index = cursor;
-    const character = source[cursor];
-    if (character === "$" && cursor === source.length - 1) {
-      atoms.push({ phrase: multiline ? "line end" : "end", kind: null, index, end: index + 1 });
-      cursor += 1;
-      break;
-    }
-    if (character === "|") unsupported(ALTERNATION_MESSAGE, index, ALTERNATION_HINT);
-    if (character === "^" || character === "$" || character === ")") {
-      unsupported(
-        "Only a start anchor at the beginning and an end anchor at the end can be translated.",
-        index,
-      );
-    }
-
-    /** @type {AtomToken} */
-    let atom;
-    if (character === "[") atom = readCharacterClass(source, cursor);
-    else if (character === "\\") atom = readEscape(source, cursor);
-    else if (character === "(") atom = readLiteralGroup(source, cursor);
-    else if (character === ".")
-      atom = { phrase: "any character", end: cursor + 1, nativeDot: true };
-    else if ("*+?{}]".includes(character)) unsupported("Unexpected regex operator.", cursor);
-    else {
-      const point = source.codePointAt(cursor);
-      if (point === undefined) unsupported("Invalid regex character.", cursor);
-      const literal = String.fromCodePoint(point);
-      atom = { literal, end: cursor + literal.length };
-    }
-    cursor = atom.end;
-
-    let quantifier = readQuantifier(source, cursor);
-    cursor = quantifier.end;
-    if (source[cursor] === "?") {
-      unsupported("Lazy quantifiers are not supported by the rule language.", cursor);
-    }
-    if (atom.empty) quantifier = { end: cursor, kind: "exact", min: 0 };
-    atoms.push({ ...atom, ...quantifier, index });
-  }
+  const { atoms, end: cursor } = readSequence(source, 0, multiline, 0);
 
   if (cursor !== source.length) unsupported("The regex contains unsupported syntax.", cursor);
   if (atoms.length === 0) {
@@ -400,7 +417,17 @@ export function regexToRules(regex) {
   }
 
   const originalDotAll = nativeValue("dotAll");
-  const needsDotAll = atoms.some(
+  /** @type {PositionedAtom[]} */
+  const allAtoms = [];
+  /** @param {PositionedAtom[]} list */
+  const collect = (list) => {
+    for (const atom of list) {
+      allAtoms.push(atom);
+      if (atom.group) collect(atom.group.atoms);
+    }
+  };
+  collect(atoms);
+  const needsDotAll = allAtoms.some(
     (atom) =>
       atom.allCharacters &&
       !(atom.kind === "exact" && atom.min === 0) &&
@@ -409,67 +436,93 @@ export function regexToRules(regex) {
   const dotAll = originalDotAll || needsDotAll;
   if (needsDotAll && !originalDotAll) {
     const nonLineTerminator = `none of: ${LINE_TERMINATORS.map(quoteText).join(", ")}`;
-    for (const atom of atoms) {
+    for (const atom of allAtoms) {
       if (!atom.nativeDot || atom.empty) continue;
       atom.phrase = nonLineTerminator;
       atom.set = { values: LINE_TERMINATORS, negative: true };
     }
   }
 
+  /** @type {string[]} */
   const rules = [];
+  /** @type {number[]} */
+  const positions = [];
+  /** @param {string} rule @param {number} index */
+  const addRule = (rule, index) => {
+    rules.push(rule);
+    positions.push(index);
+  };
   let literalRun = "";
+  let literalIndex = 0;
   const flushLiteral = () => {
     if (!literalRun) return;
-    rules.push(quoteText(literalRun));
+    addRule(quoteText(literalRun), literalIndex);
     literalRun = "";
   };
-  for (const atom of atoms) {
-    if (
-      atom.phrase === "start" ||
-      atom.phrase === "line start" ||
-      atom.phrase === "end" ||
-      atom.phrase === "line end"
-    ) {
+  /** @param {PositionedAtom[]} list */
+  function emit(list) {
+    for (const atom of list) {
+      if (
+        atom.phrase === "start" ||
+        atom.phrase === "line start" ||
+        atom.phrase === "end" ||
+        atom.phrase === "line end"
+      ) {
+        flushLiteral();
+        addRule(atom.phrase, atom.index);
+        continue;
+      }
+      if (atom.literal !== undefined && atom.kind === null) {
+        if (joinsSurrogates(literalRun, atom.literal)) flushLiteral();
+        if (!literalRun) literalIndex = atom.index;
+        literalRun += atom.literal;
+        continue;
+      }
       flushLiteral();
-      rules.push(atom.phrase);
-      continue;
-    }
-    if (atom.literal !== undefined && atom.kind === null) {
-      if (joinsSurrogates(literalRun, atom.literal)) flushLiteral();
-      literalRun += atom.literal;
-      continue;
+      const prefix =
+        atom.kind === null
+          ? ""
+          : atom.kind === "optional"
+            ? "optional"
+            : atom.kind === "zeroOrMore"
+              ? "zero or more"
+              : atom.kind === "oneOrMore"
+                ? "one or more"
+                : atom.kind === "exact"
+                  ? String(atom.min)
+                  : atom.kind === "range"
+                    ? `between ${atom.min} and ${atom.max}`
+                    : atom.kind === "atLeast"
+                      ? `at least ${atom.min}`
+                      : unsupported("Unknown repetition form.", atom.index);
+      if (atom.group) {
+        const group = atom.group;
+        const label = group.capturing
+          ? group.name === null
+            ? "capture"
+            : `capture ${quoteText(group.name)}`
+          : "group";
+        addRule(`${prefix ? `${prefix} ` : ""}${label} {`, atom.index);
+        emit(group.atoms);
+        addRule("}", group.close);
+        continue;
+      }
+      if (atom.literal !== undefined) atom.phrase = quoteText(atom.literal);
+      if (!atom.phrase) unsupported("This regex atom has no rule-language equivalent.", atom.index);
+      const set = atom.set;
+      if (set?.negative && atom.kind === "zeroOrMore") {
+        addRule(`text without: ${set.values.map(quoteText).join(", ")}`, atom.index);
+        continue;
+      }
+      if (atom.phrase === "any character" && atom.kind === "zeroOrMore") {
+        addRule("any text", atom.index);
+        continue;
+      }
+      addRule(prefix ? `${prefix} ${atom.phrase}` : atom.phrase, atom.index);
     }
     flushLiteral();
-    if (atom.literal !== undefined) atom.phrase = quoteText(atom.literal);
-    if (!atom.phrase) unsupported("This regex atom has no rule-language equivalent.", atom.index);
-    const set = atom.set;
-    if (set?.negative && atom.kind === "zeroOrMore") {
-      rules.push(`text without: ${set.values.map(quoteText).join(", ")}`);
-      continue;
-    }
-    if (atom.phrase === "any character" && atom.kind === "zeroOrMore") {
-      rules.push("any text");
-      continue;
-    }
-    const prefix =
-      atom.kind === null
-        ? ""
-        : atom.kind === "optional"
-          ? "optional"
-          : atom.kind === "zeroOrMore"
-            ? "zero or more"
-            : atom.kind === "oneOrMore"
-              ? "one or more"
-              : atom.kind === "exact"
-                ? String(atom.min)
-                : atom.kind === "range"
-                  ? `between ${atom.min} and ${atom.max}`
-                  : atom.kind === "atLeast"
-                    ? `at least ${atom.min}`
-                    : unsupported("Unknown repetition form.", atom.index);
-    rules.push(prefix ? `${prefix} ${atom.phrase}` : atom.phrase);
   }
-  flushLiteral();
+  emit(atoms);
 
   const translated = rules.join("\n");
   try {
@@ -486,6 +539,18 @@ export function regexToRules(regex) {
         { line: 1, column: 1 },
         "Simplify the regex so its translated rules fit these limits.",
       );
+    }
+    if (
+      error instanceof CompileError &&
+      [
+        "MISSING_CAPTURE_REFERENCE",
+        "FORWARD_CAPTURE_REFERENCE",
+        "SELF_CAPTURE_REFERENCE",
+        "INVALID_CAPTURE_REFERENCE",
+        "DUPLICATE_CAPTURE_NAME",
+      ].includes(error.code)
+    ) {
+      unsupported(error.message, positions[error.line - 1] ?? 0);
     }
     throw error;
   }

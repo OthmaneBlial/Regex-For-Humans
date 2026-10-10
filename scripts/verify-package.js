@@ -92,8 +92,6 @@ try {
   const unicodePairSource = String.raw`^[\uD83D\uDE00]{2}$`;
   const controlLetterSource = String.raw`^[\cjX]{2}$`;
   const reverseGroupCases = [
-    ["^😀(AB)", 4, "Capturing groups cannot be translated."],
-    ["^(?<letters>AB)", 2, "Capturing groups cannot be translated."],
     ["^😀(?=AB)AB", 4, "Lookahead assertions cannot be translated."],
     ["😀(?<!A)B", 3, "Lookbehind assertions cannot be translated."],
   ];
@@ -138,6 +136,15 @@ Object.defineProperty(foreign, "source", { get() { throw new Error("Overridden s
 Object.defineProperty(foreign, "flags", { get() { throw new Error("Overridden flags were read"); } });
 Object.defineProperty(foreign, Symbol.match, { get() { throw new Error("Matching protocol was read"); } });
 if (JSON.stringify(regexToRules(foreign)) !== JSON.stringify(foreignTranslation)) throw new Error("Metadata overrides changed native regex translation");
+for (const source of ["^😀(AB)$", "^(?<letters>AB)$", "^(a(b)?)\\\\2$", "^(?<word>[A-Za-z]+)\\\\s\\\\k<word>$"]) {
+  const original = new RegExp(source, "iu");
+  const translated = regexToRules(original);
+  const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+  for (const sample of ["", "😀AB", "AB", "abb", "a", "cat cat", "CAT cat", "cat dog"]) {
+    const expected = original.exec(sample), actual = rebuilt.exec(sample);
+    if (JSON.stringify(actual && [...actual]) !== JSON.stringify(expected && [...expected]) || actual?.index !== expected?.index || JSON.stringify(actual?.groups) !== JSON.stringify(expected?.groups)) throw new Error("Installed group translation changed capture values or positions");
+  }
+}
 const reverse = regexToRules(/^[A-Z]{2}-\\d{4}$/u);
 if (reverse.rules !== 'start\\n2 uppercase letter\\n"-"\\n4 digit\\nend' || reverse.flags !== "") throw new Error("Wrong reverse-translation behavior");
 if (compile(reverse.rules, { flags: reverse.flags }).source !== "^[A-Z]{2}-\\\\d{4}$") throw new Error("Reverse translation did not round-trip");
@@ -176,7 +183,7 @@ const emptyGroupPattern = toRegExp(compile(emptyGroup.rules, { flags: emptyGroup
 if (emptyGroup.rules !== "0 any character" || emptyGroup.flags !== "" || emptyGroupPattern.source !== ".{0}" || emptyGroupPattern.exec("😀text")?.[0] !== "" || emptyGroupPattern.exec("😀text")?.index !== 0) throw new Error("Empty group translation changed");
 for (const [source, column, message] of ${JSON.stringify(reverseGroupCases)}) {
   try { regexToRules(new RegExp(source, "u")); throw new Error("Unsupported group accepted"); }
-  catch (error) { if (!(error instanceof CompileError) || error.code !== "UNSUPPORTED_REGEX" || error.message !== message || error.line !== 1 || error.column !== column || !error.hint?.includes("non-capturing literal or empty groups")) throw error; }
+  catch (error) { if (!(error instanceof CompileError) || error.code !== "UNSUPPORTED_REGEX" || error.message !== message || error.line !== 1 || error.column !== column || !error.hint?.includes("nested groups, captures")) throw error; }
 }
 for (const [source, code, message] of ${JSON.stringify(reverseLimitCases)}) {
   try { regexToRules(new RegExp(source, "u")); throw new Error("Oversized translated rules accepted"); }

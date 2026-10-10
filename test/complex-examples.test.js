@@ -67,11 +67,7 @@ test("README includes two complete complex examples synchronized with the full g
   const cases = [...guide.matchAll(/^\| (?:✅ Match|❌ No match) \|/gmu)].length;
   assert.ok(readme.includes(`**${cases} accepted/rejected cases**`));
   assert.ok(readme.includes("(docs/COMPLEX-EXAMPLES.md)"));
-  assert.ok(
-    readme.includes(
-      "Reverse translation of named/numbered captures and composite or nested groups remains unsupported",
-    ),
-  );
+  assert.ok(readme.includes("including reverse translation of the supported subset"));
 });
 
 for (const [, id, section] of examples) {
@@ -159,16 +155,17 @@ for (const [, id, section] of examples) {
   });
 }
 
-test("complex guide capture and nested-group diagnostics describe actual unsupported syntax", () => {
-  const rows = [...guide.matchAll(/^\| `\/(.*)\/u` \| `([A-Z_]+)` \| (\d+) \| (.+) \|$/gmu)];
+test("complex guide capture and nested-group imports preserve native extraction", () => {
+  const rows = [...guide.matchAll(/^\| `\/(.*)\/u` \| Supported \| (.+) \|$/gmu)];
   assert.equal(rows.length, 3);
-  for (const [, source, code, column, message] of rows) {
-    assert.throws(() => regexToRules(new RegExp(source, "u")), {
-      code,
-      column: Number(column),
-      message,
-    });
+  for (const [, source] of rows) {
+    const original = new RegExp(source, "u");
+    const translated = regexToRules(original);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const sample of ["", "2026-10-10", "2026-1-10", "AB", "ABCD", "AB-1234", "AB-123"])
+      assert.deepEqual(rebuilt.exec(sample), original.exec(sample));
   }
   assert.equal(regexToRules(/(?: retry=true)?/u).rules, 'optional " retry=true"');
-  assert.throws(() => regexToRules(/(?: retry=\d+)?/u), { code: "UNSUPPORTED_REGEX" });
+  const translated = regexToRules(/(?: retry=\d+)?/u);
+  assert.equal(translated.rules, 'optional group {\n" retry="\none or more digit\n}');
 });

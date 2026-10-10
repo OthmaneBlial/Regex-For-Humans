@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reverse-translate numbered/named captures, composite and nested groups, and backward named/numbered references without losing capture names, values, opening order or Unicode atom boundaries. Keep compact literal-only noncapturing imports; decode escaped Unicode capture names, normalize nested dot/all-character combinations, bound recursion and map unsupported reference diagnostics to their original regex positions.
+
 - Add named/numbered `same as capture` references, including repetitions, nested targets, case folding and native absent/final-capture behavior. Diagnose missing, forward and open/self targets at the reference; protect numeric references from adjoining literal digits and expose resolved capture indices in typed trace segments.
 
 - Compile numbered and named captures, noncapturing groups, nested blocks and repetition of whole blocks. Preserve capture opening order, Unicode identifier names, empty/absent capture semantics, positioned brace/name diagnostics and exact source trace spans, with a 64-level nesting limit. CLI JSON/explanations and the workshop use the same group compiler; reverse translation is unchanged at this milestone.

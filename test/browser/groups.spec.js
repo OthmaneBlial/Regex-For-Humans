@@ -43,3 +43,33 @@ test("capture references compile, match in the worker and locate missing targets
   await page.locator("#rules-input").fill("same as capture 1");
   await expect(page.locator("#diagnostic")).toContainText("Capture 1 is not defined");
 });
+
+test("regex imports preserve nested captures and references in editable rules", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#example-list button").first()).toBeEnabled();
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  await reverse.fill(String.raw`/^(?<outer>(?<word>[A-Za-z]+))\s\k<word>$/iu`);
+  await reverse.press("Control+Enter");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(page.locator("#rules-input")).toHaveValue(
+    'start\ncapture "outer" {\ncapture "word" {\none or more letter\n}\n}\nspace\nsame as capture "word"\nend',
+  );
+  await expect(page.locator("#trace-list")).toContainText('Capture #2 named "word"');
+  await page.locator("#test-list .test-row textarea").first().fill("CAT cat");
+  await expect(page.locator("#test-list .test-row").first()).toHaveAttribute("data-result", "pass");
+  const previous = await page.locator("#rules-input").inputValue();
+  await reverse.fill(String.raw`/😀\1(a)/u`);
+  await reverse.press("Control+Enter");
+  await expect(reverse).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#reverse-feedback")).toContainText(
+    "Column 3: A capture reference must follow its capture.",
+  );
+  await expect(page.locator("#rules-input")).toHaveValue(previous);
+  await page.getByRole("button", { name: "Go to regex error", exact: true }).press("Enter");
+  expect(
+    await reverse.evaluate((field) => field.value.slice(field.selectionStart, field.selectionEnd)),
+  ).toBe("\\");
+});

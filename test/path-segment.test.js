@@ -170,11 +170,16 @@ test("different path-like classes keep their explicit membership and positioned 
   }
   const body = String.raw`^/\\\0\n\r\u2028\u2029`;
   const prefix = `^[${body}]`;
-  assert.throws(() => regexToRules(new RegExp(`${prefix}(x)$`, "u")), {
+  const captured = new RegExp(`${prefix}(x)$`, "u");
+  const translated = regexToRules(captured);
+  const rebuilt = toRegExp(compile(translated.rules));
+  for (const value of ["Ax", "éx", "😀x", "/x", "\\x"])
+    assert.deepEqual(rebuilt.exec(value), captured.exec(value));
+  assert.throws(() => regexToRules(new RegExp(`${prefix}(?=x)x$`, "u")), {
     code: "UNSUPPORTED_REGEX",
     line: 1,
     column: prefix.length + 1,
-    message: "Capturing groups cannot be translated.",
+    message: "Lookahead assertions cannot be translated.",
   });
 });
 

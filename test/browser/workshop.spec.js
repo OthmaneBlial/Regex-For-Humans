@@ -87,7 +87,7 @@ test("translation confirmation follows the current rules and options", async ({ 
     await expect(reverse).not.toHaveAccessibleDescription(/Translated/);
   }
 
-  await reverse.fill("/^(Hello)$/u");
+  await reverse.fill("/^(?=Hello)Hello$/u");
   await reverse.press("Control+Enter");
   const error = await feedback.textContent();
   await page.locator("#rules-input").fill('start\n"Hi"\nend');
@@ -97,8 +97,8 @@ test("translation confirmation follows the current rules and options", async ({ 
   await expect(feedback).toBeVisible();
   await expect(feedback).toHaveText(error);
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
-  await expect(reverse).toHaveValue("/^(Hello)$/u");
-  await expect(reverse).toHaveAccessibleDescription(/Capturing groups cannot be translated/);
+  await expect(reverse).toHaveValue("/^(?=Hello)Hello$/u");
+  await expect(reverse).toHaveAccessibleDescription(/Lookahead assertions cannot be translated/);
   await page.locator("#reverse-error").press("Enter");
   await expect(reverse).toBeFocused();
   expect(await reverse.evaluate((field) => [field.selectionStart, field.selectionEnd])).toEqual([
@@ -131,13 +131,13 @@ test("Control and Meta Enter translate regexes without replacing edits on failur
     await expect(page.locator("#test-list .test-result").first()).toHaveText(
       '✓ Matched "😀ab" at 0',
     );
-    await reverse.fill("/^(😀AB)$/isu");
+    await reverse.fill("/^(?=😀AB)😀AB$/isu");
     await reverse.press(`${modifier}+Enter`);
     await expect(reverse).toBeFocused();
-    await expect(reverse).toHaveValue("/^(😀AB)$/isu");
+    await expect(reverse).toHaveValue("/^(?=😀AB)😀AB$/isu");
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(page.locator("#reverse-feedback")).toContainText(
-      "Capturing groups cannot be translated",
+      "Lookahead assertions cannot be translated",
     );
     await expect(rules).toHaveValue('start\n"😀AB"\nend');
     await expect(output).toHaveText(literal);
@@ -2159,14 +2159,10 @@ test("unsupported group errors identify the feature and preserve edited rules be
   const reverse = page.locator("#reverse-regex");
   const help = await page.locator("#reverse-help").innerText();
   for (const [literal, column, message] of [
-    ["/()/u", 1, "Capturing groups cannot be translated."],
-    ["/^😀(AB)/u", 4, "Capturing groups cannot be translated."],
-    ["/^(?<letters>AB)/u", 2, "Capturing groups cannot be translated."],
     ["/^😀(?=AB)AB/u", 4, "Lookahead assertions cannot be translated."],
     ["/^(?!AB)CD/u", 2, "Lookahead assertions cannot be translated."],
     ["/😀(?<=A)B/u", 3, "Lookbehind assertions cannot be translated."],
     ["/(?<!A)B/u", 1, "Lookbehind assertions cannot be translated."],
-    ["/^(?:😀(AB))/u", 7, "Capturing groups cannot be translated."],
     ["/^(?:😀(?<=A)B)/u", 7, "Lookbehind assertions cannot be translated."],
   ]) {
     await reverse.fill(literal);
@@ -2175,7 +2171,7 @@ test("unsupported group errors identify the feature and preserve edited rules be
     await page.locator("#reverse-button").press("Enter");
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(reverse).toHaveAccessibleDescription(
-      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, repetition, non-capturing literal or empty groups and i/s/u/m flags. Capturing or complex groups, alternation, lookaround and backreferences are not supported.`,
+      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references and i/s/u/m flags. Alternation, lookaround, lazy quantifiers and forward/open references are not supported.`,
     );
     await expect(editor).toHaveValue(rules);
     await expect(output).toHaveText("/^Saved$/isu");
@@ -2216,7 +2212,7 @@ test("reverse syntax errors select their source character and reveal wrapped or 
   await expect(jump).toBeHidden();
   for (const [literal, character] of [
     ["/^😀a|b$/u", "|"],
-    [" \r\n\t/^😀(?<letters>AB)$/u \n", "("],
+    [" \r\n\t/^😀(?=AB)AB$/u \n", "("],
     ["/^(?:😀(?=AB)AB)$/u", "("],
     ["/^[a-c]+$/u", "-"],
     ["/^(?:😀)*?$/u", "?"],

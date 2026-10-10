@@ -27,6 +27,8 @@ test("genuine regexes from another context translate with the same rules, flags 
     "^(?:)$",
     String.raw`^\d{2,}$`,
     "^[._-]+$",
+    "^😀(AB)$",
+    "^(?<letters>AB)$",
   ]) {
     for (const flags of ["u", "iu", "su", "isu", "mu", "imu", "msu", "imsu"]) {
       const original = runInNewContext("new RegExp(source, flags)", { source, flags });
@@ -52,13 +54,18 @@ test("genuine regexes from another context translate with the same rules, flags 
         const actual = rebuilt.exec(sample);
         assert.equal(actual?.[0], expected?.[0]);
         assert.equal(actual?.index, expected?.index);
+        assert.deepEqual(actual && Array.from(actual), expected && Array.from(expected));
+        assert.deepEqual(
+          actual?.groups && { ...actual.groups },
+          expected?.groups && { ...expected.groups },
+        );
       }
     }
   }
   for (const [source, flags] of [
     ["a", ""],
     ["a", "gu"],
-    ["^😀(AB)$", "u"],
+    ["^😀(?=AB)AB$", "u"],
     ["a".repeat(16_385), "u"],
   ]) {
     let expected;
@@ -146,7 +153,7 @@ test("translation uses the stored native pattern and flags instead of overridden
   for (const [source, flags, code] of [
     ["a", "", "UNICODE_FLAG_REQUIRED"],
     ["a", "gu", "UNSUPPORTED_REGEX_FLAGS"],
-    ["(a)", "u", "UNSUPPORTED_REGEX"],
+    ["(?=a)a", "u", "UNSUPPORTED_REGEX"],
     ["a".repeat(16_385), "u", "REGEX_SOURCE_LIMIT"],
   ]) {
     const original = new AnnotatedRegExp(source, flags);
@@ -275,8 +282,6 @@ test("empty non-capturing groups translate to zero-count rules with equivalent m
   for (const [source, column] of [
     ["(?:)*?", 6],
     ["(?:){1001}", 5],
-    ["()", 1],
-    ["(?:(?:))", 4],
     ["[]", 1],
   ]) {
     assert.throws(() => regexToRules(new RegExp(source, "u")), {
@@ -579,12 +584,13 @@ test("separate lone-surrogate atoms remain separate when literal rules are merge
   }
 });
 
-test("literal groups reject separate surrogate atoms that one literal rule cannot preserve", () => {
-  assert.throws(() => regexToRules(/^(?:\u{D83D}\u{DE00})+$/u), {
-    code: "UNSUPPORTED_REGEX",
-    line: 1,
-    column: 13,
-  });
+test("group blocks preserve separate surrogate atoms that cannot be merged into one literal", () => {
+  const original = /^(?:\u{D83D}\u{DE00})+$/u;
+  const translated = regexToRules(original);
+  assert.ok(translated.rules.includes("one or more group {"));
+  const rebuilt = toRegExp(compile(translated.rules));
+  for (const value of ["", "😀", "😀😀", "\ud83d", "\ude00"])
+    assert.deepEqual(rebuilt.exec(value), original.exec(value));
 });
 
 test("translated line limits describe the whole regex rather than a generated line", () => {
@@ -688,11 +694,8 @@ test("alternation reports its operator and repair hint while literal pipes still
   });
 });
 
-test("unsupported groups identify captures and lookaround at their opening parenthesis", () => {
+test("unsupported lookaround is identified at its opening parenthesis", () => {
   for (const [source, message] of [
-    ["()", "Capturing groups cannot be translated."],
-    ["(AB)", "Capturing groups cannot be translated."],
-    ["(?<letters>AB)", "Capturing groups cannot be translated."],
     ["(?=AB)AB", "Lookahead assertions cannot be translated."],
     ["(?!AB)CD", "Lookahead assertions cannot be translated."],
     ["(?<=A)B", "Lookbehind assertions cannot be translated."],
@@ -717,7 +720,7 @@ test("unsupported groups identify captures and lookaround at their opening paren
               message,
               line: 1,
               column: prefix.length + 1,
-              hint: "Supported syntax includes literals, anchors, common character classes, repetition, non-capturing literal or empty groups and i/s/u/m flags. Capturing or complex groups, alternation, lookaround and backreferences are not supported.",
+              hint: "Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references and i/s/u/m flags. Alternation, lookaround, lazy quantifiers and forward/open references are not supported.",
             });
             return true;
           },
@@ -732,12 +735,12 @@ test("unsupported groups identify captures and lookaround at their opening paren
       assert.deepEqual(rebuilt.exec(sample), regex.exec(sample));
     }
   }
-  assert.throws(() => regexToRules(/^(?:a+)$/u), {
-    code: "UNSUPPORTED_REGEX",
-    message: "Groups can contain literal text only.",
-    line: 1,
-    column: 6,
-  });
+  for (const regex of [/()/u, /(AB)/u, /(?<letters>AB)/u, /^(?:a+)$/u]) {
+    const translated = regexToRules(regex);
+    const rebuilt = toRegExp(compile(translated.rules));
+    for (const value of ["", "AB", "aaa", "BA", "😀AB"])
+      assert.deepEqual(rebuilt.exec(value), regex.exec(value));
+  }
 });
 
 test("rejects features it cannot preserve and non-Unicode matching", () => {
