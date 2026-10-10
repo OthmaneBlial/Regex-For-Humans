@@ -800,6 +800,63 @@ a {
   border-left: 2px solid var(--ink);
   color: transparent;
 }
+.group-editor {
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  min-width: 0;
+}
+.group-editor[hidden] {
+  display: none;
+}
+.group-editor summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.group-editor p {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.group-edit-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+.group-edit-form label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.group-edit-form input,
+.group-edit-form select {
+  width: 100%;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper-light);
+  color: var(--ink);
+  font: inherit;
+}
+.group-edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+#group-feedback[data-state="error"] {
+  color: var(--red);
+}
+.capture-highlight {
+  display: block;
+  margin-top: 4px;
+}
+#group-references {
+  padding: 0;
+  list-style: none;
+}
 .capture-explorer {
   grid-column: 1 / -1;
   min-width: 0;

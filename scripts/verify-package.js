@@ -107,9 +107,18 @@ try {
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
-    `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
+    `import { compile, editGroup, regexToRules, toRegExp, CompileError } from "regex-for-humans";
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
+const editableRules = ${JSON.stringify('capture "word" {\nletter\n}\nsame as capture "word"')};
+const editableGroup = compile(editableRules).segments.find(s => s.kind === "group" && s.edge === "start");
+const renamedRules = editGroup(editableRules, editableGroup, { capturing: true, name: "label" });
+assert.equal(toRegExp(compile(renamedRules)).exec("AA").groups.label, "A");
+assert.ok(renamedRules.includes('same as capture "label"'));
+const numberedRules = editGroup(renamedRules, editableGroup, { capturing: true, name: null });
+assert.ok(numberedRules.includes("same as capture 1"));
+assert.equal(toRegExp(compile(numberedRules)).exec("AA")[1], "A");
+assert.throws(() => editGroup(editableRules, editableGroup, { capturing: false, name: null }), error => error instanceof CompileError && error.code === "REFERENCED_CAPTURE");
 for (const flags of ${JSON.stringify(flagSets)}) {
   for (const source of ["(?<x>a|ab)", "(?<x>)"]) {
     const original = new RegExp(source, flags);
@@ -380,8 +389,17 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   const typeSmoke = join(consumer, "type-smoke.mts");
   writeFileSync(
     typeSmoke,
-    `import { CompileError, compile, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
-import type { AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, ClassSetOperation, CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation, UnicodePropertySegment } from "regex-for-humans";
+    `import { CompileError, compile, editGroup, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
+import type { AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, ClassSetOperation, CompileOptions, CompileResult, GroupSegment, RegexSegment, Repetition, ReverseTranslation, SourceLocation, UnicodePropertySegment } from "regex-for-humans";
+const editLocation: SourceLocation = { line: 1, column: 1 };
+const editDefinition: Pick<GroupSegment, "capturing" | "name"> = { capturing: true, name: "label" };
+const editableRules: string = ${JSON.stringify('capture "word" {\nletter\n}\nsame as capture "word"')};
+const editedRules: string = editGroup(editableRules, editLocation, editDefinition, { flags: undefined });
+compile(editedRules);
+// @ts-expect-error the new group definition requires a capture mode
+editGroup(editableRules, editLocation, { name: "label" });
+// @ts-expect-error a source location needs both line and column
+editGroup(editableRules, { line: 1 }, editDefinition);
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
 const lazyResult: CompileResult = compile("lazy digits");
 const lazyRange: Repetition = { kind: "range", min: 2, max: 4, lazy: true };

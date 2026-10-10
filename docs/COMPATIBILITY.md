@@ -15,7 +15,8 @@ Preview `0.1.0-dev.5` targets native JavaScript `RegExp` in u or v mode. It incl
 | Standalone Unicode character properties and complements | Supported with native aliases and runtime capability checks in u/v modes | Supported; aliases, polarity, flags and capture behavior preserved |
 | Composable character classes with literals, inclusive code-point ranges, singular shorthands and Unicode properties | Supported in native u/v modes; outer and property negation stay distinct | Supported; escaping, unions, captures, flags and source metadata preserved |
 | Finite native string sets and Unicode properties of strings | Supported with explicit v mode, native capability checks and structural complement validation | Supported; longest-first matching, empty members, captures and separate surrogate code-point sequences preserved |
-| Nested native v sets, union, intersection and subtraction | Supported with typed blocks, exact member spans and structural complement validation | Supported; operators, native strings, captures and cursors preserved |\n| Empty character classes | Empty union block in v mode; u-mode empty classes remain unsupported | Supported in v mode; positioned unsupported diagnostic in u mode |
+| Nested native v sets, union, intersection and subtraction | Supported with typed blocks, exact member spans and structural complement validation | Supported; operators, native strings, captures and cursors preserved |
+| Empty character classes | Empty union block in v mode; u-mode empty classes remain unsupported | Supported in v mode; positioned unsupported diagnostic in u mode |
 | Flags | All eight native options; default u, exclusive v; m explicit or from line anchors | u or v required; d/g/i/m/s/v/y preserved without touching input `lastIndex` |
 | Other regex engines | No target | No translation claim |
 
@@ -26,6 +27,8 @@ Groups are numbered in opening order, including named groups. Names are Unicode 
 Assertions consume no characters; their native captures can lie before or after the consumed match. JavaScript evaluates lookbehind contents backwards, including variable-length supported subpatterns. Compilation probes lookbehind and reports `UNSUPPORTED_TARGET_FEATURE` instead of approximating it when unavailable. Direct assertion repetition is rejected; repeat its contents or a containing group instead. Assertion blocks share the 64-level nesting and translated source/line budgets.
 
 ## Verified runtimes
+
+Source-only group editing adds `editGroup` and a local workshop form; it is not part of npm `0.1.0-dev.5` or the hosted workshop. Edits use the shared AST, retain resolved numeric/named reference targets, validate the resulting document and reject conversion of a referenced capture to noncapturing. Native capture highlighting uses supplied indices only. See [group editing](LANGUAGE.md#editing-groups) for the API and explicit failure behavior.
 
 Standalone property rules are included in npm `0.1.0-dev.5`. Names and values remain case-sensitive; membership uses the runtime's Unicode data. Native `\P` complements retain `u`/`i` behavior and are not rewritten as negated `\p` classes. Compilation probes support; unavailable properties report `UNSUPPORTED_TARGET_FEATURE`, while an unrecognized alias reports `INVALID_UNICODE_PROPERTY` at its quoted value. `UnicodePropertySegment` exposes the alias, polarity and repetition to typed consumers. These checks do not imply legacy runtimes can load the whole compiler or that all engines use the same Unicode edition.
 

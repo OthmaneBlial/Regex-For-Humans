@@ -54,7 +54,10 @@ end
 | [文字クラスの組み合わせ](../LANGUAGE.md#composable-character-classes) | ✅ |
 | [Unicode 文字列と入れ子の集合](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | JavaScript の全 8 フラグ | ✅ |
+| [グループの編集とキャプチャ範囲の強調](../LANGUAGE.md#editing-groups) | — |
 | 他の正規表現エンジンや自由な英文 | — |
+
+**ソース版のみ：**ローカルのワークショップに **Edit groups and references** が追加され、キャプチャ名の変更、グループ種別の変更、参照位置への移動ができます。番号が変わっても数値参照は元のキャプチャを指します。参照されているキャプチャを非キャプチャに変更すると操作を拒否し、元のルールを保持します。**Highlight** はネイティブの入力範囲を強調し、空のキャプチャや消費したマッチの外側にあるキャプチャにも対応します。`editGroup` API は検証済みのルールを返します。npm `0.1.0-dev.5` と公開ワークショップにはまだ含まれていません。[グループ編集](../LANGUAGE.md#editing-groups)を参照してください。
 
 現在のソースでは `lazy digits` が `\d+?` になります。まず数字1文字を試し、後続の規則に必要なら繰り返しを増やします。npm `0.1.0-dev.5` で利用できます。[繰り返しの規則](../LANGUAGE.md#repetition)を参照してください。
 

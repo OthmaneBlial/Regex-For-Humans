@@ -54,7 +54,10 @@ end
 | [संयुक्त character classes](../LANGUAGE.md#composable-character-classes) | ✅ |
 | [Unicode strings और nested sets](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | सभी आठ JavaScript flags | ✅ |
+| [समूह संपादन और capture की जगह हाइलाइट करना](../LANGUAGE.md#editing-groups) | — |
 | दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — |
+
+**केवल सोर्स संस्करण में:** स्थानीय वर्कशॉप में **Edit groups and references** से capture का नाम या समूह का प्रकार बदलें और उसके references तक जाएँ। नंबर बदलने पर भी संख्यात्मक references अपने मूल capture को इंगित करते हैं। जिस capture का reference मौजूद है, उसे noncapturing बनाने पर बदलाव अस्वीकार होता है और मूल नियम सुरक्षित रहते हैं। **Highlight** native indices से capture की जगह दिखाता है, चाहे capture खाली हो या consumed match से बाहर हो। `editGroup` API जाँचे गए नियम लौटाता है। ये सुविधाएँ अभी npm `0.1.0-dev.5` या होस्टेड वर्कशॉप में नहीं हैं। [समूह संपादन](../LANGUAGE.md#editing-groups) देखें।
 
 वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ।npm `0.1.0-dev.5` में उपलब्ध है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
 

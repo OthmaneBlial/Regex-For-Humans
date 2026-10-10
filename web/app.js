@@ -1,4 +1,4 @@
-import { CompileError, compile, regexToRules } from "../index.js";
+import { CompileError, compile, editGroup, regexToRules } from "../index.js";
 import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
@@ -43,6 +43,16 @@ const ui = {
   copy: requiredElement("copy-button", HTMLButtonElement),
   diagnostic: requiredElement("diagnostic", HTMLDivElement),
   trace: requiredElement("trace-list", HTMLDivElement),
+  groupEditor: requiredElement("group-editor", HTMLDetailsElement),
+  groupForm: requiredElement("group-edit-form", HTMLFormElement),
+  groupSelect: requiredElement("group-select", HTMLSelectElement),
+  groupType: requiredElement("group-type", HTMLSelectElement),
+  groupName: requiredElement("group-name", HTMLInputElement),
+  groupApply: requiredElement("group-apply", HTMLButtonElement),
+  groupLocate: requiredElement("group-locate", HTMLButtonElement),
+  groupInfo: requiredElement("group-info", HTMLParagraphElement),
+  groupReferences: requiredElement("group-references", HTMLUListElement),
+  groupFeedback: requiredElement("group-feedback", HTMLParagraphElement),
   matchMode: requiredElement("match-mode", HTMLSelectElement),
   addExample: requiredElement("add-example", HTMLButtonElement),
   testSummary: requiredElement("test-summary", HTMLDivElement),
@@ -67,6 +77,8 @@ let nextTestId = 1;
 let reverseErrorPosition = null;
 /** @type {ReturnType<typeof compile> | null} */
 let compiled = null;
+/** @type {import('../index.d.ts').GroupSegment[]} */
+let groupSegments = [];
 let hasEdits =
   ui.rules.value !== "" ||
   Object.values(flagInputs).some((input) => input.checked) ||
@@ -209,6 +221,80 @@ function flagsDescription(flags) {
   return [...flags].map((flag) => `${flag} ${labels[flag]}`).join(" · ");
 }
 
+function selectedGroup() {
+  return groupSegments.find((group) => `${group.line}:${group.column}` === ui.groupSelect.value);
+}
+
+function fillGroupFields() {
+  const group = selectedGroup();
+  if (!group) return;
+  ui.groupType.value = !group.capturing ? "none" : group.name === null ? "numbered" : "named";
+  ui.groupName.value = group.name ?? "";
+  ui.groupName.disabled = ui.groupType.value !== "named";
+  ui.groupName.setAttribute("aria-invalid", "false");
+  ui.groupFeedback.textContent = "";
+  const references =
+    compiled?.segments.filter(
+      (segment) => segment.kind === "backreference" && segment.captureIndex === group.captureIndex,
+    ) ?? [];
+  ui.groupInfo.textContent = group.capturing
+    ? `Capture #${group.captureIndex} · ${references.length} reference${references.length === 1 ? "" : "s"}.`
+    : "Noncapturing group · no capture number or references.";
+  ui.groupReferences.replaceChildren();
+  for (const reference of references) {
+    const button = make("button", "secondary-button", `Reference on line ${reference.line}`);
+    button.type = "button";
+    button.addEventListener("click", () => selectLine(reference.line));
+    const item = make("li");
+    item.append(button);
+    ui.groupReferences.append(item);
+  }
+}
+
+function renderGroupEditor() {
+  const previous = selectedGroup();
+  const selected = ui.groupSelect.value;
+  groupSegments =
+    compiled?.segments.flatMap((segment) =>
+      segment.kind === "group" && segment.edge === "start" ? [segment] : [],
+    ) ?? [];
+  ui.groupEditor.hidden = groupSegments.length === 0;
+  for (const field of [ui.groupSelect, ui.groupType, ui.groupApply, ui.groupLocate])
+    field.disabled = groupSegments.length === 0;
+  ui.groupSelect.replaceChildren();
+  for (const group of groupSegments) {
+    const label = group.capturing
+      ? `Capture #${group.captureIndex}${group.name === null ? "" : ` · ${quoteText(group.name)}`}`
+      : "Noncapturing group";
+    const option = make("option", "", `${label} · line ${group.line}`);
+    option.value = `${group.line}:${group.column}`;
+    ui.groupSelect.append(option);
+  }
+  if (groupSegments.some((group) => `${group.line}:${group.column}` === selected))
+    ui.groupSelect.value = selected;
+  const current = selectedGroup();
+  if (!current) {
+    ui.groupName.disabled = true;
+    ui.groupReferences.replaceChildren();
+    ui.groupFeedback.textContent = "";
+    return;
+  }
+  const pendingType = ui.groupType.value;
+  const pendingName = ui.groupName.value;
+  const unchanged =
+    previous?.line === current.line &&
+    previous.column === current.column &&
+    previous.capturing === current.capturing &&
+    previous.name === current.name &&
+    previous.captureIndex === current.captureIndex;
+  fillGroupFields();
+  if (unchanged) {
+    ui.groupType.value = pendingType;
+    ui.groupName.value = pendingName;
+    ui.groupName.disabled = pendingType !== "named";
+  }
+}
+
 /** @param {HTMLDivElement} row @param {string} text */
 function setTestResult(row, text) {
   const result = row.querySelector(".test-result");
@@ -225,8 +311,8 @@ function setTestResult(row, text) {
   }
 }
 
-/** @param {HTMLDivElement} row @param {import("./worker-protocol.d.ts").TestResult} result @param {import("../index.d.ts").GroupSegment[]} captures */
-function renderCaptureExplorer(row, result, captures) {
+/** @param {HTMLDivElement} row @param {import("./worker-protocol.d.ts").TestResult} result @param {import("../index.d.ts").GroupSegment[]} captures @param {string} input */
+function renderCaptureExplorer(row, result, captures, input) {
   const explorer = row.querySelector(".capture-explorer");
   if (
     !(explorer instanceof HTMLDetailsElement) ||
@@ -309,11 +395,10 @@ function renderCaptureExplorer(row, result, captures) {
           capture.value === null
             ? "Not captured"
             : `${quoteText(capture.value)}${capture.value === "" ? " (empty)" : ""}`;
-        tr.append(
-          label,
-          make("td", "capture-value", value),
+        const span = make("td");
+        span.append(
           make(
-            "td",
+            "span",
             "capture-span",
             capture.range
               ? `${capture.range.start}–${capture.range.end}`
@@ -322,6 +407,20 @@ function renderCaptureExplorer(row, result, captures) {
                 : "Unavailable",
           ),
         );
+        if (capture.range) {
+          const range = capture.range;
+          const highlight = make("button", "capture-rule capture-highlight", "Highlight");
+          highlight.type = "button";
+          highlight.setAttribute(
+            "aria-label",
+            `Highlight capture #${captureIndex} in match ${index + 1}`,
+          );
+          highlight.addEventListener("click", () =>
+            renderMatchPreview(row, input, range, `Capture #${captureIndex} in input: `),
+          );
+          span.append(highlight);
+        }
+        tr.append(label, make("td", "capture-value", value), span);
         body.append(tr);
       }
       table.append(head, body);
@@ -332,11 +431,13 @@ function renderCaptureExplorer(row, result, captures) {
   explorer.hidden = false;
 }
 
-/** @param {HTMLDivElement} row @param {string} input @param {{start: number, end: number} | null | undefined} range */
-function renderMatchPreview(row, input, range) {
+/** @param {HTMLDivElement} row @param {string} input @param {{start: number, end: number} | null | undefined} range @param {string} [label] */
+function renderMatchPreview(row, input, range, label) {
   const preview = row.querySelector(".match-preview");
   if (!(preview instanceof HTMLSpanElement)) return;
-  if (!range || (range.start === 0 && range.end === input.length)) return;
+  preview.hidden = true;
+  preview.replaceChildren();
+  if (!range || (!label && range.start === 0 && range.end === input.length)) return;
 
   const characters = Array.from(input);
   const start = Array.from(input.slice(0, range.start)).length;
@@ -346,7 +447,7 @@ function renderMatchPreview(row, input, range) {
   const leftStart = Math.max(0, start - context);
   const rightEnd = Math.min(characters.length, end + context);
 
-  preview.append(make("span", "match-preview-label", "Match in input: "));
+  preview.append(make("span", "match-preview-label", label ?? "Match in input: "));
   if (leftStart > 0) preview.append(make("span", "match-context", "…"));
   preview.append(
     make("span", "match-context", escapeControls(characters.slice(leftStart, start).join(""))),
@@ -441,7 +542,7 @@ async function updateTestResults() {
       row.dataset.result = evaluation.pass ? "pass" : "fail";
       setTestResult(row, `${evaluation.pass ? "✓" : "!"} ${evaluation.detail}`);
       renderMatchPreview(row, testCases[index].text, evaluation.matchRange);
-      renderCaptureExplorer(row, evaluation, captures);
+      renderCaptureExplorer(row, evaluation, captures, testCases[index].text);
     });
     const focusedRowIndex = rows.findIndex((row) => row.contains(document.activeElement));
     const focusedResult = focusedRowIndex < 0 ? null : byId.get(testCases[focusedRowIndex].id);
@@ -608,6 +709,7 @@ function compileRules() {
     }
     renderTrace(null);
   }
+  renderGroupEditor();
   updateTestResults();
 }
 
@@ -666,6 +768,51 @@ document.addEventListener("input", () => {
 ui.rules.addEventListener("input", () => {
   setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);
   compileRules();
+});
+ui.groupSelect.addEventListener("change", fillGroupFields);
+ui.groupType.addEventListener("change", () => {
+  ui.groupName.disabled = ui.groupType.value !== "named";
+  ui.groupName.setAttribute("aria-invalid", "false");
+  ui.groupFeedback.textContent = "";
+});
+ui.groupLocate.addEventListener("click", () => {
+  const group = selectedGroup();
+  if (group) selectLine(group.line);
+});
+ui.groupForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const group = selectedGroup();
+  if (!compiled || !group) return;
+  try {
+    const rules = editGroup(
+      ui.rules.value,
+      group,
+      {
+        capturing: ui.groupType.value !== "none",
+        name: ui.groupType.value === "named" ? ui.groupName.value : null,
+      },
+      { flags: compiled.flags },
+    );
+    ui.rules.value = rules;
+    hasEdits = true;
+    setScenarioSelection(null);
+    compileRules();
+    ui.groupFeedback.textContent = "Group updated. References keep their original capture targets.";
+    ui.groupFeedback.dataset.state = "success";
+  } catch (error) {
+    ui.groupFeedback.textContent =
+      error instanceof CompileError
+        ? `Edit rejected. Original rules unchanged. Line ${error.line}, column ${error.column}: ${escapeControls(error.message)}${error.hint ? ` ${error.hint}` : ""}`
+        : `Edit rejected. Original rules unchanged. ${error instanceof Error ? error.message : String(error)}`;
+    ui.groupFeedback.dataset.state = "error";
+    ui.groupName.setAttribute(
+      "aria-invalid",
+      String(
+        error instanceof CompileError &&
+          ["INVALID_CAPTURE_NAME", "DUPLICATE_CAPTURE_NAME"].includes(error.code),
+      ),
+    );
+  }
 });
 for (const input of Object.values(flagInputs)) input.addEventListener("change", compileRules);
 ui.unicodeMode.addEventListener("change", compileRules);

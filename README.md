@@ -74,7 +74,10 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | [Composable character classes](docs/LANGUAGE.md#composable-character-classes) | ✅ |
 | [Native Unicode string and nested set operations](docs/LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | All eight JavaScript flags | ✅ |
+| [Group editing and capture highlighting](docs/LANGUAGE.md#editing-groups) | — |
 | Other regex engines and free-form English | — |
+
+**Source checkout only:** the local workshop now offers **Edit groups and references**: rename captures, change named/numbered/noncapturing forms and jump to their references. Numeric references keep their original targets when numbering changes; removing a referenced capture is rejected without changing the rules. **Highlight** selects a capture's native input range, including empty captures and captures outside the consumed match. The shared `editGroup` API returns validated rules. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet; see [group editing](docs/LANGUAGE.md#editing-groups).
 
 With this preview, `lazy digits` generates `\d+?`: try one digit first, then expand if following rules need more. `lazy any text` generates `.*?`. Available in npm `0.1.0-dev.5`; see [greedy and lazy repetition](docs/LANGUAGE.md#repetition).
 

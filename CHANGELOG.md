@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add source-only group editing through the shared AST and `editGroup` API. Rename named captures, change named/numbered/noncapturing forms, preserve resolved reference targets during renumbering, and reject removal of referenced captures without returning partial rules. Keep other literals, indentation, line endings and repetition modifiers intact; validate the whole edited document against the existing grammar and limits.
+- Add a keyboard-accessible workshop group editor with capture numbering, reference navigation and explicit rejected-edit feedback. Highlight native capture ranges, including empty captures and lookaround values outside the consumed match; absent captures and unavailable indices have no guessed highlight. npm and the hosted workshop remain at dev.5.
+
 ## 0.1.0-dev.5 (10 October 2026)
 
 - Compile and reverse-translate nested native v-mode set union, intersection and subtraction through typed character-set blocks. Preserve native strings, empty sets, structural complement restrictions, lazy whole-block repetition, captures, indices and cursors. Expose recursive member spans and closing locations through API types, CLI JSON and explanations; share the group/set depth budget and positioned mode, operand, arity and capability diagnostics.

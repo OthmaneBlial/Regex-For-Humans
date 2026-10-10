@@ -99,6 +99,18 @@
           <section class="pattern-box" aria-label="Generated JavaScript regex" tabindex="0"><code id="regex-output">Select a recipe or write a rule</code></section>
           <div class="result-actions"><span id="flags-summary">Unicode mode always on</span><button id="copy-button" class="copy-button" type="button" disabled>Copy regex <span aria-hidden="true">↗</span></button></div>
           <div id="diagnostic" class="diagnostic" role="alert" hidden></div>
+          <details id="group-editor" class="group-editor" hidden>
+            <summary>Edit groups and references</summary>
+            <p id="group-edit-help">Rename a capture or change its type. Numbered references keep their original targets. A referenced capture cannot become noncapturing.</p>
+            <form id="group-edit-form" class="group-edit-form" aria-label="Edit a group">
+              <label for="group-select">Group to edit</label><select id="group-select" aria-describedby="group-edit-help" disabled></select>
+              <label for="group-type">Group type</label><select id="group-type" disabled><option value="named">Named capture</option><option value="numbered">Numbered capture</option><option value="none">Noncapturing group</option></select>
+              <label for="group-name">Capture name</label><input id="group-name" type="text" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-invalid="false" disabled>
+              <div class="group-edit-actions"><button id="group-apply" class="secondary-button" type="submit" disabled>Apply group edit</button><button id="group-locate" class="secondary-button" type="button" disabled>Go to group rule</button></div>
+            </form>
+            <p id="group-info"></p><ul id="group-references" class="group-edit-actions" aria-label="References to this group"></ul>
+            <p id="group-feedback" role="status"></p>
+          </details>
           <div class="trace-heading"><h3>How it was built</h3><span>RULE → FRAGMENT</span></div>
           <div id="trace-list" class="trace-list" aria-live="polite"><p class="empty-trace">Each rule will appear here with its generated fragment and meaning.</p></div>
         </section>

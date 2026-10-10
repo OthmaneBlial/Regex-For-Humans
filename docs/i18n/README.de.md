@@ -54,7 +54,10 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 | [Zusammengesetzte Zeichenklassen](../LANGUAGE.md#composable-character-classes) | ✅ |
 | [Unicode-Zeichenfolgen und verschachtelte Mengen](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | Alle acht JavaScript-Flags | ✅ |
+| [Gruppen bearbeiten und Capture-Bereiche markieren](../LANGUAGE.md#editing-groups) | — |
 | Andere Engines und freie englische Sätze | — |
+
+**Nur im Quellcode:** Der lokale Workshop bietet **Edit groups and references**, um Captures umzubenennen, ihren Typ zu ändern und ihre Referenzen zu finden. Numerische Referenzen behalten bei einer neuen Nummerierung ihr ursprüngliches Ziel; ein referenziertes Capture lässt sich nicht entfernen, und die Regeln bleiben dabei unverändert. **Highlight** markiert den nativen Eingabebereich, auch bei leeren Captures oder außerhalb des konsumierten Treffers. Die API `editGroup` gibt validierte Regeln zurück. Diese Ergänzungen sind noch nicht in npm `0.1.0-dev.5` oder im gehosteten Workshop enthalten. Siehe [Gruppen bearbeiten](../LANGUAGE.md#editing-groups).
 
 Im Quellcode erzeugt `lazy digits` den Ausdruck `\d+?`: zuerst eine Ziffer versuchen, dann bei Bedarf für die folgenden Regeln mehr Wiederholungen. Verfügbar in npm `0.1.0-dev.5`. Siehe [Wiederholungsregeln](../LANGUAGE.md#repetition).
 

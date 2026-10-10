@@ -54,7 +54,10 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 | [Classes de caracteres combinadas](../LANGUAGE.md#composable-character-classes) | ✅ |
 | [Strings Unicode e conjuntos aninhados](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | Os oito flags JavaScript | ✅ |
+| [Edição de grupos e destaque de capturas](../LANGUAGE.md#editing-groups) | — |
 | Outros motores e inglês livre | — |
+
+**Somente no código-fonte:** o workshop local oferece **Edit groups and references** para renomear capturas, mudar seu tipo e localizar suas referências. As referências numéricas mantêm seus destinos quando a numeração muda; remover uma captura referenciada é recusado sem alterar as regras. **Highlight** destaca o intervalo nativo de uma captura, mesmo vazia ou fora do texto consumido. A API `editGroup` retorna regras validadas. Essas mudanças ainda não estão no npm `0.1.0-dev.5` nem no workshop hospedado. Veja a [edição de grupos](../LANGUAGE.md#editing-groups).
 
 No código-fonte, `lazy digits` gera `\d+?`: tenta um dígito primeiro e aumenta a repetição se as regras seguintes precisarem. Disponível no npm `0.1.0-dev.5`. Consulte as [regras de repetição](../LANGUAGE.md#repetition).
 

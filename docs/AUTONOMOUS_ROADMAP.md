@@ -2,6 +2,13 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+## Safe group-editing source milestone
+
+- Implemented: shared-AST `editGroup`, named-capture renaming, named/numbered/noncapturing conversion, resolved-reference updates and opening-order renumbering. Other literals, indentation, line endings and repetition modifiers are retained. Referenced removal and invalid proposals fail explicitly before returning edited rules.
+- Workshop: keyboard-accessible group selection, capture numbering, reference navigation and rejected-edit feedback; native range highlighting distinguishes empty and absent captures and supports lookaround values outside the consumed match.
+- Verification: the complete local gate passes 308 Node, 384 Chromium desktop/mobile, 154 Firefox/WebKit and 64 homepage checks (910 total), clean consumers, lint/types/docs, builds and audit. All 23 focused checks and a separate clean consumer pass on Node 22. Ten README guides keep all 20 canonical code blocks and explain source-only availability; Arabic/Urdu isolate the new control/API labels LTR. Connected Chrome verifies rename/rejection/highlighting, desktop/320px layout and zero console errors. Human reviews stay open.
+- Distribution: these additions are not published to npm or Pages. Both remain at dev.5; its retained archive is unchanged. The next wave covers structural visualization, safety and verified exports. The larger mission remains active.
+
 ## dev.5 distribution milestone
 
 Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact GitHub assets, all ten README guides and the hosted site agree. The 248,223-byte archive passes clean JavaScript/TypeScript/API/CLI consumers on Node 25/22, both retained and downloaded from the registry. Release checks pass 301 Node tests, ten README/localization contracts, 64 homepage and eight guide checks, lint/types/docs and builds; the native compiler is unchanged from the 891-test gate. Pages commit `ccd5826` deployed successfully, with public bytes and a native v-set/capture UI flow verified. Both actual RTL guides pass 1280/390/320px and exact English code parity; two narrow captures were inspected. The Downloads Reddit draft is updated and unposted. See [DISTRIBUTION.md](DISTRIBUTION.md) for hashes, tag, deployment and verification scope. Historical dev.4 receipts remain immutable and human gates stay open.
@@ -17,9 +24,8 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Safe group editing: rename named captures and update their references; support capture/noncapture conversion with explicit reference diagnostics.
-2. Structural visualization, safety heuristics with honest limits and verified exports.
-3. Workshop localization and the remaining mission waves.
+1. Structural visualization, safety heuristics with honest limits and verified exports.
+2. Workshop localization and the remaining mission waves.
 
 ## Site and README milestone
 

@@ -165,6 +165,13 @@ export class CompileError extends Error {
 }
 
 export function compile(source: string, options?: CompileOptions): CompileResult;
+/** Edit a group at its opening location, updating references and validating the result. */
+export function editGroup(
+  source: string,
+  location: SourceLocation,
+  definition: Pick<GroupSegment, "capturing" | "name">,
+  options?: CompileOptions,
+): string;
 export interface ReverseTranslation {
   rules: string;
   flags: string;

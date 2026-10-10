@@ -155,6 +155,32 @@ Missing targets report `MISSING_CAPTURE_REFERENCE`; references before their targ
 
 Reference trace segments have `kind: "backreference"`, `reference` (string or number), resolved `captureIndex`, `repetition` and the usual source offsets and explanation. Reverse translation imports backward references under this same policy; unsupported forward/open references point to their original regex escape.
 
+## Editing groups
+
+This feature is available in the source checkout, not the published npm `0.1.0-dev.5` package or hosted workshop yet. The local workshop's **Edit groups and references** panel lists groups in opening order, shows each capture number, links to its references and supports named, numbered and noncapturing forms.
+
+The shared API is `editGroup(source, location, { capturing, name }, options?) → string`. Use the opening `GroupSegment` (`edge: "start"`) from `compile` as the location; it includes any repetition modifier. Pass `capturing: true` with a valid unique Unicode identifier or `name: null` for a numbered capture. A noncapturing group requires `capturing: false, name: null`. Pass the same flags as the original compilation.
+
+Run this example from the source checkout's root:
+
+```js
+import { compile, editGroup } from "./index.js";
+
+const rules = 'capture "word" {\nletter\n}\nsame as capture "word"';
+const renamed = editGroup(
+  rules,
+  { line: 1, column: 1 },
+  { capturing: true, name: "label" },
+);
+console.log(compile(renamed).source); // (?<label>[A-Za-z])\k<label>
+```
+
+Renaming updates resolved named references. Changing a named capture to numbered changes its named references to the correct number. Adding or removing an unreferenced capture adjusts all existing numeric references to keep their original targets, including nested groups and captures in assertions or alternatives. Numeric references remain numeric when their capture receives a name. Other literals, indentation, line endings, trailing spaces and repetition modifiers are retained.
+
+Removing a referenced capture reports `REFERENCED_CAPTURE` at the first reference; remove or change those references first. An opening location without a group reports `UNKNOWN_GROUP`. Invalid argument shapes throw `TypeError`; invalid names, duplicates, flags and source budgets use the shared positioned diagnostics. The entire proposed document is parsed and compiled before returning a string, including the 16,384 UTF-16-unit source limit. Rejected edits return no partial document; the workshop keeps the original rules and valid regex.
+
+In the capture explorer, **Highlight** marks a capture's native UTF-16 input range. An empty capture shows a caret; absent captures and runtimes without native capture indices have no highlight button. Lookaround captures may be outside the consumed match. This is a view of native capture results, not an execution trace; matching remains in the bounded worker.
+
 ## Lookaround assertions
 
 Assertions test the text around the current input position without consuming characters. Open a block with one of these four fixed phrases and close it with `}` on its own line:

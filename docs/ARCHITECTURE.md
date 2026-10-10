@@ -41,6 +41,12 @@ The parser uses a stack for brace-delimited groups, sharing existing atom parsin
 
 References are resolved against the completed capture table after parsing. A reference carries its target token's location and the enclosing groups at that point; this distinguishes missing, forward and open/self targets. The language rejects forward/open references explicitly, while preserving native empty behavior for nonparticipating optional captures. Numeric references have a noncapturing emission boundary to prevent a following literal digit from extending the reference number. CLI, declarations, explanations and workshop compilation share the resolved metadata.
 
+## Group editing
+
+`src/edit-group.js` edits group definitions using the parser's resolved capture table and the same compiler. It validates the original document, traverses group/assertion/alternative nodes in opening order, computes retained capture numbers and patches only the selected header and affected reference tokens. Quote-aware line splitting preserves exact UTF-16 locations across supported line separators. A referenced capture cannot become noncapturing; all other proposals are parsed and compiled again before a string is returned. The source-only `editGroup` export and local workshop form share this behavior; no second grammar or matcher is introduced.
+
+Workshop capture highlighting reuses the native ranges already validated by the worker controller. It can show empty captures and lookaround values outside the consumed match, but never guesses spans for absent captures or runtimes without native indices. Matching retains the existing worker cancellation, result validation and deadline. These additions are not in the published dev.5 package/site.
+
 ## Unicode property atoms
 
 An explicit `unicodeProperty` atom keeps the native alias, complement polarity, repetition and original value location. The parser validates JSON quoting and ASCII alias shape; the generator probes native property support and validates actual aliases before emitting `\p{…}` or `\P{…}`. Runtime membership owns classification and Unicode edition, avoiding a bundled property table or ASCII approximation. Typed `UnicodePropertySegment` metadata carries the alias and exact source trace through explanations, CLI and the existing isolated workshop worker. Reverse escape parsing preserves aliases and complements both standalone and inside composable classes.

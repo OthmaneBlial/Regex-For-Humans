@@ -54,7 +54,10 @@ end
 | [组合字符类](../LANGUAGE.md#composable-character-classes) | ✅ |
 | [Unicode 字符串和嵌套集合](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | 全部八个 JavaScript 标志 | ✅ |
+| [编辑分组与高亮捕获范围](../LANGUAGE.md#editing-groups) | — |
 | 其他正则引擎、自由英文 | — |
+
+**仅在源码版本中提供：**本地工作坊新增 **Edit groups and references**，可重命名捕获组、切换分组类型并定位引用。编号变化后，数字引用仍指向原来的捕获组；仍被引用的捕获组不能改为非捕获组，拒绝操作时保留原规则。**Highlight** 根据原生索引高亮捕获范围，支持空捕获和消耗的匹配范围之外的捕获。`editGroup` API 返回经过验证的规则。这些新增功能尚未包含在 npm `0.1.0-dev.5` 或线上工作坊中。参见[编辑分组](../LANGUAGE.md#editing-groups)。
 
 当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.5` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
 

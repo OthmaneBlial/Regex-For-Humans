@@ -58,7 +58,10 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 | [Classes de caractères combinées](../LANGUAGE.md#composable-character-classes) | ✅ |
 | [Chaînes Unicode et ensembles imbriqués](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | Les huit flags JavaScript | ✅ |
+| [Édition des groupes et surlignage des captures](../LANGUAGE.md#editing-groups) | — |
 | Autres moteurs et anglais libre | — |
+
+**Uniquement dans le dépôt source :** l’atelier local propose **Edit groups and references** pour renommer une capture, changer son type et accéder à ses références. Les références numériques conservent leur cible après une renumérotation ; supprimer une capture référencée est refusé sans modifier les règles. **Highlight** surligne la position native d’une capture, même vide ou hors du texte consommé. L’API `editGroup` renvoie des règles validées. Ces ajouts ne sont pas encore dans npm `0.1.0-dev.5` ni dans l’atelier hébergé. Voir l’[édition des groupes](../LANGUAGE.md#editing-groups).
 
 Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord, puis augmenter le nombre si les règles suivantes le demandent. Disponible dans npm `0.1.0-dev.5`. Voir les [règles de répétition](../LANGUAGE.md#repetition).
 
