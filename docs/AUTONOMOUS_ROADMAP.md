@@ -9,7 +9,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Implemented: reverse translation of captures, composite/nested groups and backward references. The differential corpus checks native match/capture indices, empty/absent values, Unicode names, all supported flags, nested dot behavior and original-source reference diagnostics. Full local `npm run verify` passes: 238 Node tests, 282 desktop/mobile Chrome checks, 52 Firefox/WebKit checks, 62 homepage checks, clean installed-package verification, builds and zero audit vulnerabilities. All 16 dedicated group/reference/reverse tests also pass on Node 22.23.3.
 - Validation: the 227-test Node suite plus the added group-anchor regression, lint/type checks, local documentation links and a clean installed-package JavaScript/TypeScript consumer pass. All 54 desktop/mobile group, security and accessibility browser checks pass.
 - Limits: 64 nesting levels; 16,384 source units; 200 lines; repetition counts up to 1,000. Names are unique across the document.
-- Distribution: these changes are unreleased. npm currently publishes `0.1.0-dev.3`.
+- Distribution: groups, references and their reverse translation are included in the published `0.1.0-dev.4` preview. Exact archive and registry evidence is in [DISTRIBUTION.md](DISTRIBUTION.md).
 
 ## Next priorities
 
@@ -30,7 +30,8 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Implemented: ordered `either { … }` branches in both directions, nested/sequence/empty choices, whole-choice repetition, capture/reference preservation and typed start/branch/end source trace segments. Each direct entry is one choice; a `group` block holds a sequence or an empty choice.
 - Native parity: 30 patterns × eight supported flag combinations × 34 inputs compare full match arrays, named values and native capture indices. Shared browser checks add 936 comparisons per engine/viewport and verify capture participation, keyboard navigation and 320px layout.
 - Verification: all components pass: 251 Node tests, 296 bundled Chromium desktop/mobile workshop checks, 66 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds, a clean package consumer and zero audit vulnerabilities. All 26 focused Node 22 checks pass. The first full command found obsolete alternative-error fixtures; equivalent unsupported lookaheads retain the selection/scrolling/accessibility/recovery assertions. The subsequent command passed the compiler/workshop/compatibility stages and found stale homepage screenshot metadata. Correcting the image URL/dimensions and rerunning all 64 site checks plus audit completes the component gates; this is not one uninterrupted full-command pass.
-- Distribution: the maintainer explicitly requested a new npm release and matching `.io` website/README updates on 10 October 2026. `0.1.0-dev.4` is the next development-preview candidate; final verification, exact archive publication and public checks remain required. This does not close the larger mission, stable-release or human review gates.
+- Publication: the maintainer's requested `0.1.0-dev.4` npm preview is published from annotated tag/source `af70291`, with both `preview` and `latest` updated. The exact 192,138-byte archive passes clean JavaScript/TypeScript consumers on Node 25 and Node 22 and matches npm/GitHub downloads. Public installations pass eighteen recipes, 704 comparisons and 36 CLI directions per runtime.
+- Site/README: Pages commit `1dfaf1c` built successfully; all 58 public files match local hashes. Chrome desktop/mobile, Firefox and WebKit pass version, date capture, alternative/import and source-navigation checks without page errors or 320px overflow. The ten README guides and real screenshots reflect dev.4; actual Arabic/Urdu GitHub views retain RTL prose/tables and all 20 canonical LTR code blocks at 1280/390px. Independent language review remains open. This milestone does not close the larger mission, stable-release or human review gates.
 
 ## Evidence and constraints
 
@@ -48,4 +49,4 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Compiler architecture and language details stay in [ARCHITECTURE.md](ARCHITECTURE.md) and [LANGUAGE.md](LANGUAGE.md); security policy stays in [SECURITY_MODEL.md](SECURITY_MODEL.md). Avoid duplicate policy documents.
 - Competitive research is recorded separately; do not import competitor code or assets.
 
-This file records progress, not completion of the entire mission. Advanced groups, reverse translation, the workshop, localization and later waves must be audited individually before claiming completion.
+This file records progress, not completion of the entire mission. Remaining advanced syntax, visualization, workshop localization and later waves still need implementation and verification.
