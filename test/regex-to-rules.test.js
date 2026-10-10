@@ -280,7 +280,7 @@ test("empty non-capturing groups translate to zero-count rules with equivalent m
     }
   }
   for (const [source, column] of [
-    ["(?:)*?", 6],
+    ["(?:)(?=a)", 5],
     ["(?:){1001}", 5],
     ["[]", 1],
   ]) {
@@ -715,7 +715,7 @@ test("unsupported lookaround is identified at its opening parenthesis", () => {
               message,
               line: 1,
               column: prefix.length + 1,
-              hint: "Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround, lazy quantifiers and forward/open references are not supported.",
+              hint: "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround and forward/open references are not supported.",
             });
             return true;
           },
@@ -742,7 +742,7 @@ test("rejects features it cannot preserve and non-Unicode matching", () => {
   for (const [regex, column] of [
     [/(?=a)a/u, 1],
     [/\bword/u, 1],
-    [/a*?/u, 3],
+    [/ab(?=c)/u, 3],
     [/\p{L}/u, 1],
   ]) {
     assert.throws(() => regexToRules(regex), {

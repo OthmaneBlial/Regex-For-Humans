@@ -51,8 +51,11 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 | Captures nommées/numérotées et groupes imbriqués | ✅ | ✅ |
 | Répétition de blocs et références vers une capture précédente | ✅ | ✅ |
 | Alternatives ordonnées avec `either { … }` | ✅ | ✅ Choix imbriqués et traduction inverse |
-| Assertions et quantificateurs paresseux | — | Prévus ; actuellement refusés |
+| Répétition paresseuse avec `lazy` | — | ✅ Dans le code source ; non publiée |
+| Assertions avant/arrière | — | Prévues ; actuellement refusées |
 | Autres moteurs et anglais libre | — | Hors du langage actuel |
+
+Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord, puis augmenter le nombre si les règles suivantes le demandent. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [règles de répétition](../LANGUAGE.md#repetition).
 
 npm `0.1.0-dev.4` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
 

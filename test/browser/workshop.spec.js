@@ -2165,7 +2165,7 @@ test("unsupported group errors identify the feature and preserve edited rules be
     await page.locator("#reverse-button").press("Enter");
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(reverse).toHaveAccessibleDescription(
-      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround, lazy quantifiers and forward/open references are not supported.`,
+      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround and forward/open references are not supported.`,
     );
     await expect(editor).toHaveValue(rules);
     await expect(output).toHaveText("/^Saved$/isu");
@@ -2209,7 +2209,7 @@ test("reverse syntax errors select their source character and reveal wrapped or 
     [" \r\n\t/^😀(?=AB)AB$/u \n", "("],
     ["/^(?:😀(?=AB)AB)$/u", "("],
     ["/^[a-c]+$/u", "-"],
-    ["/^(?:😀)*?$/u", "?"],
+    ["/^(?:😀)\\p{L}$/u", "\\"],
     [` \n\t/^${"A".repeat(700)}😀(?=B)B$/u \n`, "("],
   ]) {
     await reverse.fill(literal);
@@ -2371,9 +2371,9 @@ test("empty non-capturing groups preserve zero-count matching in full and search
   }
   await reverse.fill("/(?:)*?/u");
   await page.locator("#reverse-button").press("Enter");
-  await expect(reverse).toHaveAttribute("aria-invalid", "true");
-  await expect(page.locator("#reverse-feedback")).toContainText("Column 6: Lazy quantifiers");
-  await expect(output).toHaveText("/^a.{0}b$/u");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(editor).toHaveValue("lazy 0 any character");
+  await expect(output).toHaveText("/.{0}?/u");
   await expect(page.locator("#copy-button")).toBeEnabled();
   await reverse.fill("/(?:){0,4}/u");
   await page.locator("#reverse-button").press("Enter");

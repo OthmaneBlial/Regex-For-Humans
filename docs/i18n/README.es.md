@@ -47,8 +47,11 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 | Capturas con nombre/número y bloques anidados | ✅ | ✅ |
 | Repetición de bloques y referencias a capturas anteriores | ✅ | ✅ |
 | Alternativas ordenadas con `either { … }` | ✅ | ✅ Opciones anidadas y conversión inversa |
-| Aserciones y cuantificadores no codiciosos | — | Previsto; actualmente se rechaza |
+| Repetición no codiciosa con `lazy` | — | ✅ En el código fuente; aún no publicada |
+| Aserciones de anticipación y retrospección | — | Previstas; actualmente se rechazan |
 | Otros motores e inglés libre | — | Fuera del lenguaje actual |
+
+En el código fuente, `lazy digits` genera `\d+?`: prueba primero un dígito y amplía la repetición si las reglas siguientes lo requieren. Esta función aún no está en npm `0.1.0-dev.4`. Consulta las [reglas de repetición](../LANGUAGE.md#repetition).
 
 npm `0.1.0-dev.4` incluye grupos, capturas, referencias anteriores y alternativas ordenadas en la biblioteca y el CLI. El taller añade inspección de capturas y múltiples coincidencias de búsqueda. Consulta [compatibilidad](../COMPATIBILITY.md) y [publicación](../DISTRIBUTION.md).
 

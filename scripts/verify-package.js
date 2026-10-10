@@ -109,6 +109,15 @@ try {
     `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
+const lazyForward = compile("lazy digits");
+if (toRegExp(lazyForward).exec("1234")?.[0] !== "1" || lazyForward.segments[0].repetition?.lazy !== true) throw new Error("Installed lazy compilation changed its preferred count or metadata");
+for (const source of ["(?<number>[0-9]+?)", "(?<optional>a)??a", "(?:AB){1,3}?", "(?:)*?"]) {
+  const original = new RegExp(source, "du");
+  const translated = regexToRules(new RegExp(source, "u"));
+  const result = compile(translated.rules, { flags: translated.flags });
+  const rebuilt = new RegExp(result.source, "d" + result.flags);
+  for (const sample of ["", "1234", "aa", "ABAB", "😀"]) assert.deepEqual(rebuilt.exec(sample), original.exec(sample));
+}
 const result = compile(${JSON.stringify(rules)});
 const grouped = compile('start\\ncapture "outer" {\\ncapture "year" {\\n4 digits\\n}\\n}\\nend');
 const captured = toRegExp(grouped).exec("2026");
@@ -287,6 +296,10 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
     `import { CompileError, compile, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
 import type { CompileOptions, CompileResult, RegexSegment, Repetition, ReverseTranslation } from "regex-for-humans";
 const result: CompileResult = compile("start 3 digits\\nend", { flags: "i" });
+const lazyResult: CompileResult = compile("lazy digits");
+const lazyRange: Repetition = { kind: "range", min: 2, max: 4, lazy: true };
+const lazyPreference: boolean | undefined = lazyRange.lazy;
+console.log(lazyResult, lazyPreference);
 const defaults: CompileOptions = Object.freeze({ flags: undefined });
 compile("digit", defaults);
 compile("digit", { flags: undefined });
@@ -417,6 +430,16 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
     throw new Error("The installed CLI did not preserve reverse translation and its flags.");
   }
   const literalInput = "/^😀$/u";
+  const lazyCli = JSON.parse(
+    run([...cliArgs, "--json", "-"], { cwd: consumer, input: "lazy digits" }),
+  );
+  if (lazyCli.segments[0].repetition?.lazy !== true)
+    throw new Error("Installed CLI lost lazy metadata.");
+  const lazyImport = JSON.parse(
+    run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: "/a+?/u" }),
+  );
+  if (lazyImport.rules !== 'lazy one or more "a"')
+    throw new Error("Installed CLI lost lazy import semantics.");
   const paddedLiteral = `${"\u00a0".repeat(REGEX_LITERAL_INPUT_LIMIT - literalInput.length)}${literalInput}`;
   const paddedReverse = JSON.parse(
     run([...cliArgs, "--reverse", "--json", "-"], { cwd: consumer, input: paddedLiteral }),

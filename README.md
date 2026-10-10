@@ -67,8 +67,11 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | Numbered/named captures and nested blocks | ✅ | ✅ |
 | Whole-block repetition and backward references | ✅ | ✅ |
 | Ordered alternatives with `either { … }` | ✅ | ✅ Nested choices and reverse translation |
-| Lookaround and lazy quantifiers | — | Planned; currently rejected |
+| Lazy repetition with `lazy` | — | ✅ Unreleased; atoms, blocks, alternatives and references |
+| Lookaround | — | Planned; currently rejected |
 | Other regex engines and free-form English | — | Outside the current language |
+
+From the source checkout, `lazy digits` generates `\d+?`: try one digit first, then expand if following rules need more. `lazy any text` generates `.*?`. These additions are **unreleased** and are not in npm `0.1.0-dev.4`; see [greedy and lazy repetition](docs/LANGUAGE.md#repetition).
 
 The `0.1.0-dev.4` preview includes groups, captures, backward references and ordered alternatives in the library and CLI. The browser workshop adds capture inspection and multiple search matches. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
 
@@ -115,7 +118,7 @@ start
 end
 ```
 
-The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. The preview also imports numbered/named captures, nested groups, ordered alternatives and backward references, preserving capture values and numbering. It rejects syntax it cannot express, including lookaround, forward/open references and lazy quantifiers; see the [language guide](docs/LANGUAGE.md) for its exact limits. These features are included in npm `0.1.0-dev.4`.
+The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. The published preview also imports numbered/named captures, nested groups, ordered alternatives and backward references, preserving capture values and numbering. npm `0.1.0-dev.4` rejects lookaround, forward/open references and lazy quantifiers. The current source checkout adds exact lazy-quantifier imports; see the [language guide](docs/LANGUAGE.md) for its limits.
 
 Reverse translation also handles JavaScript's empty negative class `[^]`, which includes line breaks. When ordinary `.` atoms appear beside it, their output rules explicitly exclude line terminators so matching stays the same.
 

@@ -47,8 +47,11 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 | Capturas nomeadas/numeradas e blocos aninhados | ✅ | ✅ |
 | Repetição de blocos e referências a capturas anteriores | ✅ | ✅ |
 | Alternativas ordenadas com `either { … }` | ✅ | ✅ Opções aninhadas e conversão inversa |
-| Asserções e quantificadores não gulosos | — | Planejado; atualmente rejeitado |
+| Repetição não gulosa com `lazy` | — | ✅ No código-fonte; ainda não publicada |
+| Asserções de antecipação e retrospecção | — | Planejadas; atualmente rejeitadas |
 | Outros motores e inglês livre | — | Fora do idioma de regras atual |
+
+No código-fonte, `lazy digits` gera `\d+?`: tenta um dígito primeiro e aumenta a repetição se as regras seguintes precisarem. Esse recurso ainda não está no npm `0.1.0-dev.4`. Consulte as [regras de repetição](../LANGUAGE.md#repetition).
 
 O npm `0.1.0-dev.4` inclui grupos, capturas, referências anteriores e alternativas ordenadas na biblioteca e no CLI. A oficina acrescenta inspeção de capturas e múltiplas correspondências de busca. Veja [compatibilidade](../COMPATIBILITY.md) e [publicação](../DISTRIBUTION.md).
 

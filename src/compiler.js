@@ -38,20 +38,27 @@ function escapeClass(values) {
 /** @param {Repetition|null} repetition */
 function repetitionSource(repetition) {
   if (!repetition) return "";
+  let source;
   switch (repetition.kind) {
     case "zeroOrMore":
-      return "*";
+      source = "*";
+      break;
     case "oneOrMore":
-      return "+";
+      source = "+";
+      break;
     case "exact":
-      return `{${repetition.min}}`;
+      source = `{${repetition.min}}`;
+      break;
     case "range":
-      return `{${repetition.min},${repetition.max}}`;
+      source = `{${repetition.min},${repetition.max}}`;
+      break;
     case "atLeast":
-      return `{${repetition.min},}`;
+      source = `{${repetition.min},}`;
+      break;
     default:
       throw new TypeError("Unknown repetition kind.");
   }
+  return source + (repetition.lazy ? "?" : "");
 }
 
 /** @param {AtomNode} node */

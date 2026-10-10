@@ -209,6 +209,35 @@ function readCharacterList(text, location, rawLine) {
 
 /** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|BackreferenceNode} */
 function parseAtom(text, location, rawLine) {
+  const lazy = /^lazy(?:\s+|$)/iu.exec(text);
+  if (!lazy) return parseItem(text, location, rawLine);
+  if (!text.slice(lazy[0].length) || /^lazy(?:\s|$)/iu.test(text.slice(lazy[0].length)))
+    fail(
+      "INVALID_LAZY_REPETITION",
+      "Write one lazy modifier before a repeated item.",
+      location,
+      'Use `lazy digits`, `lazy optional "-"` or `lazy one or more group {`.',
+    );
+  const node = parseItem(
+    text.slice(lazy[0].length),
+    { line: location.line, column: location.column + lazy[0].length },
+    rawLine,
+  );
+  if (!node.repetition)
+    fail(
+      "INVALID_LAZY_REPETITION",
+      "Lazy needs an explicit repetition or a rule that already matches a sequence.",
+      location,
+      "Use `lazy digits` or `lazy one or more digit` instead of `lazy digit`.",
+    );
+  node.repetition = { ...node.repetition, lazy: true };
+  node.location = location;
+  node.text = text;
+  return node;
+}
+
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|BackreferenceNode} */
+function parseItem(text, location, rawLine) {
   let remaining = text;
   /** @type {Repetition|null} */
   let repetition = null;

@@ -39,6 +39,8 @@ References are resolved against the completed capture table after parsing. A ref
 
 ## Reverse translation
 
+Repetition retains the same discriminated kind and bounds, with optional `lazy: true` for shortest-count-first matching. The parser applies a single leading `lazy` modifier to a validated repeated item and preserves original source locations. Compilation adds JavaScript's `?` suffix in the shared quantifier emitter; explanations distinguish the count preference without simulating matching. Reverse tokens retain that preference through literal/group normalization, alternatives, empty groups and dot-all conversion.
+
 The public `regexToRules(regex)` delegates to `src/regex-to-rules.js`. It reads a bounded subset of Unicode JavaScript `RegExp` syntax and returns `{ rules, flags }`; `flags` contains the `i`/`s` compiler options needed to preserve matching, while multiline behavior is represented by line-anchor rules. It may add `s` for an empty negative class and express ordinary dots as explicit line-terminator exclusions when both occur together. The emitted rules are checked by the existing parser. Unsupported operators and flags fail with positioned `CompileError` diagnostics instead of returning approximate or partial rules.
 
 Native getters read the stored metadata, including for regexes from another JavaScript context. The native flags accessor receives a projection that reads those same getters rather than instance overrides. Unsupported flags, missing Unicode mode and oversized source are rejected in that order, without serializing or reconstructing the input regex. Translation leaves `lastIndex` unchanged.

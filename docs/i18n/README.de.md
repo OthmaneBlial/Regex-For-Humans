@@ -47,8 +47,11 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 | Benannte/nummerierte Captures und verschachtelte Blöcke | ✅ | ✅ |
 | Blockwiederholungen und Rückverweise | ✅ | ✅ |
 | Geordnete Alternativen mit `either { … }` | ✅ | ✅ Verschachtelte Auswahl und Rückübersetzung |
-| Lookarounds und nicht gierige Quantifizierer | — | Geplant; derzeit abgelehnt |
+| Nicht gierige Wiederholung mit `lazy` | — | ✅ Im Quellcode; noch nicht veröffentlicht |
+| Lookarounds | — | Geplant; derzeit abgelehnt |
 | Andere Engines und freie englische Sätze | — | Außerhalb der aktuellen Sprache |
+
+Im Quellcode erzeugt `lazy digits` den Ausdruck `\d+?`: zuerst eine Ziffer versuchen, dann bei Bedarf für die folgenden Regeln mehr Wiederholungen. Diese Ergänzung ist noch nicht in npm `0.1.0-dev.4` enthalten. Siehe [Wiederholungsregeln](../LANGUAGE.md#repetition).
 
 npm `0.1.0-dev.4` enthält Gruppen, Captures, Rückreferenzen und geordnete Alternativen in Bibliothek und CLI. Der Workshop ergänzt Capture-Ansichten und mehrere Suchtreffer. Siehe [Kompatibilität](../COMPATIBILITY.md) und [Veröffentlichungsnachweise](../DISTRIBUTION.md).
 

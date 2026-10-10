@@ -3,12 +3,13 @@ export interface SourceLocation {
   column: number;
 }
 
-export type Repetition =
+export type Repetition = (
   | { kind: "exact"; min: number }
   | { kind: "range"; min: number; max: number }
   | { kind: "atLeast"; min: number }
   | { kind: "zeroOrMore" }
-  | { kind: "oneOrMore" };
+  | { kind: "oneOrMore" }
+) & { lazy?: boolean };
 
 interface SegmentBase {
   sourceStart: number;

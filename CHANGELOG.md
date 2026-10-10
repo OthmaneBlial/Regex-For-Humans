@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Support `lazy` on every existing repetition and implicit sequence, including entire groups, captures, alternatives and references. Import native lazy quantifiers without changing capture values, participation, indices, Unicode boundaries or supported flags. Keep greedy defaults and add optional typed `lazy` metadata, precise modifier diagnostics and shortest-count-first explanations through the shared API, CLI and workshop. This addition is not in npm `0.1.0-dev.4`.
+
 ## 0.1.0-dev.4 (10 October 2026)
 
 - Compile ordered `either` choices, including nested/sequence/empty branches, alternatives inside captures and whole-choice repetition. Preserve precedence, capture opening order, absent/final-iteration values and references. Reverse-translate native disjunctions into editable blocks, retain Unicode atom boundaries and positioned output budgets, and expose typed start/branch/end trace segments through the same API, CLI and workshop.

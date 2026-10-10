@@ -23,6 +23,19 @@ function repetitionText(repetition, optional) {
 
 /** @param {import('./ast.js').RuleNode} node @param {string} flags @param {boolean} [hasFollowingRule] */
 export function explainNode(node, flags, hasFollowingRule = false) {
+  const meaning = describeNode(node, flags, hasFollowingRule);
+  if (node.kind === "anchor" || !node.repetition?.lazy) return meaning;
+  return (
+    meaning +
+    (node.repetition.kind === "exact" ||
+    (node.repetition.kind === "range" && node.repetition.min === node.repetition.max)
+      ? " Lazy repetition has a fixed count here."
+      : " Lazy: try the fewest repetitions first, then expand if following rules require it.")
+  );
+}
+
+/** @param {import('./ast.js').RuleNode} node @param {string} flags @param {boolean} hasFollowingRule */
+function describeNode(node, flags, hasFollowingRule) {
   if (node.kind === "anchor") {
     if (node.mode === "line") {
       return node.edge === "start" ? "Start of each line (m)." : "End of each line (m).";
@@ -31,7 +44,7 @@ export function explainNode(node, flags, hasFollowingRule = false) {
   }
 
   const caseNote = flags.includes("i") ? ", ignoring case (i)" : "";
-  const optional = /^optional\s/iu.test(node.text);
+  const optional = /^(?:lazy\s+)?optional\s/iu.test(node.text);
 
   if (node.kind === "backreference") {
     return (
@@ -60,7 +73,7 @@ export function explainNode(node, flags, hasFollowingRule = false) {
   )
     return "One or more whitespace characters, including line breaks.";
 
-  if (node.repetition?.kind === "zeroOrMore") {
+  if (node.repetition?.kind === "zeroOrMore" && !node.repetition.lazy) {
     if (node.atomType === "wildcard") {
       const context = hasFollowingRule ? " up to the next rule" : "";
       return flags.includes("s")

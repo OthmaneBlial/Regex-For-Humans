@@ -36,11 +36,11 @@ const CONTROL_ESCAPES = new Map([
 ]);
 
 const UNSUPPORTED_HINT =
-  "Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround, lazy quantifiers and forward/open references are not supported.";
+  "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround and forward/open references are not supported.";
 const LINE_TERMINATORS = ["\n", "\r", "\u2028", "\u2029"];
 
 /** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
-/** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number}} QuantifierToken */
+/** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number, lazy?: boolean}} QuantifierToken */
 /** @typedef {AtomToken & QuantifierToken & {index: number}} PositionedAtom */
 
 /** @param {string} message @param {number} index @param {string} [hint] @returns {never} */
@@ -359,9 +359,9 @@ function readSequence(source, start, multiline, depth) {
     cursor = atom.end;
     let quantifier = readQuantifier(source, cursor);
     cursor = quantifier.end;
-    if (source[cursor] === "?")
-      unsupported("Lazy quantifiers are not supported by the rule language.", cursor);
-    if (atom.empty) quantifier = { end: cursor, kind: "exact", min: 0 };
+    if (quantifier.kind !== null && source[cursor] === "?")
+      quantifier = { ...quantifier, lazy: true, end: ++cursor };
+    if (atom.empty) quantifier = { ...quantifier, end: cursor, kind: "exact", min: 0 };
     atoms.push({ ...atom, ...quantifier, index });
   }
   return { atoms, end: cursor };
@@ -502,7 +502,7 @@ export function regexToRules(regex) {
         continue;
       }
       flushLiteral();
-      const prefix =
+      let prefix =
         atom.kind === null
           ? ""
           : atom.kind === "optional"
@@ -518,6 +518,7 @@ export function regexToRules(regex) {
                     : atom.kind === "atLeast"
                       ? `at least ${atom.min}`
                       : unsupported("Unknown repetition form.", atom.index);
+      if (atom.lazy) prefix = `lazy ${prefix}`;
       if (atom.alternation) {
         addRule(`${prefix ? `${prefix} ` : ""}either {`, atom.index);
         for (const branch of atom.alternation.branches) {
@@ -552,11 +553,14 @@ export function regexToRules(regex) {
       if (!atom.phrase) unsupported("This regex atom has no rule-language equivalent.", atom.index);
       const set = atom.set;
       if (set?.negative && atom.kind === "zeroOrMore") {
-        addRule(`text without: ${set.values.map(quoteText).join(", ")}`, atom.index);
+        addRule(
+          `${atom.lazy ? "lazy " : ""}text without: ${set.values.map(quoteText).join(", ")}`,
+          atom.index,
+        );
         continue;
       }
       if (atom.phrase === "any character" && atom.kind === "zeroOrMore") {
-        addRule("any text", atom.index);
+        addRule(`${atom.lazy ? "lazy " : ""}any text`, atom.index);
         continue;
       }
       addRule(prefix ? `${prefix} ${atom.phrase}` : atom.phrase, atom.index);

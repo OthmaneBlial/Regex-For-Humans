@@ -13,7 +13,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Lookarounds and lazy quantifiers across the same AST and both translation directions.
+1. Positive/negative lookahead and lookbehind across the AST, both translation directions and native capture inspection.
 2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 3. Workshop localization and the remaining mission waves.
 
@@ -34,6 +34,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Site/README: Pages commit `1dfaf1c` built successfully; all 58 public files match local hashes. Chrome desktop/mobile, Firefox and WebKit pass version, date capture, alternative/import and source-navigation checks without page errors or 320px overflow. The ten README guides and real screenshots reflect dev.4; actual Arabic/Urdu GitHub views retain RTL prose/tables and all 20 canonical LTR code blocks at 1280/390px. Independent language review remains open. This milestone does not close the larger mission, stable-release or human review gates.
 
 ## Evidence and constraints
+
+### Lazy repetition milestone
+
+- Implemented: a single leading `lazy` modifier on all existing quantifiers and implicit sequence rules, including groups, captures, choices and references. Greedy defaults and their metadata stay unchanged. Reverse translation preserves lazy preference through empty groups, Unicode boundaries, literal normalization and dot-all conversion. Typed repetition metadata adds optional `lazy`; explanations describe count preference and later expansion.
+- Native parity: 35 patterns × eight supported flag sets × 34 inputs compare complete match arrays, named captures and native `d` indices. Modifier/count/reference/depth diagnostics, CLI directions and source spans are covered. Shared browser flows add 1,280 native comparisons each and check full/search behavior, absent captures, keyboard selection, accessibility and 320px layout.
+- Verification: `CI=1 npm run verify` completed successfully: 257 Node tests, 300 bundled Chromium desktop/mobile checks, 70 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds, clean JavaScript/TypeScript installation and zero audit vulnerabilities. All 32 focused checks and a separate clean package consumer pass on Node 22.23.3. The final guide text and verification records are checked again after the full run.
+- Distribution: this is an unreleased source addition. npm `0.1.0-dev.4` and its exact published archive remain unchanged. All ten README guides identify that boundary; Arabic/Urdu keep visible RTL/LTR attributes and canonical code blocks. Lookaround, visualization, broader flags, exports, workshop localization and later mission waves remain open.
 
 - Capture explorer and RTL milestone: native capture values/spans, absent versus empty participation, final repeated captures, nested groups, rule navigation and up to 100 nonoverlapping search matches are implemented inside the same isolated worker/deadline. Empty matches advance by Unicode code point; unsupported indices are explicitly unavailable. Nested replies are validated against sent input/count/mode before rendering; tables are created on demand. The date recipe exposes year/month/day.
 - Installed Chrome verifies the date and Unicode empty/absent capture flows at 1280/390px; all four capture-panel screenshots were visually inspected.

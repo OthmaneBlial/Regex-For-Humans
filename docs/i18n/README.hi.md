@@ -47,8 +47,11 @@ end
 | नाम वाले/क्रमांकित captures और nested blocks | ✅ | ✅ |
 | पूरे block की पुनरावृत्ति और पिछले capture के संदर्भ | ✅ | ✅ |
 | `either { … }` के साथ क्रमबद्ध विकल्प | ✅ | ✅ नेस्टेड विकल्प और reverse translation |
-| Lookaround और non-greedy quantifiers | — | योजना में; अभी अस्वीकृत |
+| `lazy` के साथ non-greedy दोहराव | — | ✅ वर्तमान source में; अभी रिलीज़ नहीं हुआ |
+| Lookaround assertions | — | योजना में; अभी अस्वीकृत |
 | दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — | वर्तमान भाषा के दायरे से बाहर |
+
+वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ। यह सुविधा npm `0.1.0-dev.4` में अभी शामिल नहीं है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
 
 npm `0.1.0-dev.4` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
 
