@@ -5,18 +5,18 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 ## Current wave: correctness and groups
 
 - Implemented: AST-backed numbered/named/noncapturing blocks, nested blocks, whole-block repetition, Unicode capture names, opening-order numbering, empty/absent capture semantics, source spans, explanations and positioned diagnostics.
+- Added: named/numbered references, resolved capture metadata, digit-boundary protection and missing/forward/open-reference diagnostics. All 233 Node tests, lint/types/docs and the clean package consumer pass. Group/reference workshop tests pass in desktop/mobile Chrome (4) and Firefox/WebKit (4); the 11 group/reference Node tests also pass on Node 22.23.3.
 - Validation: the 227-test Node suite plus the added group-anchor regression, lint/type checks, local documentation links and a clean installed-package JavaScript/TypeScript consumer pass. All 54 desktop/mobile group, security and accessibility browser checks pass.
 - Limits: 64 nesting levels; 16,384 source units; 200 lines; repetition counts up to 1,000. Names are unique across the document.
 - Distribution: these changes are unreleased. npm currently publishes `0.1.0-dev.3`.
 
 ## Next priorities
 
-1. Named/numbered backreferences with missing, forward and self-reference diagnostics.
-2. Exact reverse translation of captures and composite/nested groups; retain existing literal-group normalization where compatible.
-3. Workshop capture values, including absent versus empty participation, inside the isolated matching worker.
-4. Alternatives, lookarounds and lazy quantifiers across the same AST and both translation directions.
-5. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
-6. README localization in the seven requested languages and workshop localization.
+1. Exact reverse translation of captures, references and composite/nested groups; retain existing literal-group normalization where compatible.
+2. Workshop capture values, including absent versus empty participation, inside the isolated matching worker.
+3. Alternatives, lookarounds and lazy quantifiers across the same AST and both translation directions.
+4. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
+5. README localization in the seven requested languages and workshop localization.
 
 ## Evidence and constraints
 

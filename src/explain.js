@@ -33,6 +33,13 @@ export function explainNode(node, flags, hasFollowingRule = false) {
   const caseNote = flags.includes("i") ? ", ignoring case (i)" : "";
   const optional = /^optional\s/iu.test(node.text);
 
+  if (node.kind === "backreference") {
+    return (
+      `Same text as capture #${node.captureIndex}${typeof node.reference === "string" ? ` named ${quoteText(node.reference)}` : ""}. A nonparticipating capture matches empty text.` +
+      repetitionText(node.repetition, optional)
+    );
+  }
+
   if (node.kind === "group") {
     const label = node.capturing
       ? `Capture #${node.captureIndex}${node.name === null ? "" : ` named ${quoteText(node.name)}`}.`

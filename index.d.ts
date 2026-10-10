@@ -48,7 +48,19 @@ export interface GroupSegment extends SegmentBase {
   repetition: Repetition | null;
 }
 
-export type RegexSegment = AnchorSegment | TextSegment | CharacterSetSegment | GroupSegment;
+export interface BackreferenceSegment extends SegmentBase {
+  kind: "backreference";
+  reference: string | number;
+  captureIndex: number;
+  repetition: Repetition | null;
+}
+
+export type RegexSegment =
+  | AnchorSegment
+  | TextSegment
+  | CharacterSetSegment
+  | GroupSegment
+  | BackreferenceSegment;
 
 export interface CompileResult {
   source: string;

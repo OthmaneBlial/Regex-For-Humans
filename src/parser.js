@@ -6,6 +6,7 @@ import { quoteText } from "./display.js";
 /** @typedef {import('./ast.js').Repetition} Repetition */
 /** @typedef {import('./ast.js').AtomNode} AtomNode */
 /** @typedef {import('./ast.js').GroupNode} GroupNode */
+/** @typedef {import('./ast.js').BackreferenceNode} BackreferenceNode */
 /** @typedef {import('./ast.js').RuleNode} RuleNode */
 /** @typedef {import('./ast.js').ParsedRules} ParsedRules */
 
@@ -95,6 +96,7 @@ const OPTIONAL_PREFIX = /^optional(?=\s|$)\s*/iu;
 const SEQUENCE_PREFIX = /^(zero or more|one or more)(?=\s|$)\s*/iu;
 const AT_LEAST_PREFIX = /^(at least(?:\s+|$))(?:(\S+)(?:\s+|$))?/iu;
 const AT_LEAST_HINT = "Use `at least 3 digits`, with the minimum count before the item.";
+const CAPTURE_NAME = /^[$_\p{ID_Start}](?:[$\p{ID_Continue}]|\u200c|\u200d)*$/u;
 // Recognize malformed numeric tokens so parseCount owns their diagnostics.
 const COUNT_PREFIX = /^([+-]?(?:\p{Nd}|\.\p{Nd})\S*)(?:\s+|$)/u;
 
@@ -204,7 +206,7 @@ function readCharacterList(text, location, rawLine) {
   return items;
 }
 
-/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode} */
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|BackreferenceNode} */
 function parseAtom(text, location, rawLine) {
   let remaining = text;
   /** @type {Repetition|null} */
@@ -348,7 +350,7 @@ function parseAtom(text, location, rawLine) {
     if (capturing && suffix.startsWith('"')) {
       const quoted = readQuoted(suffix, nameLocation);
       name = quoted.value;
-      if (!/^[$_\p{ID_Start}](?:[$\p{ID_Continue}]|\u200c|\u200d)*$/u.test(name)) {
+      if (!CAPTURE_NAME.test(name)) {
         fail(
           "INVALID_CAPTURE_NAME",
           "A capture name must be a JavaScript identifier.",
@@ -375,6 +377,45 @@ function parseAtom(text, location, rawLine) {
       location,
       text,
       endLocation: location,
+    };
+  }
+
+  const backreference = /^same as capture(?:\s+|$)/iu.exec(remaining);
+  if (backreference) {
+    const suffix = remaining.slice(backreference[0].length);
+    const referenceLocation = {
+      line: location.line,
+      column: location.column + offset + backreference[0].length,
+    };
+    let reference;
+    if (suffix.startsWith('"')) {
+      const quoted = readQuoted(suffix, referenceLocation);
+      if (quoted.length !== suffix.length || !CAPTURE_NAME.test(quoted.value)) {
+        fail(
+          "INVALID_CAPTURE_REFERENCE",
+          "Use one quoted capture name or a positive capture number.",
+          referenceLocation,
+        );
+      }
+      reference = quoted.value;
+    } else {
+      reference = Number(suffix);
+      if (!/^[0-9]+$/u.test(suffix) || !Number.isSafeInteger(reference) || reference < 1) {
+        fail(
+          "INVALID_CAPTURE_REFERENCE",
+          "Use one quoted capture name or a positive capture number.",
+          referenceLocation,
+        );
+      }
+    }
+    return {
+      kind: "backreference",
+      reference,
+      captureIndex: 0,
+      referenceLocation,
+      repetition,
+      location,
+      text,
     };
   }
 
@@ -510,7 +551,12 @@ export function parse(source) {
   let nodes = rootNodes;
   /** @type {{node: GroupNode, parent: RuleNode[], sawEnd: boolean}[]} */
   const groups = [];
-  const names = new Set();
+  /** @type {Map<string, GroupNode>} */
+  const names = new Map();
+  /** @type {GroupNode[]} */
+  const captures = [];
+  /** @type {{node: BackreferenceNode, openGroups: GroupNode[]}[]} */
+  const references = [];
   let captureCount = 0;
   /** @type {'input'|'line'|null} */
   let anchorMode = null;
@@ -582,6 +628,7 @@ export function parse(source) {
       }
       if (node.capturing) {
         node.captureIndex = ++captureCount;
+        captures.push(node);
         if (node.name !== null) {
           if (names.has(node.name))
             fail(
@@ -589,14 +636,18 @@ export function parse(source) {
               `Capture ${quoteText(node.name)} is already defined.`,
               location(),
             );
-          names.add(node.name);
+          names.set(node.name, node);
         }
       }
       nodes.push(node);
       groups.push({ node, parent: nodes, sawEnd });
       nodes = node.nodes;
       sawEnd = false;
-    } else nodes.push(node);
+    } else {
+      nodes.push(node);
+      if (node.kind === "backreference")
+        references.push({ node, openGroups: groups.map((frame) => frame.node) });
+    }
   }
 
   if (groups.length)
@@ -607,5 +658,28 @@ export function parse(source) {
     );
   if (rootNodes.length === 0)
     fail("EMPTY_SOURCE", "Enter at least one instruction.", { line: 1, column: 1 });
+  for (const { node, openGroups } of references) {
+    const target =
+      typeof node.reference === "string" ? names.get(node.reference) : captures[node.reference - 1];
+    if (!target)
+      fail(
+        "MISSING_CAPTURE_REFERENCE",
+        `Capture ${typeof node.reference === "string" ? quoteText(node.reference) : node.reference} is not defined.`,
+        node.referenceLocation,
+      );
+    if (target.location.line > node.location.line)
+      fail(
+        "FORWARD_CAPTURE_REFERENCE",
+        "A capture reference must follow its capture.",
+        node.referenceLocation,
+      );
+    if (openGroups.includes(target))
+      fail(
+        "SELF_CAPTURE_REFERENCE",
+        "A capture reference must follow the capture's closing brace.",
+        node.referenceLocation,
+      );
+    node.captureIndex = target.captureIndex ?? 0;
+  }
   return { nodes: rootNodes, anchorMode };
 }

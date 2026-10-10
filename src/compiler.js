@@ -142,8 +142,17 @@ export function compileAst(parsed, options = {}) {
         });
         continue;
       }
+      // A numeric reference needs a boundary so a following digit cannot change its number.
       const fragment =
-        node.kind === "anchor" ? (node.edge === "start" ? "^" : "$") : atomSource(node);
+        node.kind === "anchor"
+          ? node.edge === "start"
+            ? "^"
+            : "$"
+          : node.kind === "backreference"
+            ? (typeof node.reference === "string"
+                ? `\\k<${node.reference}>`
+                : `(?:\\${node.captureIndex})`) + repetitionSource(node.repetition)
+            : atomSource(node);
       const sourceStart = source.length;
       source += fragment;
       segments.push({
@@ -154,20 +163,27 @@ export function compileAst(parsed, options = {}) {
         explanation: explainNode(node, flags, index + 1 < nodes.length),
         line: node.location.line,
         column: node.location.column,
-        ...(node.kind === "anchor"
-          ? { kind: "anchor", edge: node.edge, mode: node.mode }
-          : node.atomType === "charSet"
-            ? {
-                kind: "atom",
-                atomType: "charSet",
-                repetition: node.repetition,
-                negative: node.negative,
-              }
-            : {
-                kind: "atom",
-                atomType: node.atomType,
-                repetition: node.repetition,
-              }),
+        ...(node.kind === "backreference"
+          ? {
+              kind: "backreference",
+              reference: node.reference,
+              captureIndex: node.captureIndex,
+              repetition: node.repetition,
+            }
+          : node.kind === "anchor"
+            ? { kind: "anchor", edge: node.edge, mode: node.mode }
+            : node.atomType === "charSet"
+              ? {
+                  kind: "atom",
+                  atomType: "charSet",
+                  repetition: node.repetition,
+                  negative: node.negative,
+                }
+              : {
+                  kind: "atom",
+                  atomType: node.atomType,
+                  repetition: node.repetition,
+                }),
       });
     }
   }

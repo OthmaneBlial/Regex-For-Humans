@@ -233,7 +233,7 @@ end
 
 </details>
 
-**Captures on main:** the checkout now supports numbered and named `capture` blocks, nested `group` blocks and repetition of whole blocks. These additions are unreleased; see the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures-unreleased-on-main). Reverse translation of named/numbered captures and composite or nested groups remains unsupported at this milestone. These existing worked examples still validate shapes without extracting fields.
+**Captures on main:** the checkout now supports numbered and named `capture` blocks, nested `group` blocks, repetition of whole blocks and [named/numbered references](docs/LANGUAGE.md#capture-references-unreleased-on-main). These additions are unreleased; see the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures-unreleased-on-main). Reverse translation of named/numbered captures and composite or nested groups remains unsupported at this milestone. These existing worked examples still validate shapes without extracting fields.
 
 ## 🧩 Your pocket cheat sheet
 

@@ -111,6 +111,26 @@ Existing repetition modifiers apply to a whole block: `optional capture "suffix"
 
 The API keeps `{ source, flags, segments }`. Opening and closing braces produce `kind: "group"` segments with `edge`, `capturing`, `captureIndex`, `name`, and `repetition`. Each segment retains its original line, column, explanation and exact generated-source offsets. Consumers switching on `segments[].kind` should handle the added group variant. The CLI and workshop use this same compiler and trace. These additions are available from the checkout; the published `0.1.0-dev.3` package does not contain them yet. Reverse translation of captures and composite groups is still unsupported at this milestone.
 
+## Capture references (unreleased on main)
+
+Use `same as capture "name"` or `same as capture 1` after the capture's closing brace. Named and numbered references refer to the same opening-order capture table. Numbers are positive ASCII integers; leading zeros are accepted and normalized. Existing repetition modifiers also work on references.
+
+```text
+start
+capture "word" {
+  letters
+}
+space
+same as capture "word"
+end
+```
+
+This produces `^(?<word>[A-Za-z]+)\s\k<word>$` with `u`: `cat cat` matches and `cat dog` does not. The `i` option changes comparison according to native JavaScript case folding. Numbered references are emitted inside a noncapturing boundary such as `(?:\1)` so following literal digits cannot accidentally turn reference 1 into reference 12. A reference to an absent optional capture matches empty text, and references to repeated captures use the final captured value.
+
+Missing targets report `MISSING_CAPTURE_REFERENCE`; references before their target report `FORWARD_CAPTURE_REFERENCE`; references inside that target (including an enclosing capture) report `SELF_CAPTURE_REFERENCE`. Diagnostics point to the name or number. Forward and open/self references are valid in some JavaScript patterns and may match empty text; this language intentionally rejects them to make the dependency explicit. Duplicate names remain rejected. These are rule-language policies, not claims that JavaScript forbids those constructs.
+
+Reference trace segments have `kind: "backreference"`, `reference` (string or number), resolved `captureIndex`, `repetition` and the usual source offsets and explanation. Reverse translation of references remains unsupported at this milestone.
+
 ## Repetition
 
 A repetition modifier applies to the next item. Put it first: `3 digits`, `between 2 and 4 digits`, `optional "-"`, `zero or more digit`, `one or more any character`, or `at least 3 letter`. `optional <item>` is the same as `between 0 and 1 <item>` and generates `{0,1}`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters`, `lowercase letters`, `uppercase letters`, `spaces`, `word characters` and `path segment characters` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another repetition modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters.

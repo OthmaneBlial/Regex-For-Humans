@@ -26,3 +26,20 @@ test("nested capture blocks compile and retain keyboard-accessible source traces
   await page.locator("#rules-input").fill('capture "x" {\ndigit');
   await expect(page.locator("#diagnostic")).toContainText("Close this group");
 });
+
+test("capture references compile, match in the worker and locate missing targets", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#example-list button").first()).toBeEnabled();
+  await page
+    .locator("#rules-input")
+    .fill('start\ncapture "word" {\nletters\n}\nspace\nsame as capture "word"\nend');
+  await page.locator("#test-list .test-row textarea").first().fill("cat cat");
+  await expect(page.locator("#test-list .test-row").first()).toHaveAttribute("data-result", "pass");
+  await expect(page.locator("#trace-list")).toContainText('Same text as capture #1 named "word"');
+  await page.locator("#test-list .test-row textarea").first().fill("cat dog");
+  await expect(page.locator("#test-list .test-row").first()).toHaveAttribute("data-result", "fail");
+  await page.locator("#rules-input").fill("same as capture 1");
+  await expect(page.locator("#diagnostic")).toContainText("Capture 1 is not defined");
+});

@@ -114,6 +114,8 @@ const result = compile(${JSON.stringify(rules)});
 const grouped = compile('start\\ncapture "outer" {\\ncapture "year" {\\n4 digits\\n}\\n}\\nend');
 const captured = toRegExp(grouped).exec("2026");
 if (captured?.[1] !== "2026" || captured?.groups?.year !== "2026" || grouped.segments.filter(s => s.kind === "group" && s.edge === "start")[1]?.captureIndex !== 2) throw new Error("Installed group compilation changed captures or numbering");
+const reference = compile('start\\ncapture "word" {\\nletters\\n}\\nspace\\nsame as capture 1\\nend');
+if (!toRegExp(reference).test("cat cat") || toRegExp(reference).test("cat dog") || reference.segments.find(s => s.kind === "backreference")?.captureIndex !== 1) throw new Error("Installed capture reference changed behavior");
 let sourceReads = 0, flagReads = 0;
 const snapshot = toRegExp({
   get segments() { throw new Error("Installed helper must not read unused segments"); },
@@ -288,6 +290,11 @@ const cachedRegex: RegExp = toRegExp(cached);
 const pairRegex: RegExp = toRegExp({ source: result.source, flags: result.flags });
 const fullRegex: RegExp = toRegExp({ source: result.source, flags: result.flags, segments: result.segments });
 const segment: RegexSegment = result.segments[0];
+if (segment.kind === "backreference") {
+  const reference: string | number = segment.reference;
+  const index: number = segment.captureIndex;
+  console.log(reference, index);
+}
 if (segment.kind === "group") {
   const index: number | null = segment.captureIndex;
   const name: string | null = segment.name;
