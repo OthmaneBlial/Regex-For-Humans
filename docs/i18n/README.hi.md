@@ -8,7 +8,7 @@
 
 अंग्रेज़ी में लिखे स्पष्ट नियमों को ऐसे JavaScript regex में बदलें, जिसके हर हिस्से का अर्थ समझ सकें।
 
-[🚀 वर्कशॉप](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 वेबसाइट](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 सिंटैक्स](../LANGUAGE.md) · [📦 npm प्रीव्यू](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
+[🚀 वर्कशॉप](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 वेबसाइट](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 सिंटैक्स](../LANGUAGE.md) · [📦 npm प्रीव्यू](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.5)
 
 🔒 स्थानीय निष्पादन · 🧩 कोई runtime dependency नहीं · ⚡ एक compiler, तीन इंटरफ़ेस
 
@@ -34,39 +34,39 @@ end
 
 शब्दावली **निश्चित** है और हर निर्देश का सटीक अर्थ है। लाइब्रेरी, CLI और वर्कशॉप एक ही deterministic compiler इस्तेमाल करते हैं। अनजान निर्देश पर पंक्ति, कॉलम और सुधार का सुझाव मिलता है। सभी अनुवादों में नियमों का सिंटैक्स अंग्रेज़ी में ही रहता है।
 
-> 🌱 प्रीव्यू `0.1.0-dev.4` की लाइब्रेरी और CLI के लिए **Node.js 22+** चाहिए। ऑनलाइन वर्कशॉप को इंस्टॉल नहीं करना पड़ता। उपयोग में आसानी और screen reader की मानवीय समीक्षा अभी बाकी है।
+> 🌱 प्रीव्यू `0.1.0-dev.5` की लाइब्रेरी और CLI के लिए **Node.js 22+** चाहिए। ऑनलाइन वर्कशॉप को इंस्टॉल नहीं करना पड़ता। उपयोग में आसानी और screen reader की मानवीय समीक्षा अभी बाकी है।
 
 ## 🧰 अभी क्या बनाया जा सकता है
 
-| क्षमता | npm `0.1.0-dev.4` | वर्तमान स्रोत कोड |
-| --- | --- | --- |
-| नियम → JavaScript regex | ✅ | ✅ |
-| समर्थित regex → संपादन योग्य नियम | ✅ | ✅ समर्थित समूह और संदर्भ भी |
-| हर हिस्से की व्याख्या और मूल नियम तक पहुँचना | ✅ | ✅ समूहों के दोनों छोर और संदर्भ भी |
-| CLI, ESM API और TypeScript types | ✅ | ✅ |
-| नाम वाले/क्रमांकित captures और nested blocks | ✅ | ✅ |
-| पूरे block की पुनरावृत्ति और पिछले capture के संदर्भ | ✅ | ✅ |
-| `either { … }` के साथ क्रमबद्ध विकल्प | ✅ | ✅ नेस्टेड विकल्प और reverse translation |
-| `lazy` के साथ non-greedy दोहराव | — | ✅ वर्तमान source में; अभी रिलीज़ नहीं हुआ |
-| Lookaround assertions | — | ✅ केवल सोर्स में; nested assertions और native captures |
-| शब्द सीमाएँ | — | ✅ केवल सोर्स में; native zero-width assertions |
-| [Unicode properties](../LANGUAGE.md#unicode-properties) | — | ✅ u मोड में native aliases और complements; केवल सोर्स में |
-| [संयुक्त character classes](../LANGUAGE.md#composable-character-classes) | — | ✅ Native ranges, shorthands और Unicode unions; केवल सोर्स में |
-| [Unicode strings और nested sets](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ Finite strings, string properties, union, intersection और subtraction; केवल source में |
-| सभी आठ JavaScript flags | — | ✅ स्पष्ट options, native u/v classes और cursor का व्यवहार; केवल source में |
-| दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — | वर्तमान भाषा के दायरे से बाहर |
+| क्षमता | npm `0.1.0-dev.5` |
+| --- | --- |
+| नियम → JavaScript regex | ✅ |
+| समर्थित regex → संपादन योग्य नियम | ✅ |
+| हर हिस्से की व्याख्या और मूल नियम तक पहुँचना | ✅ |
+| CLI, ESM API और TypeScript types | ✅ |
+| नाम वाले/क्रमांकित captures और nested blocks | ✅ |
+| पूरे block की पुनरावृत्ति और पिछले capture के संदर्भ | ✅ |
+| `either { … }` के साथ क्रमबद्ध विकल्प | ✅ |
+| `lazy` के साथ non-greedy दोहराव | ✅ |
+| Lookaround assertions | ✅ |
+| शब्द सीमाएँ | ✅ |
+| [Unicode properties](../LANGUAGE.md#unicode-properties) | ✅ |
+| [संयुक्त character classes](../LANGUAGE.md#composable-character-classes) | ✅ |
+| [Unicode strings और nested sets](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
+| सभी आठ JavaScript flags | ✅ |
+| दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — |
 
-वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ। यह सुविधा npm `0.1.0-dev.4` में अभी शामिल नहीं है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
+वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ।npm `0.1.0-dev.5` में उपलब्ध है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
 
-सोर्स में `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }` भी उपलब्ध हैं। ये वर्तमान स्थान के आसपास के टेक्स्ट को जाँचते हैं, बिना अक्षर consume किए। Captures की native values और positions बनी रहती हैं, भले वे match के बाहर हों; lookbehind के लिए runtime support चाहिए। ये सुविधाएँ अभी npm `0.1.0-dev.4` में नहीं हैं। [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) देखें।
+सोर्स में `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }` भी उपलब्ध हैं। ये वर्तमान स्थान के आसपास के टेक्स्ट को जाँचते हैं, बिना अक्षर consume किए। Captures की native values और positions बनी रहती हैं, भले वे match के बाहर हों; lookbehind के लिए runtime support चाहिए।npm `0.1.0-dev.5` में उपलब्ध है। [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) देखें।
 
-सोर्स में `word boundary` (`\b`) और `not word boundary` (`\B`) उपलब्ध हैं। ये कोई अक्षर consume नहीं करते। JavaScript में word characters ASCII अक्षर, अंक और underscore हैं; `i` के साथ case folding के समकक्ष अक्षर भी शामिल होते हैं। यह प्राकृतिक भाषा के शब्दों का विभाजन नहीं है। यह सुविधा अभी npm `0.1.0-dev.4` में नहीं है। [शब्द सीमाएँ](../LANGUAGE.md#word-boundaries) देखें।
+सोर्स में `word boundary` (`\b`) और `not word boundary` (`\B`) उपलब्ध हैं। ये कोई अक्षर consume नहीं करते। JavaScript में word characters ASCII अक्षर, अंक और underscore हैं; `i` के साथ case folding के समकक्ष अक्षर भी शामिल होते हैं। यह प्राकृतिक भाषा के शब्दों का विभाजन नहीं है।npm `0.1.0-dev.5` में उपलब्ध है। [शब्द सीमाएँ](../LANGUAGE.md#word-boundaries) देखें।
 
-सोर्स में `unicode property "L"` और `not unicode property "L"` से native `\p{L}` और `\P{L}` बनते हैं। `L` का अर्थ Letter है; aliases case-sensitive हैं और वर्गीकरण runtime के Unicode data पर निर्भर करता है। Counts और `lazy` सामान्य रूप से काम करते हैं। `i` के साथ native `u` complement में case-folding के समकक्ष अक्षर भी शामिल हो सकते हैं। यह सुविधा अभी npm `0.1.0-dev.4` में नहीं है। [Unicode properties](../LANGUAGE.md#unicode-properties) देखें।
+सोर्स में `unicode property "L"` और `not unicode property "L"` से native `\p{L}` और `\P{L}` बनते हैं। `L` का अर्थ Letter है; aliases case-sensitive हैं और वर्गीकरण runtime के Unicode data पर निर्भर करता है। Counts और `lazy` सामान्य रूप से काम करते हैं। `i` के साथ native `u` complement में case-folding के समकक्ष अक्षर भी शामिल हो सकते हैं।npm `0.1.0-dev.5` में उपलब्ध है। [Unicode properties](../LANGUAGE.md#unicode-properties) देखें।
 
-सोर्स में `range "α" to "ω"` और `character class: digit, "_"` उपलब्ध हैं। एक class में एक Unicode code point के literals, ranges, singular shorthands और Unicode properties जोड़ सकते हैं। `not character class:` पूरी union को नकारता है; counts और `lazy` पूरी class पर लागू होते हैं। Property complements का native `u`/`i` व्यवहार सुरक्षित रहता है। यह अभी npm `0.1.0-dev.4` में नहीं है; [character classes](../LANGUAGE.md#composable-character-classes) देखें।
+सोर्स में `range "α" to "ω"` और `character class: digit, "_"` उपलब्ध हैं। एक class में एक Unicode code point के literals, ranges, singular shorthands और Unicode properties जोड़ सकते हैं। `not character class:` पूरी union को नकारता है; counts और `lazy` पूरी class पर लागू होते हैं। Property complements का native `u`/`i` व्यवहार सुरक्षित रहता है।npm `0.1.0-dev.5` में उपलब्ध है; [character classes](../LANGUAGE.md#composable-character-classes) देखें।
 
-npm `0.1.0-dev.4` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
+npm `0.1.0-dev.5` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
 
 ## 📦 प्रीव्यू इंस्टॉल करें
 
@@ -80,7 +80,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-परिणाम `/^ABC\d{3}$/u` है। निश्चित संस्करण के लिए `regex-for-humans@0.1.0-dev.4` इस्तेमाल करें। runtime dependencies या हर OS के लिए अलग standalone executable उपलब्ध नहीं हैं।
+परिणाम `/^ABC\d{3}$/u` है। निश्चित संस्करण के लिए `regex-for-humans@0.1.0-dev.5` इस्तेमाल करें। runtime dependencies या हर OS के लिए अलग standalone executable उपलब्ध नहीं हैं।
 
 ## 🎮 पैटर्न आज़माएँ
 
@@ -109,7 +109,7 @@ start
 end
 ```
 
-`/` delimiters और ज़रूरी `u` flag रखें। नई पंक्ति को `\n` जैसे escape में लिखें। समर्थित `i`, `s`, `m` और `u` व्यवहार सुरक्षित रहता है। वर्तमान कोड captures, nested groups और पिछले captures के संदर्भ भी आयात करता है, उनके नाम, क्रमांक और values बनाए रखता है।
+`/` delimiters और `u` या `v` flag रखें। नई पंक्ति को `\n` जैसे escape में लिखें। समर्थित `i`, `s`, `m` और `u` व्यवहार सुरक्षित रहता है। वर्तमान कोड captures, nested groups और पिछले captures के संदर्भ भी आयात करता है, उनके नाम, क्रमांक और values बनाए रखता है।
 
 `[^]` को `s` के साथ किसी भी अक्षर में बदला जाता है। पास के सामान्य dots से line terminators स्पष्ट रूप से हटाए जाते हैं ताकि अर्थ न बदले। पूरे letter, word और hex character classes की समान व्यवस्थाएँ, path exclusions, control escapes और सूची के छोर पर literal hyphens पहचाने जाते हैं।
 
@@ -214,7 +214,7 @@ end
 
 ## 🧲 नाम वाले captures से fields निकालें
 
-यह उदाहरण npm `0.1.0-dev.4` और प्रकाशित वर्कशॉप में काम करता है।
+यह उदाहरण npm `0.1.0-dev.5` और प्रकाशित वर्कशॉप में काम करता है।
 
 ```text
 start
@@ -308,6 +308,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--json` | stdout पर results, stderr पर errors |
 | `--ignore-case` | `i` flag |
 | `--dot-all` | `s` flag |
+| `--flags` | Native JavaScript flags चुनें; u/v साथ नहीं दिए जा सकते |
 | `--help` | सहायता |
 | `--version` | पैकेज संस्करण |
 
@@ -329,7 +330,7 @@ start
 end
 ```
 
-`--reverse --json` से `{ rules, flags }` मिलता है। `flags` को `compile()` में दें; `m` line anchors से और `u` अपने आप आता है। Text output ज़रूरी options stderr में बताता है और success exit code रखता है। Reverse mode को `--explain`, `--ignore-case` या `--dot-all` के साथ न मिलाएँ।
+`--reverse --json` से `regexToRules()` की तरह `{ rules, flags }` मिलता है। Native options और cursor व्यवहार बनाए रखने के लिए लौटाए गए `flags` को `compile(rules, { flags })` में दें। सभी आठ flags समर्थित हैं; g/y regex की state बनी रहती है।
 
 ## 📦 JavaScript लाइब्रेरी
 
@@ -365,11 +366,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | `lastIndex` पर match; पहली खाली जगह पर रुकता है |
 | `v` | `{ flags: 'v' }` | Native v-mode Unicode classes और complements |
 
-**केवल source checkout:** आठों flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` स्वीकार हैं, जैसे `{ flags: 'dgiv' }` या `--flags dgiv`। आउटपुट क्रम `dgimsuvy` है; duplicates और u/v को साथ देना त्रुटि है, तथा u डिफ़ॉल्ट रहता है। m स्पष्ट option या line anchors से सक्रिय होता है; दोनों प्रकार मिलाने पर input anchors पूर्ण सीमाएँ बनाए रखते हैं। Reverse translation options बचाता है और `lastIndex` नहीं बदलता। Workshop हर उदाहरण 0 से शुरू करता है और अधिकतम 100 matches दिखाता है; copied g/y regex में state बनी रहती है। अनुपलब्ध native क्षमताएँ स्पष्ट diagnostics देती हैं। npm `0.1.0-dev.4` में पुराने i/s options, automatic u और line anchors से m ही हैं।
+**npm preview:** आठों flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` स्वीकार हैं, जैसे `{ flags: 'dgiv' }` या `--flags dgiv`। आउटपुट क्रम `dgimsuvy` है; duplicates और u/v को साथ देना त्रुटि है, तथा u डिफ़ॉल्ट रहता है। m स्पष्ट option या line anchors से सक्रिय होता है; दोनों प्रकार मिलाने पर input anchors पूर्ण सीमाएँ बनाए रखते हैं। Reverse translation options बचाता है और `lastIndex` नहीं बदलता। Workshop हर उदाहरण 0 से शुरू करता है और अधिकतम 100 matches दिखाता है; copied g/y regex में state बनी रहती है। अनुपलब्ध native क्षमताएँ स्पष्ट diagnostics देती हैं।npm `0.1.0-dev.5` में उपलब्ध है।
 
-**केवल source checkout में:** `v` चुनकर `one of strings: "a", "ab", ""` या `unicode property "RGI_Emoji"` इस्तेमाल करें। Native sets सूची के क्रम से स्वतंत्र होकर लंबे सदस्यों को पहले आज़माते हैं; आगे के नियम छोटे सदस्य पर वापस जाने की माँग कर सकते हैं। खाली strings भी मान्य हैं। Class में `string "ab"` इस्तेमाल करें। String properties और खाली या कई code points वाले सदस्यों का complement नहीं बनाया जा सकता। ये सुविधाएँ npm `0.1.0-dev.4` में नहीं हैं।
+**npm preview में:** `v` चुनकर `one of strings: "a", "ab", ""` या `unicode property "RGI_Emoji"` इस्तेमाल करें। Native sets सूची के क्रम से स्वतंत्र होकर लंबे सदस्यों को पहले आज़माते हैं; आगे के नियम छोटे सदस्य पर वापस जाने की माँग कर सकते हैं। खाली strings भी मान्य हैं। Class में `string "ab"` इस्तेमाल करें। String properties और खाली या कई code points वाले सदस्यों का complement नहीं बनाया जा सकता।npm `0.1.0-dev.5` में उपलब्ध है।
 
-**केवल source checkout में:** nested sets के लिए `character set union {`, `character set intersection {` और `character set subtraction {` लिखें और `}` से बंद करें। हर पंक्ति एक अक्षर, range, class, property, strings का set या nested set है। Intersection साझा सदस्यों को रखता है; subtraction पहले operand से दाएँ सदस्यों को हटाता है। Counts और `lazy` पूरे block पर लागू होते हैं। `not` strings के native संरचनात्मक नियमों का पालन करता है; खाली union कुछ भी match नहीं करता। `v` चुनें; npm `0.1.0-dev.4` में ये सुविधाएँ अभी नहीं हैं। [Syntax और उदाहरण](../LANGUAGE.md#nested-unicode-set-operations)।
+**npm preview में:** nested sets के लिए `character set union {`, `character set intersection {` और `character set subtraction {` लिखें और `}` से बंद करें। हर पंक्ति एक अक्षर, range, class, property, strings का set या nested set है। Intersection साझा सदस्यों को रखता है; subtraction पहले operand से दाएँ सदस्यों को हटाता है। Counts और `lazy` पूरे block पर लागू होते हैं। `not` strings के native संरचनात्मक नियमों का पालन करता है; खाली union कुछ भी match नहीं करता। `v` चुनें; npm `0.1.0-dev.5` में उपलब्ध है। [Syntax और उदाहरण](../LANGUAGE.md#nested-unicode-set-operations)।
 
 ## 🛠️ स्थानीय development
 
@@ -435,6 +436,6 @@ CI=1 npm run verify
 | [तुलना](../COMPETITOR_GAPS.md) | Sources और बाकी capabilities |
 | [योगदान](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup और conventions |
 
-**10 अक्टूबर 2026 को स्थानीय सत्यापन:** 251 Node tests, 296 Chromium desktop/mobile checks, 66 Firefox/WebKit, 64 website checks और clean consumer installation सफल; audit में शून्य vulnerabilities। Groups/references/reverse translation के 16 tests Node 22.23.3 पर भी सफल हैं। यह उस snapshot का परिणाम है, हर भविष्य के browser की गारंटी नहीं। मानवीय reviews बाकी हैं।
+**10 अक्टूबर 2026 को स्थानीय सत्यापन:** 301 Node tests, 378 Chromium desktop/mobile checks, 148 Firefox/WebKit, 64 website checks और clean consumer installation सफल; audit में शून्य vulnerabilities। Groups/references/reverse translation के 16 tests Node 22.23.3 पर भी सफल हैं। यह उस snapshot का परिणाम है, हर भविष्य के browser की गारंटी नहीं। मानवीय reviews बाकी हैं।
 
 [MIT लाइसेंस](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [अंग्रेज़ी पर लौटें](../../README.md)।

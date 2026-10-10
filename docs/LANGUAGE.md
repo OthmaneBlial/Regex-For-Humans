@@ -1,12 +1,12 @@
 # The Regex For Humans language
 
-Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the current source checkout; lazy repetition, lookaround, boundaries, Unicode properties/classes, native v sets and explicit eight-flag options are unreleased additions beyond npm `0.1.0-dev.4`.
+Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the `0.1.0-dev.5` preview: groups, lazy repetition, lookaround, boundaries, Unicode properties/classes, native v sets and all eight JavaScript flags.
 
 Write one rule per line. `start` or `line start` can prefix the first rule. Keywords are case-insensitive; quoted text keeps its case. Leading and trailing spaces are ignored.
 
 Separate rules with LF, CRLF, CR, U+2028 or U+2029.
 
-Input and line anchors can be combined. Each retains its own meaning, including across groups and alternatives: `start` / `end` remain absolute while `line start` / `line end` use native multiline boundaries. Duplicate or misplaced anchors remain positioned errors. npm `0.1.0-dev.4` rejects mixed anchor modes.
+Input and line anchors can be combined. Each retains its own meaning, including across groups and alternatives: `start` / `end` remain absolute while `line start` / `line end` use native multiline boundaries. Duplicate or misplaced anchors remain positioned errors. Mixed anchor modes are included in npm `0.1.0-dev.5`.
 
 ## 🏗️ Larger worked examples
 
@@ -131,7 +131,7 @@ Captures are numbered by opening order, including named and nested captures; non
 
 Existing repetition modifiers apply to a whole block: `optional capture "suffix" {`, `2 group {`, `between 2 and 4 group {`, `zero or more group {`, `one or more group {`, and `at least 2 group {`. Anchors retain their first/last rule restrictions within each block; input and line anchors cannot be mixed across blocks. Nesting is limited to 64 levels in addition to the existing source and line budgets.
 
-The API keeps `{ source, flags, segments }`. Opening and closing braces produce `kind: "group"` segments with `edge`, `capturing`, `captureIndex`, `name`, and `repetition`. Each segment retains its original line, column, explanation and exact generated-source offsets. Consumers switching on `segments[].kind` should handle the added group variant. The CLI and workshop use this same compiler and trace. Groups, captures and their reverse translations are included in npm `0.1.0-dev.4` and the hosted workshop.
+The API keeps `{ source, flags, segments }`. Opening and closing braces produce `kind: "group"` segments with `edge`, `capturing`, `captureIndex`, `name`, and `repetition`. Each segment retains its original line, column, explanation and exact generated-source offsets. Consumers switching on `segments[].kind` should handle the added group variant. The CLI and workshop use this same compiler and trace. Groups, captures and their reverse translations are included in npm `0.1.0-dev.5` and the hosted workshop.
 
 <a name="capture-references-unreleased-on-main"></a>
 
@@ -183,7 +183,7 @@ Blocks can contain groups, captures, alternatives, repetitions, anchors and othe
 
 JavaScript matches lookbehind contents backwards: in `/(?<=([ab]+)([bc]+))$/u` against `abc`, captures 1 and 2 are `a` and `bc`. Variable-length lookbehind is accepted when its contents belong to this language. Assertion atomicity and capture updates come from native JavaScript, following [ECMAScript assertion semantics](https://tc39.es/ecma262/2025/multipage/text-processing.html#sec-runtime-semantics-compileassertion); the explanation is structural, not an execution trace. Forward/open references remain rejected by source-order policy, even inside lookbehind where JavaScript can give them a different meaning. Duplicate names remain rejected.
 
-Compilation probes native lookbehind support before emitting the first behind assertion. An unsupported runtime reports `UNSUPPORTED_TARGET_FEATURE` at that opening rule, with a repair hint; it never approximates the assertion. Ahead assertions do not need that probe. The public trace adds `AssertionSegment` with `kind: "assertion"`, `edge: "start" | "end"`, `direction: "ahead" | "behind"`, `negative`, and the usual exact source offsets, original locations and explanations. Consumers switching on segment kinds should handle this variant. These four forms and their reverse translation are unreleased beyond npm `0.1.0-dev.4`.
+Compilation probes native lookbehind support before emitting the first behind assertion. An unsupported runtime reports `UNSUPPORTED_TARGET_FEATURE` at that opening rule, with a repair hint; it never approximates the assertion. Ahead assertions do not need that probe. The public trace adds `AssertionSegment` with `kind: "assertion"`, `edge: "start" | "end"`, `direction: "ahead" | "behind"`, `negative`, and the usual exact source offsets, original locations and explanations. Consumers switching on segment kinds should handle this variant. These four forms and their reverse translation are included in npm `0.1.0-dev.5`.
 
 ## Repetition
 
@@ -240,11 +240,11 @@ Use a group choice for multiple rules, including a start/end pair. `start "cat"`
 
 Choices follow [ECMAScript disjunction semantics](https://tc39.es/ecma262/2025/multipage/text-processing.html#sec-runtime-semantics-compilesubpattern): earlier alternatives are tried first, including the following regex rules. A skipped branch has absent captures; repeating a choice can clear captures from an earlier iteration. References to those absent captures match empty text, following JavaScript. Capture names remain globally unique, even across mutually exclusive choices. No matching or backtracking is simulated by the explanation trace.
 
-Alternative trace segments use `kind: "alternation"`, `edge: "start" | "branch" | "end"`, `alternatives` and `repetition`, plus the existing source/location/explanation fields. Separator segments navigate to the next choice's rule. Consumers switching on `segments[].kind` should handle this variant. Ordered alternatives and their reverse translation are included in npm `0.1.0-dev.4` and the hosted workshop.
+Alternative trace segments use `kind: "alternation"`, `edge: "start" | "branch" | "end"`, `alternatives` and `repetition`, plus the existing source/location/explanation fields. Separator segments navigate to the next choice's rule. Consumers switching on `segments[].kind` should handle this variant. Ordered alternatives and their reverse translation are included in npm `0.1.0-dev.5` and the hosted workshop.
 
 ## Unicode properties
 
-This source addition is unreleased beyond npm `0.1.0-dev.4`. A property rule consumes one Unicode code point selected by the target runtime:
+Included in npm `0.1.0-dev.5`. A property rule consumes one Unicode code point selected by the target runtime:
 
 | Rule | JavaScript source |
 | --- | --- |
@@ -278,7 +278,7 @@ Compilation probes native property support and reports `UNSUPPORTED_TARGET_FEATU
 
 ## Composable character classes
 
-This source addition is unreleased beyond npm `0.1.0-dev.4`. A u-mode class unions its members and consumes one Unicode code point. Keep the existing `one of:` and `none of:` literal lists, or combine ranges, native shorthands and character properties:
+Included in npm `0.1.0-dev.5`. A u-mode class unions its members and consumes one Unicode code point. Keep the existing `one of:` and `none of:` literal lists, or combine ranges, native shorthands and character properties:
 
 ```text
 start
@@ -311,7 +311,7 @@ Reverse translation preserves native u/v-mode unions, ranges, shorthand/property
 
 ## Native Unicode string sets
 
-This source feature is not in npm `0.1.0-dev.4` or the hosted playground. Select `{ flags: "v" }`, CLI `--flags v` or the workshop's v mode. A finite list uses JSON-quoted strings; the original `one of:` list continues to require single code points:
+Included in npm `0.1.0-dev.5` and the workshop. Select `{ flags: "v" }`, CLI `--flags v` or the workshop's v mode. A finite list uses JSON-quoted strings; the original `one of:` list continues to require single code points:
 
 ```text
 capture "value" {
@@ -331,7 +331,7 @@ See the [ECMAScript string-property table](https://tc39.es/ecma262/multipage/tex
 
 ## Nested Unicode set operations
 
-This source feature requires v mode and is absent from npm `0.1.0-dev.4`. Open a block with `character set union {`, `character set intersection {` or `character set subtraction {`; close it with `}` on its own line. Each body line contributes one operand. Nest a block to combine different operations explicitly:
+Included in npm `0.1.0-dev.5`; native set operations require v mode. Open a block with `character set union {`, `character set intersection {` or `character set subtraction {`; close it with `}` on its own line. Each body line contributes one operand. Nest a block to combine different operations explicitly:
 
 ```text
 capture "consonant" {

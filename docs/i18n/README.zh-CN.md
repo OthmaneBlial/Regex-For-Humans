@@ -8,7 +8,7 @@
 
 把清晰的英文规则编译成 JavaScript 正则表达式，并逐段理解结果。
 
-[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
+[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.5)
 
 🔒 本地运行 · 🧩 无运行时依赖 · ⚡ 一个编译器，三种使用方式
 
@@ -34,39 +34,39 @@ end
 
 这是**固定词汇**的规则语言，每条指令都有精确定义。库、CLI 和工作台使用同一个确定性编译器。不认识的指令会返回行、列和修复提示。所有译本中的规则语法仍然使用英文，不会翻译关键字。
 
-> 🌱 预览版 `0.1.0-dev.4` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
+> 🌱 预览版 `0.1.0-dev.5` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
 
 ## 🧰 现在可以做什么
 
-| 能力 | npm `0.1.0-dev.4` | 当前源码 |
-| --- | --- | --- |
-| 规则 → JavaScript 正则 | ✅ | ✅ |
-| 支持的正则 → 可编辑规则 | ✅ | ✅ 包含支持的分组和引用 |
-| 片段解释与源码定位 | ✅ | ✅ 包含分组两端和引用 |
-| CLI、ESM API、TypeScript 类型 | ✅ | ✅ |
-| 命名/编号捕获与嵌套块 | ✅ | ✅ |
-| 整块重复与向后引用 | ✅ | ✅ |
-| 使用 `either { … }` 的有序分支 | ✅ | ✅ 嵌套选择与逆向转换 |
-| 非贪婪重复（`lazy`） | — | ✅ 源码已支持，尚未发布 |
-| 环视 | — | ✅ 仅源码；支持嵌套及原生捕获 |
-| 单词边界 | — | ✅ 仅源码；原生零宽边界 |
-| [Unicode 属性](../LANGUAGE.md#unicode-properties) | — | ✅ u 模式的原生别名与补集；仅源码支持 |
-| [组合字符类](../LANGUAGE.md#composable-character-classes) | — | ✅ 原生范围、简写和 Unicode 并集；仅源码支持 |
-| [Unicode 字符串和嵌套集合](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ 有限字符串、字符串属性、并集、交集和差集；仅限源码版本 |
-| 全部八个 JavaScript 标志 | — | ✅ 显式选项、原生 u/v 字符类和游标语义；仅限源码版本 |
-| 其他正则引擎、自由英文 | — | 不在当前语言范围内 |
+| 能力 | npm `0.1.0-dev.5` |
+| --- | --- |
+| 规则 → JavaScript 正则 | ✅ |
+| 支持的正则 → 可编辑规则 | ✅ |
+| 片段解释与源码定位 | ✅ |
+| CLI、ESM API、TypeScript 类型 | ✅ |
+| 命名/编号捕获与嵌套块 | ✅ |
+| 整块重复与向后引用 | ✅ |
+| 使用 `either { … }` 的有序分支 | ✅ |
+| 非贪婪重复（`lazy`） | ✅ |
+| 环视 | ✅ |
+| 单词边界 | ✅ |
+| [Unicode 属性](../LANGUAGE.md#unicode-properties) | ✅ |
+| [组合字符类](../LANGUAGE.md#composable-character-classes) | ✅ |
+| [Unicode 字符串和嵌套集合](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
+| 全部八个 JavaScript 标志 | ✅ |
+| 其他正则引擎、自由英文 | — |
 
-当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。此功能尚未包含在 npm `0.1.0-dev.4` 中。参见[重复规则](../LANGUAGE.md#repetition)。
+当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.5` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
 
-源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。这些功能尚未包含在 npm `0.1.0-dev.4` 中。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
+源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。npm `0.1.0-dev.5` 已包含这些功能。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
 
-源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。此功能尚未包含在 npm `0.1.0-dev.4` 中，参见[单词边界](../LANGUAGE.md#word-boundaries)。
+源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。npm `0.1.0-dev.5` 已包含这些功能，参见[单词边界](../LANGUAGE.md#word-boundaries)。
 
-源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。这些新增功能尚未包含在 npm `0.1.0-dev.4` 中，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
+源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。npm `0.1.0-dev.5` 已包含这些功能，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
 
-源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.4` 尚未包含此功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
+源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.5` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
 
-npm `0.1.0-dev.4` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
+npm `0.1.0-dev.5` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
 
 ## 📦 安装预览版
 
@@ -80,7 +80,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.4`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
+输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.5`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
 
 ## 🎮 试一个模式
 
@@ -109,7 +109,7 @@ start
 end
 ```
 
-使用 `/` 分隔符和必需的 `u`；换行写成 `\n` 等转义。支持的 `i`、`s`、`m`、`u` 行为会保留。当前源码还可导入捕获、嵌套分组和向后引用，保留名称、编号及捕获值。
+使用 `/` 分隔符以及 `u` 或 `v`；换行写成 `\n` 等转义。支持的 `i`、`s`、`m`、`u` 行为会保留。当前源码还可导入捕获、嵌套分组和向后引用，保留名称、编号及捕获值。
 
 `[^]` 会转换为带 `s` 的任意字符；旁边的普通点号会明确排除行终止符，以保持原意。完整字母、单词和十六进制字符类的等价排列也会识别；路径排除、控制字符转义及列表两端的字面连字符会保留。
 
@@ -214,7 +214,7 @@ end
 
 ## 🧲 用命名捕获提取字段
 
-此示例可使用 npm `0.1.0-dev.4` 或在线工作台运行。
+此示例可使用 npm `0.1.0-dev.5` 或在线工作台运行。
 
 ```text
 start
@@ -308,6 +308,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--json` | stdout 输出结果，stderr 输出错误 |
 | `--ignore-case` | 开启 `i` |
 | `--dot-all` | 开启 `s` |
+| `--flags` | 选择原生 JavaScript flags；u/v 不能同时使用 |
 | `--help` | 帮助 |
 | `--version` | 包版本 |
 
@@ -329,7 +330,7 @@ start
 end
 ```
 
-`--reverse --json` 返回 `{ rules, flags }`。将 `flags` 传给 `compile()`；`m` 由行锚点表达，`u` 自动启用。普通文本模式在 stderr 提示所需选项，但仍成功退出。不能同时使用 `--explain`、`--ignore-case` 或 `--dot-all`。
+`--reverse --json` 与 `regexToRules()` 一样返回 `{ rules, flags }`。将返回的 `flags` 传给 `compile(rules, { flags })`，保留原生选项和游标行为。支持全部八个 flags；带 g/y 的正则仍具有状态。
 
 ## 📦 JavaScript 库
 
@@ -365,11 +366,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | 从 `lastIndex` 匹配，遇到间隙即停止 |
 | `v` | `{ flags: 'v' }` | 原生 v 模式 Unicode 字符类与补集 |
 
-**仅源码版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.4` 仍使用原有 i/s 选项、自动 u 和行锚点控制的 m。
+**预览版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.5` 已包含这些功能。
 
-**仅限源码版本：**选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.4` 尚未包含这些功能。
+**仅限源码版本：**选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.5` 已包含这些功能。
 
-**仅限源码版本：**嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.4` 尚未包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
+**仅限源码版本：**嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.5` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
 
 ## 🛠️ 本地开发
 
@@ -435,6 +436,6 @@ CI=1 npm run verify
 | [对比](../COMPETITOR_GAPS.md) | 来源和待补能力 |
 | [贡献](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | 环境和约定 |
 
-**2026年10月10日本地验证：** 251项 Node 测试、296项 Chromium 桌面/移动检查、66项 Firefox/WebKit、64项网站检查及干净消费者安装均通过；审计发现0个漏洞。16项分组/引用/逆转换测试也在 Node 22.23.3 通过。这是该快照的证据，不保证未来所有浏览器。真人评估仍待完成。
+**2026年10月10日本地验证：** 301项 Node 测试、378项 Chromium 桌面/移动检查、148项 Firefox/WebKit、64项网站检查及干净消费者安装均通过；审计发现0个漏洞。16项分组/引用/逆转换测试也在 Node 22.23.3 通过。这是该快照的证据，不保证未来所有浏览器。真人评估仍待完成。
 
 [MIT 许可证](../../LICENSE) · [更新日志](../../CHANGELOG.md) · [返回英文版](../../README.md)。

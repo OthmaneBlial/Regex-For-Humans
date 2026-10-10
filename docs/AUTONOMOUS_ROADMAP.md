@@ -2,6 +2,10 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+## dev.5 distribution milestone
+
+Release preparation aligns package/lock version, changelog, all ten README guides, security policy, language/compatibility documentation, homepage and workshop guide on `0.1.0-dev.5`. The guides include native sets, strings, all eight flags, classes, properties, boundaries, assertions and lazy repetition; reverse imports accept u or v. The first candidate passes 301 Node tests, lint/types/docs, both builds and a clean installed JavaScript/TypeScript/API/CLI consumer. The native compiler is unchanged from the 891-test gate at `612dc18`; release checks must verify the final retained archive on Node 25/22, public npm/GitHub assets, Pages propagation and actual RTL rendering before distribution is recorded as complete. Historical dev.4 receipts below remain immutable. Human gates stay open.
+
 ## Core grammar milestones
 
 - Implemented: AST-backed numbered/named/noncapturing blocks, nested blocks, whole-block repetition, Unicode capture names, opening-order numbering, empty/absent capture semantics, source spans, explanations and positioned diagnostics.

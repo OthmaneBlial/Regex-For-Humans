@@ -8,7 +8,7 @@
 
 Quelques règles claires en anglais deviennent une expression régulière JavaScript dont vous pouvez suivre chaque partie.
 
-[🚀 Atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Syntaxe](../LANGUAGE.md) · [📦 Aperçu npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
+[🚀 Atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Syntaxe](../LANGUAGE.md) · [📦 Aperçu npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.5)
 
 🔒 Exécution locale · 🧩 Aucune dépendance à l’exécution · ⚡ Un compilateur, trois interfaces
 
@@ -38,39 +38,39 @@ end
 
 Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bibliothèque, le CLI et l’atelier utilisent le même compilateur déterministe. Une instruction inconnue produit un diagnostic avec ligne, colonne et conseil de correction. La syntaxe reste en anglais dans toutes les traductions.
 
-> 🌱 L’aperçu `0.1.0-dev.4` nécessite **Node.js 22+** pour la bibliothèque et le CLI. L’atelier en ligne fonctionne sans installation. Les évaluations humaines de l’utilisabilité et du lecteur d’écran restent à faire.
+> 🌱 L’aperçu `0.1.0-dev.5` nécessite **Node.js 22+** pour la bibliothèque et le CLI. L’atelier en ligne fonctionne sans installation. Les évaluations humaines de l’utilisabilité et du lecteur d’écran restent à faire.
 
 ## 🧰 Ce que vous pouvez construire aujourd’hui
 
-| Capacité | npm `0.1.0-dev.4` | Code source actuel |
-| --- | --- | --- |
-| Règles lisibles → regex JavaScript | ✅ | ✅ |
-| Regex pris en charge → règles modifiables | ✅ | ✅ Groupes et références pris en charge |
-| Explications et navigation vers les règles | ✅ | ✅ Ouvertures, fermetures et références incluses |
-| CLI, API ESM et déclarations TypeScript | ✅ | ✅ |
-| Captures nommées/numérotées et groupes imbriqués | ✅ | ✅ |
-| Répétition de blocs et références vers une capture précédente | ✅ | ✅ |
-| Alternatives ordonnées avec `either { … }` | ✅ | ✅ Choix imbriqués et traduction inverse |
-| Répétition paresseuse avec `lazy` | — | ✅ Dans le code source ; non publiée |
-| Assertions avant/arrière | — | ✅ Dans le source ; captures natives et imbrication |
-| Limites de mot | — | ✅ Dans le source ; assertions natives sans consommation |
-| [Propriétés Unicode](../LANGUAGE.md#unicode-properties) | — | ✅ Alias et compléments natifs en mode u ; source uniquement |
-| [Classes de caractères combinées](../LANGUAGE.md#composable-character-classes) | — | ✅ Plages, raccourcis et unions Unicode natifs ; source uniquement |
-| [Chaînes Unicode et ensembles imbriqués](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ Chaînes finies, propriétés de chaînes, union, intersection et soustraction ; source uniquement |
-| Les huit flags JavaScript | — | ✅ Options explicites, classes natives u/v et curseurs ; source uniquement |
-| Autres moteurs et anglais libre | — | Hors du langage actuel |
+| Capacité | npm `0.1.0-dev.5` |
+| --- | --- |
+| Règles lisibles → regex JavaScript | ✅ |
+| Regex pris en charge → règles modifiables | ✅ |
+| Explications et navigation vers les règles | ✅ |
+| CLI, API ESM et déclarations TypeScript | ✅ |
+| Captures nommées/numérotées et groupes imbriqués | ✅ |
+| Répétition de blocs et références vers une capture précédente | ✅ |
+| Alternatives ordonnées avec `either { … }` | ✅ |
+| Répétition paresseuse avec `lazy` | ✅ |
+| Assertions avant/arrière | ✅ |
+| Limites de mot | ✅ |
+| [Propriétés Unicode](../LANGUAGE.md#unicode-properties) | ✅ |
+| [Classes de caractères combinées](../LANGUAGE.md#composable-character-classes) | ✅ |
+| [Chaînes Unicode et ensembles imbriqués](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
+| Les huit flags JavaScript | ✅ |
+| Autres moteurs et anglais libre | — |
 
-Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord, puis augmenter le nombre si les règles suivantes le demandent. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [règles de répétition](../LANGUAGE.md#repetition).
+Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord, puis augmenter le nombre si les règles suivantes le demandent. Disponible dans npm `0.1.0-dev.5`. Voir les [règles de répétition](../LANGUAGE.md#repetition).
 
-Le source accepte aussi `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Ces assertions vérifient le texte autour de la position courante sans le consommer. Les captures gardent leurs valeurs et positions natives, parfois hors du texte consommé ; les assertions arrière exigent un moteur compatible. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [assertions avant/arrière](../LANGUAGE.md#lookaround-assertions).
+Le source accepte aussi `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Ces assertions vérifient le texte autour de la position courante sans le consommer. Les captures gardent leurs valeurs et positions natives, parfois hors du texte consommé ; les assertions arrière exigent un moteur compatible. Disponible dans npm `0.1.0-dev.5`. Voir les [assertions avant/arrière](../LANGUAGE.md#lookaround-assertions).
 
-Le source accepte `word boundary` (`\b`) et `not word boundary` (`\B`). Ces assertions ne consomment aucun caractère. JavaScript considère comme caractères de mot les lettres ASCII, les chiffres et le tiret bas, ainsi que leurs équivalents de casse avec `i`. Il ne s’agit pas d’une segmentation linguistique. Cet ajout n’est pas encore dans npm `0.1.0-dev.4`. Voir les [limites de mot](../LANGUAGE.md#word-boundaries).
+Le source accepte `word boundary` (`\b`) et `not word boundary` (`\B`). Ces assertions ne consomment aucun caractère. JavaScript considère comme caractères de mot les lettres ASCII, les chiffres et le tiret bas, ainsi que leurs équivalents de casse avec `i`. Il ne s’agit pas d’une segmentation linguistique. Disponible dans npm `0.1.0-dev.5`. Voir les [limites de mot](../LANGUAGE.md#word-boundaries).
 
-Le source accepte aussi `unicode property "L"` et `not unicode property "L"`, soit `\p{L}` et `\P{L}` natifs. `L` signifie Letter ; les alias sont sensibles à la casse et le classement dépend des données Unicode du moteur. Les comptes et `lazy` s’appliquent normalement. Avec `i`, le complément natif en mode `u` peut inclure des lettres équivalentes en casse. Ces ajouts ne sont pas dans npm `0.1.0-dev.4`. Voir les [propriétés Unicode](../LANGUAGE.md#unicode-properties).
+Le source accepte aussi `unicode property "L"` et `not unicode property "L"`, soit `\p{L}` et `\P{L}` natifs. `L` signifie Letter ; les alias sont sensibles à la casse et le classement dépend des données Unicode du moteur. Les comptes et `lazy` s’appliquent normalement. Avec `i`, le complément natif en mode `u` peut inclure des lettres équivalentes en casse. Disponible dans npm `0.1.0-dev.5`. Voir les [propriétés Unicode](../LANGUAGE.md#unicode-properties).
 
-Le source accepte `range "α" to "ω"` et `character class: digit, "_"`. Une classe combine des littéraux d’un point Unicode, des plages, des raccourcis singuliers et des propriétés Unicode ; `not character class:` nie l’union entière. Les comptes et `lazy` s’appliquent à la classe. Les compléments de propriétés conservent le comportement natif `u`/`i`. Ce n’est pas encore dans npm `0.1.0-dev.4` ; voir les [classes de caractères](../LANGUAGE.md#composable-character-classes).
+Le source accepte `range "α" to "ω"` et `character class: digit, "_"`. Une classe combine des littéraux d’un point Unicode, des plages, des raccourcis singuliers et des propriétés Unicode ; `not character class:` nie l’union entière. Les comptes et `lazy` s’appliquent à la classe. Les compléments de propriétés conservent le comportement natif `u`/`i`. Disponible dans npm `0.1.0-dev.5`; voir les [classes de caractères](../LANGUAGE.md#composable-character-classes).
 
-npm `0.1.0-dev.4` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
+npm `0.1.0-dev.5` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
 
 ## 📦 Installer l’aperçu
 
@@ -84,7 +84,7 @@ Utilisez le CLI sans installation globale :
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-Résultat : `/^ABC\d{3}$/u`. Pour fixer la version, utilisez `regex-for-humans@0.1.0-dev.4`. Le projet n’a ni dépendance à l’exécution ni exécutable autonome par système.
+Résultat : `/^ABC\d{3}$/u`. Pour fixer la version, utilisez `regex-for-humans@0.1.0-dev.5`. Le projet n’a ni dépendance à l’exécution ni exécutable autonome par système.
 
 ## 🎮 Essayer un motif
 
@@ -113,7 +113,7 @@ start
 end
 ```
 
-Le littéral doit être entouré de `/` et porter `u`. Écrivez les retours à la ligne sous forme d’échappements, par exemple `\n`. La traduction préserve les comportements `i`, `s`, `m` et `u` pris en charge. Le code source importe aussi les captures nommées/numérotées, les groupes imbriqués et les références précédentes, sans modifier leur numérotation ni leurs valeurs.
+Le littéral doit être entouré de `/` et porter `u` ou `v`. Écrivez les retours à la ligne sous forme d’échappements, par exemple `\n`. La traduction préserve les comportements `i`, `s`, `m` et `u` pris en charge. Le code source importe aussi les captures nommées/numérotées, les groupes imbriqués et les références précédentes, sans modifier leur numérotation ni leurs valeurs.
 
 `[^]` devient un caractère quelconque avec `s`. Les points ordinaires voisins excluent explicitement les séparateurs de ligne pour conserver leur sens. Les classes complètes de lettres, de mots et de chiffres hexadécimaux acceptent des ordres équivalents ; les exclusions de chemin et les échappements de contrôle sont conservés. Un tiret à l’extrémité d’une liste reste littéral.
 
@@ -218,7 +218,7 @@ Les retours à la ligne sont des caractères littéraux. La validation des monta
 
 ## 🧲 Extraire des champs avec des captures nommées
 
-Cet exemple fonctionne avec npm `0.1.0-dev.4` et dans l’atelier publié.
+Cet exemple fonctionne avec npm `0.1.0-dev.5` et dans l’atelier publié.
 
 ```text
 start
@@ -312,6 +312,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--json` | Résultats structurés sur stdout ; erreurs sur stderr |
 | `--ignore-case` | Active `i` |
 | `--dot-all` | Active `s` |
+| `--flags` | Choisir les flags JavaScript natifs ; u/v sont exclusifs |
 | `--help` | Aide |
 | `--version` | Version du paquet |
 
@@ -333,7 +334,7 @@ start
 end
 ```
 
-`--reverse --json` renvoie `{ rules, flags }`, comme `regexToRules()`. Réutilisez `flags` dans `compile()`. `m` est porté par les ancres de ligne et `u` est automatique. En mode texte, les options requises sont indiquées sur stderr sans transformer le succès en erreur. Le mode inverse accepte fichier ou stdin, mais pas `--explain`, `--ignore-case` ou `--dot-all` simultanément.
+`--reverse --json` renvoie `{ rules, flags }`, comme `regexToRules()`. Passez `flags` à `compile(rules, { flags })` pour conserver les options natives et le comportement du curseur. Les huit flags sont pris en charge ; les regex g/y conservent leur état.
 
 ## 📦 Bibliothèque JavaScript
 
@@ -369,11 +370,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | Correspondance à `lastIndex`, arrêt au premier trou |
 | `v` | `{ flags: 'v' }` | Classes Unicode et compléments natifs en mode v |
 
-**Sources uniquement :** les huit flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` sont acceptés, avec `{ flags: 'dgiv' }` ou `--flags dgiv`. L’ordre de sortie est `dgimsuvy` ; doublons et combinaison u/v sont rejetés, et u reste le défaut. m peut être explicite ou ajouté par les ancres de ligne ; les ancres d’entrée restent absolues, même dans un mélange des deux modes. La traduction inverse conserve les options sans modifier `lastIndex`. Le workshop recommence chaque exemple à 0 et énumère au plus 100 correspondances ; les regex g/y copiés restent avec état. Les capacités natives manquantes sont signalées explicitement. npm `0.1.0-dev.4` conserve ses options i/s, u automatique et m par ancres de ligne.
+**Dans l’aperçu :** les huit flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` sont acceptés, avec `{ flags: 'dgiv' }` ou `--flags dgiv`. L’ordre de sortie est `dgimsuvy` ; doublons et combinaison u/v sont rejetés, et u reste le défaut. m peut être explicite ou ajouté par les ancres de ligne ; les ancres d’entrée restent absolues, même dans un mélange des deux modes. La traduction inverse conserve les options sans modifier `lastIndex`. Le workshop recommence chaque exemple à 0 et énumère au plus 100 correspondances ; les regex g/y copiés restent avec état. Les capacités natives manquantes sont signalées explicitement. Disponible dans npm `0.1.0-dev.5`.
 
-**Dans le code source seulement :** choisissez `v` pour `one of strings: "a", "ab", ""` ou `unicode property "RGI_Emoji"`. Les ensembles natifs essaient les membres les plus longs en premier, quel que soit l’ordre de la liste ; les règles suivantes peuvent imposer un membre plus court. Les chaînes vides sont autorisées. Utilisez `string "ab"` dans une classe. Les propriétés de chaînes et les membres vides ou de plusieurs points de code ne peuvent pas être complémentés. Ces fonctions ne sont pas dans npm `0.1.0-dev.4`.
+**Dans le code source seulement :** choisissez `v` pour `one of strings: "a", "ab", ""` ou `unicode property "RGI_Emoji"`. Les ensembles natifs essaient les membres les plus longs en premier, quel que soit l’ordre de la liste ; les règles suivantes peuvent imposer un membre plus court. Les chaînes vides sont autorisées. Utilisez `string "ab"` dans une classe. Les propriétés de chaînes et les membres vides ou de plusieurs points de code ne peuvent pas être complémentés. Disponible dans npm `0.1.0-dev.5`.
 
-**Dans le code source seulement :** les ensembles imbriqués utilisent `character set union {`, `character set intersection {` et `character set subtraction {`, puis `}`. Chaque ligne désigne un caractère, une plage, une classe, une propriété, un ensemble de chaînes ou un ensemble imbriqué. L’intersection garde les membres communs ; la soustraction retire les membres de droite du premier opérande. Les comptes et `lazy` portent sur tout le bloc. `not` respecte les restrictions natives sur les chaînes ; une union vide ne correspond à rien. Choisissez `v` ; npm `0.1.0-dev.4` ne contient pas ces fonctions. [Syntaxe et exemples](../LANGUAGE.md#nested-unicode-set-operations).
+**Dans le code source seulement :** les ensembles imbriqués utilisent `character set union {`, `character set intersection {` et `character set subtraction {`, puis `}`. Chaque ligne désigne un caractère, une plage, une classe, une propriété, un ensemble de chaînes ou un ensemble imbriqué. L’intersection garde les membres communs ; la soustraction retire les membres de droite du premier opérande. Les comptes et `lazy` portent sur tout le bloc. `not` respecte les restrictions natives sur les chaînes ; une union vide ne correspond à rien. Choisissez `v` ; Disponible dans npm `0.1.0-dev.5`. [Syntaxe et exemples](../LANGUAGE.md#nested-unicode-set-operations).
 
 ## 🛠️ Développer localement
 
@@ -439,6 +440,6 @@ La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’ang
 | [Comparaison](../COMPETITOR_GAPS.md) | Sources et capacités manquantes |
 | [Contribuer](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Installation et conventions |
 
-**Vérifié localement le 10 octobre 2026 :** 251 tests Node, 296 contrôles Chromium ordinateur/mobile, 66 Firefox/WebKit, 64 du site et installation du paquet réussis ; zéro vulnérabilité signalée. Les 16 tests dédiés aux groupes/références/traduction inverse passent aussi sur Node 22.23.3. Ces chiffres décrivent cet instantané, pas tous les navigateurs ni les versions futures. Les revues humaines restent ouvertes.
+**Vérifié localement le 10 octobre 2026 :** 301 tests Node, 378 contrôles Chromium ordinateur/mobile, 148 Firefox/WebKit, 64 du site et installation du paquet réussis ; zéro vulnérabilité signalée. Les 16 tests dédiés aux groupes/références/traduction inverse passent aussi sur Node 22.23.3. Ces chiffres décrivent cet instantané, pas tous les navigateurs ni les versions futures. Les revues humaines restent ouvertes.
 
 Licence [MIT](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [Retour à l’anglais](../../README.md).

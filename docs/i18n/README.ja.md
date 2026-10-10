@@ -8,7 +8,7 @@
 
 明確な英語のルールを、各部分の意味を追える JavaScript 正規表現に変換します。
 
-[🚀 ワークショップ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 サイト](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 構文](../LANGUAGE.md) · [📦 npm プレビュー](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
+[🚀 ワークショップ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 サイト](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 構文](../LANGUAGE.md) · [📦 npm プレビュー](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.5)
 
 🔒 ローカル実行 · 🧩 実行時依存なし · ⚡ 1つのコンパイラ、3つの使い方
 
@@ -34,39 +34,39 @@ end
 
 語彙は**固定**され、各命令には正確な意味があります。ライブラリ、CLI、ワークショップは同じ決定的なコンパイラを使います。不明な命令には行、列、修正のヒントを返します。どの翻訳でも、ルールの構文自体は英語のままです。
 
-> 🌱 プレビュー `0.1.0-dev.4` のライブラリと CLI には **Node.js 22+** が必要です。オンラインのワークショップはインストール不要です。人による使いやすさとスクリーンリーダーの評価は未実施です。
+> 🌱 プレビュー `0.1.0-dev.5` のライブラリと CLI には **Node.js 22+** が必要です。オンラインのワークショップはインストール不要です。人による使いやすさとスクリーンリーダーの評価は未実施です。
 
 ## 🧰 現在できること
 
-| 機能 | npm `0.1.0-dev.4` | 現在のソース |
-| --- | --- | --- |
-| ルール → JavaScript 正規表現 | ✅ | ✅ |
-| 対応する正規表現 → 編集可能なルール | ✅ | ✅ 対応するグループと参照を含む |
-| 各断片の説明と元のルールへの移動 | ✅ | ✅ グループの両端と参照も含む |
-| CLI、ESM API、TypeScript 型 | ✅ | ✅ |
-| 名前付き・番号付きキャプチャと入れ子のブロック | ✅ | ✅ |
-| ブロック全体の繰り返しと後方参照 | ✅ | ✅ |
-| `either { … }` による順序付きの選択 | ✅ | ✅ 入れ子の選択と逆変換 |
-| `lazy` による非貪欲な繰り返し | — | ✅ ソースコードで対応。未リリース |
-| 先読み・後読み | — | ✅ ソースのみ。入れ子とネイティブなキャプチャに対応 |
-| 単語境界 | — | ✅ ソースのみ。ネイティブなゼロ幅アサーション |
-| [Unicode プロパティ](../LANGUAGE.md#unicode-properties) | — | ✅ u モードのネイティブ別名と補集合。ソースのみ |
-| [文字クラスの組み合わせ](../LANGUAGE.md#composable-character-classes) | — | ✅ 範囲・略記・Unicode の和集合。ソースのみ |
-| [Unicode 文字列と入れ子の集合](../LANGUAGE.md#nested-unicode-set-operations) | — | ✅ 有限文字列、文字列プロパティ、和集合、積集合、差集合；ソース版のみ |
-| JavaScript の全 8 フラグ | — | ✅ 明示的な指定、ネイティブ u/v クラスとカーソル動作；ソース版のみ |
-| 他の正規表現エンジンや自由な英文 | — | 現在の言語の対象外 |
+| 機能 | npm `0.1.0-dev.5` |
+| --- | --- |
+| ルール → JavaScript 正規表現 | ✅ |
+| 対応する正規表現 → 編集可能なルール | ✅ |
+| 各断片の説明と元のルールへの移動 | ✅ |
+| CLI、ESM API、TypeScript 型 | ✅ |
+| 名前付き・番号付きキャプチャと入れ子のブロック | ✅ |
+| ブロック全体の繰り返しと後方参照 | ✅ |
+| `either { … }` による順序付きの選択 | ✅ |
+| `lazy` による非貪欲な繰り返し | ✅ |
+| 先読み・後読み | ✅ |
+| 単語境界 | ✅ |
+| [Unicode プロパティ](../LANGUAGE.md#unicode-properties) | ✅ |
+| [文字クラスの組み合わせ](../LANGUAGE.md#composable-character-classes) | ✅ |
+| [Unicode 文字列と入れ子の集合](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
+| JavaScript の全 8 フラグ | ✅ |
+| 他の正規表現エンジンや自由な英文 | — |
 
-現在のソースでは `lazy digits` が `\d+?` になります。まず数字1文字を試し、後続の規則に必要なら繰り返しを増やします。この機能は npm `0.1.0-dev.4` には含まれません。[繰り返しの規則](../LANGUAGE.md#repetition)を参照してください。
+現在のソースでは `lazy digits` が `\d+?` になります。まず数字1文字を試し、後続の規則に必要なら繰り返しを増やします。npm `0.1.0-dev.5` で利用できます。[繰り返しの規則](../LANGUAGE.md#repetition)を参照してください。
 
-ソースでは `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }` も使えます。現在の位置の前後を調べ、文字は消費しません。キャプチャはネイティブな値と位置を保ち、その範囲が一致部分の外にある場合もあります。後読みには実行環境の対応が必要です。これらは npm `0.1.0-dev.4` には含まれません。[先読み・後読み](../LANGUAGE.md#lookaround-assertions)を参照してください。
+ソースでは `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }` も使えます。現在の位置の前後を調べ、文字は消費しません。キャプチャはネイティブな値と位置を保ち、その範囲が一致部分の外にある場合もあります。後読みには実行環境の対応が必要です。npm `0.1.0-dev.5` で利用できます。[先読み・後読み](../LANGUAGE.md#lookaround-assertions)を参照してください。
 
-ソースでは `word boundary`（`\b`）と `not word boundary`（`\B`）も使えます。文字を消費しません。JavaScript の単語文字は ASCII の英字、数字、アンダースコアです。`i` を使うと、大文字・小文字の折り畳みで同等になる文字も含みます。自然言語の単語分割ではありません。npm `0.1.0-dev.4` には未収録です。[単語境界](../LANGUAGE.md#word-boundaries)を参照してください。
+ソースでは `word boundary`（`\b`）と `not word boundary`（`\B`）も使えます。文字を消費しません。JavaScript の単語文字は ASCII の英字、数字、アンダースコアです。`i` を使うと、大文字・小文字の折り畳みで同等になる文字も含みます。自然言語の単語分割ではありません。npm `0.1.0-dev.5` で利用できます。[単語境界](../LANGUAGE.md#word-boundaries)を参照してください。
 
-ソースでは `unicode property "L"` と `not unicode property "L"` を使い、ネイティブの `\p{L}` と `\P{L}` を生成できます。`L` は Letter を意味します。別名は大文字・小文字を区別し、分類は実行環境の Unicode データに従います。回数指定と `lazy` も使えます。`i` を付けた `u` モードの補集合には、大小文字の折り畳みで同等になる文字が含まれることがあります。npm `0.1.0-dev.4` には未収録です。[Unicode プロパティ](../LANGUAGE.md#unicode-properties)を参照してください。
+ソースでは `unicode property "L"` と `not unicode property "L"` を使い、ネイティブの `\p{L}` と `\P{L}` を生成できます。`L` は Letter を意味します。別名は大文字・小文字を区別し、分類は実行環境の Unicode データに従います。回数指定と `lazy` も使えます。`i` を付けた `u` モードの補集合には、大小文字の折り畳みで同等になる文字が含まれることがあります。npm `0.1.0-dev.5` で利用できます。[Unicode プロパティ](../LANGUAGE.md#unicode-properties)を参照してください。
 
-ソースは `range "α" to "ω"` と `character class: digit, "_"` をサポートします。1 Unicode コードポイントのリテラル、範囲、単数の略記、Unicode プロパティを一つのクラスにまとめられます。`not character class:` は和集合全体を否定し、回数指定と `lazy` はクラスに適用されます。プロパティの補集合はネイティブの `u`/`i` の挙動を保ちます。npm `0.1.0-dev.4` には未収録です。[文字クラス](../LANGUAGE.md#composable-character-classes)を参照してください。
+ソースは `range "α" to "ω"` と `character class: digit, "_"` をサポートします。1 Unicode コードポイントのリテラル、範囲、単数の略記、Unicode プロパティを一つのクラスにまとめられます。`not character class:` は和集合全体を否定し、回数指定と `lazy` はクラスに適用されます。プロパティの補集合はネイティブの `u`/`i` の挙動を保ちます。npm `0.1.0-dev.5` で利用できます。[文字クラス](../LANGUAGE.md#composable-character-classes)を参照してください。
 
-npm `0.1.0-dev.4` のライブラリと CLI は、グループ、キャプチャ、後方参照、順序付き選択肢に対応しています。ワークショップではキャプチャの確認と複数の検索一致も利用できます。[互換性](../COMPATIBILITY.md)と[公開の記録](../DISTRIBUTION.md)を確認してください。
+npm `0.1.0-dev.5` のライブラリと CLI は、グループ、キャプチャ、後方参照、順序付き選択肢に対応しています。ワークショップではキャプチャの確認と複数の検索一致も利用できます。[互換性](../COMPATIBILITY.md)と[公開の記録](../DISTRIBUTION.md)を確認してください。
 
 ## 📦 プレビューをインストールする
 
@@ -80,7 +80,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-出力は `/^ABC\d{3}$/u` です。固定バージョンには `regex-for-humans@0.1.0-dev.4` を使います。実行時依存や OS ごとの単独実行ファイルはありません。
+出力は `/^ABC\d{3}$/u` です。固定バージョンには `regex-for-humans@0.1.0-dev.5` を使います。実行時依存や OS ごとの単独実行ファイルはありません。
 
 ## 🎮 パターンを試す
 
@@ -109,7 +109,7 @@ start
 end
 ```
 
-`/` と必須の `u` を使い、改行は `\n` のようにエスケープしてください。対応する `i`、`s`、`m`、`u` の動作を保持します。現在のソースでは、キャプチャ、入れ子のグループ、後方参照も、名前・番号・値を保持して取り込めます。
+`/` と `u` または `v` を使い、改行は `\n` のようにエスケープしてください。対応する `i`、`s`、`m`、`u` の動作を保持します。現在のソースでは、キャプチャ、入れ子のグループ、後方参照も、名前・番号・値を保持して取り込めます。
 
 `[^]` は `s` 付きの任意の文字になります。隣の通常のドットは改行を明示的に除外し、意味を保ちます。完全な文字・単語・16進数クラスの同等な並び、パスの除外、制御文字のエスケープ、リスト端のリテラルなハイフンも認識します。
 
@@ -214,7 +214,7 @@ end
 
 ## 🧲 名前付きキャプチャでフィールドを抽出する
 
-この例は npm `0.1.0-dev.4` と公開ワークショップで動作します。
+この例は npm `0.1.0-dev.5` と公開ワークショップで動作します。
 
 ```text
 start
@@ -308,6 +308,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--json` | stdout に結果、stderr にエラー |
 | `--ignore-case` | `i` |
 | `--dot-all` | `s` |
+| `--flags` | JavaScript のフラグを指定。u/v は同時に使えません |
 | `--help` | ヘルプ |
 | `--version` | パッケージのバージョン |
 
@@ -329,7 +330,7 @@ start
 end
 ```
 
-`--reverse --json` は `{ rules, flags }` を返します。`flags` を `compile()` に渡してください。`m` は行アンカー、`u` は自動です。通常出力では必要なオプションを stderr に通知し、成功の終了コードを保ちます。`--explain`、`--ignore-case`、`--dot-all` とは併用できません。
+`--reverse --json` は `regexToRules()` と同じ `{ rules, flags }` を返します。ネイティブなオプションとカーソルの動作を保つため、返された `flags` を `compile(rules, { flags })` に渡してください。8 個すべてのフラグに対応し、g/y の正規表現は状態を持ちます。
 
 ## 📦 JavaScript ライブラリ
 
@@ -365,11 +366,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | `lastIndex` で一致し、最初の隙間で停止 |
 | `v` | `{ flags: 'v' }` | ネイティブ v モードの Unicode クラスと補集合 |
 
-**ソース版のみ：** 8 個のフラグ `d`、`g`、`i`、`m`、`s`、`u`、`v`、`y` を `{ flags: 'dgiv' }` または `--flags dgiv` で指定できます。出力順は `dgimsuvy` です。重複と u/v の併用はエラーになり、既定は u です。m は明示指定または行アンカーで有効になります。混在しても入力アンカーは絶対境界を保ちます。逆変換はオプションを保持し、`lastIndex` を変更しません。Workshop は各例を 0 から開始し、最大 100 件を表示します。コピーした g/y 正規表現は状態を持ちます。ネイティブ機能の不足は明示的な診断になります。npm `0.1.0-dev.4` は従来の i/s、既定の u、行アンカーによる m を維持します。
+**プレビュー版：** 8 個のフラグ `d`、`g`、`i`、`m`、`s`、`u`、`v`、`y` を `{ flags: 'dgiv' }` または `--flags dgiv` で指定できます。出力順は `dgimsuvy` です。重複と u/v の併用はエラーになり、既定は u です。m は明示指定または行アンカーで有効になります。混在しても入力アンカーは絶対境界を保ちます。逆変換はオプションを保持し、`lastIndex` を変更しません。Workshop は各例を 0 から開始し、最大 100 件を表示します。コピーした g/y 正規表現は状態を持ちます。ネイティブ機能の不足は明示的な診断になります。npm `0.1.0-dev.5` で利用できます。
 
-**ソース版のみ：**`v` を選ぶと `one of strings: "a", "ab", ""` や `unicode property "RGI_Emoji"` を使えます。ネイティブ集合はリスト順に関係なく長い要素から試します。後続のルールに応じて短い要素へ戻ることがあります。空文字列も使えます。クラス内では `string "ab"` を使います。文字列プロパティと、空または複数コードポイントの要素は補集合にできません。npm `0.1.0-dev.4` にはまだ含まれていません。
+**プレビュー版：**`v` を選ぶと `one of strings: "a", "ab", ""` や `unicode property "RGI_Emoji"` を使えます。ネイティブ集合はリスト順に関係なく長い要素から試します。後続のルールに応じて短い要素へ戻ることがあります。空文字列も使えます。クラス内では `string "ab"` を使います。文字列プロパティと、空または複数コードポイントの要素は補集合にできません。npm `0.1.0-dev.5` で利用できます。
 
-**ソース版のみ：**入れ子の集合には `character set union {`、`character set intersection {`、`character set subtraction {` を使い、`}` で閉じます。各行は文字、範囲、クラス、プロパティ、文字列集合、または入れ子の集合を表します。積集合は共通の要素を残し、差集合は最初のオペランドから右側の要素を除きます。回数指定と `lazy` はブロック全体に適用されます。`not` はネイティブの文字列に関する構造上の制約に従います。空の和集合は何にも一致しません。`v` を選択してください。npm `0.1.0-dev.4` には未収録です。[構文と例](../LANGUAGE.md#nested-unicode-set-operations)。
+**プレビュー版：**入れ子の集合には `character set union {`、`character set intersection {`、`character set subtraction {` を使い、`}` で閉じます。各行は文字、範囲、クラス、プロパティ、文字列集合、または入れ子の集合を表します。積集合は共通の要素を残し、差集合は最初のオペランドから右側の要素を除きます。回数指定と `lazy` はブロック全体に適用されます。`not` はネイティブの文字列に関する構造上の制約に従います。空の和集合は何にも一致しません。`v` を選択してください。npm `0.1.0-dev.5` で利用できます。[構文と例](../LANGUAGE.md#nested-unicode-set-operations)。
 
 ## 🛠️ ローカル開発
 
@@ -435,6 +436,6 @@ CI=1 npm run verify
 | [比較](../COMPETITOR_GAPS.md) | 出典と未対応機能 |
 | [貢献](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | 導入と規約 |
 
-**2026年10月10日のローカル検証：** Node 251件、Chromium デスクトップ・モバイル296件、Firefox/WebKit 66件、サイト64件、クリーンな利用側インストールが成功。監査の脆弱性は0件。グループ・参照・逆変換の16件は Node 22.23.3 でも成功しました。この時点の結果であり、将来の全ブラウザを保証しません。人による評価は未完了です。
+**2026年10月10日のローカル検証：** Node 301件、Chromium デスクトップ・モバイル378件、Firefox/WebKit 148件、サイト64件、クリーンな利用側インストールが成功。監査の脆弱性は0件。グループ・参照・逆変換の16件は Node 22.23.3 でも成功しました。この時点の結果であり、将来の全ブラウザを保証しません。人による評価は未完了です。
 
 [MIT](../../LICENSE) · [変更履歴](../../CHANGELOG.md) · [英語版に戻る](../../README.md)。

@@ -1,5 +1,7 @@
 # Roadmap — Regex For Humans
 
+**Current distribution preparation, 10 October 2026:** `0.1.0-dev.5` aligns the npm package, ten README guides and site with nested native Unicode sets/strings, all eight flags, classes/properties, boundaries, assertions and lazy repetition. The unchanged native core passed 891 checks; release candidate checks and publication evidence are tracked in [AUTONOMOUS_ROADMAP.md](docs/AUTONOMOUS_ROADMAP.md) and [DISTRIBUTION.md](docs/DISTRIBUTION.md). The older release snapshots below retain their original versions and receipts. Human review gates remain open.
+
 > État initial : dépôt local `f39788b` (`master`), inspecté le 19 septembre 2026. Ce document est un plan, pas une liste de fonctionnalités livrées. Une tâche est terminée uniquement avec les preuves indiquées dans ses critères d'acceptation. L'état GitHub reste à vérifier avant publication.
 
 ## Suivi d'exécution

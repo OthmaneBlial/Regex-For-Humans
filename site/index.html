@@ -27,7 +27,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css?v=c36c50783b5b">
   <link rel="preload" href="./assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <script type="module" src="./app.js?v=48a997507133"></script>
+  <script type="module" src="./app.js?v=90686cfeda1a"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -42,7 +42,7 @@
         <h1 id="page-title">Regex, with<br>a <span class="highlight">human side.</span></h1>
         <p class="hero-summary">Build a pattern you can explain. Write readable rules, import a supported regex, extract named fields, and test the edge cases.</p>
         <div class="hero-actions"><a class="button primary" href="./workshop/">Open the playground <span aria-hidden="true">🚀</span></a><a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans">Meet the code ↗</a></div>
-        <p class="npm-install"><a class="text-link" href="https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4"><span aria-hidden="true">📦</span> Get the npm preview ↗</a><br><code>npm install regex-for-humans@preview</code><br>Library + CLI · Node.js 22+</p>
+        <p class="npm-install"><a class="text-link" href="https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.5"><span aria-hidden="true">📦</span> Get the npm preview ↗</a><br><code>npm install regex-for-humans@preview</code><br>Library + CLI · Node.js 22+</p>
         <div class="hero-notes"><span><span aria-hidden="true">🧠</span> Deterministic compiler</span><span><span aria-hidden="true">🔒</span> Runs locally</span><span><span aria-hidden="true">✨</span> No account</span></div>
       </div>
       <section class="demo" aria-labelledby="demo-title">
@@ -82,7 +82,7 @@ capture "day" {
   2 digits
 }
 end</code></pre></div>
-        <div class="capture-result"><span class="feature-index">THE NATIVE RESULT</span><h3><code>2026-10-10</code></h3><dl class="capture-fields"><div><dt>year</dt><dd>2026</dd></div><div><dt>month</dt><dd>10</dd></div><div><dt>day</dt><dd>10</dd></div></dl><p>A named group gives you a field. A numbered capture keeps its position. A noncapturing group keeps a block together.</p><div class="code-block regex-block"><div class="code-label"><span>JAVASCRIPT REGEX</span><button type="button" data-copy="capture-regex" disabled>Copy capture regex</button></div><pre><code id="capture-regex">/^(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})-(?&lt;day&gt;\d{2})$/u</code></pre></div><p class="scope-note">This checks a date shape, including impossible dates. Validate calendar values separately. Groups, captures, backward references and ordered alternatives are included in npm 0.1.0-dev.4.</p><a class="text-link" href="./workshop/docs/LANGUAGE.md#groups-and-captures">Explore nested groups and references ↗</a></div>
+        <div class="capture-result"><span class="feature-index">THE NATIVE RESULT</span><h3><code>2026-10-10</code></h3><dl class="capture-fields"><div><dt>year</dt><dd>2026</dd></div><div><dt>month</dt><dd>10</dd></div><div><dt>day</dt><dd>10</dd></div></dl><p>A named group gives you a field. A numbered capture keeps its position. A noncapturing group keeps a block together.</p><div class="code-block regex-block"><div class="code-label"><span>JAVASCRIPT REGEX</span><button type="button" data-copy="capture-regex" disabled>Copy capture regex</button></div><pre><code id="capture-regex">/^(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})-(?&lt;day&gt;\d{2})$/u</code></pre></div><p class="scope-note">This checks a date shape, including impossible dates. Validate calendar values separately. Groups, captures, backward references and ordered alternatives are included in npm 0.1.0-dev.5.</p><a class="text-link" href="./workshop/docs/LANGUAGE.md#groups-and-captures">Explore nested groups and references ↗</a></div>
       </div>
     </section>
     <section class="how-section section" id="how" aria-labelledby="how-title">
@@ -129,9 +129,7 @@ end</code></pre></div>
 const result = compile('start 3 digits\nend');
 toRegExp(result).test('123'); // true
 console.log(result.segments);</code></pre></div></article>
-        <article><h3>Your terminal, too.</h3><p>Read UTF-8 rules from a file or stdin. Export JSON or ask for every fragment's explanation.</p><div class="code-block"><div class="code-label"><span>NODE.JS 22+ · SOURCE CHECKOUT</span><button type="button" data-copy="terminal-code" disabled>Copy terminal example</button></div><pre><code id="terminal-code">git clone https://github.com/OthmaneBlial/Regex-For-Humans.git
-cd Regex-For-Humans
-printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js --explain</code></pre></div><p><code>--json</code> · <code>--reverse</code> · <code>--ignore-case</code> · <code>--dot-all</code></p></article>
+        <article><h3>Your terminal, too.</h3><p>Read UTF-8 rules from a file or stdin. Export JSON or ask for every fragment's explanation.</p><div class="code-block"><div class="code-label"><span>NODE.JS 22+ · NPM PREVIEW</span><button type="button" data-copy="terminal-code" disabled>Copy terminal example</button></div><pre><code id="terminal-code">printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain</code></pre></div><p><code>--json</code> · <code>--reverse</code> · <code>--flags</code> · <code>--ignore-case</code> · <code>--dot-all</code></p></article>
       </div>
     </section>
     <section class="reading-section section" id="read" aria-labelledby="read-title">
@@ -142,10 +140,10 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js --explain</
     <section class="faq-section section" id="questions" aria-labelledby="questions-title">
       <div class="section-heading"><p class="eyebrow">CLEAR RULES. HONEST LIMITS.</p><h2 id="questions-title">A few things to know.</h2></div>
       <details><summary>Does it understand any English sentence?</summary><p>It uses a fixed, documented vocabulary. Unknown instructions receive a line, column and repair hint. There is no AI interpretation or remote prompt.</p></details>
-      <details><summary>Can I import every regex?</summary><p>The translator accepts the documented JavaScript subset. Groups, captures, ordered alternatives and backward references are supported in npm 0.1.0-dev.4. The source checkout also imports lazy repetition, positive/negative lookahead/lookbehind, word/non-word boundaries, Unicode character properties and composable character classes with ranges; these additions are unreleased. Empty character classes, v-set operations and forward/open references still fail explicitly. Unsupported syntax is never silently removed.</p></details>
+      <details><summary>Can I import every regex?</summary><p>The translator accepts the documented native JavaScript subset: groups, captures, ordered alternatives, backward references, lazy repetition, lookahead/lookbehind, word boundaries, Unicode properties/classes and v-mode strings and nested sets. Empty sets require v mode. Forward/open references, empty u-mode classes and other-engine constructs receive diagnostics. Unsupported syntax is never silently removed.</p></details>
       <details><summary>Are my test strings sent anywhere?</summary><p>The workshop matches in your browser's isolated worker. Rules and examples stay local. The page and its static assets are served by the hosting provider; no application backend receives your matching inputs.</p></details>
       <details><summary>Does a passing example prove a regex is safe?</summary><p>Examples establish selected behavior. The workshop bounds input and terminates a worker after 1,200 ms. A regex copied into another application needs that application's own execution safeguards.</p></details>
-      <details><summary>Which version should I use?</summary><p>npm 0.1.0-dev.4 is the development preview, including groups, captures, ordered alternatives and references. Install regex-for-humans@preview or try the browser workshop. Node.js 22+ is required by the library and CLI. Human usability and screen reader reviews remain open.</p></details>
+      <details><summary>Which version should I use?</summary><p>npm 0.1.0-dev.5 is the development preview, including groups, lazy repetition, assertions, Unicode sets and all eight JavaScript flags. Install regex-for-humans@preview or try the browser workshop. Node.js 22+ is required by the library and CLI. Native feature support is checked explicitly. Human usability and screen reader reviews remain open.</p></details>
     </section>
     <section class="closing" aria-labelledby="closing-title"><span class="closing-face" aria-hidden="true">^_^</span><div><h2 id="closing-title">Make your next regex<br>a little more human.</h2><a class="button primary" href="./workshop/">Let's make a match <span aria-hidden="true">✨</span></a></div></section>
   </main>
