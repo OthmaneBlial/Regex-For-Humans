@@ -36,12 +36,10 @@ const CONTROL_ESCAPES = new Map([
 ]);
 
 const UNSUPPORTED_HINT =
-  "Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references and i/s/u/m flags. Alternation, lookaround, lazy quantifiers and forward/open references are not supported.";
-const ALTERNATION_MESSAGE = "Alternation (`|`) cannot be translated.";
-const ALTERNATION_HINT = "Translate each alternative as a separate regex.";
+  "Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround, lazy quantifiers and forward/open references are not supported.";
 const LINE_TERMINATORS = ["\n", "\r", "\u2028", "\u2029"];
 
-/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}}} AtomToken */
+/** @typedef {{end: number, literal?: string, phrase?: string, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
 /** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number}} QuantifierToken */
 /** @typedef {AtomToken & QuantifierToken & {index: number}} PositionedAtom */
 
@@ -268,11 +266,13 @@ function readGroup(source, start, multiline, depth) {
   } else if (capturing && source[start + 1] === "?") {
     unsupported("Only capturing and noncapturing groups can be translated.", start);
   }
-  const { atoms, end: close } = readSequence(source, contentStart, multiline, depth + 1);
+  const { atoms, end: close } = readDisjunction(source, contentStart, multiline, depth + 1);
   if (source[close] !== ")") unsupported("The group is not closed.", start);
   const end = close + 1;
   if (capturing) return { end, group: { capturing, name, atoms, close } };
   if (atoms.length === 0) return { end, phrase: "any character", empty: true };
+  if (atoms.length === 1 && atoms[0].alternation && atoms[0].kind === null)
+    return { end, alternation: { ...atoms[0].alternation, close } };
 
   // Keep the existing compact literal-group output when merging cannot join surrogate atoms.
   let value = "";
@@ -322,19 +322,20 @@ function readSequence(source, start, multiline, depth) {
   while (cursor < source.length) {
     const index = cursor;
     const character = source[cursor];
-    if (character === ")" && depth > 0) break;
+    if (character === "|" || (character === ")" && depth > 0)) break;
     if (character === "^" && atoms.length === 0) {
       atoms.push({ phrase: multiline ? "line start" : "start", kind: null, index, end: ++cursor });
       continue;
     }
     if (
       character === "$" &&
-      (cursor === source.length - 1 || (depth > 0 && source[cursor + 1] === ")"))
+      (cursor === source.length - 1 ||
+        source[cursor + 1] === "|" ||
+        (depth > 0 && source[cursor + 1] === ")"))
     ) {
       atoms.push({ phrase: multiline ? "line end" : "end", kind: null, index, end: ++cursor });
       continue;
     }
-    if (character === "|") unsupported(ALTERNATION_MESSAGE, index, ALTERNATION_HINT);
     if (character === "^" || character === "$" || character === ")") {
       unsupported(
         "Only a start anchor at the beginning and an end anchor at the end can be translated.",
@@ -364,6 +365,27 @@ function readSequence(source, start, multiline, depth) {
     atoms.push({ ...atom, ...quantifier, index });
   }
   return { atoms, end: cursor };
+}
+
+/** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @returns {{atoms: PositionedAtom[], end: number}} */
+function readDisjunction(source, start, multiline, depth) {
+  /** @type {{atoms: PositionedAtom[], index: number}[]} */
+  const branches = [];
+  let cursor = start;
+  while (true) {
+    const { atoms, end } = readSequence(source, cursor, multiline, depth);
+    branches.push({ atoms, index: cursor });
+    cursor = end;
+    if (source[cursor] !== "|") break;
+    cursor += 1;
+  }
+  return {
+    atoms:
+      branches.length === 1
+        ? branches[0].atoms
+        : [{ alternation: { branches, close: cursor }, index: start, kind: null, end: cursor }],
+    end: cursor,
+  };
 }
 
 /** Convert a supported Unicode JavaScript RegExp into controlled-English rules.
@@ -409,7 +431,7 @@ export function regexToRules(regex) {
   }
 
   const multiline = nativeValue("multiline");
-  const { atoms, end: cursor } = readSequence(source, 0, multiline, 0);
+  const { atoms, end: cursor } = readDisjunction(source, 0, multiline, 0);
 
   if (cursor !== source.length) unsupported("The regex contains unsupported syntax.", cursor);
   if (atoms.length === 0) {
@@ -424,6 +446,7 @@ export function regexToRules(regex) {
     for (const atom of list) {
       allAtoms.push(atom);
       if (atom.group) collect(atom.group.atoms);
+      if (atom.alternation) for (const branch of atom.alternation.branches) collect(branch.atoms);
     }
   };
   collect(atoms);
@@ -495,6 +518,24 @@ export function regexToRules(regex) {
                     : atom.kind === "atLeast"
                       ? `at least ${atom.min}`
                       : unsupported("Unknown repetition form.", atom.index);
+      if (atom.alternation) {
+        addRule(`${prefix ? `${prefix} ` : ""}either {`, atom.index);
+        for (const branch of atom.alternation.branches) {
+          const before = rules.length;
+          emit(branch.atoms);
+          const count = rules.length - before;
+          if (count === 0) {
+            addRule("group {", branch.index);
+            addRule("}", atom.alternation.close);
+          } else if (count > 1) {
+            rules.splice(before, 0, "group {");
+            positions.splice(before, 0, branch.index);
+            addRule("}", atom.alternation.close);
+          }
+        }
+        addRule("}", atom.alternation.close);
+        continue;
+      }
       if (atom.group) {
         const group = atom.group;
         const label = group.capturing
@@ -538,6 +579,14 @@ export function regexToRules(regex) {
         `Translated rules cannot exceed ${limit}.`,
         { line: 1, column: 1 },
         "Simplify the regex so its translated rules fit these limits.",
+      );
+    }
+    if (error instanceof CompileError && error.code === "GROUP_DEPTH_LIMIT") {
+      fail(
+        error.code,
+        `Translated rules cannot nest more than ${LIMITS.groupDepth} levels.`,
+        { line: 1, column: (positions[error.line - 1] ?? 0) + 1 },
+        "Simplify nested alternatives or groups so their translated blocks fit this limit.",
       );
     }
     if (

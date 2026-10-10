@@ -8,7 +8,7 @@
 
 A few clear English rules become a JavaScript regex you can actually follow.
 
-### [🚀 Open the playground](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Visit the site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Learn the syntax](docs/LANGUAGE.md) · [📦 npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.3)
+### [🚀 Open the playground](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Visit the site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Learn the syntax](docs/LANGUAGE.md) · [📦 npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
 
 🔒 **Runs locally** &nbsp; 🧩 **No runtime dependencies** &nbsp; ⚡ **One compiler, three ways to use it**
 
@@ -46,7 +46,7 @@ end
 
 A small, **fixed vocabulary**, with an exact meaning for every instruction. The library, CLI, and workshop use the same deterministic compiler. Unknown phrases get a line, column, and helpful diagnostic.
 
-> 🌱 **Development preview (`0.1.0-dev.3`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
+> 🌱 **Development preview (`0.1.0-dev.4`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
 
 | Start here | Continue with |
 | --- | --- |
@@ -58,18 +58,19 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 ## 🧰 What you can build today
 
-| Capability | Published npm `0.1.0-dev.3` | Current source checkout |
+| Capability | Published npm `0.1.0-dev.4` | Current source checkout |
 | --- | --- | --- |
 | Readable rules → native JavaScript regex | ✅ | ✅ |
-| Supported regex → editable rules | ✅ Flat subset | ✅ Includes supported groups and references |
+| Supported regex → editable rules | ✅ | ✅ Includes supported groups and references |
 | Fragment explanations and source navigation | ✅ | ✅ Includes group edges and references |
 | CLI, ESM API and TypeScript declarations | ✅ | ✅ |
-| Numbered/named captures and nested blocks | — | ✅ |
-| Whole-block repetition and backward references | — | ✅ |
-| Alternation, lookaround and lazy quantifiers | — | Planned; currently rejected |
+| Numbered/named captures and nested blocks | ✅ | ✅ |
+| Whole-block repetition and backward references | ✅ | ✅ |
+| Ordered alternatives with `either { … }` | ✅ | ✅ Nested choices and reverse translation |
+| Lookaround and lazy quantifiers | — | Planned; currently rejected |
 | Other regex engines and free-form English | — | Outside the current language |
 
-The checkout additions are unreleased. Install the published preview for its documented subset; clone `main` for groups and references. The browser workshop and npm are separate distributions. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
+The `0.1.0-dev.4` preview includes groups, captures, backward references and ordered alternatives in the library and CLI. The browser workshop adds capture inspection and multiple search matches. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
 
 <a name="install"></a>
 
@@ -85,7 +86,7 @@ Use the CLI without a global install:
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1.0-dev.3`. There are no runtime dependencies or standalone OS executables.
+This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1.0-dev.4`. There are no runtime dependencies or standalone OS executables.
 
 <a name="playground"></a>
 
@@ -114,7 +115,7 @@ start
 end
 ```
 
-The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. The checkout also imports numbered/named captures, nested groups and backward references, preserving capture values and numbering. It rejects syntax it cannot express, including alternation, lookaround, forward/open references and lazy quantifiers; see the [language guide](docs/LANGUAGE.md) for its exact limits. Group/reference additions are not yet included in the published npm preview.
+The workshop expects a slash-delimited literal with `u`; write line breaks as escapes such as `\n`. The reverse translator preserves supported `i`, `s`, `m` and `u` behavior. The preview also imports numbered/named captures, nested groups, ordered alternatives and backward references, preserving capture values and numbering. It rejects syntax it cannot express, including lookaround, forward/open references and lazy quantifiers; see the [language guide](docs/LANGUAGE.md) for its exact limits. These features are included in npm `0.1.0-dev.4`.
 
 Reverse translation also handles JavaScript's empty negative class `[^]`, which includes line breaks. When ordinary `.` atoms appear beside it, their output rules explicitly exclude line terminators so matching stays the same.
 
@@ -126,18 +127,18 @@ Control-letter escapes also translate: `/^\cJ{2}$/u` becomes `start`, `2 "\n"`, 
 
 Separator lists such as `[._-]` and `[-._]` translate too: a hyphen at either end stays literal. The generated class escapes it as `\-`.
 
-Alternation errors point to `|` and suggest translating each alternative separately. Literal pipes such as `\|` or `[|]` remain supported.
+Alternatives become editable `either { … }` blocks: each entry is one ordered choice. Use `group { … }` for a sequence or an empty choice. Literal pipes such as `\|` or `[|]` remain matching data.
 
 Lookahead and lookbehind get a specific error at their opening `(`; unsupported forward/open references point to their escape. Use **Go to regex error** to select that character in your pasted pattern and bring it into view. Failed translation preserves your current rules and options.
 
 Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. Search mode finds an empty match at position 0, including in nonempty input; Entire string mode accepts only blank input for this pattern.
 
-[![Real desktop workshop showing editable rules, generated regex, explanations, and passing example checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![Real desktop workshop showing editable rules, generated regex, explanations, and passing example checks](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 <details>
 <summary>📱 See the mobile workshop</summary>
 
-![Mobile view of the Regex For Humans workshop](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-mobile-dev.png?v=8f26739ed284)
+![Mobile view of the Regex For Humans workshop](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-mobile-dev.png?v=6fd7a31f35a9)
 
 </details>
 
@@ -268,13 +269,13 @@ end
 
 </details>
 
-**Captures on main:** the checkout supports numbered and named `capture` blocks, nested `group` blocks, repetition of whole blocks and [named/numbered references](docs/LANGUAGE.md#capture-references-unreleased-on-main), including reverse translation of the supported subset. These additions are unreleased; see the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures-unreleased-on-main). These existing flat worked examples still validate shapes without extracting fields.
+**Captures in the preview:** numbered and named `capture` blocks, nested `group` blocks, repetition of whole blocks and [named/numbered references](docs/LANGUAGE.md#capture-references) are available in npm `0.1.0-dev.4`, including reverse translation of the supported subset. See the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures). The flat worked examples above validate shapes without extracting fields.
 
 <a name="captures"></a>
 
 ## 🧲 Extract fields with named captures
 
-A date can become three useful fields. This example needs the **source checkout**, because captures are not in npm `0.1.0-dev.3`.
+A date can become three useful fields. This example works with npm `0.1.0-dev.4` and in the hosted workshop.
 
 <!-- captures:date -->
 ```text
@@ -316,7 +317,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 Use `capture {` for a numbered field and `group {` to group without extracting. Names are unique JavaScript identifiers; numbers follow opening order, including nested captures. Optional groups that do not participate return `undefined`; a participating empty capture returns `""`. A repeated capture retains its final value. These are native JavaScript semantics.
 
-Need the same text twice? After the group's closing brace, write `same as capture "word"` or `same as capture 1`. The [reference example](docs/LANGUAGE.md#capture-references-unreleased-on-main) matches `cat cat` and rejects `cat dog`. References before or inside their target receive a positioned diagnostic. The reverse translator preserves supported names, numbers and captured values.
+Need the same text twice? After the group's closing brace, write `same as capture "word"` or `same as capture 1`. The [reference example](docs/LANGUAGE.md#capture-references) matches `cat cat` and rejects `cat dog`. References before or inside their target receive a positioned diagnostic. The reverse translator preserves supported names, numbers and captured values.
 
 This pattern validates `YYYY-MM-DD`, including impossible dates. Use calendar validation after extraction.
 
@@ -395,7 +396,7 @@ Control characters and Unicode line separators from rules, arguments and filenam
 
 ### 🔄 Translate a regex back into rules
 
-The `0.1.0-dev.3` preview includes `--reverse`. Translate a slash-delimited JavaScript regex with the required `u` flag:
+The `0.1.0-dev.4` preview includes `--reverse`. Translate a slash-delimited JavaScript regex with the required `u` flag:
 
 ```sh
 printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse
@@ -488,7 +489,7 @@ CI=1 npm run verify
 
 ## 🧭 Know the boundaries
 
-Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, alternation, lookaround and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
+Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, lookaround and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
 
 <a name="faq"></a>
 
@@ -523,7 +524,7 @@ Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; 
 | [Competitor gaps](docs/COMPETITOR_GAPS.md) | Source-backed comparison and remaining capability gaps |
 | [Contributing](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup, scope and contribution conventions |
 
-**Verified locally on 10 October 2026:** 238 Node tests, 282 desktop/mobile Chrome checks, 52 Firefox/WebKit checks, 62 homepage checks and a clean package consumer pass. The audit reports zero vulnerabilities. The 16 dedicated group/reference/reverse tests also pass on Node 22.23.3. These counts describe that snapshot, not a guarantee for every browser or future version. Human usability and screen reader review remain open.
+**Verified locally on 10 October 2026:** all verification components pass: 251 Node tests, 296 bundled Chromium desktop/mobile workshop checks, 66 Firefox/WebKit checks, 64 homepage checks, builds and a clean JavaScript/TypeScript package consumer. The audit reports zero vulnerabilities. All 26 focused group/reference/alternative/localization checks also pass on Node 22.23.3. These counts describe this snapshot, not every browser or future version. Human usability and screen reader review remain open.
 
 ---
 

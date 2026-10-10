@@ -47,6 +47,12 @@ export function explainNode(node, flags, hasFollowingRule = false) {
     return label + repetitionText(node.repetition, optional);
   }
 
+  if (node.kind === "alternation")
+    return (
+      `Choose one of ${node.branches.length} alternatives, tried in order.` +
+      repetitionText(node.repetition, optional)
+    );
+
   if (
     node.atomType === "shorthand" &&
     node.value === "\\s" &&

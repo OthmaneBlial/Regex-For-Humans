@@ -8,7 +8,7 @@
 
 अंग्रेज़ी में लिखे स्पष्ट नियमों को ऐसे JavaScript regex में बदलें, जिसके हर हिस्से का अर्थ समझ सकें।
 
-[🚀 वर्कशॉप](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 वेबसाइट](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 सिंटैक्स](../LANGUAGE.md) · [📦 npm प्रीव्यू](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.3)
+[🚀 वर्कशॉप](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 वेबसाइट](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 सिंटैक्स](../LANGUAGE.md) · [📦 npm प्रीव्यू](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
 
 🔒 स्थानीय निष्पादन · 🧩 कोई runtime dependency नहीं · ⚡ एक compiler, तीन इंटरफ़ेस
 
@@ -34,22 +34,23 @@ end
 
 शब्दावली **निश्चित** है और हर निर्देश का सटीक अर्थ है। लाइब्रेरी, CLI और वर्कशॉप एक ही deterministic compiler इस्तेमाल करते हैं। अनजान निर्देश पर पंक्ति, कॉलम और सुधार का सुझाव मिलता है। सभी अनुवादों में नियमों का सिंटैक्स अंग्रेज़ी में ही रहता है।
 
-> 🌱 प्रीव्यू `0.1.0-dev.3` की लाइब्रेरी और CLI के लिए **Node.js 22+** चाहिए। ऑनलाइन वर्कशॉप को इंस्टॉल नहीं करना पड़ता। उपयोग में आसानी और screen reader की मानवीय समीक्षा अभी बाकी है।
+> 🌱 प्रीव्यू `0.1.0-dev.4` की लाइब्रेरी और CLI के लिए **Node.js 22+** चाहिए। ऑनलाइन वर्कशॉप को इंस्टॉल नहीं करना पड़ता। उपयोग में आसानी और screen reader की मानवीय समीक्षा अभी बाकी है।
 
 ## 🧰 अभी क्या बनाया जा सकता है
 
-| क्षमता | npm `0.1.0-dev.3` | वर्तमान स्रोत कोड |
+| क्षमता | npm `0.1.0-dev.4` | वर्तमान स्रोत कोड |
 | --- | --- | --- |
 | नियम → JavaScript regex | ✅ | ✅ |
-| समर्थित regex → संपादन योग्य नियम | ✅ सरल सिंटैक्स का हिस्सा | ✅ समर्थित समूह और संदर्भ भी |
+| समर्थित regex → संपादन योग्य नियम | ✅ | ✅ समर्थित समूह और संदर्भ भी |
 | हर हिस्से की व्याख्या और मूल नियम तक पहुँचना | ✅ | ✅ समूहों के दोनों छोर और संदर्भ भी |
 | CLI, ESM API और TypeScript types | ✅ | ✅ |
-| नाम वाले/क्रमांकित captures और nested blocks | — | ✅ |
-| पूरे block की पुनरावृत्ति और पिछले capture के संदर्भ | — | ✅ |
-| विकल्प, lookaround और non-greedy quantifiers | — | योजना में; अभी अस्वीकृत |
+| नाम वाले/क्रमांकित captures और nested blocks | ✅ | ✅ |
+| पूरे block की पुनरावृत्ति और पिछले capture के संदर्भ | ✅ | ✅ |
+| `either { … }` के साथ क्रमबद्ध विकल्प | ✅ | ✅ नेस्टेड विकल्प और reverse translation |
+| Lookaround और non-greedy quantifiers | — | योजना में; अभी अस्वीकृत |
 | दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — | वर्तमान भाषा के दायरे से बाहर |
 
-स्रोत कोड की नई सुविधाएँ अभी npm पर प्रकाशित नहीं हैं। समूहों और संदर्भों के लिए `main` clone करें। वर्कशॉप और npm अलग वितरण हैं; [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
+npm `0.1.0-dev.4` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
 
 ## 📦 प्रीव्यू इंस्टॉल करें
 
@@ -63,7 +64,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-परिणाम `/^ABC\d{3}$/u` है। निश्चित संस्करण के लिए `regex-for-humans@0.1.0-dev.3` इस्तेमाल करें। runtime dependencies या हर OS के लिए अलग standalone executable उपलब्ध नहीं हैं।
+परिणाम `/^ABC\d{3}$/u` है। निश्चित संस्करण के लिए `regex-for-humans@0.1.0-dev.4` इस्तेमाल करें। runtime dependencies या हर OS के लिए अलग standalone executable उपलब्ध नहीं हैं।
 
 ## 🎮 पैटर्न आज़माएँ
 
@@ -76,7 +77,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 मौजूदा workshop में match खोलकर capture के मान और इंजन से मिले स्थान देखें। अनुपस्थित समूह और खाली string अलग दिखते हैं; दोहराया गया समूह अपना अंतिम capture दिखाता है। **Search anywhere** अधिकतम 100 बिना overlap वाले matches दिखाता है और खाली match के बाद एक Unicode code point आगे बढ़ता है। स्थान UTF-16 units में गिने जाते हैं; अंतिम सीमा शामिल नहीं होती। Capture indices न मिलने पर मान दिखाए जाते हैं, स्थानों का अनुमान नहीं लगाया जाता।
 
-[![डेस्कटॉप वर्कशॉप का वास्तविक स्क्रीनशॉट](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![डेस्कटॉप वर्कशॉप का वास्तविक स्क्रीनशॉट](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [मोबाइल दृश्य और checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)।
 
@@ -197,7 +198,7 @@ end
 
 ## 🧲 नाम वाले captures से fields निकालें
 
-इस उदाहरण के लिए **वर्तमान स्रोत कोड** चाहिए; npm `0.1.0-dev.3` में captures नहीं हैं।
+यह उदाहरण npm `0.1.0-dev.4` और प्रकाशित वर्कशॉप में काम करता है।
 
 ```text
 start
@@ -238,7 +239,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 `capture {` क्रमांकित capture बनाता है; `group {` बिना capture किए grouping करता है। नाम unique JavaScript identifiers हैं। क्रमांक opening order के अनुसार होते हैं, nested groups में भी। अनुपस्थित optional capture `undefined` है; भाग लेने वाला खाली capture `""` है; repeated capture आख़िरी value रखता है।
 
-Group बंद होने के बाद `same as capture "word"` या `same as capture 1` वही text माँगता है। [उदाहरण](../LANGUAGE.md#capture-references-unreleased-on-main) `cat cat` स्वीकार करता है, `cat dog` नहीं। आगे या अपने target के अंदर का reference diagnostic देता है। Reverse translation समर्थित captures रखती है। निकाली गई तारीख को कैलेंडर से अलग validate करें।
+Group बंद होने के बाद `same as capture "word"` या `same as capture 1` वही text माँगता है। [उदाहरण](../LANGUAGE.md#capture-references) `cat cat` स्वीकार करता है, `cat dog` नहीं। आगे या अपने target के अंदर का reference diagnostic देता है। Reverse translation समर्थित captures रखती है। निकाली गई तारीख को कैलेंडर से अलग validate करें।
 
 ## 🧩 त्वरित संदर्भ
 
@@ -375,7 +376,9 @@ CI=1 npm run verify
 
 ## 🧭 सीमाएँ समझें
 
-लक्ष्य **JavaScript `RegExp`** है। Raw regex को rules की तरह और मुक्त अंग्रेज़ी को instructions की तरह स्वीकार नहीं करता। Reverse translation सिर्फ़ दस्तावेज़ित subset के लिए है। Alternatives, lookaround और future/open references अस्वीकृत हैं। वर्कशॉप का worker समय-सीमित है; कॉपी किए regex को अपने application की सुरक्षा चाहिए। [सुरक्षा मॉडल](../SECURITY_MODEL.md) देखें।
+विकल्प संपादन योग्य `either { … }` ब्लॉक बनते हैं: हर सीधे entry को एक विकल्प मानकर क्रम से आज़माया जाता है। कई नियमों वाले या खाली विकल्प के लिए `group { … }` इस्तेमाल करें।
+
+लक्ष्य **JavaScript `RegExp`** है। Raw regex को rules की तरह और मुक्त अंग्रेज़ी को instructions की तरह स्वीकार नहीं करता। Reverse translation सिर्फ़ दस्तावेज़ित subset के लिए है। Lookaround और future/open references अस्वीकृत हैं। वर्कशॉप का worker समय-सीमित है; कॉपी किए regex को अपने application की सुरक्षा चाहिए। [सुरक्षा मॉडल](../SECURITY_MODEL.md) देखें।
 
 ## 💬 सामान्य प्रश्न
 
@@ -408,6 +411,6 @@ CI=1 npm run verify
 | [तुलना](../COMPETITOR_GAPS.md) | Sources और बाकी capabilities |
 | [योगदान](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup और conventions |
 
-**10 अक्टूबर 2026 को स्थानीय सत्यापन:** 238 Node tests, 282 Chrome desktop/mobile checks, 52 Firefox/WebKit, 62 website checks और clean consumer installation सफल; audit में शून्य vulnerabilities। Groups/references/reverse translation के 16 tests Node 22.23.3 पर भी सफल हैं। यह उस snapshot का परिणाम है, हर भविष्य के browser की गारंटी नहीं। मानवीय reviews बाकी हैं।
+**10 अक्टूबर 2026 को स्थानीय सत्यापन:** 251 Node tests, 296 Chromium desktop/mobile checks, 66 Firefox/WebKit, 64 website checks और clean consumer installation सफल; audit में शून्य vulnerabilities। Groups/references/reverse translation के 16 tests Node 22.23.3 पर भी सफल हैं। यह उस snapshot का परिणाम है, हर भविष्य के browser की गारंटी नहीं। मानवीय reviews बाकी हैं।
 
 [MIT लाइसेंस](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [अंग्रेज़ी पर लौटें](../../README.md)।

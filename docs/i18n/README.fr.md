@@ -8,7 +8,7 @@
 
 Quelques règles claires en anglais deviennent une expression régulière JavaScript dont vous pouvez suivre chaque partie.
 
-[🚀 Atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Syntaxe](../LANGUAGE.md) · [📦 Aperçu npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.3)
+[🚀 Atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Syntaxe](../LANGUAGE.md) · [📦 Aperçu npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
 
 🔒 Exécution locale · 🧩 Aucune dépendance à l’exécution · ⚡ Un compilateur, trois interfaces
 
@@ -38,22 +38,23 @@ end
 
 Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bibliothèque, le CLI et l’atelier utilisent le même compilateur déterministe. Une instruction inconnue produit un diagnostic avec ligne, colonne et conseil de correction. La syntaxe reste en anglais dans toutes les traductions.
 
-> 🌱 L’aperçu `0.1.0-dev.3` nécessite **Node.js 22+** pour la bibliothèque et le CLI. L’atelier en ligne fonctionne sans installation. Les évaluations humaines de l’utilisabilité et du lecteur d’écran restent à faire.
+> 🌱 L’aperçu `0.1.0-dev.4` nécessite **Node.js 22+** pour la bibliothèque et le CLI. L’atelier en ligne fonctionne sans installation. Les évaluations humaines de l’utilisabilité et du lecteur d’écran restent à faire.
 
 ## 🧰 Ce que vous pouvez construire aujourd’hui
 
-| Capacité | npm `0.1.0-dev.3` | Code source actuel |
+| Capacité | npm `0.1.0-dev.4` | Code source actuel |
 | --- | --- | --- |
 | Règles lisibles → regex JavaScript | ✅ | ✅ |
-| Regex pris en charge → règles modifiables | ✅ Sous-ensemble simple | ✅ Groupes et références pris en charge |
+| Regex pris en charge → règles modifiables | ✅ | ✅ Groupes et références pris en charge |
 | Explications et navigation vers les règles | ✅ | ✅ Ouvertures, fermetures et références incluses |
 | CLI, API ESM et déclarations TypeScript | ✅ | ✅ |
-| Captures nommées/numérotées et groupes imbriqués | — | ✅ |
-| Répétition de blocs et références vers une capture précédente | — | ✅ |
-| Alternatives, assertions et quantificateurs paresseux | — | Prévus ; actuellement refusés |
+| Captures nommées/numérotées et groupes imbriqués | ✅ | ✅ |
+| Répétition de blocs et références vers une capture précédente | ✅ | ✅ |
+| Alternatives ordonnées avec `either { … }` | ✅ | ✅ Choix imbriqués et traduction inverse |
+| Assertions et quantificateurs paresseux | — | Prévus ; actuellement refusés |
 | Autres moteurs et anglais libre | — | Hors du langage actuel |
 
-Les ajouts du code source ne sont pas encore publiés sur npm. Clonez `main` pour les groupes et références. L’atelier et npm sont des distributions distinctes : consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
+npm `0.1.0-dev.4` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
 
 ## 📦 Installer l’aperçu
 
@@ -67,7 +68,7 @@ Utilisez le CLI sans installation globale :
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-Résultat : `/^ABC\d{3}$/u`. Pour fixer la version, utilisez `regex-for-humans@0.1.0-dev.3`. Le projet n’a ni dépendance à l’exécution ni exécutable autonome par système.
+Résultat : `/^ABC\d{3}$/u`. Pour fixer la version, utilisez `regex-for-humans@0.1.0-dev.4`. Le projet n’a ni dépendance à l’exécution ni exécutable autonome par système.
 
 ## 🎮 Essayer un motif
 
@@ -80,7 +81,7 @@ Un résultat partiel affiche un court extrait échappé avec la correspondance s
 
 Dans l’atelier actuel, ouvrez une correspondance pour voir les captures et leurs positions natives. Une capture absente et une chaîne vide restent distinctes ; un groupe répété montre sa dernière valeur. **Search anywhere** liste jusqu’à 100 correspondances non superposées et avance d’un point de code Unicode après une correspondance vide. Les positions comptent les unités UTF-16, avec une fin exclue. Sans indices natifs, les valeurs restent visibles sans positions déduites.
 
-[![Capture réelle de l’atelier sur ordinateur](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![Capture réelle de l’atelier sur ordinateur](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [Vue mobile et sommes de contrôle](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md).
 
@@ -201,7 +202,7 @@ Les retours à la ligne sont des caractères littéraux. La validation des monta
 
 ## 🧲 Extraire des champs avec des captures nommées
 
-Cet exemple exige le **code source actuel**, car npm `0.1.0-dev.3` n’inclut pas les captures.
+Cet exemple fonctionne avec npm `0.1.0-dev.4` et dans l’atelier publié.
 
 ```text
 start
@@ -242,7 +243,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 `capture {` crée un groupe numéroté ; `group {` regroupe sans extraire. Les noms sont des identifiants JavaScript uniques ; les numéros suivent l’ordre d’ouverture, même pour les groupes imbriqués. Une capture facultative absente vaut `undefined`, une capture vide participante vaut `""`, et une capture répétée conserve sa dernière valeur.
 
-Après la fermeture du groupe, `same as capture "word"` ou `same as capture 1` exige le même texte. [L’exemple](../LANGUAGE.md#capture-references-unreleased-on-main) accepte `cat cat` et refuse `cat dog`. Les références futures ou internes au groupe ciblé produisent un diagnostic. La traduction inverse conserve les noms, numéros et valeurs pris en charge. Une date extraite doit toujours être validée avec un calendrier.
+Après la fermeture du groupe, `same as capture "word"` ou `same as capture 1` exige le même texte. [L’exemple](../LANGUAGE.md#capture-references) accepte `cat cat` et refuse `cat dog`. Les références futures ou internes au groupe ciblé produisent un diagnostic. La traduction inverse conserve les noms, numéros et valeurs pris en charge. Une date extraite doit toujours être validée avec un calendrier.
 
 ## 🧩 L’aide-mémoire
 
@@ -379,7 +380,9 @@ La vérification comprend formatage, lint, types, liens, tests Node, constructio
 
 ## 🧭 Connaître les limites
 
-La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’anglais libre. La traduction inverse traite seulement le sous-ensemble documenté. Alternatives, assertions et références futures/ouvertes restent refusées. L’atelier utilise un worker avec délai ; un regex copié nécessite les protections de sa propre application. Consultez le [modèle de sécurité](../SECURITY_MODEL.md).
+Les alternatives deviennent des blocs modifiables `either { … }` : chaque entrée est un choix, essayé dans l’ordre. Utilisez `group { … }` pour un choix composé de plusieurs règles ou un choix vide.
+
+La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’anglais libre. La traduction inverse traite seulement le sous-ensemble documenté. Assertions et références futures/ouvertes restent refusées. L’atelier utilise un worker avec délai ; un regex copié nécessite les protections de sa propre application. Consultez le [modèle de sécurité](../SECURITY_MODEL.md).
 
 ## 💬 Questions fréquentes
 
@@ -412,6 +415,6 @@ La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’ang
 | [Comparaison](../COMPETITOR_GAPS.md) | Sources et capacités manquantes |
 | [Contribuer](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Installation et conventions |
 
-**Vérifié localement le 10 octobre 2026 :** 238 tests Node, 282 contrôles Chrome ordinateur/mobile, 52 Firefox/WebKit, 62 du site et installation du paquet réussis ; zéro vulnérabilité signalée. Les 16 tests dédiés aux groupes/références/traduction inverse passent aussi sur Node 22.23.3. Ces chiffres décrivent cet instantané, pas tous les navigateurs ni les versions futures. Les revues humaines restent ouvertes.
+**Vérifié localement le 10 octobre 2026 :** 251 tests Node, 296 contrôles Chromium ordinateur/mobile, 66 Firefox/WebKit, 64 du site et installation du paquet réussis ; zéro vulnérabilité signalée. Les 16 tests dédiés aux groupes/références/traduction inverse passent aussi sur Node 22.23.3. Ces chiffres décrivent cet instantané, pas tous les navigateurs ni les versions futures. Les revues humaines restent ouvertes.
 
 Licence [MIT](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [Retour à l’anglais](../../README.md).

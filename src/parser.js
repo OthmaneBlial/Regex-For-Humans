@@ -6,6 +6,7 @@ import { quoteText } from "./display.js";
 /** @typedef {import('./ast.js').Repetition} Repetition */
 /** @typedef {import('./ast.js').AtomNode} AtomNode */
 /** @typedef {import('./ast.js').GroupNode} GroupNode */
+/** @typedef {import('./ast.js').AlternationNode} AlternationNode */
 /** @typedef {import('./ast.js').BackreferenceNode} BackreferenceNode */
 /** @typedef {import('./ast.js').RuleNode} RuleNode */
 /** @typedef {import('./ast.js').ParsedRules} ParsedRules */
@@ -206,7 +207,7 @@ function readCharacterList(text, location, rawLine) {
   return items;
 }
 
-/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|BackreferenceNode} */
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode|AlternationNode|BackreferenceNode} */
 function parseAtom(text, location, rawLine) {
   let remaining = text;
   /** @type {Repetition|null} */
@@ -338,7 +339,7 @@ function parseAtom(text, location, rawLine) {
     );
   }
 
-  const group = /^(group|capture)(?=\s|\{|$)\s*/iu.exec(remaining);
+  const group = /^(group|capture|either)(?=\s|\{|$)\s*/iu.exec(remaining);
   if (group) {
     const capturing = group[1].toLowerCase() === "capture";
     let suffix = remaining.slice(group[0].length);
@@ -364,9 +365,18 @@ function parseAtom(text, location, rawLine) {
         "INVALID_GROUP",
         "Open a group with `{` and close it with `}` on its own line.",
         nameLocation,
-        'Use `group {`, `capture {` or `capture "name" {`.',
+        'Use `group {`, `capture {`, `capture "name" {` or `either {`.',
       );
     }
+    if (group[1].toLowerCase() === "either")
+      return {
+        kind: "alternation",
+        branches: [],
+        repetition,
+        location,
+        text,
+        endLocation: location,
+      };
     return {
       kind: "group",
       capturing,
@@ -549,13 +559,13 @@ export function parse(source) {
   /** @type {RuleNode[]} */
   const rootNodes = [];
   let nodes = rootNodes;
-  /** @type {{node: GroupNode, parent: RuleNode[], sawEnd: boolean}[]} */
+  /** @type {{node: GroupNode|AlternationNode, parent: RuleNode[], sawEnd: boolean}[]} */
   const groups = [];
   /** @type {Map<string, GroupNode>} */
   const names = new Map();
   /** @type {GroupNode[]} */
   const captures = [];
-  /** @type {{node: BackreferenceNode, openGroups: GroupNode[]}[]} */
+  /** @type {{node: BackreferenceNode, openGroups: (GroupNode|AlternationNode)[]}[]} */
   const references = [];
   let captureCount = 0;
   /** @type {'input'|'line'|null} */
@@ -572,10 +582,24 @@ export function parse(source) {
     if (text === "}") {
       const frame = groups.pop();
       if (!frame) fail("UNEXPECTED_GROUP_END", "There is no open group to close.", location());
+      if (frame.node.kind === "alternation" && frame.node.branches.length < 2)
+        fail(
+          "ALTERNATIVE_COUNT",
+          "An either block needs at least two choices.",
+          frame.node.location,
+          "Put each choice on its own line; use a group block for a sequence or an empty choice.",
+        );
       frame.node.endLocation = location();
       nodes = frame.parent;
       sawEnd = frame.sawEnd;
       continue;
+    }
+
+    const parent = groups.at(-1)?.node;
+    if (parent?.kind === "alternation") {
+      nodes = [];
+      parent.branches.push(nodes);
+      sawEnd = false;
     }
 
     const start = START_ANCHOR.exec(text);
@@ -588,6 +612,13 @@ export function parse(source) {
       if (nodes.length !== 0) {
         fail("MISPLACED_ANCHOR", "Start anchor must be the first rule.", location());
       }
+      if (anchorMode && anchorMode !== mode)
+        fail(
+          "MIXED_ANCHORS",
+          "Do not mix input and line anchors.",
+          location(),
+          "Pair `start` with `end`, or `line start` with `line end`.",
+        );
       anchorMode = mode;
       nodes.push(anchor("start", mode, location(), phrase));
       text = text.slice(start[0].length);
@@ -618,7 +649,7 @@ export function parse(source) {
     if (sawEnd) fail("MISPLACED_ANCHOR", "End anchor must be the last rule.", location());
 
     const node = parseAtom(text, location(), raw);
-    if (node.kind === "group") {
+    if (node.kind === "group" || node.kind === "alternation") {
       if (groups.length >= LIMITS.groupDepth) {
         fail(
           "GROUP_DEPTH_LIMIT",
@@ -626,7 +657,7 @@ export function parse(source) {
           location(),
         );
       }
-      if (node.capturing) {
+      if (node.kind === "group" && node.capturing) {
         node.captureIndex = ++captureCount;
         captures.push(node);
         if (node.name !== null) {
@@ -641,7 +672,7 @@ export function parse(source) {
       }
       nodes.push(node);
       groups.push({ node, parent: nodes, sawEnd });
-      nodes = node.nodes;
+      nodes = node.kind === "group" ? node.nodes : [];
       sawEnd = false;
     } else {
       nodes.push(node);

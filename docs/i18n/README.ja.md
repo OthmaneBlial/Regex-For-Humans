@@ -8,7 +8,7 @@
 
 明確な英語のルールを、各部分の意味を追える JavaScript 正規表現に変換します。
 
-[🚀 ワークショップ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 サイト](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 構文](../LANGUAGE.md) · [📦 npm プレビュー](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.3)
+[🚀 ワークショップ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 サイト](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 構文](../LANGUAGE.md) · [📦 npm プレビュー](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
 
 🔒 ローカル実行 · 🧩 実行時依存なし · ⚡ 1つのコンパイラ、3つの使い方
 
@@ -34,22 +34,23 @@ end
 
 語彙は**固定**され、各命令には正確な意味があります。ライブラリ、CLI、ワークショップは同じ決定的なコンパイラを使います。不明な命令には行、列、修正のヒントを返します。どの翻訳でも、ルールの構文自体は英語のままです。
 
-> 🌱 プレビュー `0.1.0-dev.3` のライブラリと CLI には **Node.js 22+** が必要です。オンラインのワークショップはインストール不要です。人による使いやすさとスクリーンリーダーの評価は未実施です。
+> 🌱 プレビュー `0.1.0-dev.4` のライブラリと CLI には **Node.js 22+** が必要です。オンラインのワークショップはインストール不要です。人による使いやすさとスクリーンリーダーの評価は未実施です。
 
 ## 🧰 現在できること
 
-| 機能 | npm `0.1.0-dev.3` | 現在のソース |
+| 機能 | npm `0.1.0-dev.4` | 現在のソース |
 | --- | --- | --- |
 | ルール → JavaScript 正規表現 | ✅ | ✅ |
-| 対応する正規表現 → 編集可能なルール | ✅ 単純な構文の範囲 | ✅ 対応するグループと参照を含む |
+| 対応する正規表現 → 編集可能なルール | ✅ | ✅ 対応するグループと参照を含む |
 | 各断片の説明と元のルールへの移動 | ✅ | ✅ グループの両端と参照も含む |
 | CLI、ESM API、TypeScript 型 | ✅ | ✅ |
-| 名前付き・番号付きキャプチャと入れ子のブロック | — | ✅ |
-| ブロック全体の繰り返しと後方参照 | — | ✅ |
-| 選択、先読み・後読み、非貪欲な量指定子 | — | 計画中。現在は拒否 |
+| 名前付き・番号付きキャプチャと入れ子のブロック | ✅ | ✅ |
+| ブロック全体の繰り返しと後方参照 | ✅ | ✅ |
+| `either { … }` による順序付きの選択 | ✅ | ✅ 入れ子の選択と逆変換 |
+| 先読み・後読み、非貪欲な量指定子 | — | 計画中。現在は拒否 |
 | 他の正規表現エンジンや自由な英文 | — | 現在の言語の対象外 |
 
-新機能はまだ npm に公開されていません。グループと参照には `main` をクローンしてください。ワークショップと npm は別の配布物です。[互換性](../COMPATIBILITY.md)と[公開の記録](../DISTRIBUTION.md)を確認してください。
+npm `0.1.0-dev.4` のライブラリと CLI は、グループ、キャプチャ、後方参照、順序付き選択肢に対応しています。ワークショップではキャプチャの確認と複数の検索一致も利用できます。[互換性](../COMPATIBILITY.md)と[公開の記録](../DISTRIBUTION.md)を確認してください。
 
 ## 📦 プレビューをインストールする
 
@@ -63,7 +64,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-出力は `/^ABC\d{3}$/u` です。固定バージョンには `regex-for-humans@0.1.0-dev.3` を使います。実行時依存や OS ごとの単独実行ファイルはありません。
+出力は `/^ABC\d{3}$/u` です。固定バージョンには `regex-for-humans@0.1.0-dev.4` を使います。実行時依存や OS ごとの単独実行ファイルはありません。
 
 ## 🎮 パターンを試す
 
@@ -76,7 +77,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 現在のワークショップでは、一致を展開するとキャプチャ値とエンジンが返す位置を確認できます。不参加のグループと空文字列のキャプチャは区別され、繰り返しグループには最後の値が表示されます。**Search anywhere** は重ならない一致を最大 100 件表示し、空の一致の後は Unicode コードポイント 1 個分進みます。位置は UTF-16 コード単位で数え、終端は含みません。キャプチャ位置を取得できないエンジンでは、位置を推測せず値だけを表示します。
 
-[![デスクトップ版ワークショップの実際の画面](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![デスクトップ版ワークショップの実際の画面](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [モバイル画面とチェックサム](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)。
 
@@ -197,7 +198,7 @@ end
 
 ## 🧲 名前付きキャプチャでフィールドを抽出する
 
-この例には **現在のソース** が必要です。npm `0.1.0-dev.3` には含まれません。
+この例は npm `0.1.0-dev.4` と公開ワークショップで動作します。
 
 ```text
 start
@@ -238,7 +239,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 `capture {` は番号付きキャプチャ、`group {` は非キャプチャのグループです。名前は一意な JavaScript 識別子で、番号は入れ子も含めた開始順です。不参加の任意キャプチャは `undefined`、参加した空のキャプチャは `""`、繰り返したキャプチャは最後の値を返します。
 
-グループを閉じた後の `same as capture "word"` または `same as capture 1` は同じテキストを要求します。[例](../LANGUAGE.md#capture-references-unreleased-on-main)は `cat cat` に一致し、`cat dog` には一致しません。前方参照や対象内部の参照には診断を返します。逆変換でも対応するキャプチャを保持します。抽出した日付はカレンダーで検証してください。
+グループを閉じた後の `same as capture "word"` または `same as capture 1` は同じテキストを要求します。[例](../LANGUAGE.md#capture-references)は `cat cat` に一致し、`cat dog` には一致しません。前方参照や対象内部の参照には診断を返します。逆変換でも対応するキャプチャを保持します。抽出した日付はカレンダーで検証してください。
 
 ## 🧩 早見表
 
@@ -375,7 +376,9 @@ CI=1 npm run verify
 
 ## 🧭 制限を理解する
 
-対象は **JavaScript `RegExp`** です。生の正規表現をルールとして渡したり、自由な英文を使ったりはできません。逆変換は文書化された範囲のみです。選択、先読み・後読み、前方・未閉鎖参照は拒否します。ワークショップの worker には期限がありますが、コピーした正規表現には利用側の対策が必要です。[セキュリティモデル](../SECURITY_MODEL.md)を参照してください。
+選択は編集可能な `either { … }` ブロックになります。各直接の項目を一つの候補として順番に試します。複数のルールを一つの候補にする場合や空の候補には `group { … }` を使います。
+
+対象は **JavaScript `RegExp`** です。生の正規表現をルールとして渡したり、自由な英文を使ったりはできません。逆変換は文書化された範囲のみです。先読み・後読み、前方・未閉鎖参照は拒否します。ワークショップの worker には期限がありますが、コピーした正規表現には利用側の対策が必要です。[セキュリティモデル](../SECURITY_MODEL.md)を参照してください。
 
 ## 💬 よくある質問
 
@@ -408,6 +411,6 @@ CI=1 npm run verify
 | [比較](../COMPETITOR_GAPS.md) | 出典と未対応機能 |
 | [貢献](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | 導入と規約 |
 
-**2026年10月10日のローカル検証：** Node 238件、Chrome デスクトップ・モバイル282件、Firefox/WebKit 52件、サイト62件、クリーンな利用側インストールが成功。監査の脆弱性は0件。グループ・参照・逆変換の16件は Node 22.23.3 でも成功しました。この時点の結果であり、将来の全ブラウザを保証しません。人による評価は未完了です。
+**2026年10月10日のローカル検証：** Node 251件、Chromium デスクトップ・モバイル296件、Firefox/WebKit 66件、サイト64件、クリーンな利用側インストールが成功。監査の脆弱性は0件。グループ・参照・逆変換の16件は Node 22.23.3 でも成功しました。この時点の結果であり、将来の全ブラウザを保証しません。人による評価は未完了です。
 
 [MIT](../../LICENSE) · [変更履歴](../../CHANGELOG.md) · [英語版に戻る](../../README.md)。

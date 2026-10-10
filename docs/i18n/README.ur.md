@@ -10,7 +10,7 @@
 
 چند واضح انگریزی ہدایات کو JavaScript کے ایسے ریگولر ایکسپریشن میں بدلیں جس کے ہر حصے کو آپ سمجھ سکیں۔
 
-[🚀 ورکشاپ کھولیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 ویب سائٹ](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 قواعد کا طریقہ](../LANGUAGE.md) · [📦 npm کا آزمائشی نسخہ](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.3)
+[🚀 ورکشاپ کھولیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 ویب سائٹ](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 قواعد کا طریقہ](../LANGUAGE.md) · [📦 npm کا آزمائشی نسخہ](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
 
 🔒 مقامی طور پر چلتا ہے · 🧩 رن ٹائم کی کوئی اضافی dependency نہیں · ⚡ ایک کمپائلر، تین انٹرفیس
 
@@ -52,22 +52,23 @@ end
 
 الفاظ کا مجموعہ **مقرر ہے**: ہر ہدایت کا ایک واضح مطلب ہے۔ لائبریری، کمانڈ لائن اور ورکشاپ ایک ہی deterministic کمپائلر استعمال کرتے ہیں۔ نامعلوم ہدایت پر سطر، کالم اور اصلاح کی تجویز ملتی ہے۔ تمام ترجموں میں قواعد لکھنے کی زبان انگریزی ہی رہتی ہے۔
 
-> 🌱 لائبریری اور کمانڈ لائن کے آزمائشی نسخے <code dir="ltr">0.1.0-dev.3</code> کے لیے **Node.js 22 یا جدید تر** درکار ہے۔ آن لائن ورکشاپ بغیر انسٹال کیے چلتی ہے۔ استعمال میں آسانی اور اسکرین ریڈر کے انسانی جائزے ابھی باقی ہیں۔
+> 🌱 لائبریری اور کمانڈ لائن کے آزمائشی نسخے <code dir="ltr">0.1.0-dev.4</code> کے لیے **Node.js 22 یا جدید تر** درکار ہے۔ آن لائن ورکشاپ بغیر انسٹال کیے چلتی ہے۔ استعمال میں آسانی اور اسکرین ریڈر کے انسانی جائزے ابھی باقی ہیں۔
 
 ## 🧰 آج کیا بنایا جا سکتا ہے؟
 
-| صلاحیت | شائع شدہ npm <code dir="ltr">0.1.0-dev.3</code> | موجودہ سورس |
+| صلاحیت | شائع شدہ npm <code dir="ltr">0.1.0-dev.4</code> | موجودہ سورس |
 | ---: | ---: | ---: |
 | قابلِ مطالعہ قواعد → JavaScript regex | ✅ | ✅ |
-| معاونت یافتہ regex → قابلِ ترمیم قواعد | ✅ محدود سادہ صورتیں | ✅ معاونت یافتہ گروپ اور references |
+| معاونت یافتہ regex → قابلِ ترمیم قواعد | ✅ | ✅ معاونت یافتہ گروپ اور references |
 | حصوں کی وضاحت اور متعلقہ قاعدے تک رسائی | ✅ | ✅ گروپ کے آغاز، اختتام اور references سمیت |
 | CLI، ESM API اور TypeScript کی تعریفیں | ✅ | ✅ |
-| نام والے، نمبر والے اور اندرونی capture گروپ | — | ✅ |
-| پورے بلاک کی تکرار اور پچھلے capture کا حوالہ | — | ✅ |
-| متبادل، lookaround اور lazy quantifiers | — | منصوبے میں ہیں؛ ابھی مسترد ہوتے ہیں |
+| نام والے، نمبر والے اور اندرونی capture گروپ | ✅ | ✅ |
+| پورے بلاک کی تکرار اور پچھلے capture کا حوالہ | ✅ | ✅ |
+| ترتیب وار متبادل بذریعہ <code dir="ltr">either { … }</code> | ✅ | ✅ اندرونی انتخاب اور reverse translation |
+| آگے یا پیچھے دیکھنے کی assertions اور lazy quantifiers | — | منصوبے میں ہیں؛ ابھی مسترد ہوتے ہیں |
 | دوسرے regex انجن اور آزاد انگریزی | — | موجودہ زبان کا حصہ نہیں |
 
-سورس میں شامل نئی صلاحیتیں ابھی npm پر شائع نہیں ہوئیں۔ گروپ اور references کے لیے <code dir="ltr">main</code> کلون کریں۔ ورکشاپ اور npm الگ distributions ہیں؛ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
+لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.4</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
 
 ## 📦 آزمائشی نسخہ انسٹال کریں
 
@@ -89,7 +90,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 </div>
 
-نتیجہ: <code dir="ltr">/^ABC\d{3}$/u</code>۔ کسی خاص ورژن کے لیے <code dir="ltr">regex-for-humans@0.1.0-dev.3</code> استعمال کریں۔ رن ٹائم کی اضافی dependencies یا ہر نظام کے لیے الگ executable فراہم نہیں کیا گیا۔
+نتیجہ: <code dir="ltr">/^ABC\d{3}$/u</code>۔ کسی خاص ورژن کے لیے <code dir="ltr">regex-for-humans@0.1.0-dev.4</code> استعمال کریں۔ رن ٹائم کی اضافی dependencies یا ہر نظام کے لیے الگ executable فراہم نہیں کیا گیا۔
 
 ## 🎮 کوئی pattern آزمائیں
 
@@ -102,7 +103,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 موجودہ ورکشاپ میں match کھول کر capture کی قدریں اور مقامات دیکھیں۔ **Capture نہیں ہوا** اور **خالی متن capture ہوا** الگ دکھائے جاتے ہیں؛ بار بار آنے والا گروپ اپنی آخری capture دکھاتا ہے۔ **Search anywhere** زیادہ سے زیادہ 100 غیر متداخل matches دکھاتا ہے اور خالی match کے بعد مکمل Unicode code point آگے بڑھتا ہے۔ مقامات UTF-16 units میں ہیں؛ آخری حد شامل نہیں۔ اگر انجن capture indices نہ دے تو قدریں دکھائی جاتی ہیں، مقامات اندازے سے نہیں بنائے جاتے۔
 
-[![ڈیسک ٹاپ ورکشاپ کی حقیقی تصویر](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![ڈیسک ٹاپ ورکشاپ کی حقیقی تصویر](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [موبائل منظر اور checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)۔
 
@@ -243,7 +244,7 @@ end
 
 ## 🧲 نام والے captures سے fields نکالیں
 
-اس مثال کے لیے **موجودہ سورس** درکار ہے؛ npm <code dir="ltr">0.1.0-dev.3</code> میں captures شامل نہیں۔
+یہ مثال npm نسخے <code dir="ltr">0.1.0-dev.4</code> اور شائع شدہ ورکشاپ میں کام کرتی ہے۔
 
 <div dir="ltr" align="left">
 
@@ -292,7 +293,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 قاعدہ <code dir="ltr">capture {</code> نمبر والا گروپ بناتا ہے؛ <code dir="ltr">group {</code> بغیر capture کیے قواعد اکٹھے کرتا ہے۔ نام منفرد JavaScript identifiers ہوتے ہیں۔ نمبر گروپ کھلنے کی ترتیب سے ملتے ہیں، nested گروپوں میں بھی۔ غیر موجود اختیاری capture کی قدر <code dir="ltr">undefined</code>، حصہ لینے والے خالی capture کی قدر <code dir="ltr">""</code> ہوتی ہے، اور repeated capture آخری قدر رکھتا ہے۔
 
-گروپ بند ہونے کے بعد <code dir="ltr">same as capture "word"</code> یا <code dir="ltr">same as capture 1</code> اسی متن کو دوبارہ لازم کرتا ہے۔ [مثال](../LANGUAGE.md#capture-references-unreleased-on-main) <code dir="ltr">cat cat</code> قبول اور <code dir="ltr">cat dog</code> مسترد کرتی ہے۔ مستقبل کے capture یا اپنے کھلے گروپ کا reference واضح error دیتا ہے۔ Reverse translation معاونت یافتہ نام، نمبر اور قدریں محفوظ رکھتی ہے۔ نکالی گئی تاریخ کی calendar validation پھر بھی ضروری ہے۔
+گروپ بند ہونے کے بعد <code dir="ltr">same as capture "word"</code> یا <code dir="ltr">same as capture 1</code> اسی متن کو دوبارہ لازم کرتا ہے۔ [مثال](../LANGUAGE.md#capture-references) <code dir="ltr">cat cat</code> قبول اور <code dir="ltr">cat dog</code> مسترد کرتی ہے۔ مستقبل کے capture یا اپنے کھلے گروپ کا reference واضح error دیتا ہے۔ Reverse translation معاونت یافتہ نام، نمبر اور قدریں محفوظ رکھتی ہے۔ نکالی گئی تاریخ کی calendar validation پھر بھی ضروری ہے۔
 
 ## 🧩 مختصر حوالہ
 
@@ -463,7 +464,9 @@ CI=1 npm run verify
 
 ## 🧭 حدود کو سمجھیں
 
-ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ Alternatives، lookaround اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
+متبادل قابلِ تدوین <code dir="ltr">either { … }</code> بلاک بنتے ہیں؛ ہر براہِ راست entry ایک انتخاب ہے جو ترتیب سے آزمایا جاتا ہے۔ کئی قواعد والے یا خالی انتخاب کے لیے <code dir="ltr">group { … }</code> استعمال کریں۔
+
+ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ Lookaround اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
 
 ## 💬 عام سوالات
 
@@ -496,7 +499,7 @@ CI=1 npm run verify
 | [موازنہ](../COMPETITOR_GAPS.md) | Sources اور باقی صلاحیتیں |
 | [حصہ ڈالیں](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup اور conventions |
 
-**10 اکتوبر 2026 کو مقامی جانچ:** 238 Node tests، 282 desktop/mobile Chrome workshop checks، 52 Firefox/WebKit checks، 62 site checks اور صاف package installation کامیاب ہوئے؛ audit میں کوئی vulnerability رپورٹ نہیں ہوئی۔ گروپ، reference اور reverse translation کے 16 مخصوص tests Node 22.23.3 پر بھی کامیاب ہوئے۔ یہ اعداد اسی snapshot کے ہیں؛ ہر browser یا آئندہ version کی ضمانت نہیں۔ انسانی جائزے ابھی باقی ہیں۔
+**10 اکتوبر 2026 کو مقامی جانچ:** 251 Node tests، 296 desktop/mobile Chromium workshop checks، 66 Firefox/WebKit checks، 64 site checks اور صاف package installation کامیاب ہوئے؛ audit میں کوئی vulnerability رپورٹ نہیں ہوئی۔ گروپ، reference اور reverse translation کے 16 مخصوص tests Node 22.23.3 پر بھی کامیاب ہوئے۔ یہ اعداد اسی snapshot کے ہیں؛ ہر browser یا آئندہ version کی ضمانت نہیں۔ انسانی جائزے ابھی باقی ہیں۔
 
 لائسنس [MIT](../../LICENSE) · [تبدیلیوں کا ریکارڈ](../../CHANGELOG.md) · [انگریزی میں واپس جائیں](../../README.md)۔
 

@@ -8,7 +8,7 @@
 
 把清晰的英文规则编译成 JavaScript 正则表达式，并逐段理解结果。
 
-[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.3)
+[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
 
 🔒 本地运行 · 🧩 无运行时依赖 · ⚡ 一个编译器，三种使用方式
 
@@ -34,22 +34,23 @@ end
 
 这是**固定词汇**的规则语言，每条指令都有精确定义。库、CLI 和工作台使用同一个确定性编译器。不认识的指令会返回行、列和修复提示。所有译本中的规则语法仍然使用英文，不会翻译关键字。
 
-> 🌱 预览版 `0.1.0-dev.3` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
+> 🌱 预览版 `0.1.0-dev.4` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
 
 ## 🧰 现在可以做什么
 
-| 能力 | npm `0.1.0-dev.3` | 当前源码 |
+| 能力 | npm `0.1.0-dev.4` | 当前源码 |
 | --- | --- | --- |
 | 规则 → JavaScript 正则 | ✅ | ✅ |
-| 支持的正则 → 可编辑规则 | ✅ 简单语法子集 | ✅ 包含支持的分组和引用 |
+| 支持的正则 → 可编辑规则 | ✅ | ✅ 包含支持的分组和引用 |
 | 片段解释与源码定位 | ✅ | ✅ 包含分组两端和引用 |
 | CLI、ESM API、TypeScript 类型 | ✅ | ✅ |
-| 命名/编号捕获与嵌套块 | — | ✅ |
-| 整块重复与向后引用 | — | ✅ |
-| 分支、环视、非贪婪量词 | — | 计划中；目前拒绝 |
+| 命名/编号捕获与嵌套块 | ✅ | ✅ |
+| 整块重复与向后引用 | ✅ | ✅ |
+| 使用 `either { … }` 的有序分支 | ✅ | ✅ 嵌套选择与逆向转换 |
+| 环视、非贪婪量词 | — | 计划中；目前拒绝 |
 | 其他正则引擎、自由英文 | — | 不在当前语言范围内 |
 
-源码中的新增功能尚未发布到 npm。需要分组和引用时，请克隆 `main`。工作台与 npm 是不同的分发产物；详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
+npm `0.1.0-dev.4` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
 
 ## 📦 安装预览版
 
@@ -63,7 +64,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.3`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
+输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.4`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
 
 ## 🎮 试一个模式
 
@@ -76,7 +77,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 在当前工作台中展开匹配，可查看捕获值及引擎提供的位置。未参与匹配的组与捕获到空字符串的组分别显示；重复组显示最后一次捕获。**Search anywhere** 最多列出 100 个不重叠匹配，遇到空匹配后前进一个 Unicode 码点。位置按 UTF-16 代码单元计数，结束位置不包含在范围内。如果引擎不支持捕获索引，只显示值，不推测位置。
 
-[![桌面工作台的真实截图](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![桌面工作台的真实截图](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [移动端截图及校验和](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)。
 
@@ -197,7 +198,7 @@ end
 
 ## 🧲 用命名捕获提取字段
 
-此示例需要**当前源码**，npm `0.1.0-dev.3` 尚未包含捕获功能。
+此示例可使用 npm `0.1.0-dev.4` 或在线工作台运行。
 
 ```text
 start
@@ -238,7 +239,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 `capture {` 创建编号捕获，`group {` 只分组不捕获。名称是唯一的 JavaScript 标识符，编号按开始顺序排列，包含嵌套组。未参与的可选捕获是 `undefined`，参与但为空的捕获是 `""`，重复捕获保留最后一次的值。
 
-组闭合后，`same as capture "word"` 或 `same as capture 1` 要求相同文本。[示例](../LANGUAGE.md#capture-references-unreleased-on-main)接受 `cat cat`，拒绝 `cat dog`。前向引用或目标内部引用会返回诊断。逆向转换也保留支持的捕获；提取日期后仍需日历校验。
+组闭合后，`same as capture "word"` 或 `same as capture 1` 要求相同文本。[示例](../LANGUAGE.md#capture-references)接受 `cat cat`，拒绝 `cat dog`。前向引用或目标内部引用会返回诊断。逆向转换也保留支持的捕获；提取日期后仍需日历校验。
 
 ## 🧩 语法速查
 
@@ -375,7 +376,9 @@ CI=1 npm run verify
 
 ## 🧭 了解边界
 
-目标是 **JavaScript `RegExp`**。不接受把原始正则当规则，也不理解自由英文。逆向转换仅限文档中的子集。分支、环视、前向及未闭合引用目前拒绝。工作台的 worker 有执行期限；复制出去的正则需由使用它的应用自行防护。参阅[安全模型](../SECURITY_MODEL.md)。
+分支会转换为可编辑的 `either { … }` 块：每个直接条目是一个选择，按顺序尝试。使用 `group { … }` 可以将多条规则组成一个选择，也可以表示空选择。
+
+目标是 **JavaScript `RegExp`**。不接受把原始正则当规则，也不理解自由英文。逆向转换仅限文档中的子集。环视、前向及未闭合引用目前拒绝。工作台的 worker 有执行期限；复制出去的正则需由使用它的应用自行防护。参阅[安全模型](../SECURITY_MODEL.md)。
 
 ## 💬 常见问题
 
@@ -408,6 +411,6 @@ CI=1 npm run verify
 | [对比](../COMPETITOR_GAPS.md) | 来源和待补能力 |
 | [贡献](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | 环境和约定 |
 
-**2026年10月10日本地验证：** 238项 Node 测试、282项 Chrome 桌面/移动检查、52项 Firefox/WebKit、62项网站检查及干净消费者安装均通过；审计发现0个漏洞。16项分组/引用/逆转换测试也在 Node 22.23.3 通过。这是该快照的证据，不保证未来所有浏览器。真人评估仍待完成。
+**2026年10月10日本地验证：** 251项 Node 测试、296项 Chromium 桌面/移动检查、66项 Firefox/WebKit、64项网站检查及干净消费者安装均通过；审计发现0个漏洞。16项分组/引用/逆转换测试也在 Node 22.23.3 通过。这是该快照的证据，不保证未来所有浏览器。真人评估仍待完成。
 
 [MIT 许可证](../../LICENSE) · [更新日志](../../CHANGELOG.md) · [返回英文版](../../README.md)。

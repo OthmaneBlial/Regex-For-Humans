@@ -103,6 +103,58 @@ export function compileAst(parsed, options = {}) {
   /** @param {import('./ast.js').RuleNode[]} nodes */
   function emit(nodes) {
     for (const [index, node] of nodes.entries()) {
+      if (node.kind === "alternation") {
+        const sourceStart = source.length;
+        source += "(?:";
+        segments.push({
+          kind: "alternation",
+          edge: "start",
+          alternatives: node.branches.length,
+          repetition: node.repetition,
+          sourceStart,
+          sourceEnd: source.length,
+          source: "(?:",
+          text: node.text,
+          explanation: explainNode(node, flags),
+          ...node.location,
+        });
+        for (const [branchIndex, branch] of node.branches.entries()) {
+          if (branchIndex > 0) {
+            const first = branch[0];
+            const separatorStart = source.length;
+            source += "|";
+            segments.push({
+              kind: "alternation",
+              edge: "branch",
+              alternatives: node.branches.length,
+              repetition: node.repetition,
+              sourceStart: separatorStart,
+              sourceEnd: source.length,
+              source: "|",
+              text: first.text,
+              explanation: `Alternative ${branchIndex + 1} of ${node.branches.length}. Earlier choices are tried first.`,
+              ...first.location,
+            });
+          }
+          emit(branch);
+        }
+        const endStart = source.length;
+        const close = `)${repetitionSource(node.repetition)}`;
+        source += close;
+        segments.push({
+          kind: "alternation",
+          edge: "end",
+          alternatives: node.branches.length,
+          repetition: node.repetition,
+          sourceStart: endStart,
+          sourceEnd: source.length,
+          source: close,
+          text: "}",
+          explanation: `End alternatives.${node.repetition ? " Repetition applies to the complete choice." : ""}`,
+          ...node.endLocation,
+        });
+        continue;
+      }
       if (node.kind === "group") {
         const sourceStart = source.length;
         const fragment = node.capturing ? (node.name === null ? "(" : `(?<${node.name}>`) : "(?:";

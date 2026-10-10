@@ -7,7 +7,7 @@ Regex For Humans is a dependency-free JavaScript ESM compiler with a CLI and a s
 ```text
 rules (string)
   → src/parser.js: parse and validate each line
-  → src/ast.js: ordered anchor, atom and nested group nodes with source locations
+  → src/ast.js: ordered anchors, atoms, groups and alternative branches with source locations
   → src/compiler.js: escaped JavaScript regex fragments, flags and source spans
   → src/explain.js: text attached to each emitted fragment
   → index.js: compile result and optional native RegExp
@@ -29,6 +29,8 @@ Compiler option validation compares the requested flags with the five exact allo
 
 ## Structured groups
 
+`either` blocks store ordered arrays of sequence nodes in the same bounded AST. Each immediate rule starts a branch; an explicit group gives a branch multiple rules. Inline start-plus-item syntax remains within one branch. The emitter adds a noncapturing wrapper and separators, preserving precedence and capture opening order; typed `alternation` trace segments expose start/branch/end edges. Reverse parsing reads disjunctions at each group scope, keeps empty branches, and emits groups for multi-rule choices. Literal runs are flushed between branches, preserving Unicode atom boundaries. Unsupported constructs still fail explicitly; translated blocks retain source/line/depth budgets and original-regex diagnostic positions.
+
 The workshop requests capture exploration with an optional internal `captureCount`. The worker bounds it to 100 before any matching, probes `d` dynamically, and uses internal `g` only for search enumeration. Copied regex flags are unchanged. Results include up to 100 nonoverlapping matches per example; empty matches advance by a Unicode code point. Native capture values preserve absent (`null` in the protocol) versus empty and final repeated participation. The controller snapshots input text/count/mode, validates every returned value against its span, and rejects malformed counts, participation, overlap or limit fields. Without native indices it accepts values with explicitly unavailable capture spans. Native details panels create capture tables on demand and link back to the original opening rules.
 
 The parser uses a stack for brace-delimited groups, sharing existing atom parsing and repetition validation. Capture numbering is assigned in opening order; names are validated as Unicode JavaScript identifiers and duplicates are rejected globally. Each stack frame retains its enclosing sequence and anchor position state. The source and line budgets still apply, with an additional 64-level nesting budget. The emitter traverses this bounded tree and emits a flat, ordered trace of group openings, child rules and group closings. Existing flat-rule result shapes are preserved; the new group segment variant is declared in `index.d.ts`. The explanation, CLI JSON and workshop trace share those same nodes and numbering. Matching continues inside the terminable worker.
@@ -45,7 +47,7 @@ The parser also owns the output size and line limits. Reverse translation preser
 
 The reader preserves Unicode atom boundaries, including fixed-width surrogate pairs in repetition and character classes. Separate lone-surrogate atoms remain separate rules; a group that cannot be merged into one literal becomes a block with separate child atoms. Recursive sequence/group tokens reuse the existing escape, class and quantifier readers under the 64-level depth budget. Capturing groups retain their structure and numbering; literal-only noncapturing groups retain compact normalization. Named identifiers and reference names decode Unicode escapes. Translated rule lines carry their original regex offsets internally so unsupported reference diagnostics point into the input pattern. Dot/all-character normalization visits nested children too. Translation does not execute the input regex. The workshop and CLI's `--reverse` mode use the same internal `src/regex-literal.js` reader for slash delimiters, escapes, character classes, flags and native syntax validation. It enforces a budget of 16,392 UTF-16 code units on the complete input, including outer whitespace, before trimming or constructing a native regex. Both call the public reverse API; the workshop then uses its existing compiler and isolated example worker.
 
-CLI reverse mode reads a UTF-8 file or stdin. JSON returns the API's `{ rules, flags }`; plain output contains reusable rules and writes any required i/s compiler options to stderr. Forward-only options are rejected before reading reverse input. This additive CLI option is currently unreleased on `main`; the published npm preview is recorded separately in [DISTRIBUTION.md](DISTRIBUTION.md).
+CLI reverse mode reads a UTF-8 file or stdin. JSON returns the API's `{ rules, flags }`; plain output contains reusable rules and writes any required i/s compiler options to stderr. Forward-only options are rejected before reading reverse input. This CLI option is included in the npm preview; exact publication evidence is recorded in [DISTRIBUTION.md](DISTRIBUTION.md).
 
 ## Diagnostics and changes to the language
 

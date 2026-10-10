@@ -81,7 +81,9 @@ C0/C1 control characters, DEL and Unicode line separators are also displayed as 
 
 `start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`.
 
-## Groups and captures (unreleased on main)
+<a name="groups-and-captures-unreleased-on-main"></a>
+
+## Groups and captures
 
 Open a block with `group {` for noncapturing grouping, `capture {` for a numbered capture, or `capture "name" {` for a named capture. Close it with `}` on its own line. Blocks can contain other blocks and any existing rule. Indentation is optional; braces inside quoted literals remain data.
 
@@ -105,13 +107,15 @@ end
 
 This generates `^(?<date>(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}))$` with `u`. Against `2026-10-10`, group 1 (`date`) is `2026-10-10`, group 2 (`year`) is `2026`, group 3 (`month`) is `10`, and group 4 (`day`) is `10`. It checks a date shape, not calendar validity.
 
-Captures are numbered by opening order, including named and nested captures; noncapturing groups do not use an index. Names must be JavaScript identifiers (Unicode names such as `année` work) and must be unique throughout the document. Empty blocks match empty text. A participating empty capture returns `""`; an optional capture that does not participate returns `undefined`. A repeated capture retains its final participating value, following native JavaScript semantics.
+Captures are numbered by opening order, including named and nested captures; noncapturing groups do not use an index. Names must be JavaScript identifiers (Unicode names such as `année` work) and must be unique throughout the document. Empty blocks match empty text. A participating empty capture returns `""`; an optional capture that does not participate returns `undefined`. Repeated captures follow native JavaScript final-iteration semantics; an inner capture absent from the last repetition can become `undefined`, even if it participated earlier.
 
 Existing repetition modifiers apply to a whole block: `optional capture "suffix" {`, `2 group {`, `between 2 and 4 group {`, `zero or more group {`, `one or more group {`, and `at least 2 group {`. Anchors retain their first/last rule restrictions within each block; input and line anchors cannot be mixed across blocks. Nesting is limited to 64 levels in addition to the existing source and line budgets.
 
-The API keeps `{ source, flags, segments }`. Opening and closing braces produce `kind: "group"` segments with `edge`, `capturing`, `captureIndex`, `name`, and `repetition`. Each segment retains its original line, column, explanation and exact generated-source offsets. Consumers switching on `segments[].kind` should handle the added group variant. The CLI and workshop use this same compiler and trace. These additions and their reverse translations are available from the checkout; the published `0.1.0-dev.3` package does not contain them yet.
+The API keeps `{ source, flags, segments }`. Opening and closing braces produce `kind: "group"` segments with `edge`, `capturing`, `captureIndex`, `name`, and `repetition`. Each segment retains its original line, column, explanation and exact generated-source offsets. Consumers switching on `segments[].kind` should handle the added group variant. The CLI and workshop use this same compiler and trace. Groups, captures and their reverse translations are included in npm `0.1.0-dev.4` and the hosted workshop.
 
-## Capture references (unreleased on main)
+<a name="capture-references-unreleased-on-main"></a>
+
+## Capture references
 
 Use `same as capture "name"` or `same as capture 1` after the capture's closing brace. Named and numbered references refer to the same opening-order capture table. Numbers are positive ASCII integers; leading zeros are accepted and normalized. Existing repetition modifiers also work on references.
 
@@ -158,6 +162,30 @@ The public segment metadata for a bounded instruction has `repetition: { kind: "
 
 Malformed range syntax, a missing optional item or non-integer bounds report `INVALID_REPETITION`. Reversed bounds report `INVALID_RANGE` at the upper count, and a bound above 1,000 reports `REPETITION_LIMIT` at that count.
 
+## Ordered alternatives
+
+An `either {` block contains at least two choices, tried in source order. Each immediate entry is one choice; a nested `group {` block makes a choice containing a sequence. Captures and other `either` blocks can be choices too. For example:
+
+```text
+start
+capture "pet" {
+  either {
+    "cat"
+    "dog"
+    "bird"
+  }
+}
+end
+```
+
+This generates `^(?<pet>(?:cat|dog|bird))$` with `u`. Wrapping the choice in a noncapturing group keeps its precedence and capture numbering. Apply an existing modifier to the entire choice, such as `optional either {` or `2 either {`. An empty `group {` / `}` choice matches empty text; empty quoted literals remain invalid.
+
+Use a group choice for multiple rules, including a start/end pair. `start "cat"` on one line remains one choice containing the anchor and literal. Anchor ordering is local to each choice or sequence; input and line anchors still cannot be mixed anywhere in the document. Nesting, source and line budgets apply to alternatives as well as groups. An empty or single-choice block reports `ALTERNATIVE_COUNT` at its opening rule.
+
+Choices follow [ECMAScript disjunction semantics](https://tc39.es/ecma262/2025/multipage/text-processing.html#sec-runtime-semantics-compilesubpattern): earlier alternatives are tried first, including the following regex rules. A skipped branch has absent captures; repeating a choice can clear captures from an earlier iteration. References to those absent captures match empty text, following JavaScript. Capture names remain globally unique, even across mutually exclusive choices. No matching or backtracking is simulated by the explanation trace.
+
+Alternative trace segments use `kind: "alternation"`, `edge: "start" | "branch" | "end"`, `alternatives` and `repetition`, plus the existing source/location/explanation fields. Separator segments navigate to the next choice's rule. Consumers switching on `segments[].kind` should handle this variant. Ordered alternatives and their reverse translation are included in npm `0.1.0-dev.4` and the hosted workshop.
+
 ## Anchors and flags
 
 The compiler emits `u` by default for Unicode code-point behavior. It adds `m` when a line anchor is used. It allows `i` (ignore case) and `s` (dot matches newline) as explicit options. It rejects a mix of input anchors and line anchors in one document because JavaScript's `m` flag would change the meaning of `^` and `$` for both. Global and sticky flags (`g`, `y`) are outside version 1 because repeated `.test()` calls with them are stateful.
@@ -188,9 +216,9 @@ Empty non-capturing groups such as `(?:)` translate to `0 any character`, genera
 
 The empty negative class `[^]` matches any Unicode code point, including line breaks, so it becomes `any character` with the returned `s` option enabled. When the same regex also contains ordinary `.` atoms, those rules become `none of: "\\n", "\\r", "\\u2028", "\\u2029"` so they still exclude JavaScript line terminators under `s`. The empty positive class `[]`, which matches nothing, remains unsupported.
 
-Unsupported syntax is rejected with a column diagnostic; it is never dropped or approximated. This includes alternation, lookaround, forward/open references, word boundaries, lazy quantifiers, unknown character ranges and flags other than `i`, `m`, `s`, `u`. The translator requires `u` because this language always matches Unicode code points. Nested groups share the 64-level depth budget and the translated source/line budgets. Forward/open reference failures report `UNSUPPORTED_REGEX` at the original reference escape; they are not silently replaced by empty text.
+Unsupported syntax is rejected with a column diagnostic; it is never dropped or approximated. This includes lookaround, forward/open references, word boundaries, lazy quantifiers, unknown character ranges and flags other than `i`, `m`, `s`, `u`. The translator requires `u` because this language always matches Unicode code points. Nested groups and alternatives share the 64-level translated-block budget and the translated source/line budgets. Forward/open reference failures report `UNSUPPORTED_REGEX` at the original reference escape; they are not silently replaced by empty text.
 
-An alternation diagnostic points to its `|` operator, including inside a non-capturing literal group, and suggests translating each alternative as a separate regex. The code remains `UNSUPPORTED_REGEX`; columns still count UTF-16 source units, so `/😀|b/u` points to column 3. Escaped pipes such as `\|` and character-class pipes such as `[|]` stay literal matching data. Misplaced anchors retain their own anchor diagnostic.
+Top-level and grouped `|` alternatives translate to ordered `either` blocks, including alternatives inside captures. Sequence choices become noncapturing `group` blocks; empty choices become empty group blocks. For example, `/cat|dog|bird/u` becomes an `either` block with three quoted entries, while `/^a|b$/u` retains its separately anchored branches. Additional editable blocks can reach the translated-depth budget before the native group-depth budget; that error points into the original regex and names the translated limit. Escaped pipes such as `\|` and character-class pipes such as `[|]` stay literal matching data. Misplaced anchors retain their own anchor diagnostic.
 
 Lookahead assertions `(?=AB)` / `(?!AB)` and lookbehind assertions `(?<=A)` / `(?<!A)` still report distinct messages at their opening `(`, with the same `UNSUPPORTED_REGEX` code. For example, `/^😀(?=AB)AB/u` points to column 4. Captures and supported composite groups translate without removing their semantics. Literal parentheses such as `\(` or `[()]` remain supported. Unsupported assertions are not stripped to force conversion.
 

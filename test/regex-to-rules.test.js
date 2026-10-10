@@ -647,33 +647,28 @@ test("oversized regex input keeps its own source-limit code and position", () =>
   });
 });
 
-test("alternation reports its operator and repair hint while literal pipes still round-trip", () => {
-  for (const [regex, column] of [
-    [/a|b/u, 2],
-    [/^a|b$/u, 3],
-    [/😀|b/u, 3],
-    [/|a/u, 1],
-    [/^(?:a|b)$/u, 6],
-    [/^(?:😀|b)$/u, 7],
-    [/^(?:|a)$/u, 5],
-    [/^a\|b|c$/u, 6],
-    [/^[|]a|b$/u, 6],
-    [/^(?:a\|b|c)$/u, 9],
+test("ordered alternatives and literal pipes round-trip without changing precedence", () => {
+  for (const regex of [
+    /a|b/u,
+    /^a|b$/u,
+    /😀|b/u,
+    /|a/u,
+    /^(?:a|b)$/u,
+    /^(?:😀|b)$/u,
+    /^(?:|a)$/u,
+    /^a\|b|c$/u,
+    /^[|]a|b$/u,
+    /^(?:a\|b|c)$/u,
   ]) {
-    assert.throws(
-      () => regexToRules(regex),
-      (error) => {
-        assert.ok(error instanceof CompileError);
-        assert.deepEqual(error.toJSON(), {
-          code: "UNSUPPORTED_REGEX",
-          message: "Alternation (`|`) cannot be translated.",
-          line: 1,
-          column,
-          hint: "Translate each alternative as a separate regex.",
-        });
-        return true;
-      },
-    );
+    const translated = regexToRules(regex);
+    assert.match(translated.rules, /either \{/u);
+    const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+    for (const text of ["", "a", "b", "ba", "ab", "😀", "😀b", "a|b", "c", "|a", "\na\n"])
+      assert.deepEqual(
+        rebuilt.exec(text),
+        regex.exec(text),
+        `${regex} against ${JSON.stringify(text)}`,
+      );
   }
   for (const regex of [/^a\|b$/u, /^(?:a\|b){2}$/u, /^[|]$/u, /^[a|b]{2}$/iu, /^[^|]+$/u]) {
     const translated = regexToRules(regex);
@@ -720,7 +715,7 @@ test("unsupported lookaround is identified at its opening parenthesis", () => {
               message,
               line: 1,
               column: prefix.length + 1,
-              hint: "Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references and i/s/u/m flags. Alternation, lookaround, lazy quantifiers and forward/open references are not supported.",
+              hint: "Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround, lazy quantifiers and forward/open references are not supported.",
             });
             return true;
           },
@@ -745,7 +740,6 @@ test("unsupported lookaround is identified at its opening parenthesis", () => {
 
 test("rejects features it cannot preserve and non-Unicode matching", () => {
   for (const [regex, column] of [
-    [/^a|b$/u, 3],
     [/(?=a)a/u, 1],
     [/\bword/u, 1],
     [/a*?/u, 3],

@@ -1,6 +1,6 @@
 # Regex compatibility
 
-Current checkout evidence, 2026-10-10. Output targets JavaScript `RegExp` in Unicode mode. New group/reference syntax is unreleased; the published npm preview remains `0.1.0-dev.3`.
+Current checkout evidence, 2026-10-10. Output targets JavaScript `RegExp` in Unicode mode. The `0.1.0-dev.4` development preview includes groups, references and ordered alternatives; stable support and human reviews remain open.
 
 | Construct | Rules → regex | Regex → rules |
 | --- | --- | --- |
@@ -9,7 +9,8 @@ Current checkout evidence, 2026-10-10. Output targets JavaScript `RegExp` in Uni
 | Composite/nested noncapturing groups and whole-block repetitions | Supported | Supported; literal-only noncapturing groups retain compact normalization |
 | Named/numbered backward references | Supported after the target closes | Supported under the same policy |
 | Forward/open references | Positioned rule-language diagnostic | Unsupported |
-| Alternation, lookaround, boundaries, lazy quantifiers, Unicode properties and v-set operations | Not yet supported | Unsupported |
+| Ordered alternatives, nested/sequence/empty choices and whole-choice repetition | Supported with `either` blocks | Supported; precedence, capture participation and ordering preserved |
+| Lookaround, boundaries, lazy quantifiers, Unicode properties and v-set operations | Not yet supported | Unsupported |
 | Flags | `u` always; `m` through line anchors; `i`/`s` options | Only `i`/`m`/`s`/`u`; `u` required |
 | Other regex engines | No target | No translation claim |
 
@@ -17,11 +18,11 @@ Groups are numbered in opening order, including named groups. Names are Unicode 
 
 ## Verified runtimes
 
-- Host Node 25.9.0: all 238 Node tests plus a clean installed-package JavaScript/TypeScript consumer.
-- Minimum supported major, Node 22.23.3: all 16 dedicated group/reference/reverse and CLI tests.
-- Installed Chrome: all 282 desktop/mobile workshop checks, including group/reference imports, trace navigation and isolated matching. Mobile viewport checks are not physical-device evidence.
-- Playwright Firefox and WebKit: all 52 compatibility checks, including the same group/reference/import flows.
-- Complete local verification also passes the builds, all 62 homepage checks and an audit with zero vulnerabilities.
+- Host Node 25.9.0: all 251 Node tests plus a clean installed-package JavaScript/TypeScript consumer.
+- Minimum supported major, Node 22.23.3: all 26 focused group/reference/alternative/localization checks, including CLI paths.
+- Bundled Chromium: all 296 desktop/mobile workshop checks, including group/reference/alternative imports, capture exploration, trace navigation and isolated matching. Installed Chrome also passes the release version/date/alternative flow at 1280/390px. Mobile viewport checks are not physical-device evidence.
+- Playwright Firefox and WebKit: all 66 compatibility checks, including the same group/reference/alternative/capture flows.
+- Complete local verification also passes the builds, all 64 homepage checks and an audit with zero vulnerabilities.
 - Group milestone: 54 desktop/mobile group, worker security and automated accessibility checks. Human screen-reader and usability reviews remain unverified.
 
 These results cover the checked constructs and versions. They do not establish every historical browser/version or all-platform CLI behavior. The broader workflow and reproducible commands are in [TESTING.md](TESTING.md); exact syntax and limitations are in [LANGUAGE.md](LANGUAGE.md). Matching copied regexes requires the receiving application's own execution safeguards.

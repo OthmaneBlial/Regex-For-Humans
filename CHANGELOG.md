@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-dev.4 (10 October 2026)
+
+- Compile ordered `either` choices, including nested/sequence/empty branches, alternatives inside captures and whole-choice repetition. Preserve precedence, capture opening order, absent/final-iteration values and references. Reverse-translate native disjunctions into editable blocks, retain Unicode atom boundaries and positioned output budgets, and expose typed start/branch/end trace segments through the same API, CLI and workshop.
 
 - Inspect numbered/named/nested captures in the workshop, distinguishing absent and empty values and preserving final repeated captures. List up to 100 nonoverlapping search matches, advance empty matches by Unicode code point, use native indices when available, validate nested worker replies and keep matching inside the existing deadline. Capture tables are created on demand and link to opening rules; the date recipe now exposes year/month/day.
 
@@ -10,7 +12,7 @@
 
 - Add named/numbered `same as capture` references, including repetitions, nested targets, case folding and native absent/final-capture behavior. Diagnose missing, forward and open/self targets at the reference; protect numeric references from adjoining literal digits and expose resolved capture indices in typed trace segments.
 
-- Compile numbered and named captures, noncapturing groups, nested blocks and repetition of whole blocks. Preserve capture opening order, Unicode identifier names, empty/absent capture semantics, positioned brace/name diagnostics and exact source trace spans, with a 64-level nesting limit. CLI JSON/explanations and the workshop use the same group compiler; reverse translation is unchanged at this milestone.
+- Compile numbered and named captures, noncapturing groups, nested blocks and repetition of whole blocks. Preserve capture opening order, Unicode identifier names, empty/absent capture semantics, positioned brace/name diagnostics and exact source trace spans, with a 64-level nesting limit. CLI JSON/explanations and the workshop use the same group compiler; reverse translation supports the documented group subset.
 
 ## 0.1.0-dev.3 (2 October 2026)
 

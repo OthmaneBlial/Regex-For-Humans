@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { compile, toRegExp } from "../index.js";
 
+const { version } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const canonical = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 const blocks = (text) => [...text.matchAll(/```([^\n]*)\n([\s\S]*?)\n```/gu)].map((m) => m[0]);
 const recipes = (text) => [...text.matchAll(/\?example=([a-z0-9-]+)\)/gu)].map((m) => m[1]);
@@ -24,7 +25,7 @@ test("all nine README translations retain complete sections and executable examp
       `${locale}: retain the major sections`,
     );
     assert.ok(translated.includes("../../README.md"), `${locale}: link back to English`);
-    assert.ok(translated.includes("0.1.0-dev.3"), `${locale}: name the published preview`);
+    assert.ok(translated.includes(version), `${locale}: name the published preview`);
     assert.ok(canonical.includes(`docs/i18n/${name}`));
     assert.ok(homepage.includes(`docs/i18n/${name}`));
   }

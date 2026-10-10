@@ -13,7 +13,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 ## Next priorities
 
-1. Alternatives, lookarounds and lazy quantifiers across the same AST and both translation directions.
+1. Lookarounds and lazy quantifiers across the same AST and both translation directions.
 2. Structural visualization, safety heuristics with honest limits, flags/capability diagnostics and verified exports.
 3. Workshop localization and the remaining mission waves.
 
@@ -24,6 +24,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Homepage: capture example with native field values, build/import/explain capabilities, copyable API/CLI snippets, eight language links and honest FAQ. Existing visual identity, recipes and browser-local behavior are preserved.
 - Checks: all 241 Node tests, all 64 Chrome desktop/mobile site checks, lint/types, 252 local source-document links, builds and clean package installation pass. The 10 localization/link checks also pass on Node 22.23.3. Firefox/WebKit verify the new snippet copies, native fields and eight language links, with zero automated accessibility violations/page errors or overflow at 1280/390/320px. Seven desktop/mobile captures of the new sections were visually inspected.
 - Publication: source `34b2b9b` is pushed to `main`; Pages commit `22245c6` built successfully on the existing `master` branch. All 56 served files match the local build by SHA-256, and the canonical homepage returns HTTP 200. Public Chrome desktop/mobile, Firefox and WebKit verify eight language links, four copy requests, 320px layout, capture/reference import and positive/negative worker matching with no page errors. npm remains unchanged at `0.1.0-dev.3`; publishing the site is a separate operation.
+
+## Ordered alternatives and next npm preview
+
+- Implemented: ordered `either { … }` branches in both directions, nested/sequence/empty choices, whole-choice repetition, capture/reference preservation and typed start/branch/end source trace segments. Each direct entry is one choice; a `group` block holds a sequence or an empty choice.
+- Native parity: 30 patterns × eight supported flag combinations × 34 inputs compare full match arrays, named values and native capture indices. Shared browser checks add 936 comparisons per engine/viewport and verify capture participation, keyboard navigation and 320px layout.
+- Verification: all components pass: 251 Node tests, 296 bundled Chromium desktop/mobile workshop checks, 66 Firefox/WebKit checks, 64 homepage checks, lint/types/docs, builds, a clean package consumer and zero audit vulnerabilities. All 26 focused Node 22 checks pass. The first full command found obsolete alternative-error fixtures; equivalent unsupported lookaheads retain the selection/scrolling/accessibility/recovery assertions. The subsequent command passed the compiler/workshop/compatibility stages and found stale homepage screenshot metadata. Correcting the image URL/dimensions and rerunning all 64 site checks plus audit completes the component gates; this is not one uninterrupted full-command pass.
+- Distribution: the maintainer explicitly requested a new npm release and matching `.io` website/README updates on 10 October 2026. `0.1.0-dev.4` is the next development-preview candidate; final verification, exact archive publication and public checks remain required. This does not close the larger mission, stable-release or human review gates.
 
 ## Evidence and constraints
 

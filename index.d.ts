@@ -55,11 +55,19 @@ export interface BackreferenceSegment extends SegmentBase {
   repetition: Repetition | null;
 }
 
+export interface AlternationSegment extends SegmentBase {
+  kind: "alternation";
+  edge: "start" | "branch" | "end";
+  alternatives: number;
+  repetition: Repetition | null;
+}
+
 export type RegexSegment =
   | AnchorSegment
   | TextSegment
   | CharacterSetSegment
   | GroupSegment
+  | AlternationSegment
   | BackreferenceSegment;
 
 export interface CompileResult {

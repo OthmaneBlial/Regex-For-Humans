@@ -8,7 +8,7 @@
 
 Regras claras em inglês viram uma expressão regular JavaScript que você consegue acompanhar, trecho por trecho.
 
-[🚀 Oficina](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Sintaxe](../LANGUAGE.md) · [📦 Prévia npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.3)
+[🚀 Oficina](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Sintaxe](../LANGUAGE.md) · [📦 Prévia npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.4)
 
 🔒 Execução local · 🧩 Sem dependências em tempo de execução · ⚡ Um compilador, três interfaces
 
@@ -34,22 +34,23 @@ end
 
 O vocabulário é **fixo**, com significado exato para cada instrução. Biblioteca, CLI e oficina compartilham o compilador determinístico. Uma frase desconhecida gera diagnóstico com linha, coluna e orientação. A sintaxe das regras continua em inglês em todas as traduções.
 
-> 🌱 A prévia `0.1.0-dev.3` exige **Node.js 22+** na biblioteca e no CLI. A oficina funciona sem instalação. As avaliações humanas de usabilidade e leitor de tela continuam pendentes.
+> 🌱 A prévia `0.1.0-dev.4` exige **Node.js 22+** na biblioteca e no CLI. A oficina funciona sem instalação. As avaliações humanas de usabilidade e leitor de tela continuam pendentes.
 
 ## 🧰 O que você pode construir hoje
 
-| Recurso | npm `0.1.0-dev.3` | Código-fonte atual |
+| Recurso | npm `0.1.0-dev.4` | Código-fonte atual |
 | --- | --- | --- |
 | Regras → regex JavaScript | ✅ | ✅ |
-| Regex compatível → regras editáveis | ✅ Subconjunto sem blocos complexos | ✅ Inclui grupos e referências compatíveis |
+| Regex compatível → regras editáveis | ✅ | ✅ Inclui grupos e referências compatíveis |
 | Explicações e navegação até a regra | ✅ | ✅ Inclui limites dos grupos e referências |
 | CLI, API ESM e tipos TypeScript | ✅ | ✅ |
-| Capturas nomeadas/numeradas e blocos aninhados | — | ✅ |
-| Repetição de blocos e referências a capturas anteriores | — | ✅ |
-| Alternativas, asserções e quantificadores não gulosos | — | Planejado; atualmente rejeitado |
+| Capturas nomeadas/numeradas e blocos aninhados | ✅ | ✅ |
+| Repetição de blocos e referências a capturas anteriores | ✅ | ✅ |
+| Alternativas ordenadas com `either { … }` | ✅ | ✅ Opções aninhadas e conversão inversa |
+| Asserções e quantificadores não gulosos | — | Planejado; atualmente rejeitado |
 | Outros motores e inglês livre | — | Fora do idioma de regras atual |
 
-Os novos recursos ainda não foram publicados no npm. Clone `main` para grupos e referências. Oficina e npm são distribuições separadas; veja [compatibilidade](../COMPATIBILITY.md) e [publicação](../DISTRIBUTION.md).
+O npm `0.1.0-dev.4` inclui grupos, capturas, referências anteriores e alternativas ordenadas na biblioteca e no CLI. A oficina acrescenta inspeção de capturas e múltiplas correspondências de busca. Veja [compatibilidade](../COMPATIBILITY.md) e [publicação](../DISTRIBUTION.md).
 
 ## 📦 Instalar a prévia
 
@@ -63,7 +64,7 @@ Execute o CLI sem instalação global:
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-A saída é `/^ABC\d{3}$/u`. Para fixar a versão, use `regex-for-humans@0.1.0-dev.3`. Não há dependências de execução nem executáveis independentes por sistema operacional.
+A saída é `/^ABC\d{3}$/u`. Para fixar a versão, use `regex-for-humans@0.1.0-dev.4`. Não há dependências de execução nem executáveis independentes por sistema operacional.
 
 ## 🎮 Experimentar um padrão
 
@@ -76,7 +77,7 @@ Correspondências parciais mostram contexto escapado com destaque; uma correspon
 
 Na oficina atual, abra uma correspondência para ver as capturas e suas posições nativas. Um grupo ausente e uma captura vazia são distintos; grupos repetidos mostram seu último valor. **Search anywhere** lista até 100 correspondências sem sobreposição e avança um ponto de código Unicode depois de uma correspondência vazia. As posições contam unidades UTF-16, com o fim excluído. Sem índices nativos, os valores aparecem sem posições inferidas.
 
-[![Captura real da oficina no computador](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=89bc7db9875a)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![Captura real da oficina no computador](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [Visualização móvel e checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md).
 
@@ -197,7 +198,7 @@ As quebras de linha são literais. A aplicação valida valores, números e pedi
 
 ## 🧲 Extrair campos com capturas nomeadas
 
-Este exemplo requer o **código-fonte atual**, não o npm `0.1.0-dev.3`.
+Este exemplo funciona com npm `0.1.0-dev.4` e na oficina publicada.
 
 ```text
 start
@@ -238,7 +239,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 `capture {` cria uma captura numerada; `group {` agrupa sem capturar. Nomes são identificadores JavaScript únicos. A numeração segue a ordem de abertura, inclusive nos grupos aninhados. Captura opcional ausente vale `undefined`, captura vazia participante vale `""`, e captura repetida guarda o último valor.
 
-Após fechar o grupo, `same as capture "word"` ou `same as capture 1` exige o mesmo texto. O [exemplo](../LANGUAGE.md#capture-references-unreleased-on-main) aceita `cat cat` e rejeita `cat dog`. Referências futuras ou dentro de seu próprio alvo geram diagnóstico. A conversão inversa preserva as capturas compatíveis. Valide a data extraída com um calendário.
+Após fechar o grupo, `same as capture "word"` ou `same as capture 1` exige o mesmo texto. O [exemplo](../LANGUAGE.md#capture-references) aceita `cat cat` e rejeita `cat dog`. Referências futuras ou dentro de seu próprio alvo geram diagnóstico. A conversão inversa preserva as capturas compatíveis. Valide a data extraída com um calendário.
 
 ## 🧩 Guia de bolso
 
@@ -375,7 +376,9 @@ Inclui formatação, lint, tipos, links, Node, construção Pages, consumidor li
 
 ## 🧭 Entender os limites
 
-A saída é **JavaScript `RegExp`**. Regex bruto como regra e inglês livre não são aceitos. A conversão inversa usa só o subconjunto documentado. Alternativas, asserções e referências futuras/abertas continuam rejeitadas. O worker tem prazo; um regex copiado precisa das proteções da própria aplicação. Veja o [modelo de segurança](../SECURITY_MODEL.md).
+As alternativas viram blocos editáveis `either { … }`: cada entrada é uma opção, testada na ordem. Use `group { … }` para uma opção com várias regras ou uma opção vazia.
+
+A saída é **JavaScript `RegExp`**. Regex bruto como regra e inglês livre não são aceitos. A conversão inversa usa só o subconjunto documentado. Asserções e referências futuras/abertas continuam rejeitadas. O worker tem prazo; um regex copiado precisa das proteções da própria aplicação. Veja o [modelo de segurança](../SECURITY_MODEL.md).
 
 ## 💬 Perguntas frequentes
 
@@ -408,6 +411,6 @@ A saída é **JavaScript `RegExp`**. Regex bruto como regra e inglês livre não
 | [Comparação](../COMPETITOR_GAPS.md) | Fontes e recursos pendentes |
 | [Contribuir](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Preparação e convenções |
 
-**Verificado localmente em 10 de outubro de 2026:** 238 testes Node, 282 controles Chrome desktop/móvel, 52 Firefox/WebKit, 62 do site e um consumidor limpo; zero vulnerabilidades. Os 16 testes de grupos/referências/conversão também passam no Node 22.23.3. São resultados desse snapshot, não garantia para qualquer navegador futuro. Avaliações humanas seguem abertas.
+**Verificado localmente em 10 de outubro de 2026:** 251 testes Node, 296 controles Chromium desktop/móvel, 66 Firefox/WebKit, 64 do site e um consumidor limpo; zero vulnerabilidades. Os 16 testes de grupos/referências/conversão também passam no Node 22.23.3. São resultados desse snapshot, não garantia para qualquer navegador futuro. Avaliações humanas seguem abertas.
 
 Licença [MIT](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [Voltar ao inglês](../../README.md).

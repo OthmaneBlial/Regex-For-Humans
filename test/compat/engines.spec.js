@@ -19,14 +19,13 @@ test("the workshop compiles rules and reports example results", async ({ page })
   const reverse = page.locator("#reverse-regex");
   await reverse.fill("/^Hi|Hello$/u");
   await page.locator("#reverse-button").click();
-  await expect(reverse).toHaveAttribute("aria-invalid", "true");
-  await expect(reverse).toHaveAccessibleDescription(/Alternation.*Translate each alternative/);
-  await expect(output).toHaveText("/^Hello$/u");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(page.locator("#rules-input")).toHaveValue(/either \{/u);
+  await expect(output).toHaveText("/(?:(?:^Hi)|(?:Hello$))/u");
   await reverse.fill("/^(?:Hi|Hello)$/u");
   await page.locator("#reverse-button").click();
-  await expect(reverse).toHaveAttribute("aria-invalid", "true");
-  await expect(reverse).toHaveAccessibleDescription(/Column 7: Alternation/);
-  await expect(output).toHaveText("/^Hello$/u");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(output).toHaveText("/^(?:Hi|Hello)$/u");
   for (const [literal, diagnostic] of [
     ["/^😀(?=AB)AB/u", "Column 4: Lookahead assertions cannot be translated."],
     ["/😀(?<!A)B/u", "Column 3: Lookbehind assertions cannot be translated."],
@@ -36,7 +35,7 @@ test("the workshop compiles rules and reports example results", async ({ page })
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(page.locator("#reverse-feedback")).toContainText(diagnostic);
     await expect(reverse).toHaveAccessibleDescription(/nested groups, captures/);
-    await expect(output).toHaveText("/^Hello$/u");
+    await expect(output).toHaveText("/^(?:Hi|Hello)$/u");
     await page.getByRole("button", { name: "Go to regex error", exact: true }).press("Enter");
     await expect(reverse).toBeFocused();
     const position = literal.lastIndexOf("(");

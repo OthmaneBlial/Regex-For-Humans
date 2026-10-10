@@ -473,7 +473,7 @@ test("control-letter escapes become visible rules and invalid control escapes pr
   }
 });
 
-test("alternation reports its operator and hint, preserves edits and recovers to a literal pipe", async ({
+test("alternation imports editable choices and still distinguishes a literal pipe", async ({
   page,
 }) => {
   await page.goto("/");
@@ -485,22 +485,16 @@ test("alternation reports its operator and hint, preserves edits and recovers to
   await page.locator("#reverse-translator summary").click();
   const reverse = page.locator("#reverse-regex");
   const button = page.locator("#reverse-button");
-  for (const [literal, column] of [
-    ["/^a|b$/u", 3],
-    ["/^(?:😀|b)$/u", 7],
-    [String.raw`/^a\|b|c$/u`, 6],
-  ]) {
+  for (const literal of ["/^a|b$/u", "/^(?:😀|b)$/u", String.raw`/^a\|b|c$/u`]) {
     await reverse.fill(literal);
     await button.press("Enter");
-    await expect(page.locator("#reverse-feedback")).toHaveText(
-      `Column ${column}: Alternation (\`|\`) cannot be translated. Translate each alternative as a separate regex.`,
-    );
-    await expect(reverse).toHaveAttribute("aria-invalid", "true");
-    await expect(reverse).toHaveAccessibleDescription(/Alternation.*Translate each alternative/);
-    await expect(rules).toHaveValue("start\n3 digits\nend");
-    await expect(page.locator("#ignore-case")).toBeChecked();
-    await expect(page.locator("#dot-all")).toBeChecked();
-    await expect(page.locator("#regex-output")).toHaveText(String.raw`/^\d{3}$/isu`);
+    await expect(reverse).toHaveAttribute("aria-invalid", "false");
+    await expect(rules).toHaveValue(/either \{/u);
+    await expect(rules).toBeFocused();
+    await expect(page.locator("#ignore-case")).not.toBeChecked();
+    await expect(page.locator("#dot-all")).not.toBeChecked();
+    const result = compile(await rules.inputValue());
+    await expect(page.locator("#regex-output")).toHaveText(`/${result.source}/${result.flags}`);
     await expect(page.locator("#copy-button")).toBeEnabled();
   }
   await reverse.fill(String.raw`/^a\|b$/u`);
@@ -2171,7 +2165,7 @@ test("unsupported group errors identify the feature and preserve edited rules be
     await page.locator("#reverse-button").press("Enter");
     await expect(reverse).toHaveAttribute("aria-invalid", "true");
     await expect(reverse).toHaveAccessibleDescription(
-      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references and i/s/u/m flags. Alternation, lookaround, lazy quantifiers and forward/open references are not supported.`,
+      `${help} Column ${column}: ${message} Supported syntax includes literals, anchors, common character classes, greedy repetition, nested groups, captures, backward capture references, ordered alternatives and i/s/u/m flags. Lookaround, lazy quantifiers and forward/open references are not supported.`,
     );
     await expect(editor).toHaveValue(rules);
     await expect(output).toHaveText("/^Saved$/isu");
@@ -2211,12 +2205,12 @@ test("reverse syntax errors select their source character and reveal wrapped or 
   const original = await editor.inputValue();
   await expect(jump).toBeHidden();
   for (const [literal, character] of [
-    ["/^😀a|b$/u", "|"],
+    ["/^😀a(?=b)b$/u", "("],
     [" \r\n\t/^😀(?=AB)AB$/u \n", "("],
     ["/^(?:😀(?=AB)AB)$/u", "("],
     ["/^[a-c]+$/u", "-"],
     ["/^(?:😀)*?$/u", "?"],
-    [` \n\t/^${"A".repeat(700)}😀|B$/u \n`, "|"],
+    [` \n\t/^${"A".repeat(700)}😀(?=B)B$/u \n`, "("],
   ]) {
     await reverse.fill(literal);
     await expect(jump).toBeHidden();
@@ -2245,7 +2239,7 @@ test("reverse syntax errors select their source character and reveal wrapped or 
   await reverse.evaluate((field) => {
     field.style.height = "1400px";
   });
-  await reverse.fill("/^😀a|b$/u");
+  await reverse.fill("/^😀a(?=b)b$/u");
   await page.locator("#reverse-button").press("Enter");
   await jump.focus();
   await jump.press("Enter");

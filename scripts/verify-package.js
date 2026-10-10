@@ -107,6 +107,7 @@ try {
   writeFileSync(
     smoke,
     `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
+import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
 const result = compile(${JSON.stringify(rules)});
 const grouped = compile('start\\ncapture "outer" {\\ncapture "year" {\\n4 digits\\n}\\n}\\nend');
@@ -167,9 +168,12 @@ for (const source of ["^[._-]{2}$", "^[-._]{2}$"]) {
   const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
   if (!rebuilt.test("-_") || rebuilt.test(".a") || rebuilt.test("-")) throw new Error("Reverse translation changed literal hyphen matching");
 }
-for (const [source, column] of [["a|b", 2], ["^(?:a|b)$", 6]]) {
-  try { regexToRules(new RegExp(source, "u")); throw new Error("Alternation accepted"); }
-  catch (error) { if (!(error instanceof CompileError) || error.code !== "UNSUPPORTED_REGEX" || error.message !== ${JSON.stringify("Alternation (`|`) cannot be translated.")} || error.line !== 1 || error.column !== column || error.hint !== ${JSON.stringify("Translate each alternative as a separate regex.")}) throw error; }
+for (const source of ["a|b", "^(?:a|b)$", "(?<x>a)|(?<y>b)", "(?:|a)"]) {
+  const translated = regexToRules(new RegExp(source, "u"));
+  const result = compile(translated.rules, { flags: translated.flags });
+  const original = new RegExp(source, "du");
+  const rebuilt = new RegExp(result.source, "d" + result.flags);
+  for (const text of ["", "a", "b", "ab", "😀a"]) assert.deepEqual(rebuilt.exec(text), original.exec(text));
 }
 const literalPipe = regexToRules(new RegExp("^[|]{2}$", "u"));
 const pipePattern = toRegExp(compile(literalPipe.rules, { flags: literalPipe.flags }));
@@ -308,6 +312,12 @@ if (segment.kind === "group") {
   const edge: "start" | "end" = segment.edge;
   const capturing: boolean = segment.capturing;
   console.log(index, name, edge, capturing);
+}
+if (segment.kind === "alternation") {
+  const edge: "start" | "branch" | "end" = segment.edge;
+  const alternatives: number = segment.alternatives;
+  const repetition: Repetition | null = segment.repetition;
+  console.log(edge, alternatives, repetition);
 }
 const source: string = regexMatchingThroughLines("digits");
 const range: Repetition = { kind: "range", min: 2, max: 4 };
