@@ -524,7 +524,7 @@ These rows are the compiler's actual `segments` output, in order.
 
 ## Captures and nested groups
 
-The concern about captures and nesting is valid: this version does **not** support them. Longer flat records compose from the documented atoms, but adding capture/extraction semantics or optional blocks of variable rules would need a language extension. Reverse translation rejects the entire unsupported pattern instead of returning approximate or partial rules.
+The checkout now compiles numbered, named and nested capture blocks, noncapturing blocks and repetitions of whole blocks. See the [group language reference](LANGUAGE.md#groups-and-captures-unreleased-on-main). The published `0.1.0-dev.3` package does not yet include this extension. The flat examples above still work unchanged. Reverse translation remains limited at this milestone and rejects the entire unsupported pattern instead of returning approximate or partial rules.
 
 | JavaScript pattern | Diagnostic | Column | Message |
 | --- | --- | --- | --- |

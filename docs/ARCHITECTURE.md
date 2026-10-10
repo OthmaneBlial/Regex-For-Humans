@@ -7,7 +7,7 @@ Regex For Humans is a dependency-free JavaScript ESM compiler with a CLI and a s
 ```text
 rules (string)
   → src/parser.js: parse and validate each line
-  → src/ast.js: ordered anchor and atom nodes with source locations
+  → src/ast.js: ordered anchor, atom and nested group nodes with source locations
   → src/compiler.js: escaped JavaScript regex fragments, flags and source spans
   → src/explain.js: text attached to each emitted fragment
   → index.js: compile result and optional native RegExp
@@ -26,6 +26,10 @@ The internal `TestRunner.run(payload)` reports worker construction and message-s
 The workshop counter uses the parser's shared source-length limit before splitting rules. Oversized input shows “Over limit” and remains editable. Source navigation splits at most the limit plus one UTF-16 code unit, retaining the first excess unit for the existing source-limit diagnostic. Valid counters and selections retain the compiler's logical-line semantics.
 
 Compiler option validation compares the requested flags with the five exact allowed values (`""`, `"i"`, `"s"`, `"is"`, `"si"`). It avoids scanning or deduplicating arbitrarily long option strings while preserving the existing error and canonical flag order.
+
+## Structured groups
+
+The parser uses a stack for brace-delimited groups, sharing existing atom parsing and repetition validation. Capture numbering is assigned in opening order; names are validated as Unicode JavaScript identifiers and duplicates are rejected globally. Each stack frame retains its enclosing sequence and anchor position state. The source and line budgets still apply, with an additional 64-level nesting budget. The emitter traverses this bounded tree and emits a flat, ordered trace of group openings, child rules and group closings. Existing flat-rule result shapes are preserved; the new group segment variant is declared in `index.d.ts`. The explanation, CLI JSON and workshop trace share those same nodes and numbering. Matching continues inside the terminable worker.
 
 ## Reverse translation
 

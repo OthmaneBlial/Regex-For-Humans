@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Compile numbered and named captures, noncapturing groups, nested blocks and repetition of whole blocks. Preserve capture opening order, Unicode identifier names, empty/absent capture semantics, positioned brace/name diagnostics and exact source trace spans, with a 64-level nesting limit. CLI JSON/explanations and the workshop use the same group compiler; reverse translation is unchanged at this milestone.
+
 ## 0.1.0-dev.3 (2 October 2026)
 
 - Show escaped context around partial workshop matches, highlight the matched text and mark empty matches with a caret. Whole-input and absent matches keep the existing compact feedback.

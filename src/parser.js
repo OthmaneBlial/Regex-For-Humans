@@ -5,6 +5,7 @@ import { quoteText } from "./display.js";
 /** @typedef {import('./ast.js').Location} Location */
 /** @typedef {import('./ast.js').Repetition} Repetition */
 /** @typedef {import('./ast.js').AtomNode} AtomNode */
+/** @typedef {import('./ast.js').GroupNode} GroupNode */
 /** @typedef {import('./ast.js').RuleNode} RuleNode */
 /** @typedef {import('./ast.js').ParsedRules} ParsedRules */
 
@@ -14,6 +15,7 @@ export const LIMITS = Object.freeze({
   regexSourceLength: MAX_SOURCE_LENGTH * 8, // U+2028 and U+2029 each escape to eight code units.
   lines: 200,
   repetition: 1_000,
+  groupDepth: 64,
 });
 
 /** @param {string} source @returns {string[]} */
@@ -202,7 +204,7 @@ function readCharacterList(text, location, rawLine) {
   return items;
 }
 
-/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode} */
+/** @param {string} text @param {Location} location @param {string} rawLine @returns {AtomNode|GroupNode} */
 function parseAtom(text, location, rawLine) {
   let remaining = text;
   /** @type {Repetition|null} */
@@ -334,6 +336,48 @@ function parseAtom(text, location, rawLine) {
     );
   }
 
+  const group = /^(group|capture)(?=\s|\{|$)\s*/iu.exec(remaining);
+  if (group) {
+    const capturing = group[1].toLowerCase() === "capture";
+    let suffix = remaining.slice(group[0].length);
+    let name = null;
+    const nameLocation = {
+      line: location.line,
+      column: location.column + offset + group[0].length,
+    };
+    if (capturing && suffix.startsWith('"')) {
+      const quoted = readQuoted(suffix, nameLocation);
+      name = quoted.value;
+      if (!/^[$_\p{ID_Start}](?:[$\p{ID_Continue}]|\u200c|\u200d)*$/u.test(name)) {
+        fail(
+          "INVALID_CAPTURE_NAME",
+          "A capture name must be a JavaScript identifier.",
+          nameLocation,
+        );
+      }
+      suffix = suffix.slice(quoted.length).trim();
+    }
+    if (suffix !== "{") {
+      fail(
+        "INVALID_GROUP",
+        "Open a group with `{` and close it with `}` on its own line.",
+        nameLocation,
+        'Use `group {`, `capture {` or `capture "name" {`.',
+      );
+    }
+    return {
+      kind: "group",
+      capturing,
+      name,
+      captureIndex: null,
+      nodes: [],
+      repetition,
+      location,
+      text,
+      endLocation: location,
+    };
+  }
+
   const textWithout = /^text without:\s*/i.exec(remaining);
   if (textWithout || /^any text$/i.test(remaining)) {
     if (repetition) {
@@ -462,7 +506,12 @@ export function parse(source) {
   }
 
   /** @type {RuleNode[]} */
-  const nodes = [];
+  const rootNodes = [];
+  let nodes = rootNodes;
+  /** @type {{node: GroupNode, parent: RuleNode[], sawEnd: boolean}[]} */
+  const groups = [];
+  const names = new Set();
+  let captureCount = 0;
   /** @type {'input'|'line'|null} */
   let anchorMode = null;
   let sawEnd = false;
@@ -473,6 +522,15 @@ export function parse(source) {
     let text = line;
     let column = raw.indexOf(line) + 1;
     const location = () => ({ line: index + 1, column });
+
+    if (text === "}") {
+      const frame = groups.pop();
+      if (!frame) fail("UNEXPECTED_GROUP_END", "There is no open group to close.", location());
+      frame.node.endLocation = location();
+      nodes = frame.parent;
+      sawEnd = frame.sawEnd;
+      continue;
+    }
 
     const start = START_ANCHOR.exec(text);
     if (start) {
@@ -513,10 +571,41 @@ export function parse(source) {
     }
     if (sawEnd) fail("MISPLACED_ANCHOR", "End anchor must be the last rule.", location());
 
-    nodes.push(parseAtom(text, location(), raw));
+    const node = parseAtom(text, location(), raw);
+    if (node.kind === "group") {
+      if (groups.length >= LIMITS.groupDepth) {
+        fail(
+          "GROUP_DEPTH_LIMIT",
+          `Groups cannot nest more than ${LIMITS.groupDepth} levels.`,
+          location(),
+        );
+      }
+      if (node.capturing) {
+        node.captureIndex = ++captureCount;
+        if (node.name !== null) {
+          if (names.has(node.name))
+            fail(
+              "DUPLICATE_CAPTURE_NAME",
+              `Capture ${quoteText(node.name)} is already defined.`,
+              location(),
+            );
+          names.add(node.name);
+        }
+      }
+      nodes.push(node);
+      groups.push({ node, parent: nodes, sawEnd });
+      nodes = node.nodes;
+      sawEnd = false;
+    } else nodes.push(node);
   }
 
-  if (nodes.length === 0)
+  if (groups.length)
+    fail(
+      "UNCLOSED_GROUP",
+      "Close this group with `}` on its own line.",
+      groups.at(-1)?.node.location ?? { line: 1, column: 1 },
+    );
+  if (rootNodes.length === 0)
     fail("EMPTY_SOURCE", "Enter at least one instruction.", { line: 1, column: 1 });
-  return { nodes, anchorMode };
+  return { nodes: rootNodes, anchorMode };
 }

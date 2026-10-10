@@ -233,7 +233,7 @@ end
 
 </details>
 
-**Capture and nesting limits:** these examples validate complete shapes; they do not extract fields. Named/numbered captures and composite or nested groups remain unsupported and get positioned errors. Optional single atoms and whole fixed literals work today. See the [working examples and exact unsupported-pattern diagnostics](docs/COMPLEX-EXAMPLES.md#captures-and-nested-groups).
+**Captures on main:** the checkout now supports numbered and named `capture` blocks, nested `group` blocks and repetition of whole blocks. These additions are unreleased; see the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures-unreleased-on-main). Reverse translation of named/numbered captures and composite or nested groups remains unsupported at this milestone. These existing worked examples still validate shapes without extracting fields.
 
 ## 🧩 Your pocket cheat sheet
 

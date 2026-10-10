@@ -16,7 +16,8 @@ export const PATH_SEGMENT_EXCLUDED = Object.freeze([
  * @typedef {{kind: 'atom', atomType: 'wildcard'|'shorthand'|'literal', value: string, negative?: boolean, repetition: Repetition|null, location: Location, text: string}} TextAtomNode
  * @typedef {{kind: 'atom', atomType: 'charSet', value: string[], negative: boolean, repetition: Repetition|null, location: Location, text: string}} SetAtomNode
  * @typedef {TextAtomNode|SetAtomNode} AtomNode
- * @typedef {AnchorNode|AtomNode} RuleNode
+ * @typedef {{kind: 'group', capturing: boolean, name: string|null, captureIndex: number|null, nodes: RuleNode[], repetition: Repetition|null, location: Location, text: string, endLocation: Location}} GroupNode
+ * @typedef {AnchorNode|AtomNode|GroupNode} RuleNode
  * @typedef {{nodes: RuleNode[], anchorMode: 'input'|'line'|null}} ParsedRules
  */
 

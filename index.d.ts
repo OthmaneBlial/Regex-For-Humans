@@ -39,7 +39,16 @@ export interface CharacterSetSegment extends SegmentBase {
   negative: boolean;
 }
 
-export type RegexSegment = AnchorSegment | TextSegment | CharacterSetSegment;
+export interface GroupSegment extends SegmentBase {
+  kind: "group";
+  edge: "start" | "end";
+  capturing: boolean;
+  captureIndex: number | null;
+  name: string | null;
+  repetition: Repetition | null;
+}
+
+export type RegexSegment = AnchorSegment | TextSegment | CharacterSetSegment | GroupSegment;
 
 export interface CompileResult {
   source: string;

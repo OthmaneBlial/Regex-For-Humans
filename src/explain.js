@@ -33,6 +33,13 @@ export function explainNode(node, flags, hasFollowingRule = false) {
   const caseNote = flags.includes("i") ? ", ignoring case (i)" : "";
   const optional = /^optional\s/iu.test(node.text);
 
+  if (node.kind === "group") {
+    const label = node.capturing
+      ? `Capture #${node.captureIndex}${node.name === null ? "" : ` named ${quoteText(node.name)}`}.`
+      : "Group without capturing.";
+    return label + repetitionText(node.repetition, optional);
+  }
+
   if (
     node.atomType === "shorthand" &&
     node.value === "\\s" &&

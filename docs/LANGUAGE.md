@@ -81,6 +81,36 @@ C0/C1 control characters, DEL and Unicode line separators are also displayed as 
 
 `start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`.
 
+## Groups and captures (unreleased on main)
+
+Open a block with `group {` for noncapturing grouping, `capture {` for a numbered capture, or `capture "name" {` for a named capture. Close it with `}` on its own line. Blocks can contain other blocks and any existing rule. Indentation is optional; braces inside quoted literals remain data.
+
+```text
+start
+capture "date" {
+  capture "year" {
+    4 digits
+  }
+  "-"
+  capture "month" {
+    2 digits
+  }
+  "-"
+  capture "day" {
+    2 digits
+  }
+}
+end
+```
+
+This generates `^(?<date>(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}))$` with `u`. Against `2026-10-10`, group 1 (`date`) is `2026-10-10`, group 2 (`year`) is `2026`, group 3 (`month`) is `10`, and group 4 (`day`) is `10`. It checks a date shape, not calendar validity.
+
+Captures are numbered by opening order, including named and nested captures; noncapturing groups do not use an index. Names must be JavaScript identifiers (Unicode names such as `année` work) and must be unique throughout the document. Empty blocks match empty text. A participating empty capture returns `""`; an optional capture that does not participate returns `undefined`. A repeated capture retains its final participating value, following native JavaScript semantics.
+
+Existing repetition modifiers apply to a whole block: `optional capture "suffix" {`, `2 group {`, `between 2 and 4 group {`, `zero or more group {`, `one or more group {`, and `at least 2 group {`. Anchors retain their first/last rule restrictions within each block; input and line anchors cannot be mixed across blocks. Nesting is limited to 64 levels in addition to the existing source and line budgets.
+
+The API keeps `{ source, flags, segments }`. Opening and closing braces produce `kind: "group"` segments with `edge`, `capturing`, `captureIndex`, `name`, and `repetition`. Each segment retains its original line, column, explanation and exact generated-source offsets. Consumers switching on `segments[].kind` should handle the added group variant. The CLI and workshop use this same compiler and trace. These additions are available from the checkout; the published `0.1.0-dev.3` package does not contain them yet. Reverse translation of captures and composite groups is still unsupported at this milestone.
+
 ## Repetition
 
 A repetition modifier applies to the next item. Put it first: `3 digits`, `between 2 and 4 digits`, `optional "-"`, `zero or more digit`, `one or more any character`, or `at least 3 letter`. `optional <item>` is the same as `between 0 and 1 <item>` and generates `{0,1}`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters`, `lowercase letters`, `uppercase letters`, `spaces`, `word characters` and `path segment characters` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another repetition modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters.

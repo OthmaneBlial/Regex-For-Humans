@@ -111,6 +111,9 @@ try {
     `import { compile, regexToRules, toRegExp, CompileError } from "regex-for-humans";
 import { runInNewContext } from "node:vm";
 const result = compile(${JSON.stringify(rules)});
+const grouped = compile('start\\ncapture "outer" {\\ncapture "year" {\\n4 digits\\n}\\n}\\nend');
+const captured = toRegExp(grouped).exec("2026");
+if (captured?.[1] !== "2026" || captured?.groups?.year !== "2026" || grouped.segments.filter(s => s.kind === "group" && s.edge === "start")[1]?.captureIndex !== 2) throw new Error("Installed group compilation changed captures or numbering");
 let sourceReads = 0, flagReads = 0;
 const snapshot = toRegExp({
   get segments() { throw new Error("Installed helper must not read unused segments"); },
@@ -285,6 +288,13 @@ const cachedRegex: RegExp = toRegExp(cached);
 const pairRegex: RegExp = toRegExp({ source: result.source, flags: result.flags });
 const fullRegex: RegExp = toRegExp({ source: result.source, flags: result.flags, segments: result.segments });
 const segment: RegexSegment = result.segments[0];
+if (segment.kind === "group") {
+  const index: number | null = segment.captureIndex;
+  const name: string | null = segment.name;
+  const edge: "start" | "end" = segment.edge;
+  const capturing: boolean = segment.capturing;
+  console.log(index, name, edge, capturing);
+}
 const source: string = regexMatchingThroughLines("digits");
 const range: Repetition = { kind: "range", min: 2, max: 4 };
 const max: number = range.max;

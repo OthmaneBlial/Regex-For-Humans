@@ -19,7 +19,7 @@ Baseline evidence for this review is the documented version 1 contract in [LANGU
 
 | Priority | Gap / next result | Baseline status | Completion evidence |
 | --- | --- | --- | --- |
-| P0 | Structured noncapturing groups, named/numbered captures, alternatives and composite repetition. | Rule syntax is linear; captures and composite nesting are rejected. | AST, diagnostics and limits; nested accepted/rejected fixtures; capture-order tests against native JavaScript. |
+| P0 | Structured noncapturing groups, named/numbered captures, alternatives and composite repetition. | Unreleased checkout supports nested capture/group blocks and whole-block repetition. Alternatives remain open. | [Group tests](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/test/groups.test.js), AST source spans, positioned diagnostics, capture ordering and bounded nesting. |
 | P0 | Preserve group/capture semantics when importing regexes. | Reverse translation accepts only literal/empty noncapturing groups. | Round-trip tests for supported syntax; positioned failures for syntax that cannot be represented. |
 | P0 | Show extracted captures with names, numbers, values and spans. | Example feedback describes matches without a capture explorer. | Worker tests and browser interaction showing empty, unmatched, repeated, nested and astral captures. |
 | P0 | Keep execution bounded as the grammar grows. | Validated worker requests and termination deadlines exist. | New constructs retain cancellation/recovery checks; depth/node/output limits fail before expensive work. Static warnings remain advisory. |

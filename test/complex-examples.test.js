@@ -68,7 +68,9 @@ test("README includes two complete complex examples synchronized with the full g
   assert.ok(readme.includes(`**${cases} accepted/rejected cases**`));
   assert.ok(readme.includes("(docs/COMPLEX-EXAMPLES.md)"));
   assert.ok(
-    readme.includes("Named/numbered captures and composite or nested groups remain unsupported"),
+    readme.includes(
+      "Reverse translation of named/numbered captures and composite or nested groups remains unsupported",
+    ),
   );
 });
 
