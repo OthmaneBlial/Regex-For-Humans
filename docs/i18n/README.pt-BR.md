@@ -55,6 +55,7 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 | [Strings Unicode e conjuntos aninhados](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | Os oito flags JavaScript | ✅ |
 | [Edição de grupos e destaque de capturas](../LANGUAGE.md#editing-groups) | — |
+| [Estrutura interativa e exportação SVG](../LANGUAGE.md#structural-diagrams) | — |
 | Outros motores e inglês livre | — |
 
 **Somente no código-fonte:** o workshop local oferece **Edit groups and references** para renomear capturas, mudar seu tipo e localizar suas referências. As referências numéricas mantêm seus destinos quando a numeração muda; remover uma captura referenciada é recusado sem alterar as regras. **Highlight** destaca o intervalo nativo de uma captura, mesmo vazia ou fora do texto consumido. A API `editGroup` retorna regras validadas. Essas mudanças ainda não estão no npm `0.1.0-dev.5` nem no workshop hospedado. Veja a [edição de grupos](../LANGUAGE.md#editing-groups).
@@ -440,5 +441,9 @@ A saída é **JavaScript `RegExp`**. Regex bruto como regra e inglês livre não
 | [Contribuir](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Preparação e convenções |
 
 **Verificado localmente em 10 de outubro de 2026:** 301 testes Node, 378 controles Chromium desktop/móvel, 148 Firefox/WebKit, 64 do site e um consumidor limpo; zero vulnerabilidades. Os 16 testes de grupos/referências/conversão também passam no Node 22.23.3. São resultados desse snapshot, não garantia para qualquer navegador futuro. Avaliações humanas seguem abertas.
+
+## Diagrama da estrutura — código-fonte
+
+Abra **Explore the pattern** no workshop local para ver um diagrama de trilhos criado a partir da AST: grupos aninhados, alternativas ordenadas, ciclos de repetição e asserções que não consomem texto. Passe o ponteiro ou selecione um nó para conectar regras, fragmentos regex e explicações; passar o ponteiro não move o cursor. **Enter/Espaço** volta à linha de origem. O cursor do editor e a seleção na regex também acompanham a estrutura. **Actual size** mantém rótulos legíveis com rolagem; **Fit overview** mostra o mapa inteiro. **Export SVG** salva um arquivo independente, também disponível por `toSVG(rules, { flags })`. Rótulos longos preservam a explicação completa na dica. O diagrama mostra a estrutura, não a execução ou o backtracking. Esta função ainda não está no npm `0.1.0-dev.5` nem no workshop publicado. Veja os [diagramas da estrutura](../LANGUAGE.md#structural-diagrams).
 
 Licença [MIT](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [Voltar ao inglês](../../README.md).

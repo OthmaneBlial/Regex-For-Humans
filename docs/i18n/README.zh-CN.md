@@ -55,6 +55,7 @@ end
 | [Unicode 字符串和嵌套集合](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | 全部八个 JavaScript 标志 | ✅ |
 | [编辑分组与高亮捕获范围](../LANGUAGE.md#editing-groups) | — |
+| [交互式结构图与SVG导出](../LANGUAGE.md#structural-diagrams) | — |
 | 其他正则引擎、自由英文 | — |
 
 **仅在源码版本中提供：**本地工作坊新增 **Edit groups and references**，可重命名捕获组、切换分组类型并定位引用。编号变化后，数字引用仍指向原来的捕获组；仍被引用的捕获组不能改为非捕获组，拒绝操作时保留原规则。**Highlight** 根据原生索引高亮捕获范围，支持空捕获和消耗的匹配范围之外的捕获。`editGroup` API 返回经过验证的规则。这些新增功能尚未包含在 npm `0.1.0-dev.5` 或线上工作坊中。参见[编辑分组](../LANGUAGE.md#editing-groups)。
@@ -440,5 +441,9 @@ CI=1 npm run verify
 | [贡献](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | 环境和约定 |
 
 **2026年10月10日本地验证：** 301项 Node 测试、378项 Chromium 桌面/移动检查、148项 Firefox/WebKit、64项网站检查及干净消费者安装均通过；审计发现0个漏洞。16项分组/引用/逆转换测试也在 Node 22.23.3 通过。这是该快照的证据，不保证未来所有浏览器。真人评估仍待完成。
+
+## 结构图 — 仅源码版本
+
+在本地工作台打开 **Explore the pattern**，查看根据 AST 绘制的铁路图：嵌套分组、有序分支、重复循环以及不消耗文本的断言。悬停或选择节点会关联规则、正则片段和说明；悬停不会移动源码光标。按 **Enter/Space** 返回对应源码行。移动源码光标或选择生成的正则文本也会定位结构。**Actual size** 保持标签可读并支持滚动；**Fit overview** 显示全图。**Export SVG** 导出独立文件，也可调用 `toSVG(rules, { flags })`。长标签的完整说明保留在提示中。此图表示结构，不是执行或回溯轨迹。此功能尚未包含在 npm `0.1.0-dev.5` 或线上工作台中。参见[结构图](../LANGUAGE.md#structural-diagrams)。
 
 [MIT 许可证](../../LICENSE) · [更新日志](../../CHANGELOG.md) · [返回英文版](../../README.md)。

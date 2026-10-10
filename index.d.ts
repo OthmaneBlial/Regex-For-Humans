@@ -165,6 +165,8 @@ export class CompileError extends Error {
 }
 
 export function compile(source: string, options?: CompileOptions): CompileResult;
+/** Render validated readable rules as a standalone structural SVG. */
+export function toSVG(source: string, options?: CompileOptions): string;
 /** Edit a group at its opening location, updating references and validating the result. */
 export function editGroup(
   source: string,

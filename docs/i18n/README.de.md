@@ -55,6 +55,7 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 | [Unicode-Zeichenfolgen und verschachtelte Mengen](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | Alle acht JavaScript-Flags | ✅ |
 | [Gruppen bearbeiten und Capture-Bereiche markieren](../LANGUAGE.md#editing-groups) | — |
+| [Interaktive Struktur und Export als SVG](../LANGUAGE.md#structural-diagrams) | — |
 | Andere Engines und freie englische Sätze | — |
 
 **Nur im Quellcode:** Der lokale Workshop bietet **Edit groups and references**, um Captures umzubenennen, ihren Typ zu ändern und ihre Referenzen zu finden. Numerische Referenzen behalten bei einer neuen Nummerierung ihr ursprüngliches Ziel; ein referenziertes Capture lässt sich nicht entfernen, und die Regeln bleiben dabei unverändert. **Highlight** markiert den nativen Eingabebereich, auch bei leeren Captures oder außerhalb des konsumierten Treffers. Die API `editGroup` gibt validierte Regeln zurück. Diese Ergänzungen sind noch nicht in npm `0.1.0-dev.5` oder im gehosteten Workshop enthalten. Siehe [Gruppen bearbeiten](../LANGUAGE.md#editing-groups).
@@ -440,5 +441,9 @@ Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sät
 | [Mitwirken](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Einrichtung und Konventionen |
 
 **Lokal am 10. Oktober 2026 geprüft:** 301 Node-Tests, 378 Chromium-Desktop/Mobilprüfungen, 148 Firefox/WebKit-, 64 Websiteprüfungen und eine saubere Paketinstallation; keine Audit-Schwachstellen. Die 16 Gruppen-/Referenz-/Rückübersetzungstests bestehen auch unter Node 22.23.3. Das beschreibt diesen Stand, nicht jeden zukünftigen Browser. Menschliche Reviews bleiben offen.
+
+## Strukturdiagramm — nur im Quellcode
+
+Öffne im lokalen Workshop **Explore the pattern** für ein Railroad-Diagramm aus dem AST: verschachtelte Gruppen, geordnete Alternativen, Wiederholungsschleifen und Assertions ohne Textverbrauch. Zeige auf einen Knoten oder wähle ihn aus, um Regeln, Regex-Fragmente und Erklärungen zu verbinden; Hover bewegt den Quelltextcursor nicht. **Enter/Leertaste** führt zur Quelltextzeile zurück. Auch Cursorbewegungen und die Auswahl im erzeugten Regex folgen der Struktur. **Actual size** hält Beschriftungen beim Scrollen lesbar; **Fit overview** zeigt die Gesamtansicht. **Export SVG** speichert eine eigenständige Datei, auch über `toSVG(rules, { flags })` verfügbar. Lange Beschriftungen behalten ihre vollständige Erklärung im Tooltip. Das Diagramm zeigt die Struktur, keinen Ausführungs- oder Backtracking-Verlauf. Diese Funktion ist noch nicht in npm `0.1.0-dev.5` oder im veröffentlichten Workshop enthalten. Siehe [Strukturdiagramme](../LANGUAGE.md#structural-diagrams).
 
 Lizenz [MIT](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [Zur englischen Fassung](../../README.md).

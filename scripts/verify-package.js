@@ -107,11 +107,17 @@ try {
   const smoke = join(consumer, "smoke.mjs");
   writeFileSync(
     smoke,
-    `import { compile, editGroup, regexToRules, toRegExp, CompileError } from "regex-for-humans";
+    `import { compile, editGroup, regexToRules, toRegExp, toSVG, CompileError } from "regex-for-humans";
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
 const editableRules = ${JSON.stringify('capture "word" {\nletter\n}\nsame as capture "word"')};
 const editableGroup = compile(editableRules).segments.find(s => s.kind === "group" && s.edge === "start");
+const diagram = toSVG(editableRules, { flags: "dgu" });
+assert.ok(diagram.startsWith('<svg xmlns="http://www.w3.org/2000/svg"'));
+assert.ok(diagram.includes('data-kind="group"'));
+assert.ok(diagram.includes('data-kind="backreference"'));
+assert.ok(diagram.includes('data-flags="dgu"'));
+assert.throws(() => toSVG("not a rule"), error => error instanceof CompileError);
 const renamedRules = editGroup(editableRules, editableGroup, { capturing: true, name: "label" });
 assert.equal(toRegExp(compile(renamedRules)).exec("AA").groups.label, "A");
 assert.ok(renamedRules.includes('same as capture "label"'));
@@ -389,13 +395,17 @@ catch (error) { if (!(error instanceof CompileError)) throw error; }
   const typeSmoke = join(consumer, "type-smoke.mts");
   writeFileSync(
     typeSmoke,
-    `import { CompileError, compile, editGroup, regexMatchingThroughLines, regexToRules, toRegExp } from "regex-for-humans";
+    `import { CompileError, compile, editGroup, regexMatchingThroughLines, regexToRules, toRegExp, toSVG } from "regex-for-humans";
 import type { AssertionSegment, BoundarySegment, CharacterClassMember, CharacterClassSegment, ClassSetOperation, CompileOptions, CompileResult, GroupSegment, RegexSegment, Repetition, ReverseTranslation, SourceLocation, UnicodePropertySegment } from "regex-for-humans";
 const editLocation: SourceLocation = { line: 1, column: 1 };
 const editDefinition: Pick<GroupSegment, "capturing" | "name"> = { capturing: true, name: "label" };
 const editableRules: string = ${JSON.stringify('capture "word" {\nletter\n}\nsame as capture "word"')};
 const editedRules: string = editGroup(editableRules, editLocation, editDefinition, { flags: undefined });
 compile(editedRules);
+const diagram: string = toSVG(editedRules, { flags: undefined });
+console.log(diagram);
+// @ts-expect-error diagrams require readable rule text
+toSVG(compile(editedRules));
 // @ts-expect-error the new group definition requires a capture mode
 editGroup(editableRules, editLocation, { name: "label" });
 // @ts-expect-error a source location needs both line and column

@@ -55,6 +55,7 @@ end
 | [Unicode strings और nested sets](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | सभी आठ JavaScript flags | ✅ |
 | [समूह संपादन और capture की जगह हाइलाइट करना](../LANGUAGE.md#editing-groups) | — |
+| [इंटरैक्टिव संरचना और SVG निर्यात](../LANGUAGE.md#structural-diagrams) | — |
 | दूसरे regex engines या मुक्त अंग्रेज़ी वाक्य | — |
 
 **केवल सोर्स संस्करण में:** स्थानीय वर्कशॉप में **Edit groups and references** से capture का नाम या समूह का प्रकार बदलें और उसके references तक जाएँ। नंबर बदलने पर भी संख्यात्मक references अपने मूल capture को इंगित करते हैं। जिस capture का reference मौजूद है, उसे noncapturing बनाने पर बदलाव अस्वीकार होता है और मूल नियम सुरक्षित रहते हैं। **Highlight** native indices से capture की जगह दिखाता है, चाहे capture खाली हो या consumed match से बाहर हो। `editGroup` API जाँचे गए नियम लौटाता है। ये सुविधाएँ अभी npm `0.1.0-dev.5` या होस्टेड वर्कशॉप में नहीं हैं। [समूह संपादन](../LANGUAGE.md#editing-groups) देखें।
@@ -440,5 +441,9 @@ CI=1 npm run verify
 | [योगदान](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup और conventions |
 
 **10 अक्टूबर 2026 को स्थानीय सत्यापन:** 301 Node tests, 378 Chromium desktop/mobile checks, 148 Firefox/WebKit, 64 website checks और clean consumer installation सफल; audit में शून्य vulnerabilities। Groups/references/reverse translation के 16 tests Node 22.23.3 पर भी सफल हैं। यह उस snapshot का परिणाम है, हर भविष्य के browser की गारंटी नहीं। मानवीय reviews बाकी हैं।
+
+## संरचना का आरेख — केवल स्रोत संस्करण
+
+स्थानीय workshop में **Explore the pattern** खोलकर AST से बना railroad diagram देखें: nested groups, क्रमबद्ध alternatives, repetition loops और बिना text consume करने वाले assertions। किसी node पर pointer रखें या उसे चुनें तो rules, regex fragments और explanations साथ दिखते हैं; hover से source cursor नहीं बदलता। **Enter/Space** संबंधित source line पर लौटाता है। Source cursor और generated regex का selection भी संरचना से जुड़ता है। **Actual size** पढ़ने योग्य labels के साथ scrolling देता है; **Fit overview** पूरा नक्शा दिखाता है। **Export SVG** स्वतंत्र file सहेजता है; `toSVG(rules, { flags })` से भी यही SVG मिलता है। लंबे labels की पूरी explanation tooltip में रहती है। यह संरचना का आरेख है, execution या backtracking trace नहीं। यह feature अभी npm `0.1.0-dev.5` या प्रकाशित workshop में नहीं है। [संरचना के आरेख](../LANGUAGE.md#structural-diagrams) देखें।
 
 [MIT लाइसेंस](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [अंग्रेज़ी पर लौटें](../../README.md)।

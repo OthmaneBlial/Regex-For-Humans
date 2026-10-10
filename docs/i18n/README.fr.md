@@ -59,6 +59,7 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 | [Chaînes Unicode et ensembles imbriqués](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | Les huit flags JavaScript | ✅ |
 | [Édition des groupes et surlignage des captures](../LANGUAGE.md#editing-groups) | — |
+| [Structure interactive et export SVG](../LANGUAGE.md#structural-diagrams) | — |
 | Autres moteurs et anglais libre | — |
 
 **Uniquement dans le dépôt source :** l’atelier local propose **Edit groups and references** pour renommer une capture, changer son type et accéder à ses références. Les références numériques conservent leur cible après une renumérotation ; supprimer une capture référencée est refusé sans modifier les règles. **Highlight** surligne la position native d’une capture, même vide ou hors du texte consommé. L’API `editGroup` renvoie des règles validées. Ces ajouts ne sont pas encore dans npm `0.1.0-dev.5` ni dans l’atelier hébergé. Voir l’[édition des groupes](../LANGUAGE.md#editing-groups).
@@ -444,5 +445,9 @@ La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’ang
 | [Contribuer](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Installation et conventions |
 
 **Vérifié localement le 10 octobre 2026 :** 301 tests Node, 378 contrôles Chromium ordinateur/mobile, 148 Firefox/WebKit, 64 du site et installation du paquet réussis ; zéro vulnérabilité signalée. Les 16 tests dédiés aux groupes/références/traduction inverse passent aussi sur Node 22.23.3. Ces chiffres décrivent cet instantané, pas tous les navigateurs ni les versions futures. Les revues humaines restent ouvertes.
+
+## Diagramme de structure — dépôt source
+
+Dans l’atelier local, ouvrez **Explore the pattern** pour voir le diagramme construit à partir de l’AST : groupes imbriqués, alternatives ordonnées, boucles de répétition et assertions qui ne consomment pas de texte. Survolez ou sélectionnez un élément pour relier les règles, les fragments de regex et les explications ; le survol ne déplace pas le curseur. **Entrée/Espace** revient à la ligne source. Le curseur source et la sélection dans la regex suivent aussi la structure. **Actual size** garde les libellés lisibles avec défilement ; **Fit overview** affiche l’ensemble. **Export SVG** enregistre un fichier autonome, aussi disponible avec `toSVG(rules, { flags })`. Les libellés longs gardent leur explication complète dans une infobulle. Ce diagramme montre la structure, pas une trace d’exécution ou de backtracking. Cette fonctionnalité n’est pas encore dans npm `0.1.0-dev.5` ni dans l’atelier hébergé. Voir les [diagrammes de structure](../LANGUAGE.md#structural-diagrams).
 
 Licence [MIT](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [Retour à l’anglais](../../README.md).

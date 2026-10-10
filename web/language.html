@@ -145,6 +145,12 @@ end</code></pre></div>
         <p>A fixed-width Unicode escape pair such as <code>\uD83D\uDE00</code> is one emoji atom, including inside a character class or before a repetition modifier. Separate surrogate atoms stay separate, including inside repeated group blocks. See the <a href="../docs/LANGUAGE.md">full language contract</a> for exact limits.</p>
       </section>
 
+      <section id="structural-diagrams" class="panel guide-panel" aria-labelledby="structure-title">
+        <h2 id="structure-title">Explore the structure</h2>
+        <p>In this source build, open <strong>Explore the pattern</strong> for an AST-driven railroad diagram: nested groups, ordered alternatives, repetition bounds and separate zero-width lookaround checks. Hover or focus a node or explanation to connect source rules and regex fragments without moving the source caret. Select a node with a click or Enter/Space to return to its rule. The source cursor and generated-regex selection also follow the structure.</p>
+        <p><strong>Actual size</strong> keeps labels readable with scrolling; <strong>Fit overview</strong> scales the whole map. <strong>Export SVG</strong> saves a standalone image with the current flags, also available from <code>toSVG(rules, { flags })</code>. Long labels retain full explanations in titles. This is structure, not a runtime backtracking trace. These additions are not in npm <code>0.1.0-dev.5</code> or the hosted workshop yet. Read the <a href="../docs/LANGUAGE.md#structural-diagrams">structural diagram contract</a>.</p>
+      </section>
+
       <section id="flags" class="panel guide-panel" aria-labelledby="flags-title">
         <div class="panel-heading"><span class="step-number">05</span><div><p class="kicker">BOUNDARIES</p><h2 id="flags-title">Flags and limits</h2></div></div>
         <div class="guide-facts"><div><strong><code>u</code> or <code>v</code></strong><p>Unicode matching is required. u is the default; v uses native Unicode-set class semantics.</p></div><div><strong>All eight native flags</strong><p>Choose d/g/i/m/s/y with the workshop controls or CLI <code>--flags</code>; u/v are exclusive.</p></div><div><strong>Input and line anchors</strong><p>Line anchors enable m automatically. Input anchors remain absolute when the modes are mixed.</p></div></div>

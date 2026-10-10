@@ -1,4 +1,4 @@
-import { CompileError, compile, editGroup, regexToRules } from "../index.js";
+import { CompileError, compile, editGroup, regexToRules, toSVG } from "../index.js";
 import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
@@ -7,6 +7,7 @@ import { TestRunError, TestRunner } from "./test-runner.js";
 /** @typedef {import("./worker-protocol.d.ts").TestCase} TestCase */
 /** @typedef {{id: string, title: string, note: string, rules: string, source: string, flags: string, matchMode: "full" | "search", positive: string[], negative: string[]}} ProductScenario */
 /** @typedef {"success" | "neutral" | "error"} CompileState */
+/** @typedef {{line: number, column: number, sourceStart: number, sourceEnd: number}} RuleFocus */
 
 /**
  * @template {HTMLElement} E
@@ -43,6 +44,12 @@ const ui = {
   copy: requiredElement("copy-button", HTMLButtonElement),
   diagnostic: requiredElement("diagnostic", HTMLDivElement),
   trace: requiredElement("trace-list", HTMLDivElement),
+  ruleFocus: requiredElement("rule-focus", HTMLParagraphElement),
+  diagram: requiredElement("structure-diagram", HTMLDetailsElement),
+  diagramViewport: requiredElement("diagram-viewport", HTMLElement),
+  diagramMessage: requiredElement("diagram-message", HTMLParagraphElement),
+  diagramScale: requiredElement("diagram-scale", HTMLSelectElement),
+  diagramExport: requiredElement("diagram-export", HTMLButtonElement),
   groupEditor: requiredElement("group-editor", HTMLDetailsElement),
   groupForm: requiredElement("group-edit-form", HTMLFormElement),
   groupSelect: requiredElement("group-select", HTMLSelectElement),
@@ -79,6 +86,11 @@ let reverseErrorPosition = null;
 let compiled = null;
 /** @type {import('../index.d.ts').GroupSegment[]} */
 let groupSegments = [];
+/** @type {RuleFocus|null} */
+let selectedRule = null;
+/** @type {RuleFocus|null} */
+let visibleRule = null;
+let diagramSVG = "";
 let hasEdits =
   ui.rules.value !== "" ||
   Object.values(flagInputs).some((input) => input.checked) ||
@@ -200,9 +212,192 @@ function renderTrace(segments) {
     );
     detail.append(make("span", "trace-meaning", segment.explanation));
     button.append(detail);
-    button.addEventListener("click", () => selectLine(segment.line));
+    Object.assign(button.dataset, {
+      line: String(segment.line),
+      column: String(segment.column),
+      sourceStart: String(segment.sourceStart),
+      sourceEnd: String(segment.sourceEnd),
+    });
+    button.addEventListener("pointerenter", () => showRule(segment));
+    button.addEventListener("pointerleave", () => showRule(selectedRule));
+    button.addEventListener("focus", () => showRule(segment));
+    button.addEventListener("blur", () => showRule(selectedRule));
+    button.addEventListener("click", () => {
+      selectedRule = segment;
+      selectLine(segment.line);
+      showRule(segment);
+    });
     ui.trace.append(button);
   }
+}
+
+/** @param {Element} element @returns {RuleFocus} */
+function ruleFromElement(element) {
+  return {
+    line: Number(element.getAttribute("data-line")),
+    column: Number(element.getAttribute("data-column")),
+    sourceStart: Number(element.getAttribute("data-source-start")),
+    sourceEnd: Number(element.getAttribute("data-source-end")),
+  };
+}
+
+function highlightSourceRow() {
+  if (!visibleRule) {
+    delete ui.rules.dataset.highlight;
+    return;
+  }
+  const lines = splitLines(ui.rules.value);
+  const start = lines
+    .slice(0, visibleRule.line - 1)
+    .reduce((sum, line) => sum + line.length + 1, 0);
+  const end = start + (lines[visibleRule.line - 1]?.length ?? 0);
+  const style = getComputedStyle(ui.rules);
+  const measure = make("textarea");
+  measure.setAttribute("aria-hidden", "true");
+  Object.assign(measure.style, {
+    position: "fixed",
+    visibility: "hidden",
+    height: "0",
+    minHeight: "0",
+    overflow: "hidden",
+    border: "0",
+    width: `${ui.rules.clientWidth}px`,
+    padding: style.padding,
+    font: style.font,
+    tabSize: style.tabSize,
+  });
+  document.body.append(measure);
+  const lineHeight = Number.parseFloat(style.lineHeight);
+  const bottomPadding = Number.parseFloat(style.paddingBottom);
+  measure.value = `${ui.rules.value.slice(0, start)}\u200b`;
+  const top = measure.scrollHeight - bottomPadding - lineHeight - ui.rules.scrollTop;
+  measure.value = `${ui.rules.value.slice(0, end)}\u200b`;
+  const bottom = measure.scrollHeight - bottomPadding - ui.rules.scrollTop;
+  measure.remove();
+  ui.rules.dataset.highlight = String(visibleRule.line);
+  ui.rules.style.setProperty("--rule-highlight-top", `${top}px`);
+  ui.rules.style.setProperty("--rule-highlight-bottom", `${bottom}px`);
+}
+
+/** @param {RuleFocus|null} rule */
+function showRule(rule) {
+  visibleRule = rule;
+  ui.ruleFocus.hidden = !rule;
+  if (!compiled) return;
+  ui.output.replaceChildren(document.createTextNode("/"));
+  if (rule) {
+    ui.output.append(document.createTextNode(compiled.source.slice(0, rule.sourceStart)));
+    ui.output.append(
+      make("mark", "regex-focus", compiled.source.slice(rule.sourceStart, rule.sourceEnd)),
+    );
+    ui.output.append(document.createTextNode(compiled.source.slice(rule.sourceEnd)));
+    const line = splitLines(ui.rules.value)[rule.line - 1] ?? "";
+    ui.ruleFocus.textContent = `Line ${rule.line}: ${escapeControls(line).slice(0, 180)}`;
+  } else ui.output.append(document.createTextNode(compiled.source));
+  ui.output.append(document.createTextNode(`/${compiled.flags}`));
+  for (const item of ui.trace.querySelectorAll("[data-source-start]")) {
+    const meta = ruleFromElement(item);
+    item.classList.toggle(
+      "is-related",
+      !!rule && meta.sourceStart >= rule.sourceStart && meta.sourceEnd <= rule.sourceEnd,
+    );
+  }
+  const nodes = [...ui.diagramViewport.querySelectorAll("g.diagram-rule")];
+  const related = rule
+    ? nodes
+        .filter((node) => {
+          const meta = ruleFromElement(node);
+          return meta.sourceStart <= rule.sourceStart && meta.sourceEnd >= rule.sourceEnd;
+        })
+        .sort((a, b) => {
+          const first = ruleFromElement(a),
+            second = ruleFromElement(b);
+          return first.sourceEnd - first.sourceStart - (second.sourceEnd - second.sourceStart);
+        })[0]
+    : null;
+  const key = related?.getAttribute("data-diagram-key");
+  for (const node of ui.diagramViewport.querySelectorAll("[data-diagram-key]")) {
+    node.classList.toggle("is-related", !!key && node.getAttribute("data-diagram-key") === key);
+  }
+  highlightSourceRow();
+}
+
+function renderDiagram() {
+  ui.diagramExport.disabled = !compiled;
+  ui.diagramScale.disabled = !compiled;
+  if (!compiled) {
+    ui.diagramViewport.replaceChildren();
+    ui.diagramMessage.textContent = "Compile valid rules to explore their structure.";
+    return;
+  }
+  if (!ui.diagram.open || diagramSVG) return;
+  try {
+    diagramSVG = toSVG(ui.rules.value, { flags: compiled.flags });
+    const parsed = new DOMParser().parseFromString(diagramSVG, "image/svg+xml");
+    const root = parsed.documentElement;
+    if (
+      root.localName !== "svg" ||
+      root.namespaceURI !== "http://www.w3.org/2000/svg" ||
+      parsed.querySelector("parsererror")
+    )
+      throw new Error("The structural SVG could not be read.");
+    const svg = document.importNode(root, true);
+    svg.setAttribute("role", "group");
+    svg.setAttribute("aria-label", "Interactive regex structure");
+    for (const node of svg.querySelectorAll("g.diagram-rule")) {
+      const rule = ruleFromElement(node);
+      node.setAttribute("role", "button");
+      node.setAttribute("tabindex", "0");
+      node.setAttribute(
+        "aria-label",
+        `Line ${rule.line}: ${node.querySelector("title")?.textContent} Select source line.`,
+      );
+    }
+    ui.diagramViewport.replaceChildren(svg);
+    ui.diagramMessage.textContent =
+      "Follow the green rails. Choices run top to bottom; dashed checks consume no text. This is structure, not a runtime backtracking trace.";
+    showRule(selectedRule);
+  } catch (error) {
+    diagramSVG = "";
+    ui.diagramExport.disabled = true;
+    ui.diagramMessage.textContent = error instanceof Error ? error.message : String(error);
+  }
+}
+
+function followSourceCursor() {
+  if (!compiled) return;
+  const before = splitLines(ui.rules.value.slice(0, ui.rules.selectionStart));
+  const line = before.length,
+    column = (before.at(-1)?.length ?? 0) + 1;
+  /** @type {RuleFocus[]} */
+  const candidates = [...compiled.segments];
+  /** @param {import('../index.d.ts').CharacterClassMember[]} members */
+  function addMembers(members) {
+    for (const member of members) {
+      candidates.push({ ...member, ...member.location });
+      if (member.kind === "set") {
+        candidates.push({ ...member, ...member.endLocation });
+        addMembers(member.members);
+      }
+    }
+  }
+  for (const segment of compiled.segments) {
+    if (segment.kind === "atom" && segment.atomType === "characterClass") {
+      if (segment.endLocation) candidates.push({ ...segment, ...segment.endLocation });
+      addMembers(segment.members);
+    }
+  }
+  const onLine = candidates
+    .filter((segment) => segment.line === line)
+    .sort((a, b) => b.column - a.column);
+  selectedRule = onLine.find((segment) => segment.column <= column) ?? onLine.at(-1) ?? null;
+  const scope =
+    selectedRule &&
+    ui.diagramViewport.querySelector(
+      `g.diagram-rule[data-line="${selectedRule.line}"][data-column="${selectedRule.column}"]`,
+    );
+  if (scope) selectedRule = ruleFromElement(scope);
+  showRule(selectedRule);
 }
 
 /** @param {string} flags */
@@ -657,6 +852,12 @@ function renderTests() {
 }
 
 function compileRules() {
+  diagramSVG = "";
+  selectedRule = null;
+  visibleRule = null;
+  ui.ruleFocus.hidden = true;
+  delete ui.rules.dataset.highlight;
+  ui.diagramViewport.replaceChildren();
   if (ui.reverseFeedback.dataset.state === "success") {
     ui.reverseFeedback.hidden = true;
     ui.reverseFeedback.textContent = "";
@@ -710,6 +911,7 @@ function compileRules() {
     renderTrace(null);
   }
   renderGroupEditor();
+  renderDiagram();
   updateTestResults();
 }
 
@@ -768,6 +970,92 @@ document.addEventListener("input", () => {
 ui.rules.addEventListener("input", () => {
   setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);
   compileRules();
+});
+ui.rules.addEventListener("keyup", followSourceCursor);
+ui.rules.addEventListener("mouseup", followSourceCursor);
+ui.rules.addEventListener("scroll", highlightSourceRow);
+new ResizeObserver(highlightSourceRow).observe(ui.rules);
+ui.diagram.addEventListener("toggle", renderDiagram);
+ui.diagramScale.addEventListener("change", () => {
+  ui.diagramViewport.dataset.scale = ui.diagramScale.value;
+});
+ui.diagramViewport.addEventListener("pointerover", (event) => {
+  const node = event.target instanceof Element ? event.target.closest("[data-diagram-key]") : null;
+  if (node) showRule(ruleFromElement(node));
+});
+ui.diagramViewport.addEventListener("pointerleave", () => showRule(selectedRule));
+ui.diagramViewport.addEventListener("focusin", (event) => {
+  if (event.target instanceof Element && event.target.matches("g.diagram-rule"))
+    showRule(ruleFromElement(event.target));
+});
+ui.diagramViewport.addEventListener("focusout", () => showRule(selectedRule));
+/** @param {Element} node */
+function selectDiagramRule(node) {
+  selectedRule = ruleFromElement(node);
+  selectLine(selectedRule.line);
+  showRule(selectedRule);
+}
+ui.diagramViewport.addEventListener("click", (event) => {
+  const node = event.target instanceof Element ? event.target.closest("[data-diagram-key]") : null;
+  if (node) selectDiagramRule(node);
+});
+ui.diagramViewport.addEventListener("keydown", (event) => {
+  if (
+    (event.key === "Enter" || event.key === " ") &&
+    event.target instanceof Element &&
+    event.target.matches("g.diagram-rule")
+  ) {
+    event.preventDefault();
+    selectDiagramRule(event.target);
+  }
+});
+ui.diagramExport.addEventListener("click", () => {
+  renderDiagram();
+  if (!compiled || !diagramSVG) return;
+  const url = URL.createObjectURL(new Blob([diagramSVG], { type: "image/svg+xml" }));
+  const link = make("a");
+  link.href = url;
+  link.download = "regex-structure.svg";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  ui.diagramMessage.textContent =
+    "SVG export started. The standalone file contains the current structure and flags.";
+});
+ui.output.addEventListener("mouseup", () => {
+  const selection = window.getSelection();
+  if (!compiled || !selection?.rangeCount || !ui.output.contains(selection.focusNode)) return;
+  const range = selection.getRangeAt(0);
+  if (!ui.output.contains(range.startContainer) || !ui.output.contains(range.endContainer)) return;
+  const before = document.createRange();
+  before.selectNodeContents(ui.output);
+  before.setEnd(range.startContainer, range.startOffset);
+  const start = before.toString().length;
+  before.setEnd(range.endContainer, range.endOffset);
+  const end = before.toString().length;
+  const offset = start - 1;
+  selectedRule =
+    compiled.segments
+      .filter((segment) => segment.sourceStart <= offset && segment.sourceEnd > offset)
+      .sort((a, b) => a.sourceEnd - a.sourceStart - (b.sourceEnd - b.sourceStart))[0] ?? null;
+  showRule(selectedRule);
+  const walker = document.createTreeWalker(ui.output, NodeFilter.SHOW_TEXT);
+  const restored = document.createRange();
+  let position = 0;
+  let node = walker.nextNode();
+  while (node) {
+    const length = node.textContent?.length ?? 0;
+    if (start >= position && start <= position + length) restored.setStart(node, start - position);
+    if (end >= position && end <= position + length) {
+      restored.setEnd(node, end - position);
+      break;
+    }
+    position += length;
+    node = walker.nextNode();
+  }
+  selection.removeAllRanges();
+  selection.addRange(restored);
 });
 ui.groupSelect.addEventListener("change", fillGroupFields);
 ui.groupType.addEventListener("change", () => {

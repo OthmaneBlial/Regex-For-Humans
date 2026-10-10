@@ -29,5 +29,6 @@ export function toRegExp(result) {
 }
 
 export { CompileError } from "./src/diagnostics.js";
+export { toSVG } from "./src/diagram.js";
 export { editGroup } from "./src/edit-group.js";
 export { regexToRules };

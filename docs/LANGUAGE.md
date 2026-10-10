@@ -355,6 +355,23 @@ Reverse translation preserves `\q{…}` strings and native property aliases. Sep
 
 See the [ECMAScript string-property table](https://tc39.es/ecma262/multipage/text-processing.html#table-binary-unicode-properties-of-strings), [native structural string checks](https://tc39.es/ecma262/multipage/text-processing.html#sec-static-semantics-maycontainstrings) and [MDN's native string-set examples](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Character_class#v-mode_character_class).
 
+## Structural diagrams
+
+Available in the source checkout; not yet in npm `0.1.0-dev.5` or the hosted workshop. The public `toSVG(rules, options?)` API returns a standalone SVG string after the same parsing, validation and native feature checks as `compile`. `options.flags` follows the same defaults and conflicts.
+
+```js
+import { toSVG } from "regex-for-humans";
+
+const svg = toSVG('capture "part" {\n  either {\n    "ab"\n    "cd"\n  }\n}\noptional "/"', { flags: "u" });
+// Save svg as a UTF-8 .svg file, or display it as an SVG image.
+```
+
+In the local workshop, open **Explore the pattern**. Green rails connect sequences; top-to-bottom branches retain ordered alternatives; loops show repetition bounds and lazy/greedy preference. A zero-count body is faded with a bypass. Dashed assertion panels check their contents without consuming text; lookbehind checks point backwards. Anchors and boundaries are also zero-width. Unicode sets remain a single leaf because set intersection/subtraction and longest-first strings are not ordered regex alternatives.
+
+Hover or focus a diagram node or explanation row to highlight its readable rule and generated fragment. Enter/Space or a click returns to the source line. Moving the source cursor or selecting generated regex also follows the corresponding structure; nested set members map to their owning class. Hover leaves the source caret and scroll position unchanged. **Actual size** allows keyboard scrolling without shrinking labels; **Fit overview** is an explicit scaled view. **Export SVG** saves the current static structure and flags, excluding interactive selection state.
+
+The SVG has escaped XML text, visible controls and safe lone-surrogate display, with no scripts or external resources. Long labels are shortened in the image but retain their full shared explanation in a title. This is a structural aid, **not** a native execution trace, failure-path proof or backtracking debugger.
+
 ## Nested Unicode set operations
 
 Included in npm `0.1.0-dev.5`; native set operations require v mode. Open a block with `character set union {`, `character set intersection {` or `character set subtraction {`; close it with `}` on its own line. Each body line contributes one operand. Nest a block to combine different operations explicitly:
@@ -391,7 +408,7 @@ With `m`, input `start` emits `^(?<![\s\S])` and input `end` emits `$(?![\s\S])`
 
 Native g/y regexes are stateful: repeated `.exec()` / `.test()` calls use and update `lastIndex`, and failure resets it to zero. Sticky y requires a match exactly at that cursor. The workshop starts each example at 0, resets both its matcher and whole-string fallback between examples, and uses internal g/d flags once for capture enumeration/indices. Search lists up to 100 matches; y stops at the first gap, and empty matches advance by one Unicode code point. Copied regexes retain the selected flags and native cursor behavior.
 
-Native v mode uses its own class escaping and case-folding/complement semantics. For example, `not unicode property "Lowercase_Letter"` with i/u can match `a`, while i/v cannot: native u folds after complementing and native v folds before. Outer class negation remains separate. Supported literals, ranges, shorthands and character properties work in either mode; finite strings and string properties require v. Nested v sets and intersection/subtraction remain explicit unsupported features.
+Native v mode uses its own class escaping and case-folding/complement semantics. For example, `not unicode property "Lowercase_Letter"` with i/u can match `a`, while i/v cannot: native u folds after complementing and native v folds before. Outer class negation remains separate. Supported literals, ranges, shorthands and character properties work in either mode; finite strings, string properties, nested sets and intersection/subtraction require v.
 
 Without `m`, JavaScript `^` and `$` match only the true start and end of input. For example, `start "A"` / `end` rejects `A` followed by a line break. With `m`, line anchors match line boundaries. Other regex engines may behave differently.
 

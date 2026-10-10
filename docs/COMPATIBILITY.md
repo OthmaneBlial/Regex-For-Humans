@@ -28,6 +28,8 @@ Assertions consume no characters; their native captures can lie before or after 
 
 ## Verified runtimes
 
+Source-only `toSVG` uses the same native feature probes and source/line/depth budgets as compilation. The local workshop adds interactive structural diagrams and standalone SVG export, including Unicode/RTL-safe literal display. There is no approximation for unavailable v features or lookbehind. Diagrams describe AST paths and constraints; they do not record engine backtracking, predict which path matched or enumerate class members. They are not included in npm `0.1.0-dev.5` or the hosted workshop yet. See [structural diagrams](LANGUAGE.md#structural-diagrams).
+
 Source-only group editing adds `editGroup` and a local workshop form; it is not part of npm `0.1.0-dev.5` or the hosted workshop. Edits use the shared AST, retain resolved numeric/named reference targets, validate the resulting document and reject conversion of a referenced capture to noncapturing. Native capture highlighting uses supplied indices only. See [group editing](LANGUAGE.md#editing-groups) for the API and explicit failure behavior.
 
 Standalone property rules are included in npm `0.1.0-dev.5`. Names and values remain case-sensitive; membership uses the runtime's Unicode data. Native `\P` complements retain `u`/`i` behavior and are not rewritten as negated `\p` classes. Compilation probes support; unavailable properties report `UNSUPPORTED_TARGET_FEATURE`, while an unrecognized alias reports `INVALID_UNICODE_PROPERTY` at its quoted value. `UnicodePropertySegment` exposes the alias, polarity and repetition to typed consumers. These checks do not imply legacy runtimes can load the whole compiler or that all engines use the same Unicode edition.

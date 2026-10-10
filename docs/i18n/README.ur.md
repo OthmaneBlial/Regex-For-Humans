@@ -73,6 +73,7 @@ end
 | [Unicode strings اور nested sets](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | تمام آٹھ JavaScript flags | ✅ |
 | [گروپ کی تدوین اور capture کی جگہ نمایاں کرنا](../LANGUAGE.md#editing-groups) | — |
+| [ساخت کا تعاملی خاکہ اور <code dir="ltr">SVG</code> ایکسپورٹ](../LANGUAGE.md#structural-diagrams) | — |
 | دوسرے regex انجن اور آزاد انگریزی | — |
 
 **صرف سورس ورژن میں:** مقامی ورکشاپ میں capture کا نام یا گروپ کی قسم بدلیں اور اس کے references تک جائیں۔ یہ پینل کھولیں:
@@ -580,6 +581,22 @@ CI=1 npm run verify
 | [حصہ ڈالیں](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup اور conventions |
 
 **10 اکتوبر 2026 کو مقامی جانچ:** 301 Node tests، 378 desktop/mobile Chromium workshop checks، 148 Firefox/WebKit checks، 64 site checks اور صاف package installation کامیاب ہوئے؛ audit میں کوئی vulnerability رپورٹ نہیں ہوئی۔ گروپ، reference اور reverse translation کے 16 مخصوص tests Node 22.23.3 پر بھی کامیاب ہوئے۔ یہ اعداد اسی snapshot کے ہیں؛ ہر browser یا آئندہ version کی ضمانت نہیں۔ انسانی جائزے ابھی باقی ہیں۔
+
+## ساخت کا خاکہ — صرف سورس نسخے میں
+
+مقامی ورکشاپ میں نحوی ساخت کے درخت سے تیار کردہ خاکہ دیکھیں۔ اس میں اندرونی گروپ، ترتیب وار متبادل راستے، تکرار کے چکر اور متن کو استعمال کیے بغیر جانچنے والی شرائط دکھائی جاتی ہیں۔ یہ پینل کھولیں:
+
+<p dir="ltr" align="left"><code dir="ltr">Explore the pattern</code></p>
+
+کسی نوڈ پر پوائنٹر رکھیں یا اسے منتخب کریں تو قاعدہ، regex کا متعلقہ حصہ اور وضاحت ایک ساتھ نمایاں ہوتے ہیں۔ پوائنٹر رکھنے سے لکھنے کا کرسر نہیں بدلتا۔ Enter یا Space دبانے سے متعلقہ سورس لائن پر واپس آتے ہیں۔ سورس کرسر اور بنائی گئی regex میں متن کا انتخاب بھی خاکے سے جڑتا ہے۔ اصل حجم میں labels پڑھے جا سکتے ہیں اور scroll کیا جا سکتا ہے؛ مکمل خاکہ دیکھنے کے لیے چھوٹا منظر چنیں:
+
+<p dir="ltr" align="left"><code dir="ltr">Actual size</code> · <code dir="ltr">Fit overview</code></p>
+
+ایکسپورٹ بٹن ایک الگ SVG فائل محفوظ کرتا ہے۔ <code dir="ltr">toSVG</code> API بھی منتخب flags کے ساتھ یہی فائل دیتی ہے:
+
+<p dir="ltr" align="left"><code dir="ltr">Export SVG</code></p>
+
+لمبے labels کی مکمل وضاحت tooltip میں رہتی ہے۔ یہ ساخت کا خاکہ ہے، انجن کے execution یا backtracking کی ریکارڈنگ نہیں۔ یہ فیچر ابھی npm پیکیج یا شائع شدہ ورکشاپ میں شامل نہیں۔ [ساخت کے خاکے](../LANGUAGE.md#structural-diagrams) دیکھیں۔
 
 لائسنس [MIT](../../LICENSE) · [تبدیلیوں کا ریکارڈ](../../CHANGELOG.md) · [انگریزی میں واپس جائیں](../../README.md)۔
 

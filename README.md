@@ -75,9 +75,12 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | [Native Unicode string and nested set operations](docs/LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | All eight JavaScript flags | ✅ |
 | [Group editing and capture highlighting](docs/LANGUAGE.md#editing-groups) | — |
+| [Interactive structure and SVG export](docs/LANGUAGE.md#structural-diagrams) | — |
 | Other regex engines and free-form English | — |
 
 **Source checkout only:** the local workshop now offers **Edit groups and references**: rename captures, change named/numbered/noncapturing forms and jump to their references. Numeric references keep their original targets when numbering changes; removing a referenced capture is rejected without changing the rules. **Highlight** selects a capture's native input range, including empty captures and captures outside the consumed match. The shared `editGroup` API returns validated rules. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet; see [group editing](docs/LANGUAGE.md#editing-groups).
+
+**Source checkout only:** open **Explore the pattern** for an AST-driven railroad diagram. See nested groups, ordered alternatives, repetition loops and zero-width checks; hover or select to connect rules, regex fragments and explanations. **Actual size** keeps text readable; **Fit overview** shows the whole map. **Export SVG** saves a standalone file, also available through `toSVG(rules, { flags })`. This shows structure, not runtime backtracking. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet; read [structural diagrams](docs/LANGUAGE.md#structural-diagrams).
 
 With this preview, `lazy digits` generates `\d+?`: try one digit first, then expand if following rules need more. `lazy any text` generates `.*?`. Available in npm `0.1.0-dev.5`; see [greedy and lazy repetition](docs/LANGUAGE.md#repetition).
 
@@ -554,6 +557,10 @@ Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; 
 | [Contributing](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup, scope and contribution conventions |
 
 **Verified locally on 10 October 2026:** all verification components pass: 301 Node tests, 378 bundled Chromium desktop/mobile workshop checks, 148 Firefox/WebKit checks, 64 homepage checks, builds and a clean JavaScript/TypeScript package consumer. The audit reports zero vulnerabilities. All 26 focused group/reference/alternative/localization checks also pass on Node 22.23.3. These counts describe this snapshot, not every browser or future version. Human usability and screen reader review remain open.
+
+## Structural diagrams — source checkout
+
+Move the source cursor or select generated regex to follow the structure; hover leaves the source caret and scroll position unchanged. Enter/Space on a diagram node returns to its rule. Long labels retain complete explanations in titles. Read the [structural diagram contract](docs/LANGUAGE.md#structural-diagrams) for the API, display rules and limits.
 
 ---
 

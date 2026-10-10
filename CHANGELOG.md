@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add AST-driven structural railroad diagrams through the public `toSVG` API and an on-demand workshop panel. Show nested group boundaries, ordered alternatives, repetition bounds/lazy preference, anchors and separate zero-width lookaround checks. Keep set operations as semantic leaves instead of pretending they are ordered paths.
+- Synchronize diagram hover/keyboard selection, source cursor, generated-regex selection and explanation rows using compiler spans. Highlight native-wrapped source rows without moving the caret on hover; preserve selected generated text. Offer actual-size scrolling, an explicit fit overview and standalone escaped SVG export. These additions remain source-only alongside group editing.
+
 - Add source-only group editing through the shared AST and `editGroup` API. Rename named captures, change named/numbered/noncapturing forms, preserve resolved reference targets during renumbering, and reject removal of referenced captures without returning partial rules. Keep other literals, indentation, line endings and repetition modifiers intact; validate the whole edited document against the existing grammar and limits.
 - Add a keyboard-accessible workshop group editor with capture numbering, reference navigation and explicit rejected-edit feedback. Highlight native capture ranges, including empty captures and lookaround values outside the consumed match; absent captures and unavailable indices have no guessed highlight. npm and the hosted workshop remain at dev.5.
 

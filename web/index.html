@@ -70,6 +70,7 @@
           <noscript><p class="recipe-note">This workshop needs JavaScript to compile rules and test examples. <a href="./language.html">Read the syntax guide</a> without JavaScript.</p></noscript>
           <label for="rules-input" class="field-label">Write your rules</label>
           <textarea id="rules-input" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-invalid="false" aria-describedby="rules-help recipe-note diagnostic" placeholder="start &quot;ABC&quot;&#10;3 digits&#10;end"></textarea>
+          <p id="rule-focus" class="rule-focus" hidden></p>
           <div class="editor-footer"><p id="rules-help">A controlled language, not a free-form prompt. <a href="./language.html" target="_blank" rel="noopener noreferrer">Read the syntax ↗</a> · <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md" target="_blank" rel="noopener noreferrer">Complex examples ↗</a></p><span id="rule-count">0 rules</span></div>
           <fieldset class="flag-controls" aria-label="Regex options" aria-describedby="flags-help">
             <label class="flag-toggle"><input id="ignore-case" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Ignore case <code>i</code></span></label>
@@ -116,8 +117,18 @@
         </section>
       </div>
 
+      <details id="structure-diagram" class="panel structure-diagram">
+        <summary><span class="step-number">03</span><span><span class="kicker">THE STRUCTURE ↝</span><strong>Explore the pattern</strong></span><span class="diagram-open-hint">OPEN THE MAP</span></summary>
+        <div class="diagram-body">
+          <div class="diagram-toolbar"><p>Hover to connect the views. Select a node, or press Enter/Space, to return to its rule.</p><label for="diagram-scale">Diagram view <select id="diagram-scale" aria-label="Diagram view" disabled><option value="actual">Actual size</option><option value="fit">Fit overview</option></select></label><button id="diagram-export" class="secondary-button" type="button" disabled>Export SVG ↗</button></div>
+          <!-- biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard focus enables native scrolling of a large diagram. -->
+          <section id="diagram-viewport" class="diagram-viewport" aria-label="Scrollable regex diagram" tabindex="0" data-scale="actual"></section>
+          <p id="diagram-message" class="diagram-message" role="status">Compile valid rules to explore their structure.</p>
+        </div>
+      </details>
+
       <section class="panel examples-panel" aria-labelledby="examples-title">
-        <div class="examples-heading"><div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">THE PROOF 🧪</p><h2 id="examples-title">Check the edge cases</h2></div></div><div class="test-controls"><label for="match-mode">Match mode</label><select id="match-mode" aria-describedby="match-mode-help"><option value="full">Entire string</option><option value="search">Search anywhere</option></select><button id="add-example" class="secondary-button" type="button" disabled>+ Add example</button></div></div>
+        <div class="examples-heading"><div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">THE PROOF 🧪</p><h2 id="examples-title">Check the edge cases</h2></div></div><div class="test-controls"><label for="match-mode">Match mode</label><select id="match-mode" aria-describedby="match-mode-help"><option value="full">Entire string</option><option value="search">Search anywhere</option></select><button id="add-example" class="secondary-button" type="button" disabled>+ Add example</button></div></div>
         <p class="examples-intro">Mark what should match. The workshop shows where the pattern agrees or surprises you. <span id="example-limits">Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested. Leave a field blank to test an empty string.</span></p>
         <p id="match-mode-help" class="examples-intro">Entire string requires a match covering the whole example. Search anywhere lists up to 100 nonoverlapping matches, including empty matches. Positions start at 0 and count UTF-16 code units; an emoji such as 😀 counts as two. Open a match to inspect its captures.</p>
         <div id="test-summary" class="test-summary" role="status">Choose a recipe to load example strings.</div>

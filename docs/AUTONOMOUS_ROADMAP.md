@@ -2,6 +2,20 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+## Structural visualization source milestone
+
+- Implemented: shared-AST `toSVG`, standalone SVG export and an on-demand workshop diagram for nested groups, ordered alternatives, empty branches, repetition bounds, zero-width assertions/anchors and references. Character sets remain single semantic leaves. Actual-size scrolling and a fit overview preserve both readable labels and a whole-pattern view.
+- Navigation: source cursor, generated-regex selection, explanation focus/hover and diagram nodes share compiler locations/spans. Hover retains the source caret and scroll position; Enter/Space returns to the rule. XML text is escaped, controls and XML-invalid characters stay visible, and SVG presentation attributes work under the existing Content Security Policy without dependencies or external resources.
+- Verification: the uninterrupted SVG gate passes 314 Node, 394 Chromium desktop/mobile, 164 Firefox/WebKit and 64 homepage checks (936 total), clean installed-package consumers, lint/types/docs, builds and an audit with zero reported vulnerabilities. All 13 selected diagram/group-editing checks and a separate clean consumer pass on Node 22.23.3. All 20 new browser diagram flows pass across the three engines. Final documentation edits are separately checked and rebuilt. An installed-Chrome desktop group diagram was visually inspected after correcting its CSP rendering. Native-browser timeouts leave the final manual lookbehind/mobile and newly extended GitHub RTL views unverified.
+- Documentation: all ten guides describe the source-only feature, retain equal capability-matrix rows and preserve the 20 canonical code blocks. All 18 documentation/link/localization checks pass after aligning the translated matrices. Arabic/Urdu keep RTL prose and isolate the new English control/API labels in LTR fragments. Human language, screen-reader and usability gates remain unchecked.
+- Source distribution: the validated feature is available from the repository source checkout. npm and the hosted workshop remain dev.5; its retained archive is unchanged. The drawing describes AST structure, not runtime backtracking or proven performance safety. The larger mission, safety analysis, verified exports, workshop localization and remaining interface work stay open.
+
+## Safety-analysis foundation — local preparation
+
+- An independent, unexported analysis module inspects the shared AST without running regex matches. It identifies canonical nested/adjacent repetition candidates and overlapping literal choices, plus wildcard, dot-all and generated-size review notes. Findings retain compiler locations/spans and actionable guidance; no result labels a pattern safe.
+- All six focused checks pass on Node 25 and Node 22.23.3, including 1,280 shared pattern/flag combinations, transparent nested groups, zero-count bodies, fixed/disjoint units and positioned compiler failures. Type checking and focused lint pass. These checks are separate from the SVG gate.
+- Remaining: strengthen overlap coverage, expose a typed API, integrate accessible source-linked review notes in the workshop, verify installed consumers/browser behavior and document the public contract in all ten guides. The module is uncommitted and is not available in npm or the hosted workshop. Static heuristics can miss expensive patterns and report false positives; enforceable worker deadlines remain necessary.
+
 ## Safe group-editing source milestone
 
 - Public source: feature `364e7a0` and RTL layout `cd5974a` are pushed to `main`. Both actual Arabic/Urdu GitHub guides pass measured 1280/390/320px widths with 16 RTL headings, seven RTL tables, 20 LTR blocks, 240 LTR inline fragments and exact English code parity. Panel/version labels fit one LTR line; two narrow note screenshots are inspected after fixing a wrapped version. Viewport and test tabs are reset/closed; this does not publish npm/Pages or close human gates.
@@ -26,7 +40,7 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Structural visualization, safety heuristics with honest limits and verified exports.
+1. Safety heuristics with honest limits and verified exports.
 2. Workshop localization and the remaining mission waves.
 
 ## Site and README milestone
