@@ -79,7 +79,11 @@ end
 
 <p dir="ltr" align="left"><code dir="ltr">Edit groups and references</code></p>
 
-نمبر بدلنے کے بعد بھی عددی references اپنے اصل capture کی طرف اشارہ کرتے ہیں۔ جس capture کا reference موجود ہو، اسے noncapturing بنانے کی کوشش مسترد ہوتی ہے اور اصل قواعد برقرار رہتے ہیں۔ <code dir="ltr">Highlight</code> بٹن اصل native indices سے capture کی جگہ دکھاتا ہے، خواہ capture خالی ہو یا consumed match سے باہر ہو۔ <code dir="ltr">editGroup</code> API تصدیق شدہ قواعد واپس کرتی ہے۔ یہ اضافے ابھی npm <code dir="ltr">0.1.0-dev.5</code> یا شائع شدہ ورکشاپ میں نہیں ہیں۔ [گروپ کی تدوین](../LANGUAGE.md#editing-groups) دیکھیں۔
+نمبر بدلنے کے بعد بھی عددی references اپنے اصل capture کی طرف اشارہ کرتے ہیں۔ جس capture کا reference موجود ہو، اسے noncapturing بنانے کی کوشش مسترد ہوتی ہے اور اصل قواعد برقرار رہتے ہیں۔ <code dir="ltr">Highlight</code> بٹن اصل native indices سے capture کی جگہ دکھاتا ہے، خواہ capture خالی ہو یا consumed match سے باہر ہو۔ <code dir="ltr">editGroup</code> API تصدیق شدہ قواعد واپس کرتی ہے۔ یہ اضافے ابھی npm یا شائع شدہ ورکشاپ میں نہیں ہیں۔ موجودہ شائع شدہ ورژن:
+
+<p dir="ltr" align="left"><code dir="ltr">0.1.0-dev.5</code></p>
+
+[گروپ کی تدوین](../LANGUAGE.md#editing-groups) دیکھیں۔
 
 موجودہ سورس میں <code dir="ltr">lazy digits</code> سے <code dir="ltr">\d+?</code> بنتا ہے: پہلے ایک ہندسہ آزمائیں، پھر اگلے قواعد کی ضرورت کے مطابق تکرار بڑھائیں۔npm <code dir="ltr">0.1.0-dev.5</code> میں دستیاب ہے۔ [تکرار کے قواعد](../LANGUAGE.md#repetition) دیکھیں۔
 
