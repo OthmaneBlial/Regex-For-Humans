@@ -71,7 +71,18 @@ end
 
 في المصدر الحالي، تنتج <code dir="ltr">lazy digits</code> التعبير <code dir="ltr">\d+?</code>: تُجرّب رقمًا واحدًا أولًا، ثم تزيد التكرار إذا احتاجت القواعد التالية إلى المزيد. لم يُضف هذا بعد إلى حزمة npm <code dir="ltr">0.1.0-dev.4</code>. راجع [قواعد التكرار](../LANGUAGE.md#repetition).
 
-يدعم المصدر أيضًا <code dir="ltr">followed by { … }</code> و<code dir="ltr">not followed by { … }</code> و<code dir="ltr">preceded by { … }</code> و<code dir="ltr">not preceded by { … }</code>. تختبر هذه الشروط النص المحيط دون استهلاكه. تحتفظ الالتقاطات بالقيم والمواضع الأصلية للمحرك، حتى إن كانت خارج النص المطابق؛ ويتطلب النظر خلفًا دعم المحرك. لم تُضف هذه الميزة إلى npm <code dir="ltr">0.1.0-dev.4</code> بعد. راجع [شروط النظر أمامًا وخلفًا](../LANGUAGE.md#lookaround-assertions).
+يدعم المصدر أيضًا الصيغ التالية:
+
+<div dir="ltr" align="left">
+
+- <code dir="ltr">followed by { … }</code>
+- <code dir="ltr">not followed by { … }</code>
+- <code dir="ltr">preceded by { … }</code>
+- <code dir="ltr">not preceded by { … }</code>
+
+</div>
+
+تختبر هذه الشروط النص المحيط دون استهلاكه. تحتفظ الالتقاطات بالقيم والمواضع الأصلية للمحرك، حتى إن كانت خارج النص المطابق؛ ويتطلب النظر خلفًا دعم المحرك. لم تُضف هذه الميزة إلى npm <code dir="ltr">0.1.0-dev.4</code> بعد. راجع [شروط النظر أمامًا وخلفًا](../LANGUAGE.md#lookaround-assertions).
 
 تتضمن حزمة npm <code dir="ltr">0.1.0-dev.4</code> المجموعات والالتقاطات والمراجع السابقة والبدائل المرتبة في المكتبة وسطر الأوامر. تضيف الورشة فحص الالتقاطات ومطابقات البحث المتعددة. راجع [التوافق](../COMPATIBILITY.md) و[سجل النشر](../DISTRIBUTION.md).
 

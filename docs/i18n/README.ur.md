@@ -71,7 +71,18 @@ end
 
 موجودہ سورس میں <code dir="ltr">lazy digits</code> سے <code dir="ltr">\d+?</code> بنتا ہے: پہلے ایک ہندسہ آزمائیں، پھر اگلے قواعد کی ضرورت کے مطابق تکرار بڑھائیں۔ یہ اضافہ npm <code dir="ltr">0.1.0-dev.4</code> میں ابھی شامل نہیں ہے۔ [تکرار کے قواعد](../LANGUAGE.md#repetition) دیکھیں۔
 
-سورس میں <code dir="ltr">followed by { … }</code>، <code dir="ltr">not followed by { … }</code>، <code dir="ltr">preceded by { … }</code>، <code dir="ltr">not preceded by { … }</code> بھی دستیاب ہیں۔ یہ اردگرد کے متن کو جانچتے ہیں، اسے match میں شامل نہیں کرتے۔ Captures کی اصل values اور positions برقرار رہتی ہیں، چاہے وہ match کے باہر ہوں؛ lookbehind کے لیے انجن کی معاونت ضروری ہے۔ یہ فیچر ابھی npm <code dir="ltr">0.1.0-dev.4</code> میں شامل نہیں ہے۔ [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) دیکھیں۔
+سورس میں یہ چار صورتیں بھی دستیاب ہیں:
+
+<div dir="ltr" align="left">
+
+- <code dir="ltr">followed by { … }</code>
+- <code dir="ltr">not followed by { … }</code>
+- <code dir="ltr">preceded by { … }</code>
+- <code dir="ltr">not preceded by { … }</code>
+
+</div>
+
+یہ اردگرد کے متن کو جانچتے ہیں، اسے match میں شامل نہیں کرتے۔ Captures کی اصل values اور positions برقرار رہتی ہیں، چاہے وہ match کے باہر ہوں؛ lookbehind کے لیے انجن کی معاونت ضروری ہے۔ یہ فیچر ابھی npm <code dir="ltr">0.1.0-dev.4</code> میں شامل نہیں ہے۔ [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) دیکھیں۔
 
 لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.4</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
 
