@@ -1,5 +1,12 @@
 # Autonomous implementation progress
 
+## Complete dev.8 source release gate
+
+- Completed: uninterrupted `CI=1 npm run verify` on runtime checkpoint `3d3f64a` passes all 1,367 checks: 377 Node, 584 Chromium, 342 Firefox/WebKit and 64 homepage checks. Lint/types, source/built links, the installed consumer, Pages builds, social-card rendering and zero-vulnerability audit pass. The homepage's generated script cache fingerprint changes; source runtime/declarations stay fixed throughout the gate.
+- Native exports: the separate required seven-runtime gate passes 8,782 comparisons, including the tested PHP/PCRE2 editions. This is selected-corpus evidence, not universal engine or version certification.
+- Candidate: dev.8 package/lock, changelog, homepage, ten guides and current contracts are prepared in a detached validation checkout. New diagnostic/result-limit paragraphs are translated, all 20 code blocks remain identical, and Arabic/Urdu retain RTL prose with LTR technical fields. A focused version-policy test caught an old dev.7 security link and the stale PHP label; both are corrected before publication.
+- Next: finish candidate checks, freeze and validate the exact new archive/tag, publish npm and the existing owner Pages folder, then verify registry/Release/public bytes and update the Downloads Reddit draft. Public distribution is still dev.7. Preserve older archives and disabled source Actions. The complete original mission remains active.
+
 ## Duplicate native rule-input source milestone
 
 - Found: the complete source command at `197dfa6` passes 377 Node tests and 581 Chromium checks, but its aggregate-output UI scenario reaches the unchanged deadline. Native Chromium profiling reveals hundreds of input events for the same completed multiline value, repeatedly compiling identical rules and replacing workers. The command stops before the remaining compatibility/site/audit gates; it is not a complete release pass.
