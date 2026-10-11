@@ -422,6 +422,10 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **Im Vorschaupaket:** Verschachtelte Mengen verwenden `character set union {`, `character set intersection {` und `character set subtraction {`, abgeschlossen mit `}`. Jede Zeile enthält ein Zeichen, einen Bereich, eine Klasse, eine Eigenschaft, eine Zeichenfolgenmenge oder eine weitere Menge. Die Schnittmenge behält gemeinsame Elemente; die Differenz entfernt rechte Elemente aus dem ersten Operanden. Wiederholungen und `lazy` gelten für den gesamten Block. `not` folgt den nativen strukturellen Beschränkungen für Zeichenfolgen; eine leere Vereinigung findet nichts. Wähle `v`; Verfügbar in npm `0.1.0-dev.9`. [Syntax und Beispiele](../LANGUAGE.md#nested-unicode-set-operations).
 
+**Neu auf main, noch nicht in npm dev.9: lokale Gruppenoptionen.** Öffne `group with flags "i" {`, setze `"hello"` hinein und schließe mit `}`, um `(?i:hello)` zu erzeugen. Die Gruppe findet `HELLO`, während folgende Regeln ihre bisherige Groß-/Kleinschreibung behalten. `"im-s"` aktiviert lokal die Faltung der Groß-/Kleinschreibung und Zeilenanker und deaktiviert dot-all. Verschachtelte Gruppen stellen die umgebenden Optionen wieder her; Captures können innerhalb des Blocks stehen. [Syntax und Beispiele](../LANGUAGE.md#scoped-flags-unreleased).
+
+**Prüfe die ausführende Laufzeit.** Syntaxunterstützung allein reicht nicht: die geprüften Unicode-Modi von Chrome, Firefox und WebKit bestehen die Tests. Node 22 kennt die Syntax nicht; die geprüften Node-Versionen 25/26 zeigen native Fehler beim Matching. Die Kompilierung meldet deshalb `UNSUPPORTED_TARGET_FEATURE`. Auch `toRegExp({ source, flags })` prüft bei zwischengespeicherten Daten das lokale Verhalten im angegebenen Modus nach der nativen Konstruktion; ungültige native Syntax behält `SyntaxError`. Nicht unterstützte Gruppen werden nicht angenähert. Diese Funktion ist noch nicht im veröffentlichten dev.9-Paket oder im gehosteten Workshop enthalten.
+
 ## 🛠️ Lokal entwickeln
 
 ```sh

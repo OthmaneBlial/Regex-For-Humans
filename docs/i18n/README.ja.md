@@ -422,6 +422,10 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **プレビュー版：**入れ子の集合には `character set union {`、`character set intersection {`、`character set subtraction {` を使い、`}` で閉じます。各行は文字、範囲、クラス、プロパティ、文字列集合、または入れ子の集合を表します。積集合は共通の要素を残し、差集合は最初のオペランドから右側の要素を除きます。回数指定と `lazy` はブロック全体に適用されます。`not` はネイティブの文字列に関する構造上の制約に従います。空の和集合は何にも一致しません。`v` を選択してください。npm `0.1.0-dev.9` で利用できます。[構文と例](../LANGUAGE.md#nested-unicode-set-operations)。
 
+**main の新機能。npm dev.9 には未収録：グループ内のローカルフラグ。** `group with flags "i" {` を開き、中に `"hello"` を置いて `}` で閉じると、`(?i:hello)` を生成します。このグループは `HELLO` に一致しますが、後続のルールの大小文字の扱いは変わりません。`"im-s"` はグループ内で大小文字を無視する比較と行アンカーを有効にし、dot-all を無効にします。入れ子のグループを抜けると外側の設定に戻ります。ブロック内にキャプチャを置くこともできます。[構文と例](../LANGUAGE.md#scoped-flags-unreleased)。
+
+**実行先のランタイムを確認してください。** 構文を受け付けるだけでは不十分です。検証した Chrome、Firefox、WebKit の Unicode モードはテストを通過しています。Node 22 は構文に対応せず、検証した Node 25/26 にはネイティブのマッチング不具合があるため、コンパイルは `UNSUPPORTED_TARGET_FEATURE` を返します。キャッシュしたメタデータを使う `toRegExp({ source, flags })` も、ネイティブ構築後に指定モードでのローカル動作を確認します。不正なネイティブ構文では `SyntaxError` を維持します。未対応のグループを近似変換することはありません。公開済み dev.9 パッケージとオンライン workshop にはまだ含まれていません。
+
 ## 🛠️ ローカル開発
 
 ```sh

@@ -422,6 +422,10 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **En la vista previa:** los conjuntos anidados usan `character set union {`, `character set intersection {` y `character set subtraction {`, cerrados con `}`. Cada línea contiene un carácter, rango, clase, propiedad, conjunto de cadenas o conjunto anidado. La intersección conserva miembros comunes; la resta elimina los miembros de la derecha del primer operando. Las repeticiones y `lazy` se aplican al bloque completo. `not` respeta las restricciones estructurales nativas sobre cadenas; una unión vacía no coincide con nada. Selecciona `v`; Disponible en npm `0.1.0-dev.9`. [Sintaxis y ejemplos](../LANGUAGE.md#nested-unicode-set-operations).
 
+**Nuevo en main, fuera de npm dev.9: flags locales de grupo.** Abre `group with flags "i" {`, coloca `"hello"` dentro y cierra con `}` para generar `(?i:hello)`. El grupo acepta `HELLO` mientras las reglas siguientes conservan su comportamiento de mayúsculas y minúsculas. `"im-s"` activa localmente la comparación sin distinción de mayúsculas y las anclas de línea, y desactiva dot-all. Los grupos anidados restauran las opciones externas; las capturas pueden ir dentro del bloque. [Sintaxis y ejemplos](../LANGUAGE.md#scoped-flags-unreleased).
+
+**Comprueba el motor que ejecutará el patrón.** Aceptar la sintaxis no basta: los modos Unicode verificados de Chrome, Firefox y WebKit pasan; Node 22 no reconoce la sintaxis y las versiones probadas de Node 25/26 tienen defectos nativos de coincidencia. La compilación informa `UNSUPPORTED_TARGET_FEATURE`. Con datos en caché, `toRegExp({ source, flags })` también comprueba el comportamiento local en el modo indicado después de la construcción nativa; una sintaxis nativa inválida conserva `SyntaxError`. No se aproximan grupos incompatibles. Esta función todavía no está en el paquete dev.9 publicado ni en el workshop alojado.
+
 ## 🛠️ Desarrollar localmente
 
 ```sh

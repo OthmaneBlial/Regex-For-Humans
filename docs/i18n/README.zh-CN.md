@@ -422,6 +422,10 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.9` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
 
+**main 分支新增，npm dev.9 尚未包含：组内局部标志。** 写下 `group with flags "i" {`，在块内放入 `"hello"`，再用 `}` 结束，即可生成 `(?i:hello)`。该组匹配 `HELLO`，后续规则仍保留原有的大小写行为。`"im-s"` 在组内启用忽略大小写和行锚点，同时关闭 dot-all。嵌套组结束后恢复外层选项；块内也可使用捕获组。[语法与示例](../LANGUAGE.md#scoped-flags-unreleased)。
+
+**请检查实际执行环境。** 能解析语法并不代表匹配正确：已验证的 Chrome、Firefox 和 WebKit Unicode 模式通过测试；Node 22 不支持该语法，已测试的 Node 25/26 存在原生匹配缺陷，因此编译报告 `UNSUPPORTED_TARGET_FEATURE`。对于缓存元数据，`toRegExp({ source, flags })` 在原生构造之后也会检查指定模式下的局部行为；无效原生语法仍产生 `SyntaxError`。不支持的组不会被近似改写。已发布的 dev.9 包和在线 workshop 暂未包含此功能。
+
 ## 🛠️ 本地开发
 
 ```sh

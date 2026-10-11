@@ -422,6 +422,10 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **npm preview में:** nested sets के लिए `character set union {`, `character set intersection {` और `character set subtraction {` लिखें और `}` से बंद करें। हर पंक्ति एक अक्षर, range, class, property, strings का set या nested set है। Intersection साझा सदस्यों को रखता है; subtraction पहले operand से दाएँ सदस्यों को हटाता है। Counts और `lazy` पूरे block पर लागू होते हैं। `not` strings के native संरचनात्मक नियमों का पालन करता है; खाली union कुछ भी match नहीं करता। `v` चुनें; npm `0.1.0-dev.9` में उपलब्ध है। [Syntax और उदाहरण](../LANGUAGE.md#nested-unicode-set-operations)।
 
+**main में नया, npm dev.9 में अभी नहीं: समूह के स्थानीय flags।** `group with flags "i" {` खोलें, उसके भीतर `"hello"` रखें और `}` से बंद करें। इससे `(?i:hello)` बनता है। समूह `HELLO` को स्वीकार करता है, जबकि आगे के नियमों में अक्षरों के बड़े या छोटे रूप का व्यवहार पहले जैसा रहता है। `"im-s"` समूह के भीतर case-insensitive तुलना और line anchors चालू करता है और dot-all बंद करता है। Nested समूह से बाहर आने पर बाहरी विकल्प बहाल होते हैं; ब्लॉक के भीतर captures भी रख सकते हैं। [Syntax और उदाहरण](../LANGUAGE.md#scoped-flags-unreleased)।
+
+**जिस runtime पर pattern चलेगा, उसे जाँचें।** केवल syntax स्वीकार करना पर्याप्त नहीं है। जाँचे गए Chrome, Firefox और WebKit के Unicode modes परीक्षण पास करते हैं। Node 22 इस syntax को नहीं समझता और जाँचे गए Node 25/26 में native matching की त्रुटियाँ हैं, इसलिए compilation `UNSUPPORTED_TARGET_FEATURE` देता है। Cached metadata के साथ `toRegExp({ source, flags })` भी native construction के बाद दिए गए mode में स्थानीय व्यवहार जाँचता है; अमान्य native syntax पर `SyntaxError` बना रहता है। असमर्थित समूहों का अनुमानित रूपांतरण नहीं किया जाता। यह सुविधा अभी प्रकाशित dev.9 package या hosted workshop में नहीं है।
+
 ## 🛠️ स्थानीय development
 
 ```sh

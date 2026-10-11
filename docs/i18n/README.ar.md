@@ -565,6 +565,10 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 <p dir="ltr" align="left"><code dir="ltr">--flags dgiv</code></p>
 
+**جديد في main، وغير متاح بعد في npm dev.9: خيارات محلية للمجموعة.** افتح <code dir="ltr">group with flags "i" {</code>، وضع <code dir="ltr">"hello"</code> داخله، ثم أغلقه بـ <code dir="ltr">}</code> للحصول على <code dir="ltr">(?i:hello)</code>. تقبل المجموعة <code dir="ltr">HELLO</code>، بينما تحتفظ القواعد التالية بسلوكها الأصلي تجاه حالة الأحرف. يفعّل <code dir="ltr">"im-s"</code> تجاهل حالة الأحرف ومراسي الأسطر محليًا، ويعطّل <code dir="ltr">dot-all</code>. عند الخروج من مجموعة متداخلة تعود الخيارات المحيطة؛ ويمكن وضع مجموعات الالتقاط داخل الكتلة. [الصياغة والأمثلة](../LANGUAGE.md#scoped-flags-unreleased).
+
+**تحقّق من بيئة التنفيذ الفعلية.** قبول الصياغة وحده لا يكفي: اجتازت أوضاع Unicode المختبرة في Chrome وFirefox وWebKit الاختبارات. لا يدعم <code dir="ltr">Node 22</code> هذه الصياغة، وتظهر إصدارات <code dir="ltr">Node 25/26</code> المختبرة أخطاءً أصلية في المطابقة، لذلك يبلغ المترجم عن <code dir="ltr">UNSUPPORTED_TARGET_FEATURE</code>. مع البيانات المخزنة مؤقتًا، يفحص <code dir="ltr">toRegExp({ source, flags })</code> أيضًا السلوك المحلي في الوضع المحدد بعد الإنشاء الأصلي؛ وتحتفظ الصياغة الأصلية غير الصحيحة بالخطأ <code dir="ltr">SyntaxError</code>. لا تُحوَّل المجموعات غير المدعومة إلى بدائل تقريبية. هذه الميزة غير موجودة بعد في حزمة <code dir="ltr">dev.9</code> المنشورة أو في الورشة المستضافة.
+
 ## 🛠️ التطوير محليًا
 
 <div dir="ltr" align="left">

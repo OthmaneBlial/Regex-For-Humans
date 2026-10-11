@@ -532,6 +532,10 @@ Unicode escapes can include leading zeros: `/^\u{00000041}$/u` translates to `st
 
 **In the preview:** native nested sets use `character set union {`, `character set intersection {` and `character set subtraction {`, closed by `}`. Each line is one character, range, class, property, string set or nested set. Intersection keeps shared members; subtraction removes right-hand members from the first operand. Counts and `lazy` apply to the whole block. `not` follows native structural string restrictions; an empty union matches nothing. Select `v`; Available in npm `0.1.0-dev.9`. [Set syntax and examples](docs/LANGUAGE.md#nested-unicode-set-operations).
 
+**New on main, outside npm dev.9: local group flags.** Open `group with flags "i" {`, put `"hello"` inside and close with `}` to generate `(?i:hello)`. It accepts `HELLO` while later rules keep their original case behavior. Use `"im-s"` to enable local case folding and line anchors while disabling dot-all. Nested scopes restore enclosing options, and captures can go inside the block. [Scoped syntax and examples](docs/LANGUAGE.md#scoped-flags-unreleased).
+
+**Check the receiving runtime.** Syntax support alone is insufficient: verified Chrome, Firefox and WebKit Unicode modes pass; tested Node 22 lacks the syntax and Node 25/26 have native matching defects, so compilation reports `UNSUPPORTED_TARGET_FEATURE`. Cached `toRegExp({ source, flags })` also checks actual scoped behavior in the supplied mode after native construction; invalid native syntax retains `SyntaxError`. Unsupported scopes are never approximated. This feature is not in the published dev.9 package or hosted workshop yet.
+
 <a name="develop"></a>
 
 ## 🛠️ Make yourself at home

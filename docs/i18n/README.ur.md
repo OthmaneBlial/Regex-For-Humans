@@ -565,6 +565,10 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 <p dir="ltr" align="left"><code dir="ltr">--flags dgiv</code></p>
 
+**main میں نیا، npm dev.9 میں ابھی شامل نہیں: گروپ کے مقامی flags۔** <code dir="ltr">group with flags "i" {</code> کھولیں، اندر <code dir="ltr">"hello"</code> رکھیں اور <code dir="ltr">}</code> سے بند کریں۔ اس سے <code dir="ltr">(?i:hello)</code> بنتا ہے۔ یہ گروپ <code dir="ltr">HELLO</code> قبول کرتا ہے، جبکہ اگلے قواعد میں بڑے اور چھوٹے حروف کا اصل رویہ برقرار رہتا ہے۔ <code dir="ltr">"im-s"</code> گروپ کے اندر حروف کی صورت سے آزاد موازنہ اور سطر کے anchors فعال کرتا ہے اور <code dir="ltr">dot-all</code> بند کرتا ہے۔ اندرونی گروپ سے باہر آنے پر بیرونی اختیارات بحال ہوتے ہیں؛ بلاک کے اندر captures بھی رکھ سکتے ہیں۔ [نحو اور مثالیں](../LANGUAGE.md#scoped-flags-unreleased)۔
+
+**اصل اجرا کی runtime جانچیں۔** صرف نحو قبول کرنا کافی نہیں۔ Chrome، Firefox اور WebKit کے جانچے گئے Unicode modes ٹیسٹ پاس کرتے ہیں۔ <code dir="ltr">Node 22</code> اس نحو کو نہیں سمجھتا، اور جانچے گئے <code dir="ltr">Node 25/26</code> میں native matching کی خرابیاں ہیں، اس لیے compilation <code dir="ltr">UNSUPPORTED_TARGET_FEATURE</code> بتاتی ہے۔ Cached metadata کے ساتھ <code dir="ltr">toRegExp({ source, flags })</code> بھی native construction کے بعد دیے گئے mode میں مقامی رویہ جانچتا ہے؛ غلط native نحو پر <code dir="ltr">SyntaxError</code> برقرار رہتا ہے۔ غیر معاون گروپس کا تخمینی بدل نہیں بنایا جاتا۔ یہ خصوصیت ابھی شائع شدہ <code dir="ltr">dev.9</code> package یا hosted workshop میں شامل نہیں ہے۔
+
 ## 🛠️ مقامی development
 
 <div dir="ltr" align="left">

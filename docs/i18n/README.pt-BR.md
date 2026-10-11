@@ -422,6 +422,10 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **Na prévia:** conjuntos aninhados usam `character set union {`, `character set intersection {` e `character set subtraction {`, fechados com `}`. Cada linha contém um caractere, intervalo, classe, propriedade, conjunto de strings ou conjunto aninhado. A interseção mantém membros comuns; a subtração remove os membros da direita do primeiro operando. Repetições e `lazy` valem para o bloco inteiro. `not` segue as restrições estruturais nativas para strings; uma união vazia não encontra nada. Selecione `v`; Disponível no npm `0.1.0-dev.9`. [Sintaxe e exemplos](../LANGUAGE.md#nested-unicode-set-operations).
 
+**Novo na main, fora do npm dev.9: flags locais de grupo.** Abra `group with flags "i" {`, coloque `"hello"` dentro e feche com `}` para gerar `(?i:hello)`. O grupo aceita `HELLO`, enquanto as regras seguintes mantêm seu comportamento de maiúsculas e minúsculas. `"im-s"` ativa localmente a comparação sem distinção de caixa e as âncoras de linha, e desativa dot-all. Grupos aninhados restauram as opções externas; capturas podem ficar dentro do bloco. [Sintaxe e exemplos](../LANGUAGE.md#scoped-flags-unreleased).
+
+**Verifique o ambiente que executará o padrão.** Aceitar a sintaxe não basta: os modos Unicode verificados do Chrome, Firefox e WebKit passam. O Node 22 não reconhece a sintaxe, e as versões testadas do Node 25/26 apresentam defeitos nativos de correspondência. A compilação informa `UNSUPPORTED_TARGET_FEATURE`. Com metadados em cache, `toRegExp({ source, flags })` também verifica o comportamento local no modo fornecido após a construção nativa; sintaxe nativa inválida mantém `SyntaxError`. Grupos incompatíveis não são aproximados. Este recurso ainda não está no pacote dev.9 publicado nem no workshop hospedado.
+
 ## 🛠️ Desenvolvimento local
 
 ```sh
