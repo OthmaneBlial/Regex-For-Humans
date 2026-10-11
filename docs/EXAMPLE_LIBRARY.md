@@ -1,6 +1,6 @@
 # Example library
 
-The source workshop has 31 shared recipes, 24 categories and beginner/intermediate/expert levels. These library additions are not yet published in npm or Pages dev.6. Run the workshop from this checkout to use them.
+The workshop has 31 shared recipes, 24 categories and beginner/intermediate/expert levels.
 
 Use **Search recipes** to find literal words in IDs, titles, limitation notes, rule text, categories or difficulty labels. English and the selected interface language are both searchable. Multiple space-separated words must all occur; the query is not executed as a regular expression. Category and difficulty filters combine with search. **Clear filters** restores the complete list and returns focus to search.
 

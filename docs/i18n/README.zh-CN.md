@@ -8,7 +8,7 @@
 
 把清晰的英文规则编译成 JavaScript 正则表达式，并逐段理解结果。
 
-[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.6)
+[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.7)
 
 🔒 本地运行 · 🧩 无运行时依赖 · ⚡ 一个编译器，三种使用方式
 
@@ -34,11 +34,11 @@ end
 
 这是**固定词汇**的规则语言，每条指令都有精确定义。库、CLI 和工作台使用同一个确定性编译器。不认识的指令会返回行、列和修复提示。所有译本中的规则语法仍然使用英文，不会翻译关键字。
 
-> 🌱 预览版 `0.1.0-dev.6` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
+> 🌱 预览版 `0.1.0-dev.7` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
 
 ## 🧰 现在可以做什么
 
-| 能力 | npm `0.1.0-dev.6` / 托管工作台 |
+| 能力 | npm `0.1.0-dev.7` / 托管工作台 |
 | --- | --- |
 | 规则 → JavaScript 正则 | ✅ |
 | 支持的正则 → 可编辑规则 | ✅ |
@@ -62,17 +62,17 @@ end
 
 本地工作坊新增 **Edit groups and references**，可重命名捕获组、切换分组类型并定位引用。编号变化后，数字引用仍指向原来的捕获组；仍被引用的捕获组不能改为非捕获组，拒绝操作时保留原规则。**Highlight** 根据原生索引高亮捕获范围，支持空捕获和消耗的匹配范围之外的捕获。`editGroup` API 返回经过验证的规则。参见[编辑分组](../LANGUAGE.md#editing-groups)。
 
-当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.6` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
+当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.7` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
 
-源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。npm `0.1.0-dev.6` 已包含这些功能。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
+源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。npm `0.1.0-dev.7` 已包含这些功能。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
 
-源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。npm `0.1.0-dev.6` 已包含这些功能，参见[单词边界](../LANGUAGE.md#word-boundaries)。
+源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。npm `0.1.0-dev.7` 已包含这些功能，参见[单词边界](../LANGUAGE.md#word-boundaries)。
 
-源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。npm `0.1.0-dev.6` 已包含这些功能，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
+源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。npm `0.1.0-dev.7` 已包含这些功能，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
 
-源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.6` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
+源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.7` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
 
-npm `0.1.0-dev.6` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
+npm `0.1.0-dev.7` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
 
 ## 🌍 导出到你的编程语言
 
@@ -92,7 +92,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.6`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
+输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.7`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
 
 ## 🎮 试一个模式
 
@@ -100,11 +100,11 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 通过 **Theme** 跟随系统外观，或选择浅色、深色工作台。存储可用时，选择会保留在本机；切换外观不会改变规则、测试字符串、选择范围或已展开的面板。参见[主题偏好](../ARCHITECTURE.md#theme-preference)。
 
-**仅限源码版本：** 原生规则编辑器为关键字、字符串、捕获、量词、断言、分支和注释着色，并为编译器指出的词元加下划线。输入、选择、复制和滚动保留原生行为；强制颜色或超出限制的输入使用普通原生文本。以 `#` 开头的整行注释保留源位置，并计入现有长度和行数限制。这些新增功能尚未包含在 npm `0.1.0-dev.6` 或托管工作台中。参见[注释](../LANGUAGE.md#comments)和[编辑器高亮](../ARCHITECTURE.md#editor-highlighting)。
+原生规则编辑器为关键字、字符串、捕获、量词、断言、分支和注释着色，并为编译器指出的词元加下划线。输入、选择、复制和滚动保留原生行为；强制颜色或超出限制的输入使用普通原生文本。以 `#` 开头的整行注释保留源位置，并计入现有长度和行数限制。参见[注释](../LANGUAGE.md#comments)和[编辑器高亮](../ARCHITECTURE.md#editor-highlighting)。
 
-**仅限源码版本：** 构建面板可在当前行或选区之前、外层锚点之内，插入可编辑的捕获、可选部分、分支、重复、字符类和断言模板。添加捕获不会改变已有数字引用的目标。无效或超出限制的插入保留原规则和选区，标志与测试示例也保持不变。此面板尚未包含在托管的 dev.6 工作台中。参见[规则构建](../ARCHITECTURE.md#rule-construction)。
+构建面板可在当前行或选区之前、外层锚点之内，插入可编辑的捕获、可选部分、分支、重复、字符类和断言模板。添加捕获不会改变已有数字引用的目标。无效或超出限制的插入保留原规则和选区，标志与测试示例也保持不变。参见[规则构建](../ARCHITECTURE.md#rule-construction)。
 
-**仅限源码版本：** 精确预期检查完整的 UTF-16 范围、按组号排列的捕获值（`null` 表示未参与，`""` 表示参与了空匹配），以及使用原始标志的 JavaScript 替换结果。测试文件支持带版本的 JSON 导入/导出和手动本地保存/恢复。无效草稿或文件不会覆盖当前工作；导入的 CR/CRLF 保持原样，直到编辑示例输入框。这些控件尚未包含在托管的 dev.6 中。参见[测试文件格式、示例和限制](../TEST_FIXTURES.md)。
+精确预期检查完整的 UTF-16 范围、按组号排列的捕获值（`null` 表示未参与，`""` 表示参与了空匹配），以及使用原始标志的 JavaScript 替换结果。测试文件支持带版本的 JSON 导入/导出和手动本地保存/恢复。无效草稿或文件不会覆盖当前工作；导入的 CR/CRLF 保持原样，直到编辑示例输入框。参见[测试文件格式、示例和限制](../TEST_FIXTURES.md)。
 
 1. 选择配方，或每行写一条指令。
 2. 查看生成的片段及其解释。
@@ -173,11 +173,11 @@ end
 | [日志字段](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | 搜索片段中的命名 level 和 code 字段 |
 | [搜索与替换](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | 精确检查位置、捕获和非全局替换 |
 
-源代码库现在包含 **31 个配方、24 个类别和三个难度级别**。可在四种界面语言中搜索标题、限制和规则，并组合筛选条件。这些新增内容尚未包含在已发布的 dev.6 中。请参阅[配方库指南](../EXAMPLE_LIBRARY.md)。
+示例库包含 **31 个配方、24 个类别和三个难度级别**。可在四种界面语言中搜索标题、限制和规则，并组合筛选条件。请参阅[配方库指南](../EXAMPLE_LIBRARY.md)。
 
-失败示例还提供[可验证的说明](../FAILURE_EXPLANATIONS.md)：原生匹配范围、可证明的最小长度或缺失的必需字面文本。若无法确定具体失败步骤，工作坊会明确说明。此源代码功能尚未包含在 dev.6 中。
+失败示例还提供[可验证的说明](../FAILURE_EXPLANATIONS.md)：原生匹配范围、可证明的最小长度或缺失的必需字面文本。若无法确定具体失败步骤，工作坊会明确说明。
 
-可选择[初学者、中级或专家解释](../EXPLANATION_LEVELS.md)。注释解释正则术语，或展示源位置、捕获、已解析引用和标志。切换级别保留当前工作，不重新执行匹配。这些工作坊模式等待下一次发布。
+可选择[初学者、中级或专家解释](../EXPLANATION_LEVELS.md)。注释解释正则术语，或展示源位置、捕获、已解析引用和标志。切换级别保留当前工作，不重新执行匹配。
 
 这些是**形状检查**。不存在的日期和 `25:99` 仍可匹配。IPv4 不限制每段为0–255；UUID 不验证版本、变体或唯一性。用户名可用性、发票记录、电话号码有效性、日历和文件系统约束需另行验证。简单版本形状配方不是完整 SemVer；颜色只接受 `#RRGGBB`。
 
@@ -255,7 +255,7 @@ end
 
 ## 🧲 用命名捕获提取字段
 
-此示例可使用 npm `0.1.0-dev.6` 或在线工作台运行。
+此示例可使用 npm `0.1.0-dev.7` 或在线工作台运行。
 
 ```text
 start
@@ -408,11 +408,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | 从 `lastIndex` 匹配，遇到间隙即停止 |
 | `v` | `{ flags: 'v' }` | 原生 v 模式 Unicode 字符类与补集 |
 
-**预览版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.6` 已包含这些功能。
+**预览版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.7` 已包含这些功能。
 
-选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.6` 已包含这些功能。
+选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.7` 已包含这些功能。
 
-嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.6` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
+嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.7` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
 
 ## 🛠️ 本地开发
 

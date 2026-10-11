@@ -12,4 +12,4 @@ All levels use the compiler's typed segments. No regex text is reparsed to inven
 
 Controls, definitions and metadata labels are available in English, Simplified Chinese, Spanish and French. Canonical DSL rules and compiler explanations remain English. Changing the level preserves source, flags, examples, expectations, selected source line and visible pattern selection. It does not run matching, regenerate the diagram or apply group edits. The selected level survives recipe loading, translation, fixture application and invalid rules during the current page session; it is not a saved project preference.
 
-The public `compile` result and API remain unchanged. These modes are workshop presentation features. They are source additions awaiting the next release after dev.6.
+The public `compile` result and API remain unchanged. These modes are workshop presentation features.

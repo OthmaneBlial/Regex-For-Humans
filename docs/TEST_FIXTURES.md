@@ -1,6 +1,6 @@
 # Exact expectations and regression fixtures
 
-These controls are available from the source checkout. The hosted workshop and npm preview remain dev.6 until the next verified release.
+Exact expectations and fixture controls are browser workshop features. The npm package provides the shared compiler and CLI.
 
 Open **Exact expectations** beneath an example to add optional JSON assertions. The existing **Should match / Should not match** choice is still checked; every requested detail must also agree. Blank JSON removes detailed assertions. Malformed or oversized drafts stay editable, survive adding/removing other rows and stop the batch until repaired or removed. They cannot overwrite a saved valid fixture.
 

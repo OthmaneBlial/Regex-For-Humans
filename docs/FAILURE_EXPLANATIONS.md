@@ -18,4 +18,4 @@ Literal conditions and literal length contributions are omitted when `i` is enab
 
 These are necessary conditions, not an execution trace or an exact account of the first failed rule. They do not show backtracking, identify which alternative the engine attempted or certify performance. Matching expectations for spans, captures and replacements continue to report their own agreement or disagreement. Compiler diagnostics and worker errors keep their existing behavior.
 
-Reasons are text nodes, localized in all four interface languages and associated with the example input and expectation selector. Editing examples, changing rules or invalidating the pattern clears previous reasons before checking again. Source additions remain separate from the published dev.6 preview until the next verified release.
+Reasons are text nodes, localized in all four interface languages and associated with the example input and expectation selector. Editing examples, changing rules or invalidating the pattern clears previous reasons before checking again.

@@ -4,6 +4,12 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
 
+## Dev.7 candidate preparation
+
+- Prepared: package/lock, changelog, all ten README guides, current product contracts and homepage align with dev.7 in an isolated verification checkout. Source-only publication notices are removed from the current feature descriptions; dated historical receipts remain intact. Arabic/Urdu version labels now stay within RTL paragraphs using explicit LTR code elements.
+- Verified: all 365 Node tests pass on Node 25.9.0 and Node 22.23.3, plus 64 candidate homepage checks. The underlying source checkpoint `06a39c2` passes all 576 Chromium checks; its complete Firefox/WebKit and final homepage/audit stages remain in progress. Native generated exports pass 7,388 span/capture comparisons across six available foreign engines. PHP stays explicitly unverified.
+- Next: retain and check the exact dev.7 tarball, finish the uninterrupted source gate, promote the verified candidate to main, then publish and verify npm, the matching tag/Release and owner Pages deployment. Update the Downloads Reddit draft with the actually published features. Public npm and Pages are still dev.6 at this preparation snapshot. The full original mission remains active.
+
 ## Release verification regression repair
 
 - Found: the full release command passed 365 Node checks and 566 of 576 Chromium checks before stopping. Eight old exact descriptions omitted intentional failure explanations; two real layout regressions affected returning to the top and clicking the mobile ignore-case control.

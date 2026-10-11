@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0-dev.7 (11 October 2026)
+
 - Reserve stable space for the source-rule preview so hovering explanations cannot repeatedly shift the editor or interrupt native flag clicks and scrolling. Keep long preview text in the accessible DOM while visually shortening it to one line.
 - Add beginner, intermediate and expert workshop explanation levels using typed compiler segments. Keep canonical meanings unchanged; explain unfamiliar terms or expose original source locations, generated-regex UTF-16 ranges, capture identities, resolved reference numbers and flags. Localize controls and notes in all four interface languages, associate notes with keyboard buttons and preserve selected work without rerunning matches.
 - Explain unexpected and partial matches using validated native ranges. For native failures, prove conservative minimum consuming lengths or missing mandatory case-sensitive literals when possible, and explicitly admit unknown failing steps. Handle optional branches, assertions, references, string-valued sets and case folding without inventing a runtime backtracking trace.
