@@ -159,8 +159,23 @@ end
 | [版本](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | `1.2.3` | 三个数字部分 |
 | [排除字符](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | `xyz` | 不含选定字符的文本 |
 | [行规则](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | `item 123` | 至少以三位数字结尾的行 |
+| [小写路径短名](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=slug) | `hello-world` | ASCII 字母和数字，以单个连字符分隔 |
+| [文件扩展名](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=file-extension) | `README.md` | 区分大小写的 txt、md 或 json 后缀 |
+| [UTC 时间戳格式](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=iso8601-shape) | `2026-10-11T09:30:00Z` | 可选小数秒；日历需单独验证 |
+| [HTTPS 网址格式](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=https-url-shape) | `https://example.com` | ASCII 主机名子集；不是完整 URL 验证 |
+| [标头字段](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=http-header) | `Content-Type: application/json` | 命名字段和单行值 |
+| [Markdown 标题](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=markdown-heading) | `# Hello` | 1–6 个 # 后接标题 |
+| [SemVer 2.0 语法](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | `1.2.3-alpha.1+001` | 核心、预发布和构建语法；不比较版本优先级 |
+| [Git 哈希格式](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=git-object-hash) | `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` | 40 或 64 个 ASCII 十六进制字符；不验证对象存在 |
+| [重复单词](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | `hello hello` | 向后命名引用 ASCII 单词 |
+| [相邻重复项](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=duplicate-token) | `item,item` | 一对逗号分隔的 1–16 字符标记 |
+| [Unicode 字母](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=unicode-word) | `العربية / اردو` | 原生 L/M 属性，包括阿拉伯语和乌尔都语 |
+| [日志字段](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | 搜索片段中的命名 level 和 code 字段 |
+| [搜索与替换](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | 精确检查位置、捕获和非全局替换 |
 
-这些是**形状检查**。不存在的日期和 `25:99` 仍可匹配。IPv4 不限制每段为0–255；UUID 不验证版本、变体或唯一性。用户名可用性、发票记录、电话号码有效性、日历和文件系统约束需另行验证。版本配方不是完整 SemVer；颜色只接受 `#RRGGBB`。
+源代码库现在包含 **31 个配方、24 个类别和三个难度级别**。可在四种界面语言中搜索标题、限制和规则，并组合筛选条件。这些新增内容尚未包含在已发布的 dev.6 中。请参阅[配方库指南](../EXAMPLE_LIBRARY.md)。
+
+这些是**形状检查**。不存在的日期和 `25:99` 仍可匹配。IPv4 不限制每段为0–255；UUID 不验证版本、变体或唯一性。用户名可用性、发票记录、电话号码有效性、日历和文件系统约束需另行验证。简单版本形状配方不是完整 SemVer；颜色只接受 `#RRGGBB`。
 
 ## 🏗️ 更大模式，同样清晰
 

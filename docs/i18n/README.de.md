@@ -159,6 +159,21 @@ Unbekannte Syntax wird weder entfernt noch angenähert. **Go to regex error** ma
 | [Version](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | `1.2.3` | Drei Zahlenteile |
 | [Ausschlüsse](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | `xyz` | Text ohne ausgewählte Zeichen |
 | [Zeilenregel](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | `item 123` | Endet mit mindestens drei Ziffern |
+| [Slug in Kleinbuchstaben](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=slug) | `hello-world` | ASCII-Buchstaben und Ziffern, getrennt durch einzelne Bindestriche |
+| [Dateierweiterung](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=file-extension) | `README.md` | Groß-/kleinschreibungsabhängiges Suffix txt, md oder json |
+| [UTC-Zeitstempelform](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=iso8601-shape) | `2026-10-11T09:30:00Z` | Optionale Sekundenbruchteile; Kalender separat prüfen |
+| [HTTPS-URL-Form](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=https-url-shape) | `https://example.com` | Teilmenge von ASCII-Hosts; keine vollständige URL-Prüfung |
+| [Header-Feld](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=http-header) | `Content-Type: application/json` | Benanntes Feld und einzeiliger Wert |
+| [Markdown-Überschrift](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=markdown-heading) | `# Hello` | Ein bis sechs # und eine Überschrift |
+| [SemVer-2.0-Syntax](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | `1.2.3-alpha.1+001` | Kern-, Vorab- und Build-Syntax; kein Versionsvergleich |
+| [Git-Hash-Form](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=git-object-hash) | `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` | 40 oder 64 ASCII-Hexzeichen; Existenz separat prüfen |
+| [Wortwiederholung](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | `hello hello` | Benannte Rückreferenz auf ein ASCII-Wort |
+| [Benachbarte Duplikate](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=duplicate-token) | `item,item` | Ein kommagetrenntes Paar mit je 1–16 Wortzeichen |
+| [Unicode-Buchstaben](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=unicode-word) | `العربية / اردو` | Native Eigenschaften L/M, auch Arabisch und Urdu |
+| [Log-Felder](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | Benannte Felder level und code aus einem Suchfragment |
+| [Suchen und Ersetzen](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | Exakte Positionen, Gruppen und Ersetzung ohne g |
+
+Die Quellversion enthält **31 Rezepte, 24 Kategorien und drei Schwierigkeitsstufen**. Titel, Grenzen und Regeln sind in den vier Oberflächensprachen durchsuchbar; Filter sind kombinierbar. Diese Ergänzungen sind noch nicht in dev.6 veröffentlicht. Siehe den [Bibliotheksleitfaden](../EXAMPLE_LIBRARY.md).
 
 Es sind **Formprüfungen**. Ungültige Daten und `25:99` können passen; Kalender und Wertebereiche separat prüfen. IPv4 begrenzt Oktette nicht auf 255. UUID prüft weder Version, Variante noch Eindeutigkeit. Benutzerverfügbarkeit, Rechnungsregister und Telefonnummerngültigkeit bleiben extern. Die Versionsform ist kein vollständiges SemVer; Farben erfordern `#RRGGBB`. Dateisystemregeln sind separat.
 

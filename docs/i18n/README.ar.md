@@ -248,8 +248,23 @@ end
 | [شكل إصدار](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | <code dir="ltr">1.2.3</code> | ثلاثة أجزاء رقمية |
 | [محارف مستثناة](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | <code dir="ltr">xyz</code> | نص دون المحارف المختارة |
 | [قاعدة سطر](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | <code dir="ltr">item 123</code> | سطر ينتهي بثلاثة أرقام على الأقل |
+| [اسم مسار بأحرف صغيرة](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=slug) | <code dir="ltr">hello-world</code> | حروف وأرقام <code dir="ltr">ASCII</code> يفصل بينها واصل واحد |
+| [امتداد ملف](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=file-extension) | <code dir="ltr">README.md</code> | لاحقة <code dir="ltr">txt</code> أو <code dir="ltr">md</code> أو <code dir="ltr">json</code> حساسة لحالة الأحرف |
+| [شكل توقيت UTC](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=iso8601-shape) | <code dir="ltr">2026-10-11T09:30:00Z</code> | كسور ثانية اختيارية؛ يُفحص التقويم منفصلًا |
+| [شكل رابط HTTPS](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=https-url-shape) | <code dir="ltr">https://example.com</code> | مجموعة محدودة من أسماء المضيف؛ ليست تحققًا كاملًا للرابط |
+| [حقل ترويسة](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=http-header) | <code dir="ltr">Content-Type: application/json</code> | حقل مسمى وقيمة في سطر واحد |
+| [عنوان Markdown](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=markdown-heading) | <code dir="ltr"># Hello</code> | من علامة <code dir="ltr">#</code> واحدة إلى ست ثم عنوان |
+| [صياغة SemVer 2.0](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | <code dir="ltr">1.2.3-alpha.1+001</code> | صياغة الأجزاء الأساسية والتمهيدية والبناء؛ دون مقارنة الأولوية |
+| [شكل بصمة Git](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=git-object-hash) | <code dir="ltr">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</code> | <code dir="ltr">40</code> أو <code dir="ltr">64</code> رمزًا سداسيًا؛ يُفحص وجود الكائن منفصلًا |
+| [كلمتان متكررتان](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | <code dir="ltr">hello hello</code> | مرجع خلفي مسمى لكلمة <code dir="ltr">ASCII</code> |
+| [تكرار متجاور](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=duplicate-token) | <code dir="ltr">item,item</code> | زوج واحد تفصله فاصلة؛ من <code dir="ltr">1</code> إلى <code dir="ltr">16</code> رمز كلمة لكل عنصر |
+| [حروف Unicode](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=unicode-word) | <code dir="ltr">العربية / اردو</code> | خصائص <code dir="ltr">L/M</code> الأصلية، بما فيها العربية والأردية |
+| [حقول سجل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | <code dir="ltr">INFO code=200</code> | حقلا <code dir="ltr">level</code> و<code dir="ltr">code</code> من مقطع يجري البحث فيه |
+| [البحث والاستبدال](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | <code dir="ltr">teh then teh → the then teh</code> | توقعات دقيقة للمواقع والمجموعات والاستبدال دون <code dir="ltr">g</code> |
 
-تتحقق الوصفات من **الشكل**. قد يطابق تاريخ مستحيل أو وقت مثل <code dir="ltr">25:99</code>؛ تحقّق من التقويم والمدى العددي في التطبيق. لا تحد IPv4 كل جزء إلى 255. لا يضمن UUID الإصدار أو المتغير أو التفرد. لا تتحقق وصفات الهاتف والفاتورة من أي سجل، ولا يتحقق اسم المستخدم من التوافر. وصفة الإصدار ليست مدقق SemVer كاملًا. يتطلب اللون <code dir="ltr">#RRGGBB</code>؛ وتظل قواعد نظام الملفات منفصلة.
+تضم مكتبة المصدر الآن **31 وصفة و24 فئة وثلاثة مستويات للصعوبة**. ابحث في العناوين والحدود والقواعد بلغات الواجهة الأربع واجمع المرشحات. هذه الإضافات غير منشورة بعد في <code dir="ltr">dev.6</code>. راجع [دليل المكتبة](../EXAMPLE_LIBRARY.md).
+
+تتحقق الوصفات من **الشكل**. قد يطابق تاريخ مستحيل أو وقت مثل <code dir="ltr">25:99</code>؛ تحقّق من التقويم والمدى العددي في التطبيق. لا تحد IPv4 كل جزء إلى 255. لا يضمن UUID الإصدار أو المتغير أو التفرد. لا تتحقق وصفات الهاتف والفاتورة من أي سجل، ولا يتحقق اسم المستخدم من التوافر. وصفة شكل رقم الإصدار ليست مدققًا كاملًا لصياغة <code dir="ltr">SemVer</code>. يتطلب اللون <code dir="ltr">#RRGGBB</code>؛ وتظل قواعد نظام الملفات منفصلة.
 
 ## 🏗️ أنماط أكبر تظل مقروءة
 

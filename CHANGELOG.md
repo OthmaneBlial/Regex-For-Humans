@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Expand the shared gallery to 31 recipes across all 24 requested categories and three difficulty levels. Add literal search across English/current-language titles, scope notes, rules and labels, combined category/level filters, empty-result feedback and clearing without changing the workspace. Translate controls, titles and limitations in all four interface languages and retain complete Arabic/Urdu RTL README coverage.
+- Add separate SemVer 2.0 syntax, Unicode letters/marks, URL/header/Markdown fragments, named log extraction, adjacent duplicate references and exact replacement examples with explicit scope limits. Preserve single-block alternatives during reverse translation without accumulating redundant noncapturing groups.
+
 - Add per-example exact UTF-16 spans, ordered capture values, absent/empty capture expectations and JavaScript string replacement results. Validate the whole batch before native matching, snapshot expectations, verify reply comparisons and reject exact expectations on truncated match lists. Bound native replacement execution inside the existing worker deadline, retaining original flags and native string token semantics.
 - Add versioned test fixture JSON import/export and manual local save/restore for regression preservation. Validate files before applying, retain malformed editable expectation drafts, preserve imported example CR/CRLF until actual field editing, and cancel stale file reads after newer changes. Recover from corrupt files, denied storage and quota errors without changing current work; translate controls through all four interface languages.
 

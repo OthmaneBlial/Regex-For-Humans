@@ -759,7 +759,8 @@ export function regexToRules(regex) {
           if (count === 0) {
             addRule("group {", branch.index);
             addRule("}", atom.alternation.close);
-          } else if (count > 1) {
+          } else if (count > 1 && branch.atoms.length !== 1) {
+            // A single block already represents the entire alternative.
             rules.splice(before, 0, "group {");
             positions.splice(before, 0, branch.index);
             addRule("}", atom.alternation.close);

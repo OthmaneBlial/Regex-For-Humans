@@ -1,6 +1,8 @@
 [
   {
     "id": "prefixed-identifier",
+    "categories": ["identifiers"],
+    "level": "beginner",
     "title": "Validate a prefixed identifier",
     "note": "ABC followed by exactly three digits. Ignore case also permits abc123.",
     "rules": "start \"ABC\"\n3 digits\nend",
@@ -12,6 +14,8 @@
   },
   {
     "id": "excluded-characters",
+    "categories": ["identifiers"],
+    "level": "beginner",
     "title": "Exclude characters",
     "note": "Empty strings are allowed. The recipe excludes a, b, c and d; Ignore case also excludes A, B, C and D.",
     "rules": "start\ntext without: a, b, c, d\nend",
@@ -23,6 +27,8 @@
   },
   {
     "id": "line-rule",
+    "categories": ["structured-extraction"],
+    "level": "beginner",
     "title": "Read a line rule",
     "note": "Search mode finds a line ending with at least three digits; the prefix may include more digits. Entire string mode requires the match to cover the whole example.",
     "rules": "line start\nany text\n3 digits\nline end",
@@ -34,6 +40,8 @@
   },
   {
     "id": "date-shape",
+    "categories": ["dates", "named-fields"],
+    "level": "beginner",
     "title": "Match a date shape",
     "note": "YYYY-MM-DD shape only. Impossible dates such as 2026-02-31 also match; validate calendar values separately.",
     "rules": "start\ncapture \"year\" {\n4 digits\n}\n\"-\"\ncapture \"month\" {\n2 digits\n}\n\"-\"\ncapture \"day\" {\n2 digits\n}\nend",
@@ -45,6 +53,8 @@
   },
   {
     "id": "version-shape",
+    "categories": ["version-numbers"],
+    "level": "beginner",
     "title": "Match a version shape",
     "note": "Three numeric parts with literal dots. Leading zeros are allowed, and prerelease suffixes are rejected. This is not full SemVer.",
     "rules": "start\ndigits\n\".\"\ndigits\n\".\"\ndigits\nend",
@@ -56,6 +66,8 @@
   },
   {
     "id": "hex-color",
+    "categories": ["hex-colors"],
+    "level": "beginner",
     "title": "Match a hex color",
     "note": "Six hex digits after #, in either letter case. Only #RRGGBB; no shorthand, alpha or other CSS color forms.",
     "rules": "start \"#\"\n6 hex digits\nend",
@@ -67,6 +79,8 @@
   },
   {
     "id": "mac-address-shape",
+    "categories": ["identifiers"],
+    "level": "intermediate",
     "title": "Match a MAC address shape",
     "note": "Six colon-separated pairs of ASCII hexadecimal digits. Shape only; check address allocation separately.",
     "rules": "start\n2 hex digits\n\":\"\n2 hex digits\n\":\"\n2 hex digits\n\":\"\n2 hex digits\n\":\"\n2 hex digits\n\":\"\n2 hex digits\nend",
@@ -86,6 +100,8 @@
   },
   {
     "id": "uuid-shape",
+    "categories": ["uuids", "identifiers"],
+    "level": "intermediate",
     "title": "Match a UUID shape",
     "note": "Five ASCII hexadecimal groups of 8–4–4–4–12 characters, in either letter case. Bare text only; no braces or urn:uuid: prefix. Shape only; check version, variant and uniqueness separately.",
     "rules": "start\n8 hex digits\n\"-\"\n4 hex digits\n\"-\"\n4 hex digits\n\"-\"\n4 hex digits\n\"-\"\n12 hex digits\nend",
@@ -112,6 +128,8 @@
   },
   {
     "id": "product-code-shape",
+    "categories": ["identifiers"],
+    "level": "beginner",
     "title": "Match a case-sensitive product-code shape",
     "note": "Two uppercase ASCII letters, three lowercase ASCII letters and four digits. JavaScript's i option ignores case; verify product records separately.",
     "rules": "start\n2 uppercase letters\n\"-\"\n3 lowercase letters\n\"-\"\n4 digits\nend",
@@ -131,6 +149,8 @@
   },
   {
     "id": "invoice-number",
+    "categories": ["identifiers"],
+    "level": "beginner",
     "title": "Match an invoice ID shape",
     "note": "INV- followed by 2–6 ASCII digits. Leading zeros are allowed; verify invoice records separately.",
     "rules": "start \"INV-\"\nbetween 2 and 6 digits\nend",
@@ -142,6 +162,8 @@
   },
   {
     "id": "username-shape",
+    "categories": ["usernames"],
+    "level": "beginner",
     "title": "Match a username shape",
     "note": "3–16 ASCII word characters, starting with a letter; digits and underscores may follow. Check availability and service rules separately. Ignore case also permits Unicode case-folding equivalents.",
     "rules": "start letter\nbetween 2 and 15 word characters\nend",
@@ -164,6 +186,8 @@
   },
   {
     "id": "time-shape",
+    "categories": ["times"],
+    "level": "beginner",
     "title": "Match a time shape",
     "note": "HH:MM shape only, using ASCII digits. Values such as 25:99 also match; validate hour and minute ranges separately.",
     "rules": "start\n2 digits\n\":\"\n2 digits\nend",
@@ -185,6 +209,8 @@
   },
   {
     "id": "phone-shape",
+    "categories": ["identifiers"],
+    "level": "beginner",
     "title": "Match a phone-number shape",
     "note": "Optional + followed by 7–15 ASCII digits, without spaces or punctuation. Leading zeros are allowed. This is only a shape; check country rules and number validity separately.",
     "rules": "start\noptional \"+\"\nbetween 7 and 15 digits\nend",
@@ -210,6 +236,8 @@
   },
   {
     "id": "ipv4-shape",
+    "categories": ["ipv4"],
+    "level": "beginner",
     "title": "Match an IPv4 address shape",
     "note": "Four dot-separated groups of 1–3 ASCII digits. Values above 255 and leading zeros match too; validate octet ranges and network rules separately.",
     "rules": "start\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\nend",
@@ -228,6 +256,8 @@
   },
   {
     "id": "filename-shape",
+    "categories": ["filenames"],
+    "level": "beginner",
     "title": "Match a .txt filename shape",
     "note": "1–64 Unicode code points before .txt, excluding slash, backslash, NUL and line breaks. Spaces, dots and other punctuation are allowed. This is only a shape; check filesystem rules and file existence separately.",
     "rules": "start\nbetween 1 and 64 path segment characters\n\".txt\"\nend",
@@ -261,6 +291,8 @@
   },
   {
     "id": "artifact-manifest",
+    "categories": ["filenames", "version-numbers", "structured-extraction"],
+    "level": "expert",
     "title": "Read a complex artifact manifest",
     "note": "Synthetic TSV record: optional nightly/ directory, a 1–32 character project name, version, artifact filename, 64 hex digits and byte count. Checks shape only, not files, dates, versions or checksum contents.",
     "rules": "start\n\"incoming/\"\noptional \"nightly/\"\nbetween 1 and 32 path segment characters\n\"/v\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\"/linux-arm64/widget_\"\n8 digits\n\"_\"\n8 hex digits\n\".tar.gz\\t\"\n64 hex digits\n\"\\t\"\nbetween 1 and 12 digits\nend",
@@ -283,6 +315,8 @@
   },
   {
     "id": "access-log",
+    "categories": ["structured-extraction"],
+    "level": "expert",
     "title": "Read a complex access log",
     "note": "Synthetic access-log record: address, timestamp, quoted request, status, size, referer and user agent. Shape only; validate IP, calendar and HTTP values separately. Does not extract fields.",
     "rules": "start\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\".\"\nbetween 1 and 3 digits\n\" - \"\nbetween 1 and 32 none of: \" \", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\" [\"\n2 digits\n\"/\"\n3 letters\n\"/\"\n4 digits\n\":\"\n2 digits\n\":\"\n2 digits\n\":\"\n2 digits\n\" \"\none of: \"+\", \"-\"\n4 digits\n\"] \\\"\"\nbetween 3 and 7 uppercase letters\n\" \"\nbetween 1 and 200 none of: \" \", \"\\\"\", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\" HTTP/\"\ndigit\n\".\"\ndigit\n\"\\\" \"\n3 digits\n\" \"\nbetween 1 and 10 digits\n\" \\\"\"\nbetween 1 and 200 none of: \"\\\"\", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\"\\\" \\\"\"\nbetween 1 and 200 none of: \"\\\"\", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\"\\\"\"\nend",
@@ -304,6 +338,8 @@
   },
   {
     "id": "structured-event",
+    "categories": ["structured-extraction"],
+    "level": "expert",
     "title": "Read a complex telemetry event",
     "note": "Synthetic telemetry record: timestamp, service, trace/span IDs, request and duration, with independent optional lane value and retry=true suffix. Shape only; validate timestamps, HTTP values and identifiers separately.",
     "rules": "start\n4 digits\n\"-\"\n2 digits\n\"-\"\n2 digits\n\"T\"\n2 digits\n\":\"\n2 digits\n\":\"\n2 digits\n\".\"\n3 digits\n\"Z level=\"\nbetween 4 and 5 uppercase letters\n\" service=\"\nbetween 3 and 30 word characters\n\" trace=\"\n32 hex digits\n\" span=\"\n16 hex digits\n\" method=\"\nbetween 3 and 7 uppercase letters\n\" route=\"\nbetween 1 and 200 none of: \" \", \"\\n\", \"\\r\", \"\\u2028\", \"\\u2029\"\n\" status=\"\n3 digits\n\" bytes=\"\nbetween 1 and 10 digits\n\" duration=\"\nbetween 1 and 7 digits\n\".\"\n3 digits\n\"ms lane=\"\noptional one of: \"A\", \"B\", \"C\"\noptional \" retry=true\"\nend",
@@ -322,6 +358,233 @@
       "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane=A retry=true",
       "2026-10-01T14:23:05.123Z level=INFO service=api_1 trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.50ms lane=A retry=true",
       "2026-10-01T14:23:05.123Z level=INFO service=api-prod trace=0123456789abcdef0123456789abcdef span=0123456789abcdef method=POST route=/v1/users/42 status=201 bytes=1234 duration=26.500ms lane=A retry=true"
+    ]
+  },
+  {
+    "id": "slug",
+    "title": "Match a lowercase slug",
+    "note": "ASCII letters and digits separated by single hyphens; no leading, trailing or repeated hyphen. Ignore case broadens the letter set.",
+    "categories": ["slugs"],
+    "level": "beginner",
+    "rules": "start\none or more character class: range \"a\" to \"z\", digit\nzero or more group {\n  \"-\"\n  one or more character class: range \"a\" to \"z\", digit\n}\nend",
+    "source": "^[a-z\\d]+(?:-[a-z\\d]+)*$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["hello-world", "release-2026", "7"],
+    "negative": ["Hello", "-hello", "hello-", "hello--world", ""]
+  },
+  {
+    "id": "file-extension",
+    "title": "Find a file extension",
+    "note": "Searches for a case-sensitive txt, md or json suffix, including a bare extension. Does not validate the filename or filesystem.",
+    "categories": ["file-extensions"],
+    "level": "beginner",
+    "rules": "\".\"\ncapture \"extension\" {\n  either {\n    \"txt\"\n    \"md\"\n    \"json\"\n  }\n}\nend",
+    "source": "\\.(?<extension>(?:txt|md|json))$",
+    "flags": "u",
+    "matchMode": "search",
+    "positive": ["report.txt", "README.md", ".json"],
+    "negative": ["report.TXT", "report.txt.bak", "report.js"]
+  },
+  {
+    "id": "iso8601-shape",
+    "title": "Match a UTC timestamp shape",
+    "note": "YYYY-MM-DDTHH:MM:SS with optional 1–9 fractional digits and Z. Impossible dates and times can match; offsets and calendar validation are outside this recipe.",
+    "categories": ["iso-8601"],
+    "level": "intermediate",
+    "rules": "start\n4 digits\n\"-\"\n2 digits\n\"-\"\n2 digits\n\"T\"\n2 digits\n\":\"\n2 digits\n\":\"\n2 digits\noptional group {\n  \".\"\n  between 1 and 9 digits\n}\n\"Z\"\nend",
+    "source": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,9}){0,1}Z$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["2026-10-11T09:30:00Z", "2026-10-11T09:30:00.123456789Z", "2026-99-99T99:99:99Z"],
+    "negative": ["2026-10-11 09:30:00Z", "2026-10-11T09:30:00+02:00", "2026-10-11T09:30:00.Z"]
+  },
+  {
+    "id": "https-url-shape",
+    "title": "Match a simple HTTPS URL shape",
+    "note": "A lowercase https scheme, ASCII hostname components and an optional slash path without whitespace. Not a standards-complete URL or DNS validator; no ports, userinfo or IPv6.",
+    "categories": ["urls"],
+    "level": "intermediate",
+    "rules": "start\n\"https://\"\none or more character class: range \"A\" to \"Z\", range \"a\" to \"z\", digit\nzero or more group {\n  one of: \"-\", \".\"\n  one or more character class: range \"A\" to \"Z\", range \"a\" to \"z\", digit\n}\noptional group {\n  \"/\"\n  zero or more not space\n}\nend",
+    "source": "^https:\\/\\/[A-Za-z\\d]+(?:[\\-.][A-Za-z\\d]+)*(?:\\/\\S*){0,1}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": [
+      "https://example.com",
+      "https://localhost/",
+      "https://docs.example.com/a?x=1#intro"
+    ],
+    "negative": [
+      "http://example.com",
+      "https://",
+      "https://example.com:443",
+      "https://example.com/a b"
+    ]
+  },
+  {
+    "id": "http-header",
+    "title": "Extract a simple header field",
+    "note": "One ASCII letter/hyphen field name, colon, one space and a nonempty single-line value. A small header fragment, not the complete HTTP field grammar or a message parser.",
+    "categories": ["http-headers", "named-fields"],
+    "level": "intermediate",
+    "rules": "start\ncapture \"field\" {\n  one or more character class: range \"A\" to \"Z\", range \"a\" to \"z\", \"-\"\n}\n\": \"\ncapture \"value\" {\n  one or more none of: \"\\r\", \"\\n\", \"\\u0000\", \"\\u2028\", \"\\u2029\"\n}\nend",
+    "source": "^(?<field>[A-Za-z\\-]+): (?<value>[^\\u{d}\\u{a}\\u{0}\\u{2028}\\u{2029}]+)$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["Content-Type: application/json", "X-Trace: abc123"],
+    "negative": [
+      "Content-Type:",
+      "Content-Type: ",
+      "Content-Type:application/json",
+      "X_Trace: a",
+      "X-Trace: a\nb"
+    ]
+  },
+  {
+    "id": "markdown-heading",
+    "title": "Match a Markdown heading fragment",
+    "note": "One to six # characters, a space and a nonempty single-line heading. Does not parse Markdown block context, optional closing markers or escaping.",
+    "categories": ["markdown"],
+    "level": "beginner",
+    "rules": "start\nbetween 1 and 6 \"#\"\n\" \"\ncapture \"heading\" {\n  one or more none of: \"\\r\", \"\\n\", \"\\u2028\", \"\\u2029\"\n}\nend",
+    "source": "^#{1,6} (?<heading>[^\\u{d}\\u{a}\\u{2028}\\u{2029}]+)$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["# Hello", "###### Details", "## العربية"],
+    "negative": ["####### Too deep", "#No space", "# ", "plain text"]
+  },
+  {
+    "id": "semantic-version",
+    "title": "Validate SemVer 2.0 syntax",
+    "note": "Checks core numbers, prerelease identifiers and build metadata under SemVer 2.0. Numeric prerelease identifiers cannot have leading zeros; build identifiers can. Does not compare precedence or verify releases.",
+    "categories": ["semantic-versions"],
+    "level": "expert",
+    "rules": "start\ncapture \"major\" {\n  either {\n    \"0\"\n    group {\n      range \"1\" to \"9\"\n      zero or more digit\n    }\n  }\n}\n\".\"\ncapture \"minor\" {\n  either {\n    \"0\"\n    group {\n      range \"1\" to \"9\"\n      zero or more digit\n    }\n  }\n}\n\".\"\ncapture \"patch\" {\n  either {\n    \"0\"\n    group {\n      range \"1\" to \"9\"\n      zero or more digit\n    }\n  }\n}\noptional group {\n  \"-\"\n  capture \"prerelease\" {\n    either {\n      \"0\"\n      group {\n        range \"1\" to \"9\"\n        zero or more digit\n      }\n      group {\n        zero or more digit\n        character class: range \"A\" to \"Z\", range \"a\" to \"z\", \"-\"\n        zero or more character class: range \"A\" to \"Z\", range \"a\" to \"z\", digit, \"-\"\n      }\n    }\n    zero or more group {\n      \".\"\n      either {\n        \"0\"\n        group {\n          range \"1\" to \"9\"\n          zero or more digit\n        }\n        group {\n          zero or more digit\n          character class: range \"A\" to \"Z\", range \"a\" to \"z\", \"-\"\n          zero or more character class: range \"A\" to \"Z\", range \"a\" to \"z\", digit, \"-\"\n        }\n      }\n    }\n  }\n}\noptional group {\n  \"+\"\n  capture \"build\" {\n    one or more character class: range \"A\" to \"Z\", range \"a\" to \"z\", digit, \"-\"\n    zero or more group {\n      \".\"\n      one or more character class: range \"A\" to \"Z\", range \"a\" to \"z\", digit, \"-\"\n    }\n  }\n}\nend",
+    "source": "^(?<major>(?:0|(?:[1-9]\\d*)))\\.(?<minor>(?:0|(?:[1-9]\\d*)))\\.(?<patch>(?:0|(?:[1-9]\\d*)))(?:-(?<prerelease>(?:0|(?:[1-9]\\d*)|(?:\\d*[A-Za-z\\-][A-Za-z\\d\\-]*))(?:\\.(?:0|(?:[1-9]\\d*)|(?:\\d*[A-Za-z\\-][A-Za-z\\d\\-]*)))*)){0,1}(?:\\+(?<build>[A-Za-z\\d\\-]+(?:\\.[A-Za-z\\d\\-]+)*)){0,1}$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["0.0.0", "1.2.3", "1.2.3-alpha.1", "1.2.3-00a+001", "10.20.30-beta-x.0+build.007"],
+    "negative": [
+      "01.2.3",
+      "1.2",
+      "1.2.3-01",
+      "1.2.3-alpha.01",
+      "1.2.3-alpha..1",
+      "1.2.3+",
+      "1.2.3+build_1"
+    ]
+  },
+  {
+    "id": "git-object-hash",
+    "title": "Match a Git object hash shape",
+    "note": "Exactly 40 or 64 ASCII hexadecimal characters for SHA-1 or SHA-256 object-name shapes. Does not check the algorithm, repository object existence or abbreviated names.",
+    "categories": ["git-hashes"],
+    "level": "beginner",
+    "rules": "start\neither {\n  40 hex digits\n  64 hex digits\n}\nend",
+    "source": "^(?:[0-9A-Fa-f]{40}|[0-9A-Fa-f]{64})$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0"
+    ],
+    "negative": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "gggggggggggggggggggggggggggggggggggggggg",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "id": "repeated-word",
+    "title": "Match two repeated words",
+    "note": "Two identical case-sensitive ASCII letter sequences separated by one space. A backward named reference; not language-aware word segmentation or arbitrary duplicate detection.",
+    "categories": ["repeated-words"],
+    "level": "intermediate",
+    "rules": "start\ncapture \"word\" {\n  letters\n}\n\" \"\nsame as capture \"word\"\nend",
+    "source": "^(?<word>[A-Za-z]+) \\k<word>$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["hello hello", "A A"],
+    "negative": ["hello Hello", "hello world", "hello  hello", "été été"]
+  },
+  {
+    "id": "duplicate-token",
+    "title": "Detect adjacent duplicate tokens",
+    "note": "Two identical 1–16 ASCII word-character tokens separated by a comma. Checks one adjacent pair, not an entire list or non-adjacent duplicates.",
+    "categories": ["duplicate-detection"],
+    "level": "intermediate",
+    "rules": "start\ncapture \"token\" {\n  between 1 and 16 word characters\n}\n\",\"\nsame as capture \"token\"\nend",
+    "source": "^(?<token>\\w{1,16}),\\k<token>$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["item,item", "A_7,A_7", "1,1"],
+    "negative": ["a,b", "a, a", "a,a,a", "aaaaaaaaaaaaaaaaa,aaaaaaaaaaaaaaaaa"]
+  },
+  {
+    "id": "unicode-word",
+    "title": "Match Unicode letters and marks",
+    "note": "A Unicode letter followed by letters or combining marks, including Arabic and Urdu. Uses native L/M properties; no normalization, grapheme counting or complete identifier validation.",
+    "categories": ["unicode-text"],
+    "level": "intermediate",
+    "rules": "start\nunicode property \"L\"\nzero or more character class: unicode property \"L\", unicode property \"M\"\nend",
+    "source": "^\\p{L}[\\p{L}\\p{M}]*$",
+    "flags": "u",
+    "matchMode": "full",
+    "positive": ["中文", "العربية", "اردو", "हिन्दी", "café", "é"],
+    "negative": ["", "́a", "hello-world", "word7", "😀"]
+  },
+  {
+    "id": "log-fields",
+    "title": "Extract named fields from a log fragment",
+    "note": "Searches for INFO, WARN or ERROR followed by code= and three ASCII digits. Extracts level and code; does not parse a complete log format or validate HTTP status semantics.",
+    "categories": ["log-extraction", "named-fields", "structured-extraction"],
+    "level": "intermediate",
+    "rules": "capture \"level\" {\n  either {\n    \"INFO\"\n    \"WARN\"\n    \"ERROR\"\n  }\n}\n\" code=\"\ncapture \"code\" {\n  3 digits\n}",
+    "source": "(?<level>(?:INFO|WARN|ERROR)) code=(?<code>\\d{3})",
+    "flags": "u",
+    "matchMode": "search",
+    "positive": ["INFO code=200", "prefix WARN code=404 suffix", "ERROR code=999"],
+    "negative": ["DEBUG code=200", "INFO code=20", "INFO status=200"]
+  },
+  {
+    "id": "replace-word",
+    "title": "Search and replace a typo",
+    "note": "Finds case-sensitive teh at native ASCII word boundaries. Displays every search match, but the non-global replacement changes only the first occurrence; enabling g changes the expectation.",
+    "categories": ["search-replacement"],
+    "level": "intermediate",
+    "rules": "word boundary\ncapture \"word\" {\n  \"teh\"\n}\nword boundary",
+    "source": "\\b(?<word>teh)\\b",
+    "flags": "u",
+    "matchMode": "search",
+    "positive": ["teh", "teh then teh", "fix teh."],
+    "negative": ["the", "TEH", "tehran"],
+    "expectations": [
+      {
+        "spans": [[0, 3]],
+        "captures": [["teh"]],
+        "replacement": {
+          "template": "the",
+          "result": "the"
+        }
+      },
+      {
+        "spans": [[0, 3], [9, 12]],
+        "captures": [["teh"], ["teh"]],
+        "replacement": {
+          "template": "the",
+          "result": "the then teh"
+        }
+      },
+      {
+        "spans": [[4, 7]],
+        "captures": [["teh"]],
+        "replacement": {
+          "template": "the",
+          "result": "fix the."
+        }
+      }
     ]
   }
 ]

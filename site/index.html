@@ -27,7 +27,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css?v=c36c50783b5b">
   <link rel="preload" href="./assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <script type="module" src="./app.js?v=5f8d8ab03625"></script>
+  <script type="module" src="./app.js?v=0706a556b33c"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -110,6 +110,19 @@ end</code></pre></div>
         <a class="recipe-card" href="./workshop/?example=version-shape"><span aria-hidden="true">📦</span><h3>Spot a version shape</h3><code>1.2.3</code><p>Three numeric parts. Not full SemVer.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
         <a class="recipe-card" href="./workshop/?example=excluded-characters"><span aria-hidden="true">🚧</span><h3>Keep characters out</h3><code>text without: a, b</code><p>Choose which characters to exclude.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
         <a class="recipe-card" href="./workshop/?example=line-rule"><span aria-hidden="true">📝</span><h3>Read between lines</h3><code>item 123</code><p>A line ending in at least three digits.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=slug"><span aria-hidden="true">🔗</span><h3>Match a lowercase slug</h3><code dir="ltr">hello-world</code><p>Lowercase ASCII words separated by single hyphens.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=file-extension"><span aria-hidden="true">📎</span><h3>Find a file extension</h3><code dir="ltr">README.md</code><p>Search txt, md or json suffixes; filename validity stays separate.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=iso8601-shape"><span aria-hidden="true">🕒</span><h3>Match a UTC timestamp shape</h3><code dir="ltr">2026-10-11T09:30:00Z</code><p>Optional fractions and Z. Calendar and range checks stay separate.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=https-url-shape"><span aria-hidden="true">🌐</span><h3>Match a simple HTTPS URL shape</h3><code dir="ltr">https://example.com</code><p>A small ASCII-host subset, not complete URL validation.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=http-header"><span aria-hidden="true">📨</span><h3>Extract a simple header field</h3><code dir="ltr">Content-Type: application/json</code><p>Named field and single-line value, not a full HTTP parser.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=markdown-heading"><span aria-hidden="true">📝</span><h3>Match a Markdown heading fragment</h3><code dir="ltr"># Hello</code><p>One to six # characters and a title, not a Markdown parser.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=semantic-version"><span aria-hidden="true">📦</span><h3>Validate SemVer 2.0 syntax</h3><code dir="ltr">1.2.3-alpha.1+001</code><p>Core, prerelease and build syntax; no precedence comparison.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=git-object-hash"><span aria-hidden="true">🔑</span><h3>Match a Git object hash shape</h3><code dir="ltr">40 / 64 hex digits</code><p>Hex shape only. Verify repository object existence separately.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=repeated-word"><span aria-hidden="true">🔁</span><h3>Match two repeated words</h3><code dir="ltr">hello hello</code><p>A named reference to the preceding ASCII word.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=duplicate-token"><span aria-hidden="true">🔍</span><h3>Detect adjacent duplicate tokens</h3><code dir="ltr">item,item</code><p>One adjacent comma-separated pair; not whole-list deduplication.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=unicode-word"><span aria-hidden="true">🌍</span><h3>Match Unicode letters and marks</h3><code dir="ltr">العربية / اردو</code><p>Native Unicode letters and marks; no normalization or grapheme counting.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=log-fields"><span aria-hidden="true">📋</span><h3>Extract named fields from a log fragment</h3><code dir="ltr">INFO code=200</code><p>Extract level and code from a searched log fragment.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
+        <a class="recipe-card" href="./workshop/?example=replace-word"><span aria-hidden="true">✏️</span><h3>Search and replace a typo</h3><code dir="ltr">teh → the</code><p>Preloaded exact spans, captures and non-global replacement checks.</p><span class="recipe-arrow" aria-hidden="true">↗</span></a>
       </div>
       <p class="scope-note">🏗️ Ready for bigger patterns? <a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md">Explore four complex examples ↗</a>: access logs, telemetry, artifact manifests and multiline documents, with every fragment explained.</p>
     </section>

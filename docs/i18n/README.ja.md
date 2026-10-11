@@ -159,8 +159,23 @@ end
 | [バージョン](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | `1.2.3` | 3つの数値部分 |
 | [文字の除外](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | `xyz` | 選んだ文字を含まないテキスト |
 | [行のルール](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | `item 123` | 末尾が3桁以上の行 |
+| [小文字のスラッグ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=slug) | `hello-world` | ASCII 英数字を単一のハイフンで区切る |
+| [ファイル拡張子](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=file-extension) | `README.md` | 大文字小文字を区別する txt、md、json の接尾辞 |
+| [UTC タイムスタンプの形](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=iso8601-shape) | `2026-10-11T09:30:00Z` | 小数秒は任意。カレンダーの検証は別途必要 |
+| [HTTPS URL の形](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=https-url-shape) | `https://example.com` | ASCII ホストの部分集合。完全な URL 検証ではない |
+| [ヘッダーフィールド](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=http-header) | `Content-Type: application/json` | 名前付きフィールドと1行の値 |
+| [Markdown 見出し](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=markdown-heading) | `# Hello` | 1～6個の # と見出し |
+| [SemVer 2.0 構文](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | `1.2.3-alpha.1+001` | コア、プレリリース、ビルドの構文。優先順位比較は行わない |
+| [Git ハッシュの形](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=git-object-hash) | `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` | 40桁または64桁の ASCII 16進数。存在確認は別途必要 |
+| [単語の繰り返し](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | `hello hello` | ASCII 単語への名前付き後方参照 |
+| [隣接する重複](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=duplicate-token) | `item,item` | コンマで区切った1～16文字のトークンのペア |
+| [Unicode 文字](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=unicode-word) | `العربية / اردو` | アラビア語とウルドゥー語を含むネイティブ L/M プロパティ |
+| [ログのフィールド](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | 検索した断片から level と code を抽出 |
+| [検索と置換](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | 位置、キャプチャ、g なしの置換を厳密に検証 |
 
-これらは**形の検査**です。存在しない日付や `25:99` も一致します。IPv4 の各値は255以下に制限されず、UUID のバージョン・バリアント・一意性も検査しません。ユーザー名の空き、請求記録、電話番号の有効性、カレンダー、ファイルシステムの制約は別途確認してください。バージョンは完全な SemVer ではなく、色は `#RRGGBB` のみです。
+ソース版のライブラリには **31 レシピ、24 カテゴリ、3 難易度**があります。4つの UI 言語でタイトル、制限、ルールを検索し、フィルターを組み合わせられます。これらの追加は公開済み dev.6 にはまだ含まれません。[ガイド](../EXAMPLE_LIBRARY.md)を参照してください。
+
+これらは**形の検査**です。存在しない日付や `25:99` も一致します。IPv4 の各値は255以下に制限されず、UUID のバージョン・バリアント・一意性も検査しません。ユーザー名の空き、請求記録、電話番号の有効性、カレンダー、ファイルシステムの制約は別途確認してください。単純なバージョン形式は完全な SemVer ではなく、色は `#RRGGBB` のみです。
 
 ## 🏗️ 大きなパターンも読みやすく
 

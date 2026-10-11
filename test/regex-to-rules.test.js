@@ -20,6 +20,25 @@ test("every shared recipe translates back to rules with the same regex and flags
   }
 });
 
+test("single block alternatives round-trip without accumulating redundant groups", () => {
+  for (const source of ["^(?:(?:a+)|b)$", "^(?:(?<word>a+)|b)$", "^(?:(?=a)|b)$"]) {
+    for (const flags of ["u", "iu", "gu", "du"]) {
+      const original = new RegExp(source, flags);
+      const translated = regexToRules(original);
+      const first = compile(translated.rules, { flags: translated.flags });
+      assert.equal(first.source, source);
+      const imported = regexToRules(new RegExp(first.source, first.flags));
+      const second = compile(imported.rules, { flags: imported.flags });
+      assert.equal(second.source, first.source);
+      assert.equal(second.flags, first.flags);
+      for (const sample of ["", "a", "aa", "b", "ab", "A"]) {
+        original.lastIndex = 0;
+        assert.deepEqual(new RegExp(first.source, first.flags).exec(sample), original.exec(sample));
+      }
+    }
+  }
+});
+
 test("genuine regexes from another context translate with the same rules, flags and diagnostics", () => {
   for (const source of [
     "^😀[A-Z]{2}$",

@@ -41,6 +41,15 @@
       <p class="sidebar-intro">Small English rules.<br>Readable regex.<br>Fewer surprises.</p>
 
       <div class="sidebar-section-label"><span>START WITH A RECIPE</span><span id="recipe-count" class="sidebar-count"></span><span class="mobile-scroll-hint">SCROLL FOR MORE →</span></div>
+      <search aria-label="Search example recipes"><form id="recipe-filters" class="recipe-filters">
+        <label for="recipe-search">Search recipes</label>
+        <input id="recipe-search" type="search" maxlength="128" autocomplete="off" disabled>
+        <div class="recipe-filter-row">
+          <div><label for="recipe-category">Category</label><select id="recipe-category" disabled><option value="">All categories</option></select></div>
+          <div><label for="recipe-level">Difficulty</label><select id="recipe-level" disabled><option value="">All levels</option></select></div>
+        </div>
+        <div class="recipe-filter-summary"><span id="recipe-results" role="status" aria-live="polite" aria-atomic="true"></span><button id="recipe-clear" type="button" disabled>Clear filters</button></div>
+      </form></search>
       <nav id="example-list" class="example-list" aria-label="Example recipes"></nav>
 
       <div class="sidebar-bottom">

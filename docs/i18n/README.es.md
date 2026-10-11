@@ -159,8 +159,23 @@ La sintaxis no compatible falla, sin eliminación ni aproximación. **Go to rege
 | [Versión](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | `1.2.3` | Tres partes numéricas |
 | [Exclusiones](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | `xyz` | Texto sin los caracteres elegidos |
 | [Línea](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | `item 123` | Termina en al menos tres dígitos |
+| [Slug en minúsculas](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=slug) | `hello-world` | Letras y dígitos ASCII separados por un guion |
+| [Extensión de archivo](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=file-extension) | `README.md` | Sufijo txt, md o json que distingue mayúsculas |
+| [Forma de fecha UTC](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=iso8601-shape) | `2026-10-11T09:30:00Z` | Fracción opcional; validar el calendario aparte |
+| [Forma de URL HTTPS](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=https-url-shape) | `https://example.com` | Subconjunto de hosts ASCII; validación URL incompleta |
+| [Campo de cabecera](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=http-header) | `Content-Type: application/json` | Campo con nombre y valor en una línea |
+| [Título Markdown](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=markdown-heading) | `# Hello` | De uno a seis # y un título |
+| [Sintaxis SemVer 2.0](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | `1.2.3-alpha.1+001` | Sintaxis principal, prelanzamiento y compilación; sin comparar precedencia |
+| [Forma de hash Git](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=git-object-hash) | `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` | 40 o 64 caracteres hexadecimales ASCII; verificar existencia aparte |
+| [Palabras repetidas](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | `hello hello` | Referencia anterior con nombre a una palabra ASCII |
+| [Duplicados adyacentes](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=duplicate-token) | `item,item` | Una pareja separada por coma, 1–16 caracteres de palabra |
+| [Letras Unicode](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=unicode-word) | `العربية / اردو` | Propiedades nativas L/M, incluido árabe y urdu |
+| [Campos de registro](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | Campos level y code en un fragmento buscado |
+| [Búsqueda y reemplazo](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | Expectativas exactas de posiciones, capturas y reemplazo sin g |
 
-Son comprobaciones de **forma**: una fecha imposible o `25:99` puede coincidir. Valida calendario y rangos aparte. IPv4 no limita octetos a 255; UUID no verifica versión, variante ni unicidad. No se consulta disponibilidad de usuarios, registros de facturas ni validez telefónica. La versión no es SemVer completo; el color exige `#RRGGBB`. Las reglas del sistema de archivos son independientes.
+La biblioteca del código fuente reúne **31 recetas, 24 categorías y tres niveles**. Busca títulos, límites y reglas en los cuatro idiomas de la interfaz y combina los filtros. Estos añadidos aún no están publicados en dev.6. Consulta la [guía](../EXAMPLE_LIBRARY.md).
+
+Son comprobaciones de **forma**: una fecha imposible o `25:99` puede coincidir. Valida calendario y rangos aparte. IPv4 no limita octetos a 255; UUID no verifica versión, variante ni unicidad. No se consulta disponibilidad de usuarios, registros de facturas ni validez telefónica. La receta de forma de versión no valida toda la sintaxis SemVer; el color exige `#RRGGBB`. Las reglas del sistema de archivos son independientes.
 
 ## 🏗️ Patrones más grandes, reglas igual de claras
 

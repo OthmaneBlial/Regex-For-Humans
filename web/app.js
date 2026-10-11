@@ -10,15 +10,16 @@ import {
 import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
-import { parseExpectation } from "./expectations.js";
+import { parseExpectation, readExpectation } from "./expectations.js";
 import { fixtureLimit, fixtureStorageKey, parseFixture } from "./fixtures.js";
 import { initializeLanguage, message, setAttribute, setText } from "./i18n.js";
 import { insertRule } from "./insert-rule.js";
+import { categories, filterRecipes, levels } from "./library.js";
 import { initializeSyntaxEditor } from "./syntax.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestCase} TestCase */
-/** @typedef {{id: string, title: string, note: string, rules: string, source: string, flags: string, matchMode: "full" | "search", positive: string[], negative: string[]}} ProductScenario */
+/** @typedef {import('./library.js').ProductScenario} ProductScenario */
 /** @typedef {"success" | "neutral" | "error"} CompileState */
 /** @typedef {{line: number, column: number, sourceStart: number, sourceEnd: number}} RuleFocus */
 
@@ -40,6 +41,12 @@ const ui = {
   examples: requiredElement("example-list", HTMLElement),
   recipeCount: requiredElement("recipe-count", HTMLSpanElement),
   recipeNote: requiredElement("recipe-note", HTMLParagraphElement),
+  recipeFilters: requiredElement("recipe-filters", HTMLFormElement),
+  recipeSearch: requiredElement("recipe-search", HTMLInputElement),
+  recipeCategory: requiredElement("recipe-category", HTMLSelectElement),
+  recipeLevel: requiredElement("recipe-level", HTMLSelectElement),
+  recipeResults: requiredElement("recipe-results", HTMLSpanElement),
+  recipeClear: requiredElement("recipe-clear", HTMLButtonElement),
   rules: requiredElement("rules-input", HTMLTextAreaElement),
   ruleCount: requiredElement("rule-count", HTMLSpanElement),
   builderForm: requiredElement("builder-form", HTMLFormElement),
@@ -124,6 +131,8 @@ const flagInputs = {
 
 /** @type {ProductScenario[]} */
 let scenarios = [];
+/** @type {string|null} */
+let selectedScenarioId = null;
 /** @type {TestCase[]} */
 let testCases = [];
 let nextTestId = 1;
@@ -1479,6 +1488,7 @@ function compileRules() {
 
 /** @param {string|null} id */
 function setScenarioSelection(id) {
+  selectedScenarioId = id;
   setText(ui.recipeNote, message(scenarios.find((scenario) => scenario.id === id)?.note ?? ""));
   ui.recipeNote.hidden = !ui.recipeNote.textContent;
   for (const button of ui.examples.querySelectorAll("button")) {
@@ -1499,7 +1509,12 @@ function useScenario(scenario) {
   ui.unicodeMode.value = "u";
   ui.matchMode.value = scenario.matchMode;
   testCases = [
-    ...scenario.positive.map((text) => ({ id: nextTestId++, text, expected: true })),
+    ...scenario.positive.map((text, index) => ({
+      id: nextTestId++,
+      text,
+      expected: true,
+      expect: readExpectation(scenario.expectations?.[index]),
+    })),
     ...scenario.negative.map((text) => ({ id: nextTestId++, text, expected: false })),
   ];
   const url = new URL(window.location.href);
@@ -1516,24 +1531,72 @@ function renderScenarioButtons() {
   ui.recipeCount.textContent = scenarios.length
     ? `01—${String(scenarios.length).padStart(2, "0")}`
     : "";
-  scenarios.forEach((scenario, index) => {
+  const visible = filterRecipes(
+    scenarios,
+    ui.recipeSearch.value,
+    ui.recipeCategory.value,
+    ui.recipeLevel.value,
+    ui.language.value,
+  );
+  setText(
+    ui.recipeResults,
+    message("{count} of {total} recipes", { count: visible.length, total: scenarios.length }),
+  );
+  ui.recipeClear.disabled =
+    !ui.recipeSearch.value && !ui.recipeCategory.value && !ui.recipeLevel.value;
+  visible.forEach((scenario) => {
     const button = make("button", "example-button");
     button.type = "button";
     button.dataset.scenario = scenario.id;
-    button.setAttribute("aria-current", "false");
-    button.append(make("span", "example-number", String(index + 1).padStart(2, "0")));
-    button.append(make("span", "example-title", message(scenario.title)));
+    button.setAttribute("aria-current", String(scenario.id === selectedScenarioId));
+    setAttribute(
+      button,
+      "aria-description",
+      message(levels.find(([id]) => id === scenario.level)?.[1] ?? ""),
+    );
+    button.append(
+      make("span", "example-number", String(scenarios.indexOf(scenario) + 1).padStart(2, "0")),
+    );
+    const title = make("span", "example-title", message(scenario.title));
+    const level = make(
+      "span",
+      "example-level",
+      message(levels.find(([id]) => id === scenario.level)?.[1] ?? ""),
+    );
+    level.setAttribute("aria-hidden", "true");
+    title.append(level);
+    button.append(title);
     button.append(make("span", "example-arrow", "↗"));
     button.addEventListener("click", () => useScenario(scenario));
     ui.examples.append(button);
   });
+  if (!visible.length)
+    ui.examples.append(make("p", "recipe-empty", message("No recipes match. Try fewer filters.")));
 }
+
+ui.recipeFilters.addEventListener("submit", (event) => event.preventDefault());
+ui.recipeSearch.addEventListener("input", renderScenarioButtons);
+ui.recipeCategory.addEventListener("change", renderScenarioButtons);
+ui.recipeLevel.addEventListener("change", renderScenarioButtons);
+ui.language.addEventListener("change", () => {
+  if (scenarios.length) renderScenarioButtons();
+});
+ui.recipeClear.addEventListener("click", () => {
+  ui.recipeSearch.value = "";
+  ui.recipeCategory.value = "";
+  ui.recipeLevel.value = "";
+  renderScenarioButtons();
+  ui.recipeSearch.focus();
+});
 
 document.addEventListener("input", (event) => {
   if (
     event.target !== ui.language &&
     event.target !== ui.theme &&
     event.target !== ui.builderKind &&
+    event.target !== ui.recipeSearch &&
+    event.target !== ui.recipeCategory &&
+    event.target !== ui.recipeLevel &&
     event.target !== ui.fixtureFile
   ) {
     hasEdits = true;
@@ -2008,6 +2071,14 @@ try {
       !scenario.title.trim() ||
       typeof scenario.note !== "string" ||
       typeof scenario.rules !== "string" ||
+      !Array.isArray(scenario.categories) ||
+      !scenario.categories.length ||
+      scenario.categories.length > categories.length ||
+      new Set(scenario.categories).size !== scenario.categories.length ||
+      scenario.categories.some(
+        (/** @type {unknown} */ category) => !categories.some(([id]) => id === category),
+      ) ||
+      !levels.some(([id]) => id === scenario.level) ||
       !["full", "search"].includes(scenario.matchMode) ||
       !Array.isArray(scenario.positive) ||
       !Array.isArray(scenario.negative) ||
@@ -2019,9 +2090,30 @@ try {
       throw new Error("Invalid example recipe data");
     }
     compile(scenario.rules);
+    if (scenario.expectations !== undefined) {
+      if (
+        !Array.isArray(scenario.expectations) ||
+        scenario.expectations.length !== scenario.positive.length
+      )
+        throw new Error("Invalid example recipe data");
+      scenario.expectations = scenario.expectations.map((/** @type {unknown} */ value) =>
+        readExpectation(value),
+      );
+    }
     ids.add(scenario.id);
   }
   scenarios = loaded;
+  for (const picker of [ui.recipeCategory, ui.recipeLevel]) {
+    const values = picker === ui.recipeCategory ? categories : levels;
+    for (const [id, label] of values) {
+      const option = make("option", "", message(label));
+      option.value = id;
+      picker.append(option);
+    }
+  }
+  ui.recipeSearch.disabled = false;
+  ui.recipeCategory.disabled = false;
+  ui.recipeLevel.disabled = false;
   renderScenarioButtons();
   const requested = new URLSearchParams(window.location.search).get("example");
   const scenario = scenarios.find((item) => item.id === requested) ?? scenarios[0];

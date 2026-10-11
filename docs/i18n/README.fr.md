@@ -163,8 +163,23 @@ Les constructions inconnues sont refusées, jamais supprimées ni approximées. 
 | [Version](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | `1.2.3` | Trois parties numériques |
 | [Caractères exclus](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | `xyz` | Texte sans les caractères choisis |
 | [Règle de ligne](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | `item 123` | Ligne terminée par au moins trois chiffres |
+| [Slug en minuscules](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=slug) | `hello-world` | Lettres/chiffres ASCII séparés par un seul tiret |
+| [Extension de fichier](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=file-extension) | `README.md` | Suffixe txt, md ou json sensible à la casse |
+| [Horodatage UTC : forme](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=iso8601-shape) | `2026-10-11T09:30:00Z` | Secondes fractionnaires facultatives ; calendrier à vérifier séparément |
+| [URL HTTPS : forme](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=https-url-shape) | `https://example.com` | Sous-ensemble d’hôtes ASCII ; validation URL incomplète |
+| [Champ d’en-tête](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=http-header) | `Content-Type: application/json` | Champ nommé et valeur sur une ligne |
+| [Titre Markdown](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=markdown-heading) | `# Hello` | Un à six # puis un titre |
+| [Syntaxe SemVer 2.0](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | `1.2.3-alpha.1+001` | Syntaxe principale, préversion et construction ; sans comparaison |
+| [Empreinte Git : forme](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=git-object-hash) | `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` | 40 ou 64 caractères hexadécimaux ASCII ; existence à vérifier |
+| [Mots répétés](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | `hello hello` | Référence arrière nommée à un mot ASCII |
+| [Doublons adjacents](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=duplicate-token) | `item,item` | Une paire séparée par une virgule, 1 à 16 caractères de mot |
+| [Lettres Unicode](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=unicode-word) | `العربية / اردو` | Propriétés natives L/M, dont arabe et ourdou |
+| [Champs de journal](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | Champs nommés level et code dans un fragment recherché |
+| [Recherche et remplacement](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | Positions, captures et remplacement sans g vérifiés précisément |
 
-Ces recettes vérifient des **formes**. Une date impossible ou `25:99` peut correspondre ; validez le calendrier et les plages séparément. IPv4 ne borne pas les octets à 255. UUID ne garantit ni version, ni variante, ni unicité. Les téléphones et factures ne vérifient aucun registre ; les noms d’utilisateur ne vérifient pas la disponibilité. La version n’est pas un validateur SemVer complet. La couleur exige `#RRGGBB`. Les règles du système de fichiers restent distinctes.
+La bibliothèque source compte désormais **31 recettes, 24 catégories et trois niveaux**. Recherchez titres, limites et règles dans les quatre langues de l’interface, puis combinez les filtres. Ces ajouts ne sont pas encore publiés dans dev.6. Consultez le [guide de la bibliothèque](../EXAMPLE_LIBRARY.md).
+
+Ces recettes vérifient des **formes**. Une date impossible ou `25:99` peut correspondre ; validez le calendrier et les plages séparément. IPv4 ne borne pas les octets à 255. UUID ne garantit ni version, ni variante, ni unicité. Les téléphones et factures ne vérifient aucun registre ; les noms d’utilisateur ne vérifient pas la disponibilité. La recette de forme de version n’est pas un validateur SemVer complet. La couleur exige `#RRGGBB`. Les règles du système de fichiers restent distinctes.
 
 ## 🏗️ Des motifs plus grands, toujours lisibles
 

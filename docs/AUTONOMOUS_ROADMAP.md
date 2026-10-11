@@ -4,6 +4,14 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
 
+## Searchable example library source milestone
+
+- Implemented: 31 shared recipes covering all 24 requested categories and beginner/intermediate/expert levels. Native search and combined filters match English and current-language text as literal terms. Filtering preserves rules, flags, examples, exact expectations, selected recipe and URL; delayed or invalid catalog loading leaves manual work usable.
+- Coverage: separate SemVer syntax, Unicode letters/marks including Arabic and Urdu, simple URL/header/Markdown fragments, Git object-name shapes, actual named log extraction, adjacent duplicate references and exact search/replacement expectations. Every recipe has positive/negative inputs, generated regex, explanation and explicit scope notes. A single-block alternative import no longer accumulates redundant groups.
+- Documentation: all ten READMEs link every shared recipe and retain RTL code isolation. The library guide distinguishes syntax checks, shape checks, extraction, native replacement flags and learning difficulty from performance certification.
+- Verification: all components pass: 360 Node, 560 Chromium desktop/mobile, 318 Firefox/WebKit and 64 homepage checks (1,302 total), plus lint/types/docs, builds, a clean installed consumer and zero audit vulnerabilities. All 85 focused checks and a clean consumer pass on Node 22.23.3. The corrected workshop passes in the full command; its final homepage stage found 13 missing static cards. Adding those cards and checking SemVer/Unicode/replacement navigation makes all 64 homepage checks pass separately. This records completed component gates, not one uninterrupted full-command pass. A reproduced native resize regression is fixed by containing desktop sidebar scrolling, with the existing resize assertions unchanged and ten focused checks passing. Three French desktop/mobile palette captures were visually inspected. This source milestone is not yet published in npm or Pages dev.6.
+- Remaining: deterministic failure explanations, developer adoption and the next verified release. PHP native parity and independent human reviews remain unverified; the full original mission remains active.
+
 ## Exact expectations and regression fixtures source milestone
 
 - Implemented: per-example complete UTF-16 spans, ordered capture values, absent/empty expectations and original-flag JavaScript replacement results. Detailed requests are snapshotted and validated before native matching; the controller recomputes check fields. A probe after 100 search records rejects truncated exact lists. Replacement stays inside the existing worker deadline with native exec/substitution, bounded matches/templates/output and no callbacks.
@@ -107,10 +115,9 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Expand the curated, searchable library to all 24 requested categories with beginner/intermediate/expert levels; the current 18 recipes have no category/difficulty metadata.
-2. Extend deterministically explainable test failures using native results and necessary conditions; retain truthful limits on engine tracing and the completed precise expectation/fixture controls.
-3. Finish the remaining developer-adoption requirements from the original mission, prioritizing concrete workflows and verified compatibility.
-4. Publish the next validated interface milestone to npm and Pages, keeping the website and all ten guides aligned with the released version and preserving frozen archives.
+1. Extend deterministically explainable test failures using native results and necessary conditions; retain truthful limits on engine tracing and the completed precise expectation/fixture controls.
+2. Finish the remaining developer-adoption requirements from the original mission, prioritizing concrete workflows and verified compatibility.
+3. Publish the next validated interface milestone to npm and Pages, keeping the website and all ten guides aligned with the released version and preserving frozen archives.
 
 ## Site and README milestone
 

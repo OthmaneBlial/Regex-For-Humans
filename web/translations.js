@@ -968,4 +968,207 @@ export const translations = {
     "Escribe reglas y añade un ejemplo para probarlas.",
     "Écrivez des règles et ajoutez un exemple pour les tester.",
   ],
+  "Search example recipes": [
+    "搜索示例配方",
+    "Buscar recetas de ejemplo",
+    "Rechercher des recettes",
+  ],
+  "Search recipes": ["搜索配方", "Buscar recetas", "Rechercher des recettes"],
+  Category: ["类别", "Categoría", "Catégorie"],
+  Difficulty: ["难度", "Dificultad", "Difficulté"],
+  "All categories": ["所有类别", "Todas las categorías", "Toutes les catégories"],
+  "All levels": ["所有级别", "Todos los niveles", "Tous les niveaux"],
+  "Clear filters": ["清除筛选", "Borrar filtros", "Effacer les filtres"],
+  "{count} of {total} recipes": [
+    "{count} / {total} 个配方",
+    "{count} de {total} recetas",
+    "Recettes : {count} sur {total}",
+  ],
+  "No recipes match. Try fewer filters.": [
+    "没有匹配的配方。请减少筛选条件。",
+    "Ninguna receta coincide. Prueba con menos filtros.",
+    "Aucune recette ne correspond. Essayez moins de filtres.",
+  ],
+  Beginner: ["初级", "Principiante", "Débutant"],
+  Intermediate: ["中级", "Intermedio", "Intermédiaire"],
+  Expert: ["专家", "Experto", "Expert"],
+  Usernames: ["用户名", "Nombres de usuario", "Noms d’utilisateur"],
+  "IDs and identifiers": ["ID 与标识符", "IDs e identificadores", "ID et identifiants"],
+  Slugs: ["路径短名", "Slugs", "Slugs"],
+  Filenames: ["文件名", "Nombres de archivo", "Noms de fichiers"],
+  "File extensions": ["文件扩展名", "Extensiones de archivo", "Extensions de fichiers"],
+  "Hexadecimal colors": ["十六进制颜色", "Colores hexadecimales", "Couleurs hexadécimales"],
+  Dates: ["日期", "Fechas", "Dates"],
+  Times: ["时间", "Horas", "Heures"],
+  "ISO 8601-shaped strings": [
+    "ISO 8601 格式字符串",
+    "Cadenas con forma ISO 8601",
+    "Chaînes de forme ISO 8601",
+  ],
+  URLs: ["网址", "URLs", "URL"],
+  IPv4: ["IPv4 地址", "Direcciones IPv4", "Adresses IPv4"],
+  "Log extraction": ["日志提取", "Extracción de registros", "Extraction de journaux"],
+  "HTTP headers": ["HTTP 标头", "Cabeceras HTTP", "En-têtes HTTP"],
+  "Markdown fragments": ["Markdown 片段", "Fragmentos Markdown", "Fragments Markdown"],
+  "Version numbers": ["版本号", "Números de versión", "Numéros de version"],
+  "Semantic versions": ["语义化版本", "Versiones semánticas", "Versions sémantiques"],
+  "Git commit hashes": ["Git 提交哈希", "Hashes de commits Git", "Empreintes de commits Git"],
+  UUIDs: ["UUID 标识符", "Identificadores UUID", "Identifiants UUID"],
+  "Named fields": ["命名字段", "Campos con nombre", "Champs nommés"],
+  "Repeated words": ["重复单词", "Palabras repetidas", "Mots répétés"],
+  "Duplicate detection": ["重复项检测", "Detección de duplicados", "Détection de doublons"],
+  "Structured text extraction": [
+    "结构化文本提取",
+    "Extracción de texto estructurado",
+    "Extraction de texte structuré",
+  ],
+  "International Unicode text": [
+    "多语言 Unicode 文本",
+    "Texto Unicode internacional",
+    "Texte Unicode international",
+  ],
+  "Search and replacement": ["搜索与替换", "Búsqueda y reemplazo", "Recherche et remplacement"],
+  "Match a lowercase slug": [
+    "匹配小写路径短名",
+    "Comparar un slug en minúsculas",
+    "Reconnaître un slug en minuscules",
+  ],
+  "ASCII letters and digits separated by single hyphens; no leading, trailing or repeated hyphen. Ignore case broadens the letter set.":
+    [
+      "ASCII 字母和数字以单个连字符分隔；不允许首尾或连续连字符。忽略大小写会扩大字母集合。",
+      "Letras y dígitos ASCII separados por un solo guion; sin guiones iniciales, finales ni repetidos. Ignorar mayúsculas amplía las letras permitidas.",
+      "Lettres et chiffres ASCII séparés par un seul tiret, sans tiret initial, final ou consécutif. Ignorer la casse élargit les lettres acceptées.",
+    ],
+  "Find a file extension": [
+    "查找文件扩展名",
+    "Buscar una extensión de archivo",
+    "Trouver une extension de fichier",
+  ],
+  "Searches for a case-sensitive txt, md or json suffix, including a bare extension. Does not validate the filename or filesystem.":
+    [
+      "搜索区分大小写的 txt、md 或 json 后缀，也接受单独的扩展名。不验证文件名或文件系统。",
+      "Busca un sufijo txt, md o json distinguiendo mayúsculas; también acepta una extensión sola. No valida el nombre ni el sistema de archivos.",
+      "Recherche un suffixe txt, md ou json sensible à la casse, y compris une extension seule. Ne valide ni le nom de fichier ni le système de fichiers.",
+    ],
+  "Match a UTC timestamp shape": [
+    "匹配 UTC 时间戳格式",
+    "Comparar una forma de fecha UTC",
+    "Reconnaître une forme d’horodatage UTC",
+  ],
+  "YYYY-MM-DDTHH:MM:SS with optional 1–9 fractional digits and Z. Impossible dates and times can match; offsets and calendar validation are outside this recipe.":
+    [
+      "YYYY-MM-DDTHH:MM:SS，可选 1–9 位小数和 Z。无效日期和时间也可能匹配；不验证时区偏移或日历。",
+      "YYYY-MM-DDTHH:MM:SS con 1–9 decimales opcionales y Z. Pueden coincidir fechas y horas imposibles; no valida desfases ni el calendario.",
+      "YYYY-MM-DDTHH:MM:SS avec 1 à 9 décimales facultatives et Z. Des dates et heures impossibles peuvent correspondre ; décalages et validation du calendrier sont hors périmètre.",
+    ],
+  "Match a simple HTTPS URL shape": [
+    "匹配简单 HTTPS 网址格式",
+    "Comparar una forma de URL HTTPS sencilla",
+    "Reconnaître une forme d’URL HTTPS simple",
+  ],
+  "A lowercase https scheme, ASCII hostname components and an optional slash path without whitespace. Not a standards-complete URL or DNS validator; no ports, userinfo or IPv6.":
+    [
+      "小写 https 协议、ASCII 主机名部分及可选的不含空白的斜线路径。不是完整 URL 或 DNS 验证器；不支持端口、用户信息或 IPv6。",
+      "Esquema https en minúsculas, componentes ASCII del host y ruta opcional con barra sin espacios. No es un validador completo de URL o DNS; no admite puertos, credenciales ni IPv6.",
+      "Schéma https en minuscules, composants d’hôte ASCII et chemin facultatif après une barre sans espace. Validation URL ou DNS incomplète ; sans ports, informations utilisateur ni IPv6.",
+    ],
+  "Extract a simple header field": [
+    "提取简单标头字段",
+    "Extraer un campo de cabecera sencillo",
+    "Extraire un champ d’en-tête simple",
+  ],
+  "One ASCII letter/hyphen field name, colon, one space and a nonempty single-line value. A small header fragment, not the complete HTTP field grammar or a message parser.":
+    [
+      "字段名由 ASCII 字母或连字符组成，后接冒号、一个空格和非空单行值。仅是标头片段，不是完整 HTTP 字段语法或消息解析器。",
+      "Nombre con letras ASCII o guiones, dos puntos, un espacio y valor no vacío en una línea. Es un fragmento, no la gramática completa de campos HTTP ni un analizador de mensajes.",
+      "Nom en lettres ASCII ou tirets, deux-points, un espace et valeur non vide sur une ligne. Fragment d’en-tête, sans grammaire HTTP complète ni analyse des messages.",
+    ],
+  "Match a Markdown heading fragment": [
+    "匹配 Markdown 标题片段",
+    "Comparar un fragmento de encabezado Markdown",
+    "Reconnaître un fragment de titre Markdown",
+  ],
+  "One to six # characters, a space and a nonempty single-line heading. Does not parse Markdown block context, optional closing markers or escaping.":
+    [
+      "1–6 个 #、一个空格和非空单行标题。不解析 Markdown 块上下文、可选结束标记或转义。",
+      "De uno a seis #, un espacio y un título no vacío en una línea. No analiza el contexto de bloques Markdown, los marcadores finales opcionales ni escapes.",
+      "Un à six #, un espace et un titre non vide sur une ligne. N’analyse pas le contexte des blocs Markdown, les marqueurs de fin facultatifs ni les échappements.",
+    ],
+  "Validate SemVer 2.0 syntax": [
+    "验证 SemVer 2.0 语法",
+    "Validar la sintaxis SemVer 2.0",
+    "Valider la syntaxe SemVer 2.0",
+  ],
+  "Checks core numbers, prerelease identifiers and build metadata under SemVer 2.0. Numeric prerelease identifiers cannot have leading zeros; build identifiers can. Does not compare precedence or verify releases.":
+    [
+      "按 SemVer 2.0 检查核心数字、预发布标识符和构建元数据。纯数字预发布标识符不允许前导零；构建标识符允许。不比较版本优先级或验证发布。",
+      "Comprueba números principales, identificadores de prelanzamiento y metadatos de compilación según SemVer 2.0. Los identificadores numéricos de prelanzamiento no admiten ceros iniciales; los de compilación sí. No compara precedencia ni verifica publicaciones.",
+      "Vérifie les nombres principaux, identifiants de préversion et métadonnées de construction de SemVer 2.0. Les identifiants numériques de préversion refusent les zéros initiaux ; ceux de construction les acceptent. Ne compare pas la priorité et ne vérifie pas les releases.",
+    ],
+  "Match a Git object hash shape": [
+    "匹配 Git 对象哈希格式",
+    "Comparar una forma de hash de objeto Git",
+    "Reconnaître une forme d’empreinte d’objet Git",
+  ],
+  "Exactly 40 or 64 ASCII hexadecimal characters for SHA-1 or SHA-256 object-name shapes. Does not check the algorithm, repository object existence or abbreviated names.":
+    [
+      "恰好 40 或 64 个 ASCII 十六进制字符，对应 SHA-1 或 SHA-256 对象名称格式。不检查算法、对象是否存在或缩写名称。",
+      "Exactamente 40 o 64 caracteres hexadecimales ASCII para formas de nombres SHA-1 o SHA-256. No comprueba el algoritmo, la existencia del objeto ni nombres abreviados.",
+      "Exactement 40 ou 64 caractères hexadécimaux ASCII pour les formes de noms d’objets SHA-1 ou SHA-256. Ne vérifie pas l’algorithme, l’existence de l’objet ni les noms abrégés.",
+    ],
+  "Match two repeated words": [
+    "匹配两个重复单词",
+    "Comparar dos palabras repetidas",
+    "Reconnaître deux mots répétés",
+  ],
+  "Two identical case-sensitive ASCII letter sequences separated by one space. A backward named reference; not language-aware word segmentation or arbitrary duplicate detection.":
+    [
+      "两个完全相同、区分大小写的 ASCII 字母序列，以一个空格分隔。使用向后命名引用；不是语言感知分词或任意重复检测。",
+      "Dos secuencias idénticas de letras ASCII, distinguiendo mayúsculas, separadas por un espacio. Usa una referencia con nombre anterior; no segmenta palabras según el idioma ni detecta cualquier duplicado.",
+      "Deux suites identiques de lettres ASCII sensibles à la casse, séparées par un espace. Référence arrière nommée ; sans segmentation linguistique ni détection générale des doublons.",
+    ],
+  "Detect adjacent duplicate tokens": [
+    "检测相邻重复标记",
+    "Detectar tokens duplicados adyacentes",
+    "Détecter deux jetons identiques adjacents",
+  ],
+  "Two identical 1–16 ASCII word-character tokens separated by a comma. Checks one adjacent pair, not an entire list or non-adjacent duplicates.":
+    [
+      "两个相同的 1–16 个 ASCII 单词字符标记，以逗号分隔。只检查一对相邻标记，不检查完整列表或非相邻重复。",
+      "Dos tokens idénticos de 1–16 caracteres de palabra ASCII separados por una coma. Comprueba una pareja adyacente, no una lista completa ni duplicados separados.",
+      "Deux jetons identiques de 1 à 16 caractères de mot ASCII, séparés par une virgule. Vérifie une paire adjacente, sans dédupliquer une liste ni détecter les doublons éloignés.",
+    ],
+  "Match Unicode letters and marks": [
+    "匹配 Unicode 字母和组合标记",
+    "Comparar letras y marcas Unicode",
+    "Reconnaître des lettres et marques Unicode",
+  ],
+  "A Unicode letter followed by letters or combining marks, including Arabic and Urdu. Uses native L/M properties; no normalization, grapheme counting or complete identifier validation.":
+    [
+      "首位 Unicode 字母后接字母或组合标记，包括阿拉伯语和乌尔都语。使用原生 L/M 属性；不做规范化、字素计数或完整标识符验证。",
+      "Una letra Unicode seguida de letras o marcas combinantes, incluido árabe y urdu. Usa propiedades nativas L/M; sin normalización, recuento de grafemas ni validación completa de identificadores.",
+      "Une lettre Unicode suivie de lettres ou marques combinatoires, dont l’arabe et l’ourdou. Propriétés natives L/M ; sans normalisation, comptage des graphèmes ni validation complète des identifiants.",
+    ],
+  "Extract named fields from a log fragment": [
+    "从日志片段提取命名字段",
+    "Extraer campos con nombre de un registro",
+    "Extraire des champs nommés d’un journal",
+  ],
+  "Searches for INFO, WARN or ERROR followed by code= and three ASCII digits. Extracts level and code; does not parse a complete log format or validate HTTP status semantics.":
+    [
+      "搜索 INFO、WARN 或 ERROR，后接 code= 和三位 ASCII 数字。提取 level 和 code；不解析完整日志格式或验证 HTTP 状态含义。",
+      "Busca INFO, WARN o ERROR seguido de code= y tres dígitos ASCII. Extrae level y code; no analiza un formato de registro completo ni valida estados HTTP.",
+      "Recherche INFO, WARN ou ERROR suivi de code= et de trois chiffres ASCII. Extrait level et code ; sans analyse complète du journal ni validation du sens des statuts HTTP.",
+    ],
+  "Search and replace a typo": [
+    "搜索并替换拼写错误",
+    "Buscar y reemplazar una errata",
+    "Rechercher et remplacer une faute",
+  ],
+  "Finds case-sensitive teh at native ASCII word boundaries. Displays every search match, but the non-global replacement changes only the first occurrence; enabling g changes the expectation.":
+    [
+      "在原生 ASCII 单词边界处查找区分大小写的 teh。显示每个搜索匹配，但非全局替换只更改第一处；启用 g 会改变预期结果。",
+      "Busca teh distinguiendo mayúsculas en límites nativos de palabra ASCII. Muestra todas las coincidencias, pero el reemplazo sin g cambia solo la primera; activar g cambia la expectativa.",
+      "Recherche teh sensible à la casse aux limites de mot ASCII natives. Affiche chaque occurrence, mais le remplacement sans g ne change que la première ; activer g change le résultat attendu.",
+    ],
 };

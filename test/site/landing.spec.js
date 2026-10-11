@@ -634,6 +634,9 @@ test("recipe cards cover every shared recipe and open editable shapes", async ({
     "artifact-manifest",
     "access-log",
     "structured-event",
+    "semantic-version",
+    "unicode-word",
+    "replace-word",
   ]) {
     if (id !== "invoice-number") await page.goto("/");
     const recipe = recipes.find((item) => item.id === id);

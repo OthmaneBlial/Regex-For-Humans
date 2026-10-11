@@ -159,8 +159,23 @@ end
 | [संस्करण](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | `1.2.3` | तीन संख्यात्मक हिस्से |
 | [अक्षरों को हटाना](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | `xyz` | चुने अक्षरों के बिना text |
 | [पंक्ति का नियम](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | `item 123` | अंत में कम से कम तीन अंक |
+| [लोअरकेस स्लग](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=slug) | `hello-world` | एक हाइफ़न से जुड़े ASCII अक्षर और अंक |
+| [फ़ाइल एक्सटेंशन](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=file-extension) | `README.md` | केस-संवेदी txt, md या json प्रत्यय |
+| [UTC टाइमस्टैम्प का आकार](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=iso8601-shape) | `2026-10-11T09:30:00Z` | वैकल्पिक आंशिक सेकंड; कैलेंडर अलग जाँचें |
+| [HTTPS URL का आकार](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=https-url-shape) | `https://example.com` | ASCII होस्ट का सीमित रूप; पूरा URL सत्यापन नहीं |
+| [हेडर फ़ील्ड](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=http-header) | `Content-Type: application/json` | नाम वाला फ़ील्ड और एक पंक्ति का मान |
+| [Markdown शीर्षक](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=markdown-heading) | `# Hello` | एक से छह # और शीर्षक |
+| [SemVer 2.0 सिंटैक्स](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | `1.2.3-alpha.1+001` | मुख्य, प्रीरिलीज़ और बिल्ड सिंटैक्स; संस्करण तुलना नहीं |
+| [Git हैश का आकार](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=git-object-hash) | `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` | 40 या 64 ASCII हेक्स अक्षर; अस्तित्व अलग जाँचें |
+| [दोहराए शब्द](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | `hello hello` | ASCII शब्द का नाम वाला पिछला संदर्भ |
+| [पास के डुप्लिकेट](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=duplicate-token) | `item,item` | कॉमा से जुड़ा एक जोड़ा; हर टोकन में 1–16 वर्ड अक्षर |
+| [Unicode अक्षर](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=unicode-word) | `العربية / اردو` | मूल L/M गुण; अरबी और उर्दू भी |
+| [लॉग फ़ील्ड](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | खोजे गए अंश से level और code फ़ील्ड |
+| [खोज और प्रतिस्थापन](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | स्थान, कैप्चर और बिना g प्रतिस्थापन की सटीक अपेक्षाएँ |
 
-ये **आकार की जाँचें** हैं। असंभव तारीख या `25:99` भी match हो सकते हैं। IPv4 octets को 255 तक सीमित नहीं करता; UUID का version, variant और uniqueness नहीं जाँचता। Username availability, invoice records, फ़ोन की वैधता, कैलेंडर और filesystem की शर्तें अलग जाँचें। Version recipe पूरा SemVer validator नहीं है; रंग केवल `#RRGGBB` है।
+सोर्स लाइब्रेरी में अब **31 रेसिपी, 24 श्रेणियाँ और तीन कठिनाई स्तर** हैं। इंटरफ़ेस की चार भाषाओं में शीर्षक, सीमाएँ और नियम खोजें और फ़िल्टर मिलाएँ। ये नए बदलाव अभी प्रकाशित dev.6 में शामिल नहीं हैं। [गाइड](../EXAMPLE_LIBRARY.md) देखें।
+
+ये **आकार की जाँचें** हैं। असंभव तारीख या `25:99` भी match हो सकते हैं। IPv4 octets को 255 तक सीमित नहीं करता; UUID का version, variant और uniqueness नहीं जाँचता। Username availability, invoice records, फ़ोन की वैधता, कैलेंडर और filesystem की शर्तें अलग जाँचें। संस्करण के सरल आकार की रेसिपी पूरा SemVer सत्यापन नहीं करती; रंग केवल `#RRGGBB` है।
 
 ## 🏗️ बड़े पैटर्न, फिर भी स्पष्ट नियम
 

@@ -248,8 +248,23 @@ Literal کے دونوں طرف <code dir="ltr">/</code> اور اس میں <code
 | [ورژن کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | <code dir="ltr">1.2.3</code> | تین عددی حصے |
 | [خارج کیے گئے محارف](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | <code dir="ltr">xyz</code> | منتخب محارف کے بغیر متن |
 | [سطر کا قاعدہ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | <code dir="ltr">item 123</code> | کم از کم تین ہندسوں پر ختم ہونے والی سطر |
+| [چھوٹے حروف کا سلگ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=slug) | <code dir="ltr">hello-world</code> | <code dir="ltr">ASCII</code> حروف اور ہندسے ایک ہائفن سے جڑے ہوتے ہیں |
+| [فائل ایکسٹینشن](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=file-extension) | <code dir="ltr">README.md</code> | حروف کی جسامت سے حساس <code dir="ltr">txt</code>، <code dir="ltr">md</code> یا <code dir="ltr">json</code> لاحقہ |
+| [UTC وقت کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=iso8601-shape) | <code dir="ltr">2026-10-11T09:30:00Z</code> | اعشاری سیکنڈ اختیاری؛ کیلنڈر الگ جانچیں |
+| [HTTPS رابطے کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=https-url-shape) | <code dir="ltr">https://example.com</code> | <code dir="ltr">ASCII</code> میزبانوں کی محدود شکل؛ مکمل URL توثیق نہیں |
+| [ہیڈر کا خانہ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=http-header) | <code dir="ltr">Content-Type: application/json</code> | نام والا خانہ اور ایک سطر کی قدر |
+| [Markdown عنوان](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=markdown-heading) | <code dir="ltr"># Hello</code> | ایک سے چھ <code dir="ltr">#</code> اور عنوان |
+| [SemVer 2.0 نحو](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | <code dir="ltr">1.2.3-alpha.1+001</code> | بنیادی، پری ریلیز اور بلڈ نحو؛ ترجیح کا موازنہ نہیں |
+| [Git ہیش کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=git-object-hash) | <code dir="ltr">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</code> | <code dir="ltr">40</code> یا <code dir="ltr">64</code> <code dir="ltr">ASCII</code> ہیکس حروف؛ موجودگی الگ جانچیں |
+| [دہرائے گئے الفاظ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | <code dir="ltr">hello hello</code> | <code dir="ltr">ASCII</code> لفظ کا نام والا پچھلا حوالہ |
+| [متصل نقلیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=duplicate-token) | <code dir="ltr">item,item</code> | کوما سے جدا ایک جوڑا؛ ہر ٹوکن میں <code dir="ltr">1–16</code> ورڈ حروف |
+| [Unicode حروف](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=unicode-word) | <code dir="ltr">العربية / اردو</code> | اصل <code dir="ltr">L/M</code> خصوصیات؛ عربی اور اردو بھی |
+| [لاگ کے خانے](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | <code dir="ltr">INFO code=200</code> | تلاش کیے گئے حصے سے <code dir="ltr">level</code> اور <code dir="ltr">code</code> کے خانے |
+| [تلاش اور تبدیلی](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | <code dir="ltr">teh then teh → the then teh</code> | مقامات، گروپوں اور بغیر <code dir="ltr">g</code> تبدیلی کی درست توقعات |
 
-یہ مثالیں **شکل** جانچتی ہیں۔ ناممکن تاریخ یا <code dir="ltr">25:99</code> بھی match ہو سکتا ہے؛ کیلنڈر اور عددی حدود الگ جانچیں۔ IPv4 ہر حصے کو 255 تک محدود نہیں کرتا۔ UUID ورژن، variant یا یکتا ہونے کی ضمانت نہیں۔ فون اور انوائس کا کوئی رجسٹر نہیں دیکھا جاتا، اور صارف نام کی دستیابی بھی نہیں جانچی جاتی۔ ورژن کی مثال مکمل SemVer validator نہیں۔ رنگ کے لیے <code dir="ltr">#RRGGBB</code> درکار ہے؛ فائل سسٹم کے قواعد الگ ہیں۔
+سورس لائبریری میں اب **31 مثالیں، 24 زمرے اور مشکل کے تین درجے** ہیں۔ انٹرفیس کی چار زبانوں میں عنوان، حدود اور قواعد تلاش کریں اور فلٹر یکجا کریں۔ یہ اضافے ابھی شائع شدہ <code dir="ltr">dev.6</code> میں شامل نہیں۔ [رہنما](../EXAMPLE_LIBRARY.md) دیکھیں۔
+
+یہ مثالیں **شکل** جانچتی ہیں۔ ناممکن تاریخ یا <code dir="ltr">25:99</code> بھی match ہو سکتا ہے؛ کیلنڈر اور عددی حدود الگ جانچیں۔ IPv4 ہر حصے کو 255 تک محدود نہیں کرتا۔ UUID ورژن، variant یا یکتا ہونے کی ضمانت نہیں۔ فون اور انوائس کا کوئی رجسٹر نہیں دیکھا جاتا، اور صارف نام کی دستیابی بھی نہیں جانچی جاتی۔ سادہ ورژن کی شکل والی مثال <code dir="ltr">SemVer</code> کی مکمل توثیق نہیں کرتی۔ رنگ کے لیے <code dir="ltr">#RRGGBB</code> درکار ہے؛ فائل سسٹم کے قواعد الگ ہیں۔
 
 ## 🏗️ بڑے patterns بھی واضح رہیں
 
