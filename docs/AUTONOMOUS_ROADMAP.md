@@ -2,6 +2,16 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
+
+## Exact expectations and regression fixtures source milestone
+
+- Implemented: per-example complete UTF-16 spans, ordered capture values, absent/empty expectations and original-flag JavaScript replacement results. Detailed requests are snapshotted and validated before native matching; the controller recomputes check fields. A probe after 100 search records rejects truncated exact lists. Replacement stays inside the existing worker deadline with native exec/substitution, bounded matches/templates/output and no callbacks.
+- Preservation: versioned JSON import/export and explicit local save/restore. Whole-file validation precedes application, newer edits cancel pending reads, invalid drafts survive row changes and cannot replace saved valid fixtures, and imported CR/CRLF stays exact until actual text editing. Denied storage, quotas and corrupt files leave current work intact. No backend, dependency or public npm API was added.
+- Evidence: the corrected uninterrupted full command passes 355 Node, 514 Chromium desktop/mobile, 298 Firefox/WebKit and 64 homepage checks (1,231 total), a clean installed consumer, lint/types/docs, builds and zero reported audit vulnerabilities. All 42 focused checks pass on Node 22.23.3. Ten new Node checks include 8,256 native replacement comparisons; ten shared browser flows cover the 100/101 boundary, bounds, exact data, stale reads, storage errors and four-language/palette accessibility. A native stale-error-map reproduction is fixed at the shared recipe loader, with regression coverage. Reload assertions retain Firefox's native form-restoration behavior. Both final French 320px palette captures were visually inspected.
+- Documentation: all ten guides describe the source-only controls, retaining 19 second-level headings and 20 identical canonical code blocks; Arabic/Urdu preserve RTL prose with LTR technical fragments. The versioned fixture contract documents exact example strings, replacement flags/tokens, manual storage and all limits. No npm/Pages publication is claimed for this source milestone.
+- Remaining: expand deterministic failure explanations, all 24 searchable example categories with difficulty levels, developer adoption and the next verified release. Source-only fixtures/builders/highlighting are not in public dev.6; frozen release bytes, disabled source CI, independent human reviews and PHP parity retain their existing boundaries. The full original mission remains active.
+
 ## Rule construction source milestone
 
 - Implemented: six native actions insert editable capture, optional section, alternative, repetition, character class and assertion templates. The shared parser/compiler validates original and candidate rules before application; logical selection boundaries and leading/trailing root anchors retain existing rules and selected text. Capture insertion reuses `editGroup` to preserve reference targets, updating numeric indices when needed. Existing flags, examples and rejection recovery remain intact; actual insertions survive delayed recipe loading.
@@ -97,9 +107,9 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Add precise span/capture/empty-value/replacement expectations, batch execution, import/export and regression preservation to the workshop's test cases.
-2. Add deterministically explainable test failures using native results and necessary conditions; retain truthful limits on engine tracing.
-3. Expand the curated, searchable library to all 24 requested categories with beginner/intermediate/expert levels, and finish the remaining developer-adoption requirements from the original mission.
+1. Expand the curated, searchable library to all 24 requested categories with beginner/intermediate/expert levels; the current 18 recipes have no category/difficulty metadata.
+2. Extend deterministically explainable test failures using native results and necessary conditions; retain truthful limits on engine tracing and the completed precise expectation/fixture controls.
+3. Finish the remaining developer-adoption requirements from the original mission, prioritizing concrete workflows and verified compatibility.
 4. Publish the next validated interface milestone to npm and Pages, keeping the website and all ten guides aligned with the released version and preserving frozen archives.
 
 ## Site and README milestone

@@ -1100,7 +1100,8 @@ a {
   border-left-color: var(--red);
 }
 .test-row textarea,
-.test-row select {
+.test-row select,
+.test-row .expectation-input {
   min-width: 0;
   width: 100%;
   min-height: 35px;
@@ -1283,6 +1284,42 @@ a {
   padding: 8px 4px 2px;
   color: var(--ink);
   font: 12px / 1.5 var(--mono);
+}
+.test-fixtures {
+  margin-bottom: 16px;
+}
+.expectation-editor {
+  grid-column: 1 / -1;
+  min-width: 0;
+  border-top: 1px solid var(--line);
+  padding: 8px 4px 2px;
+  font: 12px / 1.5 var(--body);
+}
+.expectation-editor summary {
+  cursor: pointer;
+}
+.expectation-editor label {
+  display: block;
+  margin: 8px 0 4px;
+}
+.expectation-checks,
+.expectation-error {
+  overflow-wrap: anywhere;
+}
+.expectation-error,
+#fixture-status[data-state="error"] {
+  color: var(--red);
+}
+.expectation-checks p {
+  margin: 6px 0;
+}
+.replacement-result {
+  display: block;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 160px;
+  overflow-y: auto;
+  font: 11px / 1.5 var(--mono);
 }
 .capture-explorer[hidden] {
   display: none;

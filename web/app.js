@@ -10,6 +10,8 @@ import {
 import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
+import { parseExpectation } from "./expectations.js";
+import { fixtureLimit, fixtureStorageKey, parseFixture } from "./fixtures.js";
 import { initializeLanguage, message, setAttribute, setText } from "./i18n.js";
 import { insertRule } from "./insert-rule.js";
 import { initializeSyntaxEditor } from "./syntax.js";
@@ -96,6 +98,12 @@ const ui = {
   addExample: requiredElement("add-example", HTMLButtonElement),
   testSummary: requiredElement("test-summary", HTMLDivElement),
   testList: requiredElement("test-list", HTMLDivElement),
+  fixtureFile: requiredElement("fixture-file", HTMLInputElement),
+  fixtureImport: requiredElement("fixture-import", HTMLButtonElement),
+  fixtureExport: requiredElement("fixture-export", HTMLButtonElement),
+  fixtureSave: requiredElement("fixture-save", HTMLButtonElement),
+  fixtureRestore: requiredElement("fixture-restore", HTMLButtonElement),
+  fixtureStatus: requiredElement("fixture-status", HTMLParagraphElement),
 };
 
 initializeLanguage(document, ui.language);
@@ -119,6 +127,12 @@ let scenarios = [];
 /** @type {TestCase[]} */
 let testCases = [];
 let nextTestId = 1;
+let fixtureRevision = 0;
+/** @type {Map<number, string>} */
+const expectationDrafts = new Map();
+/** @type {Map<number, string>} */
+const expectationErrors = new Map();
+const exactCaseText = new Set();
 /** @type {number | null} */
 let reverseErrorPosition = null;
 /** @type {ReturnType<typeof compile> | null} */
@@ -952,9 +966,21 @@ function selectedMatchMode() {
 }
 
 async function updateTestResults() {
+  fixtureRevision++;
   const rows = [...ui.testList.querySelectorAll(".test-row")].filter(
     (row) => row instanceof HTMLDivElement,
   );
+  for (const row of rows) row.querySelector(".expectation-checks")?.replaceChildren();
+  if (expectationErrors.size) {
+    testRunner.cancel();
+    rows.forEach((row, index) => {
+      row.dataset.result = expectationErrors.has(testCases[index].id) ? "invalid" : "pending";
+      setTestResult(row, message("Fix the expectation JSON to run the examples."));
+    });
+    setText(ui.testSummary, message("Fix the expectation JSON to run the examples."));
+    ui.testSummary.dataset.state = "error";
+    return;
+  }
   const tooLong = testCases.map(({ text }) => text.length > 2048);
   rows.forEach((row, index) => {
     const input = row.querySelector("textarea");
@@ -1021,7 +1047,12 @@ async function updateTestResults() {
       source: compiled.source,
       flags: compiled.flags,
       mode: selectedMatchMode(),
-      cases: testCases.map(({ id, text, expected }) => ({ id, text, expected })),
+      cases: testCases.map(({ id, text, expected, expect }) => ({
+        id,
+        text,
+        expected,
+        ...(expect ? { expect } : {}),
+      })),
       captureCount: captures.length,
     });
     const byId = new Map(results.map((result) => [result.id, result]));
@@ -1049,6 +1080,50 @@ async function updateTestResults() {
       );
       renderMatchPreview(row, testCases[index].text, evaluation.matchRange);
       renderCaptureExplorer(row, evaluation, captures, testCases[index].text);
+      const checks = row.querySelector(".expectation-checks");
+      if (checks) {
+        for (const [key, label] of [
+          ["spans", "Exact spans"],
+          ["captures", "Capture values"],
+          ["replacement", "Replacement result"],
+        ]) {
+          const pass =
+            evaluation.checks?.[
+              /** @type {keyof import('./worker-protocol.d.ts').ExpectationChecks} */ (key)
+            ];
+          if (pass !== undefined)
+            checks.append(
+              make(
+                "p",
+                "",
+                message(pass ? "✓ {check} agrees" : "! {check} differs", { check: message(label) }),
+              ),
+            );
+        }
+        if (evaluation.matchesTruncated)
+          checks.append(
+            make("p", "", message("More than 100 matches: exact match expectations cannot pass.")),
+          );
+        if (evaluation.replacement !== undefined) {
+          checks.append(
+            make(
+              "p",
+              "",
+              message("Actual replacement ({count} UTF-16 units):", {
+                count: evaluation.replacement.length,
+              }),
+            ),
+          );
+          const visible = evaluation.replacement.slice(0, 2048);
+          checks.append(
+            make(
+              "code",
+              "replacement-result",
+              quoteText(visible) + (visible.length < evaluation.replacement.length ? "…" : ""),
+            ),
+          );
+        }
+      }
     });
     const focusedRowIndex = rows.findIndex((row) => row.contains(document.activeElement));
     const focusedResult = focusedRowIndex < 0 ? null : byId.get(testCases[focusedRowIndex].id);
@@ -1081,6 +1156,7 @@ async function updateTestResults() {
 }
 
 function renderTests() {
+  fixtureRevision++;
   const views = new Map(
     [...ui.testList.querySelectorAll(".test-row")].map((row) => {
       const input = row.querySelector("textarea");
@@ -1095,6 +1171,8 @@ function renderTests() {
               top: input.scrollTop,
               left: input.scrollLeft,
               explorerOpen: row.querySelector(".capture-explorer")?.hasAttribute("open") ?? false,
+              expectationOpen:
+                row.querySelector(".expectation-editor")?.hasAttribute("open") ?? false,
             }
           : null,
       ];
@@ -1111,7 +1189,7 @@ function renderTests() {
     input.autocapitalize = "off";
     input.setAttribute("autocorrect", "off");
     input.value = sample.text;
-    sample.text = input.value;
+    if (!exactCaseText.has(sample.id)) sample.text = input.value;
     input.rows = sample.text.split("\n", 3).length;
     const view = views.get(`example-result-${sample.id}`);
     input.style.height = view?.height ?? "";
@@ -1120,6 +1198,7 @@ function renderTests() {
     setAttribute(input, "aria-label", message("Example {index} string", { index: number }));
     input.setAttribute("aria-describedby", `example-limits example-result-${sample.id}`);
     input.addEventListener("input", () => {
+      exactCaseText.delete(sample.id);
       sample.text = input.value;
       input.rows = sample.text.split("\n", 3).length;
       updateTestResults();
@@ -1157,6 +1236,10 @@ function renderTests() {
     remove.type = "button";
     setAttribute(remove, "aria-label", message("Remove example {index}", { index: number }));
     remove.addEventListener("click", () => {
+      hasEdits = true;
+      expectationDrafts.delete(sample.id);
+      expectationErrors.delete(sample.id);
+      exactCaseText.delete(sample.id);
       testCases = testCases.filter((item) => item.id !== sample.id);
       renderTests();
       updateTestResults();
@@ -1169,7 +1252,87 @@ function renderTests() {
     const explorer = make("details", "capture-explorer");
     explorer.hidden = true;
     explorer.open = view?.explorerOpen ?? false;
-    row.append(input, expected, feedback, remove, explorer);
+    const advanced = make("details", "expectation-editor");
+    advanced.open = view?.expectationOpen ?? sample.expect !== undefined;
+    advanced.append(make("summary", "", message("Exact expectations")));
+    const expectationId = `example-expectation-${sample.id}`;
+    const label = make("label", "", message("Expected details (JSON)"));
+    label.htmlFor = expectationId;
+    const details = make("input", "expectation-input");
+    details.id = expectationId;
+    details.type = "text";
+    details.spellcheck = false;
+    details.autocomplete = "off";
+    details.dir = "ltr";
+    details.value =
+      expectationDrafts.get(sample.id) ?? (sample.expect ? JSON.stringify(sample.expect) : "");
+    const help = make(
+      "p",
+      "capture-note",
+      message(
+        "Optional JSON: spans are [start,end] pairs; captures are arrays in group-number order for each match. Use null for absence and an empty string for participation. Limit: 8,192 UTF-16 units.",
+      ),
+    );
+    help.id = `${expectationId}-help`;
+    const schema = make(
+      "code",
+      "replacement-result",
+      '{"spans":[[0,1]],"captures":[["A","",null]],"replacement":{"template":"$1!","result":"A!"}}',
+    );
+    const replacementHelp = make(
+      "p",
+      "capture-note",
+      message(
+        "Replacement uses the original flags and JavaScript string replacement tokens. Search lists all matches even without g; replacement without g changes only the first match.",
+      ),
+    );
+    const error = make("p", "expectation-error");
+    error.id = `${expectationId}-error`;
+    error.textContent = expectationErrors.get(sample.id) ?? "";
+    details.setAttribute("aria-invalid", String(expectationErrors.has(sample.id)));
+    details.setAttribute("aria-describedby", `${help.id} ${error.id}`);
+    setAttribute(
+      details,
+      "aria-label",
+      message("Expected details for example {index}", { index: number }),
+    );
+    details.addEventListener("input", () => {
+      expectationDrafts.set(sample.id, details.value);
+      try {
+        const expect = parseExpectation(details.value);
+        if (expect === undefined) delete sample.expect;
+        else sample.expect = expect;
+        expectationErrors.delete(sample.id);
+        error.textContent = "";
+        details.setAttribute("aria-invalid", "false");
+      } catch (cause) {
+        const description = cause instanceof Error ? cause.message : String(cause);
+        expectationErrors.set(sample.id, description);
+        error.textContent = description;
+        details.setAttribute("aria-invalid", "true");
+      }
+      updateTestResults();
+    });
+    advanced.append(
+      label,
+      details,
+      help,
+      schema,
+      replacementHelp,
+      error,
+      make("div", "expectation-checks"),
+    );
+    if (input.value !== sample.text)
+      advanced.append(
+        make(
+          "p",
+          "capture-note",
+          message(
+            "Imported line endings are preserved for testing and export. Editing the example field converts them to LF.",
+          ),
+        ),
+      );
+    row.append(input, expected, feedback, remove, advanced, explorer);
     ui.testList.append(row);
     if (view) {
       input.scrollTop = view.top;
@@ -1185,6 +1348,54 @@ function currentFlags() {
       .map(([flag]) => flag)
       .join("") + ui.unicodeMode.value
   );
+}
+
+function currentFixtureText() {
+  if (expectationErrors.size) throw new Error("Fix the expectation JSON to run the examples.");
+  const fixture = {
+    format: "regex-for-humans-tests",
+    version: 1,
+    rules: ui.rules.value,
+    flags: currentFlags().split("").sort().join(""),
+    mode: selectedMatchMode(),
+    cases: testCases.map(({ text, expected, expect }) => ({
+      text,
+      expected,
+      ...(expect ? { expect } : {}),
+    })),
+  };
+  const text = `${JSON.stringify(fixture, null, 2)}\n`;
+  parseFixture(text);
+  return text;
+}
+
+/** @param {import('./fixtures.js').TestFixture} fixture */
+function applyFixture(fixture) {
+  hasEdits = true;
+  ui.rules.value = fixture.rules;
+  for (const [flag, input] of Object.entries(flagInputs))
+    input.checked = fixture.flags.includes(flag);
+  ui.unicodeMode.value = fixture.flags.includes("v") ? "v" : "u";
+  ui.matchMode.value = fixture.mode;
+  expectationDrafts.clear();
+  expectationErrors.clear();
+  exactCaseText.clear();
+  testCases = fixture.cases.map((sample) => ({ id: nextTestId++, ...sample }));
+  for (const sample of testCases) exactCaseText.add(sample.id);
+  setScenarioSelection(null);
+  renderTests();
+  compileRules();
+}
+
+/** @param {unknown} error */
+function fixtureError(error) {
+  setText(
+    ui.fixtureStatus,
+    message("Fixture unavailable: {error}", {
+      error: error instanceof Error ? error.message : String(error),
+    }),
+  );
+  ui.fixtureStatus.dataset.state = "error";
 }
 
 function compileRules() {
@@ -1277,6 +1488,9 @@ function setScenarioSelection(id) {
 
 /** @param {ProductScenario} scenario */
 function useScenario(scenario) {
+  expectationDrafts.clear();
+  expectationErrors.clear();
+  exactCaseText.clear();
   setScenarioSelection(scenario.id);
   ui.rules.value = scenario.rules;
   ui.rules.setSelectionRange(0, 0);
@@ -1316,8 +1530,83 @@ function renderScenarioButtons() {
 }
 
 document.addEventListener("input", (event) => {
-  if (event.target !== ui.language && event.target !== ui.theme && event.target !== ui.builderKind)
+  if (
+    event.target !== ui.language &&
+    event.target !== ui.theme &&
+    event.target !== ui.builderKind &&
+    event.target !== ui.fixtureFile
+  ) {
     hasEdits = true;
+    fixtureRevision++;
+  }
+});
+ui.fixtureImport.addEventListener("click", () => ui.fixtureFile.click());
+ui.fixtureFile.addEventListener("change", async () => {
+  const file = ui.fixtureFile.files?.[0];
+  ui.fixtureFile.value = "";
+  if (!file) return;
+  const revision = ++fixtureRevision;
+  try {
+    if (file.size > fixtureLimit) throw new RangeError("Test fixture exceeds the 4 MiB limit.");
+    const fixture = parseFixture(await file.text());
+    if (revision !== fixtureRevision) {
+      setText(
+        ui.fixtureStatus,
+        message("Import cancelled because the workshop changed. Choose the file again."),
+      );
+      return;
+    }
+    applyFixture(fixture);
+    setText(
+      ui.fixtureStatus,
+      message("Imported {count} examples. Review the rules and test results.", {
+        count: fixture.cases.length,
+      }),
+    );
+    delete ui.fixtureStatus.dataset.state;
+  } catch (error) {
+    if (revision === fixtureRevision) fixtureError(error);
+  }
+});
+ui.fixtureExport.addEventListener("click", () => {
+  try {
+    downloadText(currentFixtureText(), "regex-tests.json", "application/json");
+    setText(ui.fixtureStatus, message("Test fixture download started."));
+    delete ui.fixtureStatus.dataset.state;
+  } catch (error) {
+    fixtureError(error);
+  }
+});
+ui.fixtureSave.addEventListener("click", () => {
+  try {
+    localStorage.setItem(fixtureStorageKey, currentFixtureText());
+    setText(
+      ui.fixtureStatus,
+      message("Tests saved in this browser. Export JSON for a durable copy."),
+    );
+    delete ui.fixtureStatus.dataset.state;
+  } catch (error) {
+    fixtureError(error);
+  }
+});
+ui.fixtureRestore.addEventListener("click", () => {
+  try {
+    const text = localStorage.getItem(fixtureStorageKey);
+    if (text === null) {
+      setText(ui.fixtureStatus, message("No saved test fixture in this browser."));
+      delete ui.fixtureStatus.dataset.state;
+      return;
+    }
+    const fixture = parseFixture(text);
+    applyFixture(fixture);
+    setText(
+      ui.fixtureStatus,
+      message("Restored {count} saved examples.", { count: fixture.cases.length }),
+    );
+    delete ui.fixtureStatus.dataset.state;
+  } catch (error) {
+    fixtureError(error);
+  }
 });
 ui.rules.addEventListener("input", () => {
   setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);

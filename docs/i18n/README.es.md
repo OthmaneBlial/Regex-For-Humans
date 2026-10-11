@@ -104,6 +104,8 @@ Usa **Theme** para seguir la apariencia del sistema o elegir un taller claro u o
 
 **Solo en el código fuente:** el panel de construcción inserta plantillas editables de captura, sección opcional, alternativa, repetición, clase de caracteres y aserción antes de la línea o selección actual, entre los anclajes exteriores. Añadir una captura conserva los destinos de las referencias numéricas existentes. Las inserciones inválidas o demasiado grandes conservan las reglas y la selección; los flags y ejemplos permanecen. Este panel todavía no está en el taller alojado dev.6. Consulta la [construcción de reglas](../ARCHITECTURE.md#rule-construction).
 
+**Solo en el código fuente:** las expectativas exactas comprueban todos los rangos UTF-16, los valores de captura en orden (`null` para ausencia, `""` para una captura vacía) y los resultados de reemplazo JavaScript con los indicadores originales. Los fixtures permiten importar/exportar JSON versionado y guardar/restaurar ejemplos localmente de forma manual. Los borradores o archivos inválidos conservan el trabajo actual; los CR/CRLF importados permanecen exactos hasta editar el campo del ejemplo. Estos controles aún no están en dev.6 alojado. Consulta el [formato, los ejemplos y los límites de los fixtures](../TEST_FIXTURES.md).
+
 1. Elige una receta o escribe una instrucción por línea.
 2. Examina cada fragmento generado y su explicación.
 3. Añade ejemplos e indica cuáles deberían coincidir.

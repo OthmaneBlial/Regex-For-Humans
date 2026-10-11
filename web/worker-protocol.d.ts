@@ -1,9 +1,22 @@
 export type MatchMode = "full" | "search";
 
+export type ExpectedDetails = {
+  spans?: Array<[number, number]>;
+  captures?: Array<Array<string | null>>;
+  replacement?: { template: string; result: string };
+};
+
+export type ExpectationChecks = {
+  spans?: boolean;
+  captures?: boolean;
+  replacement?: boolean;
+};
+
 export type TestCase = {
   id: number;
   text: string;
   expected: boolean;
+  expect?: ExpectedDetails;
 };
 
 export type TestPayload = {
@@ -34,6 +47,9 @@ export type TestResult = {
   matches?: MatchDetail[];
   indicesAvailable?: boolean;
   limitReached?: boolean;
+  checks?: ExpectationChecks;
+  replacement?: string;
+  matchesTruncated?: boolean;
 };
 
 export type WorkerReply = { id: number; results: TestResult[] } | { id: number; error: string };

@@ -104,6 +104,8 @@ use **Theme** para seguir a aparência do sistema ou escolher um workshop claro 
 
 **Somente no código-fonte:** o painel de construção insere modelos editáveis de captura, seção opcional, alternativa, repetição, classe de caracteres e asserção antes da linha ou seleção atual, entre as âncoras externas. Adicionar uma captura mantém os destinos das referências numéricas existentes. Inserções inválidas ou grandes demais preservam as regras e a seleção; flags e exemplos permanecem. Esse painel ainda não está no workshop hospedado dev.6. Veja a [construção de regras](../ARCHITECTURE.md#rule-construction).
 
+**Somente no código-fonte:** as expectativas exatas verificam todos os intervalos UTF-16, os valores de captura em ordem (`null` para ausência, `""` para captura vazia) e os resultados de substituição JavaScript com os flags originais. As fixtures permitem importar/exportar JSON versionado e salvar/restaurar exemplos localmente de forma manual. Rascunhos ou arquivos inválidos preservam o trabalho atual; CR/CRLF importados permanecem exatos até editar o campo do exemplo. Esses controles ainda não estão no dev.6 hospedado. Veja o [formato, os exemplos e os limites das fixtures](../TEST_FIXTURES.md).
+
 1. Escolha uma receita ou escreva uma instrução por linha.
 2. Confira cada trecho gerado e sua explicação.
 3. Adicione exemplos e indique quais deveriam corresponder.

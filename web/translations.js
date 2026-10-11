@@ -1,6 +1,110 @@
 // Each entry contains Simplified Chinese, Spanish and French; English is the key.
 /** @type {Record<string, [string, string, string]>} */
 export const translations = {
+  "Test fixtures": ["测试用例文件", "Fixtures de pruebas", "Fixtures de tests"],
+  "Keep rules, flags, examples and exact expectations in a versioned JSON file. Saving and restoring locally are manual; storage belongs to this browser and can be cleared.":
+    [
+      "在带版本的 JSON 文件中保留规则、标志、示例和精确预期。需手动保存和恢复；本地存储仅属于当前浏览器，可能被清除。",
+      "Guarda reglas, indicadores, ejemplos y expectativas exactas en un archivo JSON versionado. Guardar y restaurar localmente es manual; el almacenamiento pertenece a este navegador y puede borrarse.",
+      "Conservez règles, options, exemples et attentes exactes dans un fichier JSON versionné. La sauvegarde et la restauration locales sont manuelles ; le stockage appartient à ce navigateur et peut être effacé.",
+    ],
+  "Import JSON": ["导入 JSON", "Importar JSON", "Importer un JSON"],
+  "Export tests": ["导出测试", "Exportar pruebas", "Exporter les tests"],
+  "Save locally": ["本地保存", "Guardar localmente", "Sauvegarder localement"],
+  "Restore saved tests": [
+    "恢复已保存的测试",
+    "Restaurar pruebas guardadas",
+    "Restaurer les tests sauvegardés",
+  ],
+  "No fixture loaded. Import limit: 4 MiB.": [
+    "尚未加载测试文件。导入上限：4 MiB。",
+    "Ningún fixture cargado. Límite de importación: 4 MiB.",
+    "Aucune fixture chargée. Limite d’import : 4 MiB.",
+  ],
+  "Exact expectations": ["精确预期", "Expectativas exactas", "Attentes exactes"],
+  "Expected details (JSON)": [
+    "预期详情（JSON）",
+    "Detalles esperados (JSON)",
+    "Détails attendus (JSON)",
+  ],
+  "Expected details for example {index}": [
+    "示例 {index} 的预期详情",
+    "Detalles esperados del ejemplo {index}",
+    "Détails attendus pour l’exemple {index}",
+  ],
+  "Optional JSON: spans are [start,end] pairs; captures are arrays in group-number order for each match. Use null for absence and an empty string for participation. Limit: 8,192 UTF-16 units.":
+    [
+      "可选 JSON：spans 为 [起点,终点] 对；captures 为每次匹配按组号排列的数组。null 表示未参与，空字符串表示参与了空匹配。上限：8,192 个 UTF-16 单元。",
+      "JSON opcional: spans contiene pares [inicio,fin]; captures contiene un array por coincidencia, en orden de número de grupo. Usa null para ausencia y una cadena vacía para participación. Límite: 8.192 unidades UTF-16.",
+      "JSON facultatif : spans contient des paires [début,fin] ; captures contient un tableau par correspondance, dans l’ordre des numéros de groupe. null signifie absent, une chaîne vide signifie une capture participante. Limite : 8 192 unités UTF-16.",
+    ],
+  "Replacement uses the original flags and JavaScript string replacement tokens. Search lists all matches even without g; replacement without g changes only the first match.":
+    [
+      "替换使用原始标志和 JavaScript 字符串替换符号。搜索即使没有 g 也列出所有匹配；没有 g 的替换只修改第一次匹配。",
+      "El reemplazo usa los indicadores originales y los tokens de reemplazo de JavaScript. La búsqueda lista todas las coincidencias incluso sin g; el reemplazo sin g cambia solo la primera.",
+      "Le remplacement utilise les options d’origine et les jetons de remplacement JavaScript. La recherche liste toutes les correspondances même sans g ; le remplacement sans g modifie seulement la première.",
+    ],
+  "Imported line endings are preserved for testing and export. Editing the example field converts them to LF.":
+    [
+      "导入的换行符在测试和导出时保持原样。编辑示例输入框会将其转换为 LF。",
+      "Los saltos de línea importados se conservan en pruebas y exportaciones. Editar el campo del ejemplo los convierte en LF.",
+      "Les fins de ligne importées sont conservées pour les tests et l’export. Modifier le champ de l’exemple les convertit en LF.",
+    ],
+  "Fix the expectation JSON to run the examples.": [
+    "请修复预期 JSON 以运行示例。",
+    "Corrige el JSON de expectativas para ejecutar los ejemplos.",
+    "Corrigez le JSON des attentes pour lancer les exemples.",
+  ],
+  "Exact spans": ["精确范围", "Rangos exactos", "Positions exactes"],
+  "Capture values": ["捕获值", "Valores de captura", "Valeurs des captures"],
+  "Replacement result": ["替换结果", "Resultado del reemplazo", "Résultat du remplacement"],
+  "✓ {check} agrees": ["✓ {check} 符合预期", "✓ {check} coincide", "✓ {check} conforme"],
+  "! {check} differs": ["! {check} 与预期不同", "! {check} difiere", "! {check} différent"],
+  "More than 100 matches: exact match expectations cannot pass.": [
+    "超过 100 次匹配：无法通过精确匹配预期。",
+    "Más de 100 coincidencias: las expectativas exactas no pueden aprobarse.",
+    "Plus de 100 correspondances : les attentes exactes ne peuvent pas être validées.",
+  ],
+  "Actual replacement ({count} UTF-16 units):": [
+    "实际替换结果（{count} 个 UTF-16 单元）：",
+    "Reemplazo real ({count} unidades UTF-16):",
+    "Remplacement obtenu ({count} unités UTF-16) :",
+  ],
+  "Fixture unavailable: {error}": [
+    "测试文件不可用：{error}",
+    "Fixture no disponible: {error}",
+    "Fixture indisponible : {error}",
+  ],
+  "Import cancelled because the workshop changed. Choose the file again.": [
+    "工作区已更改，导入已取消。请重新选择文件。",
+    "Importación cancelada porque cambió el taller. Elige el archivo de nuevo.",
+    "Import annulé car l’atelier a changé. Sélectionnez à nouveau le fichier.",
+  ],
+  "Imported {count} examples. Review the rules and test results.": [
+    "已导入 {count} 个示例。请检查规则和测试结果。",
+    "Importados {count} ejemplos. Revisa las reglas y los resultados.",
+    "{count} exemples importés. Vérifiez les règles et les résultats des tests.",
+  ],
+  "Test fixture download started.": [
+    "已开始下载测试文件。",
+    "Descarga del fixture iniciada.",
+    "Téléchargement de la fixture lancé.",
+  ],
+  "Tests saved in this browser. Export JSON for a durable copy.": [
+    "测试已保存在此浏览器中。请导出 JSON 以保留持久副本。",
+    "Pruebas guardadas en este navegador. Exporta JSON para conservar una copia duradera.",
+    "Tests sauvegardés dans ce navigateur. Exportez un JSON pour conserver une copie durable.",
+  ],
+  "No saved test fixture in this browser.": [
+    "此浏览器中没有已保存的测试文件。",
+    "No hay ningún fixture guardado en este navegador.",
+    "Aucune fixture de tests sauvegardée dans ce navigateur.",
+  ],
+  "Restored {count} saved examples.": [
+    "已恢复 {count} 个保存的示例。",
+    "Restaurados {count} ejemplos guardados.",
+    "{count} exemples sauvegardés restaurés.",
+  ],
   "Build a rule": ["构建规则", "Construir una regla", "Construire une règle"],
   "Rule to add": ["要添加的规则", "Regla que añadir", "Règle à ajouter"],
   "Capture group": ["捕获组", "Grupo de captura", "Groupe de capture"],

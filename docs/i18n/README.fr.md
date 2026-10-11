@@ -108,6 +108,8 @@ Utilisez **Theme** pour suivre l’apparence du système ou choisir un atelier c
 
 **Dans le dépôt source uniquement :** le panneau de construction insère des modèles modifiables de capture, section facultative, alternative, répétition, classe de caractères et assertion avant la ligne ou la sélection actuelle, entre les ancres extérieures. L’ajout d’une capture préserve les cibles des références numérotées existantes. Une insertion invalide ou trop grande conserve les règles et la sélection ; les flags et exemples restent en place. Ce panneau n’est pas encore dans l’atelier hébergé dev.6. Voir la [construction de règles](../ARCHITECTURE.md#rule-construction).
 
+**Dans le dépôt source uniquement :** les attentes exactes vérifient toutes les positions UTF-16, les valeurs des captures dans l’ordre (`null` pour une capture absente, `""` pour une capture vide) et les résultats de remplacement JavaScript avec les options d’origine. Les fixtures de tests permettent l’import/export JSON versionné et la sauvegarde/restauration locale manuelle. Les brouillons ou fichiers invalides préservent le travail actuel ; les CR/CRLF importés restent exacts jusqu’à la modification du champ de l’exemple. Ces contrôles ne sont pas encore dans l’atelier hébergé dev.6. Voir le [format, les exemples et les limites des fixtures](../TEST_FIXTURES.md).
+
 1. Choisissez une recette ou écrivez une instruction par ligne.
 2. Suivez les fragments générés et leur explication.
 3. Ajoutez des exemples et indiquez ceux qui devraient correspondre.

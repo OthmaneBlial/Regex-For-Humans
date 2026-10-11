@@ -176,6 +176,13 @@
         <div class="examples-heading"><div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">THE PROOF 🧪</p><h2 id="examples-title">Check the edge cases</h2></div></div><div class="test-controls"><label for="match-mode">Match mode</label><select id="match-mode" aria-describedby="match-mode-help"><option value="full">Entire string</option><option value="search">Search anywhere</option></select><button id="add-example" class="secondary-button" type="button" disabled>+ Add example</button></div></div>
         <p class="examples-intro">Mark what should match. The workshop shows where the pattern agrees or surprises you. <span id="example-limits">Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested. Leave a field blank to test an empty string.</span></p>
         <p id="match-mode-help" class="examples-intro">Entire string requires a match covering the whole example. Search anywhere lists up to 100 nonoverlapping matches, including empty matches. Positions start at 0 and count UTF-16 code units; an emoji such as 😀 counts as two. Open a match to inspect its captures.</p>
+        <details id="test-fixtures" class="reverse-translator test-fixtures">
+          <summary>Test fixtures</summary>
+          <p class="capture-note">Keep rules, flags, examples and exact expectations in a versioned JSON file. Saving and restoring locally are manual; storage belongs to this browser and can be cleared.</p>
+          <div class="group-edit-actions"><button id="fixture-import" class="secondary-button" type="button">Import JSON</button><button id="fixture-export" class="secondary-button" type="button">Export tests</button><button id="fixture-save" class="secondary-button" type="button">Save locally</button><button id="fixture-restore" class="secondary-button" type="button">Restore saved tests</button></div>
+          <input id="fixture-file" type="file" accept=".json,application/json" hidden>
+          <p id="fixture-status" class="capture-note" role="status">No fixture loaded. Import limit: 4 MiB.</p>
+        </details>
         <div id="test-summary" class="test-summary" role="status">Choose a recipe to load example strings.</div>
         <div id="test-list" class="test-list"></div>
       </section>

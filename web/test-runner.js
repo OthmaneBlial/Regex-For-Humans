@@ -1,3 +1,5 @@
+import { expectationChecks, readExpectation } from "./expectations.js";
+
 /** @typedef {import("./worker-protocol.d.ts").TestPayload} TestPayload */
 /** @typedef {import("./worker-protocol.d.ts").TestRequest} TestRequest */
 /** @typedef {import("./worker-protocol.d.ts").TestResult} TestResult */
@@ -142,6 +144,8 @@ export class TestRunner {
       let caseLengths = null;
       /** @type {Map<number, string> | null} */
       let caseTexts = null;
+      /** @type {Map<number, import('./worker-protocol.d.ts').ExpectedDetails | undefined> | null} */
+      let caseDetails = null;
       /** @type {number | undefined} */
       let captureCount;
       /** @type {MatchMode} */
@@ -185,6 +189,7 @@ export class TestRunner {
         if (
           !expectations ||
           !caseLengths ||
+          !caseDetails ||
           !Array.isArray(data.results) ||
           data.results.length > 100 ||
           data.results.length !== caseCount
@@ -216,8 +221,7 @@ export class TestRunner {
                 range.start < 0 ||
                 range.end < range.start ||
                 length === undefined ||
-                range.end > length)) ||
-            result.pass !== (result.actual === expected)
+                range.end > length))
           ) {
             invalid();
             return;
@@ -233,6 +237,56 @@ export class TestRunner {
           ) {
             invalid();
             return;
+          }
+          const details = caseDetails.get(result.id);
+          if (details === undefined) {
+            if (
+              result.checks !== undefined ||
+              result.replacement !== undefined ||
+              result.matchesTruncated !== undefined ||
+              result.pass !== (result.actual === expected)
+            ) {
+              invalid();
+              return;
+            }
+          } else {
+            const preciseMatches = details.spans !== undefined || details.captures !== undefined;
+            if (
+              preciseMatches
+                ? typeof result.matchesTruncated !== "boolean" ||
+                  (result.matchesTruncated && (mode !== "search" || !result.limitReached))
+                : result.matchesTruncated !== undefined
+            ) {
+              invalid();
+              return;
+            }
+            if (
+              details.replacement === undefined
+                ? result.replacement !== undefined
+                : typeof result.replacement !== "string" || result.replacement.length > 65536
+            ) {
+              invalid();
+              return;
+            }
+            const checks = expectationChecks(
+              details,
+              result.matches ?? [],
+              result.replacement,
+              !result.matchesTruncated,
+            );
+            if (
+              !result.checks ||
+              typeof result.checks !== "object" ||
+              Array.isArray(result.checks) ||
+              Object.keys(result.checks).length !== Object.keys(checks).length ||
+              result.checks.spans !== checks.spans ||
+              result.checks.captures !== checks.captures ||
+              result.checks.replacement !== checks.replacement ||
+              result.pass !== (result.actual === expected && Object.values(checks).every(Boolean))
+            ) {
+              invalid();
+              return;
+            }
           }
         }
         finish(null, data.results);
@@ -251,6 +305,16 @@ export class TestRunner {
             Array.from(request.cases, (sample) => [sample?.id, sample?.text?.length]),
           );
           caseTexts = new Map(Array.from(request.cases, (sample) => [sample?.id, sample?.text]));
+          caseDetails = new Map(
+            Array.from(request.cases, (sample) => [sample?.id, readExpectation(sample?.expect)]),
+          );
+          for (const details of caseDetails.values()) {
+            if (
+              captureCount === undefined &&
+              (details?.spans !== undefined || details?.captures !== undefined)
+            )
+              throw new TypeError("Detailed match expectations require capture metadata.");
+          }
         }
         worker.postMessage(request);
       } catch (error) {

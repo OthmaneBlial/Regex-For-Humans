@@ -132,6 +132,8 @@ Use **Theme** to follow your system appearance or choose a light or dark worksho
 
 **Source checkout only:** **Build a rule** inserts editable capture, optional-section, alternative, repetition, character-class and assertion templates before the current line or selection, inside outer anchors. Adding a capture keeps existing numbered references aimed at the same groups. Invalid or oversized insertions retain the original rules and selection; flags and examples stay in place. This panel is not yet in the hosted dev.6 workshop. See [rule construction](docs/ARCHITECTURE.md#rule-construction).
 
+**Source checkout only:** **Exact expectations** checks complete UTF-16 spans, ordered capture values (`null` for absence, `""` for an empty capture) and JavaScript replacement results using the original flags. **Test fixtures** imports/exports versioned JSON and manually saves/restores examples locally. Invalid drafts/files retain current work; imported CR/CRLF stays exact until the example field is edited. These controls are not yet in hosted dev.6. See the [fixture format, examples and limits](docs/TEST_FIXTURES.md).
+
 1. **Pick a recipe** or write one instruction per line.
 2. **Follow the fragments** to see what every rule means.
 3. **Try your examples** and mark what should match.

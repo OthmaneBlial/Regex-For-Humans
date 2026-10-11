@@ -1,5 +1,7 @@
 import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS } from "../src/limits.js";
+import { expectationChecks, readExpectation } from "./expectations.js";
+import { replaceBounded } from "./replacement.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestRequest} TestRequest */
 /** @typedef {import("./worker-protocol.d.ts").WorkerReply} WorkerReply */
@@ -32,6 +34,7 @@ self.onmessage = (event) => {
     }
     // Reject the whole batch before an earlier example can start expensive matching.
     const ids = new Set();
+    const expectations = new Map();
     for (const sample of cases) {
       if (
         sample === null ||
@@ -46,6 +49,13 @@ self.onmessage = (event) => {
         throw new Error("An example is too long or invalid.");
       }
       ids.add(sample.id);
+      const expected = readExpectation(sample.expect);
+      if (
+        captureCount === undefined &&
+        (expected?.spans !== undefined || expected?.captures !== undefined)
+      )
+        throw new Error("Detailed match expectations require capture metadata.");
+      expectations.set(sample.id, expected);
     }
     const explore = captureCount !== undefined;
     let indicesAvailable = false;
@@ -106,12 +116,33 @@ self.onmessage = (event) => {
           next = expression.exec(sample.text);
         }
       }
+      const expected = expectations.get(sample.id);
+      const preciseMatches = expected?.spans !== undefined || expected?.captures !== undefined;
+      let matchesTruncated = false;
+      if (preciseMatches && mode === "search" && matches.length === MAX_MATCHES && match) {
+        const last = matches.at(-1);
+        if (last?.value === "")
+          expression.lastIndex +=
+            (sample.text.codePointAt(expression.lastIndex) ?? 0) > 0xffff ? 2 : 1;
+        matchesTruncated = expression.exec(sample.text) !== null;
+      }
+      const replacement =
+        expected?.replacement === undefined
+          ? undefined
+          : replaceBounded(source, flags, sample.text, expected.replacement.template);
+      const checks =
+        expected === undefined
+          ? undefined
+          : expectationChecks(expected, matches, replacement, !matchesTruncated);
       return {
         id: sample.id,
         actual,
-        pass: actual === sample.expected,
+        pass: actual === sample.expected && Object.values(checks ?? {}).every(Boolean),
         detail,
         matchRange: match ? { start: match.index, end: match.index + match[0].length } : null,
+        ...(checks === undefined ? {} : { checks }),
+        ...(replacement === undefined ? {} : { replacement }),
+        ...(preciseMatches ? { matchesTruncated } : {}),
         ...(explore
           ? {
               matches,

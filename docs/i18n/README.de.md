@@ -104,6 +104,8 @@ Mit **Theme** folgt der Workshop dem Systemdesign oder verwendet ein helles oder
 
 **Nur im Quellcode:** Das Konstruktionspanel fügt bearbeitbare Vorlagen für Captures, optionale Abschnitte, Alternativen, Wiederholungen, Zeichenklassen und Assertions vor der aktuellen Zeile oder Auswahl innerhalb der äußeren Anker ein. Ein neuer Capture erhält die Ziele bestehender nummerierter Referenzen. Ungültige oder zu große Einfügungen lassen Regeln und Auswahl unverändert; Flags und Beispiele bleiben erhalten. Das Panel ist noch nicht im gehosteten Workshop dev.6 enthalten. Siehe [Regelkonstruktion](../ARCHITECTURE.md#rule-construction).
 
+**Nur im Quellcode:** Exakte Erwartungen prüfen vollständige UTF-16-Bereiche, Capture-Werte in Nummernreihenfolge (`null` für fehlende Teilnahme, `""` für einen leeren Capture) und JavaScript-Ersetzungsergebnisse mit den ursprünglichen Flags. Test-Fixtures unterstützen versionierten JSON-Import/-Export und manuelles lokales Speichern/Wiederherstellen. Ungültige Entwürfe oder Dateien erhalten die aktuelle Arbeit; importierte CR/CRLF bleiben bis zur Bearbeitung des Beispiels exakt erhalten. Diese Funktionen sind noch nicht im gehosteten dev.6 enthalten. Siehe [Fixture-Format, Beispiele und Grenzen](../TEST_FIXTURES.md).
+
 1. Rezept auswählen oder eine Anweisung pro Zeile schreiben.
 2. Generierte Fragmente und Erklärungen nachvollziehen.
 3. Beispiele hinzufügen und erwartete Treffer kennzeichnen.
