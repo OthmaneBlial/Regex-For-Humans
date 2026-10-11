@@ -8,7 +8,7 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 - Reliability: CSS anchors keep the mirror within the field during viewport changes; text shares native font, direction, tab stops, wrapping and scrolling. Both palettes preserve token contrast, row navigation paints behind the text, and forced colors or oversized inputs retain plain native editing. User content becomes text nodes, never HTML.
 - Evidence: the corrected uninterrupted full verification passes 340 Node, 486 Chromium desktop/mobile, 270 Firefox/WebKit and 64 homepage checks (1,160 total), consumers, lint/types/docs, builds and an audit with zero vulnerabilities. A clean installed consumer also passes on Node 22.23.3. After reproducing and correcting a resize overflow, 28 focused Chromium, four installed-Chrome and 34 Firefox/WebKit checks pass without weakening assertions or deadlines. Three original syntax captures and the corrected installed-Chrome 320px view were visually inspected.
 - Documentation: all ten guides explicitly distinguish the source additions from public dev.6; 19 second-level headings and 20 identical canonical code blocks remain in every guide. Arabic/Urdu retain RTL prose and LTR code. Frozen npm archives and the public release are unchanged; human reviews remain open.
-- Next: commit/push this validated source milestone, then implement the six construction actions, truthful failure explanations, richer test expectations/fixtures and the remaining example/developer-adoption requirements. Publication remains a separate verified step.
+- Source: implementation commit `393140f` is pushed to `main`. Next, implement the six construction actions, truthful failure explanations, richer test expectations/fixtures and the remaining example/developer-adoption requirements. Publication remains a separate verified step.
 
 ## Dev.6 public release milestone
 
@@ -90,9 +90,10 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Publish the validated theme/interface milestone in the next npm preview and corresponding site/README update.
-2. Prepare the next npm preview and corresponding site/README publication after the next interface milestone.
-3. Continue structured syntax highlighting, builder, debugger, example and developer-adoption requirements.
+1. Implement the six editable construction actions: capture, optional section, alternative, repetition, character class and assertion.
+2. Add deterministically explainable test failures and richer span/capture/empty-value/replacement expectations with exportable regression fixtures.
+3. Expand the curated, searchable example library and finish the remaining developer-adoption requirements from the original mission.
+4. Publish the next validated interface milestone to npm and Pages, keeping the website and all ten guides aligned with the released version and preserving frozen archives.
 
 ## Site and README milestone
 
