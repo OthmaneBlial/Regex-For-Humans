@@ -12,18 +12,20 @@ async function ready(page) {
 
 async function snapshot(page) {
   return page.evaluate(() => ({
-    fields: [...document.querySelectorAll("textarea, input, select:not(#interface-language)")].map(
-      (node) => ({
-        id: node.id,
-        value: node.value,
-        checked: node.checked,
-        start: node.selectionStart,
-        end: node.selectionEnd,
-        top: node.scrollTop,
-        left: node.scrollLeft,
-        height: node.style.height,
-      }),
-    ),
+    fields: [
+      ...document.querySelectorAll(
+        "textarea, input, select:not(#interface-language, #interface-theme)",
+      ),
+    ].map((node) => ({
+      id: node.id,
+      value: node.value,
+      checked: node.checked,
+      start: node.selectionStart,
+      end: node.selectionEnd,
+      top: node.scrollTop,
+      left: node.scrollLeft,
+      height: node.style.height,
+    })),
     open: [...document.querySelectorAll("details")].map((node) => node.open),
     regex: document.querySelector("#regex-output").textContent,
     code: document.querySelector("#export-code").textContent,
@@ -35,7 +37,7 @@ async function snapshot(page) {
   }));
 }
 
-test("all four languages update existing labels without recompilation or changes to user data, selections and results", async ({
+test("all four languages and both themes preserve user data, selections and results without recompilation", async ({
   page,
 }) => {
   await ready(page);
@@ -86,6 +88,14 @@ test("all four languages update existing labels without recompilation or changes
       "aria-label",
       translate(language, "Example {index} string", { index: 1 }),
     );
+    await expect(page.locator("#interface-theme")).toHaveAccessibleName(
+      translate(language, "Theme"),
+    );
+    for (const theme of ["dark", "light"]) {
+      await page.locator("#interface-theme").selectOption(theme);
+      await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+      expect(await snapshot(page)).toEqual(before);
+    }
     await expect(page.locator(".capture-value").first()).toHaveText('"Ready"');
     expect(await snapshot(page)).toEqual(before);
   }
@@ -153,7 +163,7 @@ test("the chosen language persists, invalid storage falls back and denied storag
   expect(errors).toEqual([]);
 });
 
-test("language selection is disabled until its handler loads; choosing during recipe loading still loads examples", async ({
+test("theme loads before the compiler; language and theme choices during recipe loading still load examples", async ({
   page,
 }) => {
   let release;
@@ -174,16 +184,21 @@ test("language selection is disabled until its handler loads; choosing during re
   });
   await page.goto("/", { waitUntil: "commit" });
   await expect(page.locator("#interface-language")).toBeDisabled();
+  await expect(page.locator("#interface-theme")).toBeEnabled();
+  await page.locator("#interface-theme").selectOption("dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   releaseApp();
   await expect(page.locator("#interface-language")).toBeEnabled();
   await expect(page.locator("#test-list textarea")).toHaveCount(0);
   await page.locator("#interface-language").selectOption("fr");
+  await page.locator("#interface-theme").selectOption("light");
   await expect(page.locator("#regex-output")).toHaveText(
     translate("fr", "Select a recipe or write a rule"),
   );
   release();
   await expect(page.locator("#test-list textarea")).toHaveCount(4);
   await expect(page.locator("#compile-state")).toHaveText("Compilé");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await expect(page.locator("#example-list button").first()).toHaveText(
     /Valider un identifiant avec préfixe/,
   );

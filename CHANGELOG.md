@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add source-only light/dark workshop themes and a system option with live OS appearance changes. Remember the choice locally when possible, recover from denied/invalid storage, and apply appearance before compiler startup. Preserve rules, examples, selections, scroll positions, open panels and generated code without recompilation; translate the native controls through the existing four-language catalog.
+
 - Load shared frozen budgets directly in the match worker, avoiding parser/AST/diagnostic startup dependencies while preserving source limits, cancellation, validation and the 1,200 ms deadline.
 
 - Keep long literal explanations within WebKit's narrow trace panel by disabling kerning there, preserving full text and keyboard source selection.

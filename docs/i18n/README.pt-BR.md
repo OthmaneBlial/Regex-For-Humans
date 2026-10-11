@@ -98,6 +98,8 @@ A saída é `/^ABC\d{3}$/u`. Para fixar a versão, use `regex-for-humans@0.1.0-d
 
 **Somente no código-fonte:** escolha **Interface language** para inglês, chinês simplificado, espanhol ou francês. Rótulos, exemplos, resultados e controles de navegação mudam sem alterar regras, entradas, seleções, painéis abertos ou código gerado. A escolha é salva localmente quando o armazenamento está disponível. As regras continuam em inglês controlado; explicações do compilador, rótulos do diagrama e requisitos técnicos exportados permanecem em inglês. Esta interface ainda não está no workshop dev.5 hospedado. Veja [a localização do workshop](../ARCHITECTURE.md#workshop-localization).
 
+**Somente no código-fonte:** use **Theme** para seguir a aparência do sistema ou escolher um workshop claro ou escuro. A preferência é salva localmente quando o armazenamento está disponível; mudar a aparência preserva regras, exemplos, seleções e painéis abertos. Veja [a preferência de tema](../ARCHITECTURE.md#theme-preference).
+
 1. Escolha uma receita ou escreva uma instrução por linha.
 2. Confira cada trecho gerado e sua explicação.
 3. Adicione exemplos e indique quais deveriam corresponder.

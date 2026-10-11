@@ -560,6 +560,8 @@ test("skip link focuses the workshop without resetting edited rules", async ({ p
     page.getByRole("combobox", { name: "Interface language", exact: true }),
   ).toBeFocused();
   await page.keyboard.press("Tab");
+  await expect(page.getByRole("combobox", { name: "Theme", exact: true })).toBeFocused();
+  await page.keyboard.press("Tab");
   await expect(editor).toBeFocused();
 });
 

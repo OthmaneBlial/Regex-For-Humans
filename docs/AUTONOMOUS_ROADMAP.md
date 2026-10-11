@@ -2,6 +2,15 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+## Workshop theme source milestone
+
+- Implemented: independent system/light/dark theme bootstrap before compiler loading, validated local preferences, live OS appearance changes in system mode and optional storage. Theme changes update the root attribute and palette without recompiling or rebuilding fields; existing state-preservation checks now cover both themes in all four interface languages. Preference changes while recipes load still allow the initial examples to appear.
+- Interface: retain the original light palette and the paper/ink/gold identity in a contrasting dark palette. Keep accent-button text and code/navigation surfaces independent from ordinary theme text, and retain readable standalone SVG colors. Group each topbar label with its native selector so narrow screens do not separate labels from controls.
+- Full regression evidence: the uninterrupted `CI=1 env -u PACK_OUTPUT_DIR npm run verify` command passes 334 Node, 478 Chromium desktop/mobile, 262 Firefox/WebKit and 64 homepage checks (1,138 total), clean installed JavaScript/strict TypeScript/API/CLI consumers, lint/types/docs, both builds and an audit with zero reported vulnerabilities. All 16 selected catalog/README checks also pass on Node 22.23.3. The final gate includes explicit failed-example contrast and instant screenshot-position assertions; worker guards and browser deadlines are unchanged.
+- Focused and visual evidence: 20 initial Chromium checks and 46 Firefox/WebKit checks pass. After the visually identified header grouping correction, all 30 focused Firefox/WebKit theme/localization checks pass. Six actual theme captures were inspected across 1280/320px and both palettes, including final Chromium dark 1280px with the sidebar at the top and a visibly failed example.
+- Documentation: all ten README guides describe the source-only preference; Arabic/Urdu use a standalone LTR English control-label paragraph. All nine translations retain 19 second-level headings and all 20 canonical English code blocks. Human reviews remain unchecked; npm and Pages publication are still separate gates.
+- Next: commit/push the validated theme milestone after final documentation/consumer checks and prepare the corresponding npm/Pages release. Continue structured highlighting, builders, truthful debugger improvements, examples and the remaining mission afterward.
+
 ## Workshop localization source milestone
 
 - Current regression gate: the uninterrupted `CI=1 env -u PACK_OUTPUT_DIR npm run verify` command passes 334 Node tests, 464 Chromium desktop/mobile checks, 248 Firefox/WebKit checks and 64 homepage checks (1,110 total), clean installed JavaScript/strict TypeScript/API/CLI consumers, lint/types/docs, both builds and an audit with zero reported vulnerabilities. Separately, all 44 selected parser/localization checks pass on Node 22.23.3. The earlier pre-bootstrap compatibility run finished with 189 passes and five Firefox failures; all 16 localization flows passed. An alternating Firefox probe passes six pre-localization and six localized capture/alternative flows below 750 ms; intermittent failure causes remain unproven.
@@ -63,7 +72,7 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Add accessible light/dark themes with a local preference while preserving workshop state.
+1. Publish the validated theme/interface milestone in the next npm preview and corresponding site/README update.
 2. Prepare the next npm preview and corresponding site/README publication after the next interface milestone.
 3. Continue structured syntax highlighting, builder, debugger, example and developer-adoption requirements.
 

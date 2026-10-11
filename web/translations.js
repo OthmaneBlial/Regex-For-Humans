@@ -1,6 +1,10 @@
 // Each entry contains Simplified Chinese, Spanish and French; English is the key.
 /** @type {Record<string, [string, string, string]>} */
 export const translations = {
+  Theme: ["主题", "Tema", "Thème"],
+  System: ["跟随系统", "Sistema", "Système"],
+  Light: ["浅色", "Claro", "Clair"],
+  Dark: ["深色", "Oscuro", "Sombre"],
   "0 rules": ["0 条规则", "0 reglas", "0 règles"],
   "#{index} {name} → {target}": [
     "#{index} {name} → {target}",

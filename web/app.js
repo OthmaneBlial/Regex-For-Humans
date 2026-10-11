@@ -32,6 +32,7 @@ function requiredElement(id, type) {
 
 const ui = {
   language: requiredElement("interface-language", HTMLSelectElement),
+  theme: requiredElement("interface-theme", HTMLSelectElement),
   examples: requiredElement("example-list", HTMLElement),
   recipeCount: requiredElement("recipe-count", HTMLSpanElement),
   recipeNote: requiredElement("recipe-note", HTMLParagraphElement),
@@ -1294,7 +1295,7 @@ function renderScenarioButtons() {
 }
 
 document.addEventListener("input", (event) => {
-  if (event.target !== ui.language) hasEdits = true;
+  if (event.target !== ui.language && event.target !== ui.theme) hasEdits = true;
 });
 ui.rules.addEventListener("input", () => {
   setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);

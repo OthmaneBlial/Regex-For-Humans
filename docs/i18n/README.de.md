@@ -98,6 +98,8 @@ Ausgabe: `/^ABC\d{3}$/u`. Für eine feste Version verwende `regex-for-humans@0.1
 
 **Nur im Quellcode:** Mit **Interface language** wählst du Englisch, vereinfachtes Chinesisch, Spanisch oder Französisch. Beschriftungen, Beispiele, Testergebnisse und Navigation wechseln, ohne Regeln, Eingaben, Auswahlbereiche, offene Bereiche oder erzeugten Code zu ändern. Die Auswahl wird lokal gespeichert, wenn Speicher verfügbar ist. Regeln bleiben in kontrolliertem Englisch; Compilererklärungen, Diagrammbeschriftungen und exportierte technische Anforderungen bleiben Englisch. Diese Oberfläche ist noch nicht im gehosteten dev.5-Workshop. Siehe [Workshop-Lokalisierung](../ARCHITECTURE.md#workshop-localization).
 
+**Nur im Quellcode:** Mit **Theme** folgt der Workshop dem Systemdesign oder verwendet ein helles oder dunkles Design. Die Auswahl wird lokal gespeichert, wenn Speicher verfügbar ist; Regeln, Beispiele, Auswahlbereiche und offene Bereiche bleiben beim Wechsel erhalten. Siehe [Designauswahl](../ARCHITECTURE.md#theme-preference).
+
 1. Rezept auswählen oder eine Anweisung pro Zeile schreiben.
 2. Generierte Fragmente und Erklärungen nachvollziehen.
 3. Beispiele hinzufügen und erwartete Treffer kennzeichnen.

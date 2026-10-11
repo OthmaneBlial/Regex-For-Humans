@@ -57,6 +57,12 @@ References are resolved against the completed capture table after parsing. A ref
 
 The four-language selector updates the document language and remembers its choice in local storage when available; denied storage and unknown saved languages keep the workshop usable. Controlled English grammar remains independent of interface translation. Compiler explanations, diagnostic detail, exported engine requirements and diagram labels remain English and are called out beside the selector. This source feature is not yet in the hosted dev.5 workshop. Native-speaker and real screen-reader review remain separate gates.
 
+## Theme preference
+
+The dependency-free `web/theme.js` module loads before the compiler entry point and applies a validated local theme preference. The native selector follows the system color scheme by default, reacts to media changes in system mode, and remembers explicit light/dark choices when storage is available. Invalid saved values fall back to system mode; denied storage does not prevent selection or compilation. Its handler is attached before the selector is enabled.
+
+Theme changes update only the root data attribute and CSS palette. They do not rebuild nodes, compile rules or post worker requests; fields, selections, scrolling and open panels stay intact. Appearance choices during recipe loading are excluded from user rule edits, so initial examples still load. Theme labels use the existing four-language catalog. Semantic colors distinguish ordinary text, accent-button ink and persistent dark code/navigation surfaces; standalone SVG diagrams retain their own readable export palette.
+
 ## Structural visualization
 
 `src/diagram.js` parses the same readable language and validates that AST through `compileAst` before layout. Compiler segments supply exact generated-source ranges and source locations. Containers draw nested sequences, source-ordered alternative paths and bounded repetition loops; assertions keep their check separate from the consuming rail, with lookbehind arrows pointing backwards. Character-class operands stay one semantic leaf, including string sets and nested operations. Quantifiers are not expanded into repeated nodes.

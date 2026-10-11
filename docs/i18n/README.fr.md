@@ -102,6 +102,8 @@ Résultat : `/^ABC\d{3}$/u`. Pour fixer la version, utilisez `regex-for-humans@0
 
 **Dans le dépôt source uniquement :** choisissez **Interface language** pour l’anglais, le chinois simplifié, l’espagnol ou le français. Les libellés, recettes, résultats des tests et commandes de navigation changent sans modifier vos règles, exemples, sélections, panneaux ouverts ou code généré. Le choix est mémorisé localement si le stockage est disponible. Les règles restent en anglais contrôlé ; les explications du compilateur, libellés du diagramme et exigences techniques exportées restent en anglais. Cette interface n’est pas encore dans l’atelier dev.5 hébergé. Voir [la traduction de l’atelier](../ARCHITECTURE.md#workshop-localization).
 
+**Dans le dépôt source uniquement :** utilisez **Theme** pour suivre l’apparence du système ou choisir un atelier clair ou sombre. Le choix est mémorisé localement si le stockage est disponible ; changer l’apparence conserve vos règles, exemples, sélections et panneaux ouverts. Voir [la préférence de thème](../ARCHITECTURE.md#theme-preference).
+
 1. Choisissez une recette ou écrivez une instruction par ligne.
 2. Suivez les fragments générés et leur explication.
 3. Ajoutez des exemples et indiquez ceux qui devraient correspondre.

@@ -126,6 +126,8 @@ This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1
 
 **Source checkout only:** choose **Interface language** for English, Simplified Chinese, Spanish or French. Labels, recipes, match feedback and navigation controls update without changing your rules, examples, selections, open panels or generated code. The choice is remembered locally when storage is available. Rules still use controlled English; compiler explanations, diagram labels and exported technical requirements stay in English. This interface is not yet in the hosted dev.5 workshop. See [workshop localization](docs/ARCHITECTURE.md#workshop-localization).
 
+**Source checkout only:** use **Theme** to follow your system appearance or choose a light or dark workshop. The preference is saved locally when storage is available; changing appearance retains your rules, examples, selections and open panels. See [theme preference](docs/ARCHITECTURE.md#theme-preference).
+
 1. **Pick a recipe** or write one instruction per line.
 2. **Follow the fragments** to see what every rule means.
 3. **Try your examples** and mark what should match.
