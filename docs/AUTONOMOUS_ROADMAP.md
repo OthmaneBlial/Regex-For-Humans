@@ -6,6 +6,8 @@
 - Distribution remains frozen dev.11. This source work does not replace its npm archive/tag, GitHub prerelease or hosted runtime. Independent human gates remain unchecked and source Actions stays disabled.
 - Verification: complete Node 25/22 suites each pass 411 cases with four explicit skips (415 total); all 72 affected Chrome desktop/mobile and 34 Firefox/WebKit checks pass. Four interface languages, both themes and 320px layouts retain native keyboard behavior, captures/references, examples and draft recovery. See [the component receipt](TESTING.md#unreleased-built-in-class-completion-checks-11-october-2026). This is not a new distribution gate.
 
+- GitHub source guides at `4982ef7` pass Arabic/Urdu checks at 1280/390/320px. All six captures are inspected: 19 RTL headings, seven RTL tables, 20 canonical LTR blocks, every native-first paragraph and explicitly LTR inline fragment retain their directions. The two completion commands each occupy one LTR line without paragraph overflow. These source-only guide receipts do not replace dev.11 publication evidence.
+
 ## Published dev.11 milestone
 
 - Shipped: npm `latest`/`preview`, the GitHub prerelease and owner Pages select verified dev.11. Frozen source `feff37d` and its tag retain the 408,988-byte, 50-file archive with SHA-256 `cfd56bd51ce7d199cba2d6578205eb55c11ef1afbadcecd0ded854a39f635788`; retained, registry and GitHub archives agree and every payload matches the tag. Optional draft recovery and group comparisons are included. See [the publication receipt](DISTRIBUTION.md#published-dev11-11-october-2026).
