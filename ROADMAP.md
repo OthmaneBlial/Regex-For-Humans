@@ -1,6 +1,65 @@
 # Roadmap — Regex For Humans
 
-**Current published preview, 10 October 2026:** npm `0.1.0-dev.5`, its GitHub prerelease, ten README guides and the live site include nested native Unicode sets/strings, all eight flags, classes/properties, boundaries, assertions and lazy repetition. Retained/npm/GitHub archive bytes agree and pass clean Node 25/22 consumers; Pages deployment and the public v-set/capture flow are verified. The unchanged native core passed 891 checks. Exact evidence and the remaining mission priorities are in [AUTONOMOUS_ROADMAP.md](docs/AUTONOMOUS_ROADMAP.md) and [DISTRIBUTION.md](docs/DISTRIBUTION.md). Older snapshots retain their original receipts; human review gates remain open.
+## Agent handoff — 12 October 2026 (Europe/Paris)
+
+Read this section first. It supersedes the dev.3/dev.5 release summaries below, which remain historical evidence. The maintainer requested a clean handoff within one hour; the wider autonomous mission is unfinished. Independent human reviews stay unchecked.
+
+### Published state
+
+- **npm:** [`0.1.0-dev.12`](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12), with both `latest` and `preview` selecting that version. Node.js 22+; zero runtime dependencies. This is a development preview.
+- **GitHub:** [prerelease `v0.1.0-dev.12`](https://github.com/OthmaneBlial/Regex-For-Humans/releases/tag/v0.1.0-dev.12), frozen source `c17f968c4bc484599e9f50c1becceb4a6d23e1d1`. The retained final tarball and anonymous npm/GitHub downloads agree: 421,523 bytes, 52 files, SHA-256 `990e5a067bbe7c270a60cf70e5892bab31d00b8182782ca601da8e75947972ea`. Never repack over this archive or rewrite its tag.
+- **Website:** [homepage](https://othmaneblial.github.io/Regex-For-Humans/) and [workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) serve verified dev.12. Owner Pages runtime commit `625f696d05cba4c04665577f67445ffd7b411e29` and receipt commit `2b6cfb6b9c7fd65f1441f949b77ce1e9453aeeec` deploy successfully; all 87 served files match the released build. The owner repository uses `master`; the project source uses `main`.
+- **README:** ten synchronized guides, 20 identical canonical code blocks, genuine desktop/mobile screenshots, Arabic/Urdu RTL prose and explicitly LTR code. Independent native-speaker review remains open. The Downloads Reddit draft is updated to dev.12, tested against a fresh public installation, and remains unposted.
+
+See [distribution](docs/DISTRIBUTION.md) for exact integrity/tag/deployment evidence and [testing](docs/TESTING.md) for results and runtime restrictions.
+
+### Source changes after dev.12
+
+- `559f857` fixes the isolated Pages-build test fixture to include the real screenshot dependency. It also verifies screenshot URL/dimension changes and stability without changing the app/CSS versions. The earlier complete Node run exposed this missing dependency; the correction is verified on Node 25/22. The frozen npm library and archive are unaffected.
+- The source workshop now completes eight balanced group/assertion templates through the existing builder. Capture insertion preserves resolved numbered-reference targets. The whole proposed document is visible before application, and the cursor lands in its first body rule. Current flags, examples, exact expectations and opted-in drafts retain their behavior. [Scope and limitations](docs/EDITOR_COMPLETIONS.md) describe this **source follow-up awaiting the next verified workshop release**.
+- The verified source milestone is committed and pushed directly to `main` as `c2eca5eedf57459abdd1902aca66fd8cea7f864f` (`feat(workshop): complete balanced group and assertion blocks`). Subsequent handoff documentation does not change that source snapshot.
+- Compiler semantics, public API/declarations and runtime dependencies are unchanged. The hosted dev.12 workshop has class/reference completion and Markdown reports; it does not acquire source changes merely because `main` advances.
+- Current source verification: complete Node 25.9.0 and Node 22.23.3 suites each finish with 429 cases, 425 passes and four existing scoped-native skips. The first Chrome affected-flow run has 135 passes and one screenshot-deadline failure under concurrent test load; the complete 18-case completion rerun then passes without changing timeouts or assertions. All 98 affected Firefox/WebKit checks pass. After the final translated help text, both complete 18-case completion suites pass again; all eight final French light/dark 320px captures are visually inspected. Quality/types/link checks, the final Pages build and all 64 homepage checks pass. See the [source-component receipt](docs/TESTING.md#balanced-block-completion-source-checks-12-october-2026).
+- Actual GitHub Arabic/Urdu guides at source `c2eca5e` pass at 1280, 390 and 320px. Their new source-follow-up paragraphs are RTL without overflow; all 19 headings/seven tables retain RTL, the 20 canonical blocks and all explicit inline code retain LTR, and commands/version labels stay intact. All six screenshots are visually inspected. This verifies rendering rather than native-speaker approval.
+
+### Resume in this order
+
+1. Read [autonomous progress](docs/AUTONOMOUS_ROADMAP.md), [testing](docs/TESTING.md), [distribution](docs/DISTRIBUTION.md), [language](docs/LANGUAGE.md), [compatibility](docs/COMPATIBILITY.md) and [competitor gaps](docs/COMPETITOR_GAPS.md). Inspect the actual checkout and preserve unrelated changes. The original mission remains broader than this handoff: compiler correctness, groups, reverse translation, explanations, visualization, security, native-engine exports, workshop usability, package delivery, documentation and discoverability must continue to agree.
+2. Revalidate the current source increment before packaging it. Keep the published dev.12 archive/tag separate from prototypes and future candidates. A new release needs synchronized versions/guides/screenshots, the full local gate, exact retained-archive consumers on Node 25/22, tag/payload agreement, anonymous registry/GitHub byte checks and hosted browser proof. See the distribution procedure; do not deploy unverified source under a claim that it is the frozen dev.12 runtime.
+3. Prioritize native undo for programmatic editor changes and broader grammar completion: quoted capture names, Unicode property names, local flags and repeated/set-operation blocks. Keep parser/compiler-backed whole-document validation, closed-reference policy, stale-cursor/IME/selection guards, budgets and preservation of existing reference targets. Do not introduce an alternative acceptance grammar or an opaque AI generator.
+4. Evaluate per-capture colors and overlapping/nested capture presentation with accessible contrast; the current selection highlight is not a complete capture palette. Full offline reload needs an explicit cache/update/invalidation contract. A VS Code extension remains a later integration after the compiler/API contract is stable.
+5. Expand reverse/export support only with actual native-engine evidence: full match arrays, named values, UTF-16 span mappings and cursor behavior. The current seven foreign profiles have verified boundaries and explicit rejection of unsupported scoped flags. A structural diagram is not a runtime backtracking trace, and heuristic risk notes are not a safety proof.
+
+### Commands and operating rules
+
+```sh
+git status --short --branch
+git fetch origin main
+git pull --ff-only origin main
+npm run check
+npm test
+npm run build:pages
+```
+
+Use focused checks while implementing; run browser suites sequentially because both own port 4175:
+
+```sh
+CI=1 npm run test:browser -- completions.spec.js builder.spec.js drafts.spec.js group-edit.spec.js group-preview.spec.js fixtures.spec.js markdown-report.spec.js i18n.spec.js
+CI=1 npm run test:compat -- completions.spec.js builder.spec.js drafts.spec.js group-edit.spec.js group-preview.spec.js fixtures.spec.js markdown-report.spec.js i18n.spec.js
+npm run verify
+npm run test:exports -- --require=python,ruby,php,go,rust,java,csharp
+```
+
+The foreign-engine gate requires the actual runtimes on PATH; inspect versions and availability rather than treating an unavailable PHP runtime as a pass. Source GitHub Actions stays disabled at the maintainer's request. The existing owner Pages deployment remains enabled. Work directly on `main`, commit coherent verified changes, push and verify success. Preserve existing owner-project folders, old archives/tags and private ignored files; never force-push, reset hard or clean away work. Regenerate local builds as needed, but publish only a verified release snapshot.
+
+### Boundaries that must remain explicit
+
+- Local scoped `i/m/s` groups require a compatible native runtime. Tested Node 22 lacks the syntax and Node 25/26 have matching defects; the library rejects that feature there. Ordinary library/CLI features retain Node.js 22+ support. Browser checks and foreign-profile restrictions are documented separately.
+- New captures can change capture-array shape even when resolved references are preserved. Review exact capture expectations and consumers after applying a template or group edit.
+- Human first-use sessions, explanation/architecture review, real screen-reader sessions and native-speaker review are not proven by automated checks. Keep their checkboxes open.
+- No Reddit post was sent. No stable-release acceptance or completion of the full mission is claimed by this session handoff.
+
+## Historical roadmap and acceptance gates
 
 > État initial : dépôt local `f39788b` (`master`), inspecté le 19 septembre 2026. Ce document est un plan, pas une liste de fonctionnalités livrées. Une tâche est terminée uniquement avec les preuves indiquées dans ses critères d'acceptation. L'état GitHub reste à vérifier avant publication.
 
