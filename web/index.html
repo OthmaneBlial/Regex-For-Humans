@@ -101,13 +101,13 @@
           <div class="rule-focus-slot"><p id="rule-focus" class="rule-focus" hidden></p></div>
           <div class="editor-footer"><p id="rules-help">A controlled language, not a free-form prompt. <a href="./language.html" target="_blank" rel="noopener noreferrer">Read the syntax ↗</a> · <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md" target="_blank" rel="noopener noreferrer">Complex examples ↗</a></p><span id="rule-count">0 rules</span></div>
           <fieldset class="flag-controls" aria-label="Regex options" aria-describedby="flags-help">
-            <label class="flag-toggle"><input id="ignore-case" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Ignore case <code>i</code></span></label>
-            <label class="flag-toggle"><input id="dot-all" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Dot matches newlines <code>s</code></span></label>
-            <label class="flag-toggle"><input id="global-flag" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Global <code>g</code></span></label>
-            <label class="flag-toggle"><input id="multiline-flag" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Multiline <code>m</code></span></label>
-            <label class="flag-toggle"><input id="sticky-flag" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Sticky <code>y</code></span></label>
-            <label class="flag-toggle"><input id="indices-flag" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Match indices <code>d</code></span></label>
-            <label class="flag-toggle" for="unicode-mode">Unicode mode <select id="unicode-mode"><option value="u">Unicode u</option><option value="v">Unicode sets v</option></select></label>
+            <label class="flag-toggle"><input id="ignore-case" type="checkbox" autocomplete="off"><span class="toggle-track" aria-hidden="true"></span><span>Ignore case <code>i</code></span></label>
+            <label class="flag-toggle"><input id="dot-all" type="checkbox" autocomplete="off"><span class="toggle-track" aria-hidden="true"></span><span>Dot matches newlines <code>s</code></span></label>
+            <label class="flag-toggle"><input id="global-flag" type="checkbox" autocomplete="off"><span class="toggle-track" aria-hidden="true"></span><span>Global <code>g</code></span></label>
+            <label class="flag-toggle"><input id="multiline-flag" type="checkbox" autocomplete="off"><span class="toggle-track" aria-hidden="true"></span><span>Multiline <code>m</code></span></label>
+            <label class="flag-toggle"><input id="sticky-flag" type="checkbox" autocomplete="off"><span class="toggle-track" aria-hidden="true"></span><span>Sticky <code>y</code></span></label>
+            <label class="flag-toggle"><input id="indices-flag" type="checkbox" autocomplete="off"><span class="toggle-track" aria-hidden="true"></span><span>Match indices <code>d</code></span></label>
+            <label class="flag-toggle" for="unicode-mode">Unicode mode <select id="unicode-mode" autocomplete="off"><option value="u">Unicode u</option><option value="v">Unicode sets v</option></select></label>
           </fieldset>
           <p id="flags-help" class="field-hint">Each example starts at position 0. Sticky matching starts there and stops at the first gap. Search lists up to 100 matches; global and sticky flags make repeated calls to the copied regex stateful. Input anchors remain absolute with multiline mode. Finite strings, Unicode string properties and nested set union/intersection/subtraction require v. Set complements follow native structural string restrictions.</p>
           <details id="reverse-translator" class="reverse-translator">
@@ -184,7 +184,7 @@
       </details>
 
       <section class="panel examples-panel" aria-labelledby="examples-title">
-        <div class="examples-heading"><div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">THE PROOF 🧪</p><h2 id="examples-title">Check the edge cases</h2></div></div><div class="test-controls"><label for="match-mode">Match mode</label><select id="match-mode" aria-describedby="match-mode-help"><option value="full">Entire string</option><option value="search">Search anywhere</option></select><button id="add-example" class="secondary-button" type="button" disabled>+ Add example</button></div></div>
+        <div class="examples-heading"><div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">THE PROOF 🧪</p><h2 id="examples-title">Check the edge cases</h2></div></div><div class="test-controls"><label for="match-mode">Match mode</label><select id="match-mode" autocomplete="off" aria-describedby="match-mode-help"><option value="full">Entire string</option><option value="search">Search anywhere</option></select><button id="add-example" class="secondary-button" type="button" disabled>+ Add example</button></div></div>
         <p class="examples-intro">Mark what should match. The workshop shows where the pattern agrees or surprises you. <span id="example-limits">Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested. Leave a field blank to test an empty string.</span></p>
         <p id="match-mode-help" class="examples-intro">Entire string requires a match covering the whole example. Search anywhere lists up to 100 nonoverlapping matches, including empty matches. Positions start at 0 and count UTF-16 code units; an emoji such as 😀 counts as two. Open a match to inspect its captures.</p>
         <details id="test-fixtures" class="reverse-translator test-fixtures">
@@ -196,6 +196,9 @@
           <div id="fixture-link-output" hidden><label for="fixture-link" class="field-label">Share link</label><textarea id="fixture-link" rows="3" readonly dir="ltr" spellcheck="false" aria-describedby="fixture-share-help fixture-status"></textarea></div>
           <input id="fixture-file" type="file" accept=".json,application/json" hidden>
           <p id="fixture-status" class="capture-note" role="status">No fixture loaded. Import limit: 4 MiB.</p>
+          <label class="flag-toggle"><input id="draft-save" type="checkbox" autocomplete="off" aria-describedby="draft-help draft-status" disabled><span class="toggle-track" aria-hidden="true"></span><span>Keep a draft in this browser</span></label>
+          <p id="draft-help" class="capture-note">Optional automatic recovery, including unfinished rules and expectation JSON. Stored only in this browser; turning it off removes the draft. Manual saved tests stay separate.</p>
+          <p id="draft-status" class="capture-note" role="status">Draft saving is off.</p>
         </details>
         <div id="test-summary" class="test-summary" role="status">Choose a recipe to load example strings.</div>
         <div id="test-list" class="test-list"></div>

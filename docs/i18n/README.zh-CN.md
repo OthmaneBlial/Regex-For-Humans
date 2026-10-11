@@ -108,6 +108,8 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 用 **Copy share link** **分享完整工作坊快照**：规则、标志、匹配模式、示例和精确预期都会保存在一个 URL 中。新页面会先恢复快照，再加载配方；**Load shared link** 仅在明确操作后替换已有工作。剪贴板被拒绝时，可以在文本框中手动复制。链接上限为 32 KiB；更大的测试集使用 JSON 导出。拥有链接的任何人都能读取内容，它没有加密。参见[分享方式及限制](../TEST_FIXTURES.md#share-a-workshop-snapshot)。
 
+**main 上的草稿恢复（尚未发布）。** 启用 **Keep a draft in this browser**，即可在重新加载后恢复规则、标志、示例、粘贴的正则以及未完成的预期 JSON。默认关闭，与手动保存的测试独立；关闭后会删除草稿。参见[恢复及存储限制](../TEST_FIXTURES.md#draft-recovery-on-unreleased-main)。
+
 通过原生匹配范围，或可证明的最小长度、缺失的必需文本以及位于错误绝对输入边界的文本，**理解失败的示例**。前缀和后缀检查适用于区分大小写的输入锚点；行锚点和不确定情况仍采用保守说明。无法确定具体失败步骤时，工作坊会明确说明。这不是回溯执行轨迹。参见[失败说明](../FAILURE_EXPLANATIONS.md)。
 
 对于引号内无效转义、字符类或列表中的无效项、范围端点和 Unicode 属性别名，**跳转到精确诊断位置**。高亮保留原始转义写法及完整的 Unicode 代理对；没有已知范围的错误仍定位到起点。库和 CLI 可提供可选的 `endColumn`，表示不包含右端的 UTF-16 列位置。参见[诊断范围](../LANGUAGE.md#errors-and-future-syntax)。

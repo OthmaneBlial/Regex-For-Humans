@@ -1,5 +1,13 @@
 # Autonomous implementation progress
 
+## Optional draft recovery source milestone
+
+- Implemented: explicit opt-in recovery for rules, flags, match mode, example text, pasted regex and raw unfinished expectation JSON. Reuse existing fixture application and expectation validation, with a separate bounded draft key/schema. Keep manual saved suites separate; handle denied/quota/corrupt storage, lifecycle flushing, incoming/current-edit precedence and external-tab conflicts. Turning the option off removes its draft. Native matching, worker deadlines and compiler budgets stay unchanged.
+- Fixed: the new Firefox reload checks expose persisted option checkboxes being mistaken for pre-init edits and replacing the recovered text with empty fields. Native autocomplete settings resolve the loss while actual early user rules/options remain preserved.
+- Verified: full Node 25 has 400 passes/four explicit scoped-native skips; 12 changed/shared Node 22 checks pass. All 74 affected Chrome and 74 Firefox/WebKit checks pass, followed by 16/16 final draft checks covering early source/options and two existing Chrome startup checks. Four UI locales, native captures/spans, storage boundaries, keyboard/Axe/overflow and visually inspected French desktop/320px panels are covered. See [the source receipt](TESTING.md).
+- Guides and distribution: all ten READMEs describe this source-only addition, preserving canonical examples and Arabic/Urdu RTL prose with LTR code. Frozen npm/Pages dev.10 remains unchanged, source Actions stays disabled and independent human gates remain unchecked. A new preview requires its own full gate and immutable candidate.
+- Next: evaluate the remaining editor, transformation and compiler/export requirements against actual behavior; prioritize the next substantive gap. Keep verified changes on main and preserve the wider autonomous mission.
+
 ## Published dev.10 milestone
 
 - Shipped: npm `latest`/`preview` and the GitHub prerelease select frozen source `433e438`. The retained, registry and GitHub archives have identical bytes and SHA-256 `8efc5bcc3e202d0969f9f3cc8591a406d728cdcfec66821e2d637a0a05332cca`; all 49 payload files match the tag. Native scoped groups, cached-source protection and the group-wrapper depth correction are included.

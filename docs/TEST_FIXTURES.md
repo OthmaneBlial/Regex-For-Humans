@@ -74,6 +74,18 @@ Imported example strings retain CR and CRLF exactly for testing, storage and exp
 
 Local preservation is manual and uses `regex-for-humans:tests.v1` in this origin's `localStorage`. Reloading does not automatically restore or overwrite a saved fixture. Denied storage, quota errors and corrupt saved data leave the current workshop usable. Export JSON for a durable, shareable regression corpus; browser storage can be cleared. These controls send no rules or examples to a server.
 
+## Draft recovery on unreleased main
+
+This source addition follows published dev.10; it is not yet in the hosted workshop. In **Test fixtures**, enable **Keep a draft in this browser** to save the editable workspace automatically. It starts off. Rules, flags, match mode, examples, raw expectation JSON and the pasted reverse-regex field are preserved, including incomplete or oversized fields that currently have diagnostics. Restoration validates the separate version 1 draft format before changing any field, then runs the normal compiler and expectation checks. An invalid expectation remains visible and stops matching until repaired. Imported example CR/CRLF is retained until that example is edited.
+
+Drafts use `regex-for-humans:draft.v1`, separate from manual `regex-for-humans:tests.v1` fixtures. Saving a draft never replaces a manual regression suite or makes invalid expectation JSON exportable. Turning the option off removes the stored draft and cancels pending saves; a storage-removal error is reported instead of claiming deletion. Nothing is sent to a server. Browser storage is readable by other same-origin scripts and can be cleared; use JSON export for durable validated tests.
+
+Edits are saved after 300 ms of inactivity. Pending edits also flush when the document becomes hidden or receives `pagehide`. The status distinguishes pending, saved and failed writes. A crash or process kill before the next successful save can still lose the latest changes. The complete stored JSON is limited to 4,194,304 UTF-16 units; this does not raise compiler, example or expectation limits. Denied storage, quota failures, oversized snapshots and corrupt/version-incompatible records retain the editable workspace and existing saved data.
+
+A restored draft prevents delayed recipe loading from replacing it. An explicit incoming shared snapshot takes priority; typing before initialization retains that work. Reloading the stored recipe URL restores the draft, while a different `?example=` deliberately loads the requested recipe. Opening the base workshop without a recipe also recovers the saved draft. Invalid incoming links leave recovery available and retain their link diagnostic.
+
+There is one draft for this origin. External storage changes pause saving in other open tabs without replacing their current work; checking the option again deliberately starts saving that tab's workspace. A stored-value check also catches a change before writing. This is conflict detection, not an atomic transaction or a guarantee against simultaneous cross-process writes: the [HTML storage standard](https://html.spec.whatwg.org/multipage/webstorage.html#the-storage-interface) specifies shared storage without a locking mechanism. Keep independent long-lived suites in exported JSON.
+
 ## Share a workshop snapshot
 
 **dev.9:** snapshot links are included in this preview. The [distribution receipt](DISTRIBUTION.md) records the actual publication and verification state.

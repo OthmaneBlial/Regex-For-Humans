@@ -1,6 +1,77 @@
 // Each entry contains Simplified Chinese, Spanish and French; English is the key.
 /** @type {Record<string, [string, string, string]>} */
 export const translations = {
+  "Keep a draft in this browser": [
+    "在此浏览器中保留草稿",
+    "Conservar un borrador en este navegador",
+    "Conserver un brouillon dans ce navigateur",
+  ],
+  "Optional automatic recovery, including unfinished rules and expectation JSON. Stored only in this browser; turning it off removes the draft. Manual saved tests stay separate.":
+    [
+      "可选的自动恢复功能，包括未完成的规则和预期 JSON。仅保存在此浏览器中；关闭后删除草稿。手动保存的测试保持独立。",
+      "Recuperación automática opcional, incluidas reglas y expectativas JSON incompletas. Solo se guarda en este navegador; desactivarla elimina el borrador. Los tests guardados manualmente permanecen separados.",
+      "Récupération automatique facultative, y compris les règles et attentes JSON incomplètes. Stockage dans ce navigateur uniquement ; la désactiver supprime le brouillon. Les tests sauvegardés manuellement restent séparés.",
+    ],
+  "Draft saving is off.": [
+    "草稿保存已关闭。",
+    "El guardado de borradores está desactivado.",
+    "La sauvegarde du brouillon est désactivée.",
+  ],
+  "Draft changed in another tab. Saving paused; current work is unchanged.": [
+    "另一标签页已更改草稿。保存已暂停；当前工作保持不变。",
+    "Otra pestaña cambió el borrador. Guardado en pausa; el trabajo actual se conserva.",
+    "Un autre onglet a modifié le brouillon. Sauvegarde suspendue ; le travail actuel est conservé.",
+  ],
+  "Draft saved in this browser.": [
+    "草稿已保存在此浏览器中。",
+    "Borrador guardado en este navegador.",
+    "Brouillon sauvegardé dans ce navigateur.",
+  ],
+  "Draft not saved: {error}. Current work and the last saved draft are unchanged.": [
+    "草稿未保存：{error}。当前工作和上次保存的草稿保持不变。",
+    "Borrador no guardado: {error}. El trabajo actual y el último borrador guardado se conservan.",
+    "Brouillon non sauvegardé : {error}. Le travail actuel et le dernier brouillon sauvegardé sont conservés.",
+  ],
+  "Draft has unsaved changes.": [
+    "草稿有尚未保存的更改。",
+    "El borrador tiene cambios sin guardar.",
+    "Le brouillon contient des modifications non sauvegardées.",
+  ],
+  "Restored saved draft. Review the rules and examples.": [
+    "已恢复保存的草稿。请检查规则和示例。",
+    "Borrador restaurado. Revisa las reglas y los ejemplos.",
+    "Brouillon restauré. Vérifiez les règles et les exemples.",
+  ],
+  "Draft saving is enabled in this browser.": [
+    "此浏览器已启用草稿保存。",
+    "Guardado de borradores activado en este navegador.",
+    "La sauvegarde du brouillon est activée dans ce navigateur.",
+  ],
+  "Saved draft unavailable: {error}. Current work is unchanged.": [
+    "保存的草稿不可用：{error}。当前工作保持不变。",
+    "Borrador guardado no disponible: {error}. El trabajo actual se conserva.",
+    "Brouillon sauvegardé indisponible : {error}. Le travail actuel est conservé.",
+  ],
+  "Draft saving is off; the saved draft was removed.": [
+    "草稿保存已关闭；保存的草稿已删除。",
+    "Guardado de borradores desactivado; borrador guardado eliminado.",
+    "Sauvegarde désactivée ; le brouillon sauvegardé a été supprimé.",
+  ],
+  "Draft storage unavailable. The saved draft could not be read or removed.": [
+    "草稿存储不可用。无法读取或删除保存的草稿。",
+    "Almacenamiento de borradores no disponible. No se pudo leer ni eliminar el borrador guardado.",
+    "Stockage du brouillon indisponible. Impossible de lire ou de supprimer le brouillon sauvegardé.",
+  ],
+  "Draft exceeds the 4 MiB limit.": [
+    "草稿超过 4 MiB 限制。",
+    "El borrador supera el límite de 4 MiB.",
+    "Le brouillon dépasse la limite de 4 Mio.",
+  ],
+  "Invalid version 1 workshop draft.": [
+    "无效的版本 1 工作区草稿。",
+    "Borrador de taller de versión 1 inválido.",
+    "Brouillon d’atelier de version 1 invalide.",
+  ],
   "Explanation level": ["解释级别", "Nivel de explicación", "Niveau d’explication"],
   "Read the meaning first; short notes explain regex terms. The compiler's rules and meanings stay in English.":
     [

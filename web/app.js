@@ -15,8 +15,10 @@ import { explanationNotes } from "./explanation-notes.js";
 import { explainMismatch, failureRequirements } from "./failure-reasons.js";
 import {
   createFixtureLink,
+  draftStorageKey,
   fixtureLimit,
   fixtureStorageKey,
+  parseDraft,
   parseFixture,
   readFixtureLink,
 } from "./fixtures.js";
@@ -125,6 +127,8 @@ const ui = {
   fixtureLink: requiredElement("fixture-link", HTMLTextAreaElement),
   fixtureLinkOutput: requiredElement("fixture-link-output", HTMLDivElement),
   fixtureStatus: requiredElement("fixture-status", HTMLParagraphElement),
+  draftSave: requiredElement("draft-save", HTMLInputElement),
+  draftStatus: requiredElement("draft-status", HTMLParagraphElement),
 };
 
 initializeLanguage(document, ui.language);
@@ -152,6 +156,9 @@ let testCases = [];
 let nextTestId = 1;
 let fixtureRevision = 0;
 let shareSequence = 0;
+let draftTimer = 0;
+/** @type {string|null} */
+let savedDraftText = null;
 /** @type {Map<number, string>} */
 const expectationDrafts = new Map();
 /** @type {Map<number, string>} */
@@ -1011,6 +1018,7 @@ function selectedMatchMode() {
 
 async function updateTestResults() {
   fixtureRevision++;
+  scheduleDraft();
   if (!ui.fixtureLinkOutput.hidden) {
     ui.fixtureLinkOutput.hidden = true;
     ui.fixtureLink.value = "";
@@ -1333,7 +1341,8 @@ function renderTests() {
     explorer.hidden = true;
     explorer.open = view?.explorerOpen ?? false;
     const advanced = make("details", "expectation-editor");
-    advanced.open = view?.expectationOpen ?? sample.expect !== undefined;
+    advanced.open =
+      view?.expectationOpen ?? (sample.expect !== undefined || !!expectationDrafts.get(sample.id));
     advanced.append(make("summary", "", message("Exact expectations")));
     const expectationId = `example-expectation-${sample.id}`;
     const label = make("label", "", message("Expected details (JSON)"));
@@ -1377,20 +1386,9 @@ function renderTests() {
       message("Expected details for example {index}", { index: number }),
     );
     details.addEventListener("input", () => {
-      expectationDrafts.set(sample.id, details.value);
-      try {
-        const expect = parseExpectation(details.value);
-        if (expect === undefined) delete sample.expect;
-        else sample.expect = expect;
-        expectationErrors.delete(sample.id);
-        error.textContent = "";
-        details.setAttribute("aria-invalid", "false");
-      } catch (cause) {
-        const description = cause instanceof Error ? cause.message : String(cause);
-        expectationErrors.set(sample.id, description);
-        error.textContent = description;
-        details.setAttribute("aria-invalid", "true");
-      }
+      applyExpectationDraft(sample, details.value);
+      error.textContent = expectationErrors.get(sample.id) ?? "";
+      details.setAttribute("aria-invalid", String(expectationErrors.has(sample.id)));
       updateTestResults();
     });
     advanced.append(
@@ -1449,7 +1447,20 @@ function currentFixtureText() {
   return text;
 }
 
-/** @param {import('./fixtures.js').TestFixture} fixture */
+/** @param {TestCase} sample @param {string} text */
+function applyExpectationDraft(sample, text) {
+  expectationDrafts.set(sample.id, text);
+  try {
+    const expect = parseExpectation(text);
+    if (expect === undefined) delete sample.expect;
+    else sample.expect = expect;
+    expectationErrors.delete(sample.id);
+  } catch (cause) {
+    expectationErrors.set(sample.id, cause instanceof Error ? cause.message : String(cause));
+  }
+}
+
+/** @param {import('./fixtures.js').TestFixture|import('./fixtures.js').WorkshopDraft} fixture */
 function applyFixture(fixture) {
   hasEdits = true;
   ui.rules.value = fixture.rules;
@@ -1460,11 +1471,106 @@ function applyFixture(fixture) {
   expectationDrafts.clear();
   expectationErrors.clear();
   exactCaseText.clear();
-  testCases = fixture.cases.map((sample) => ({ id: nextTestId++, ...sample }));
+  testCases = fixture.cases.map((item) => {
+    /** @type {TestCase} */
+    const sample = { id: nextTestId++, text: item.text, expected: item.expected };
+    if ("expectation" in item) applyExpectationDraft(sample, item.expectation);
+    else if (item.expect) sample.expect = item.expect;
+    return sample;
+  });
+  if (fixture.format === "regex-for-humans-draft") ui.reverseRegex.value = fixture.reverseRegex;
   for (const sample of testCases) exactCaseText.add(sample.id);
   setScenarioSelection(null);
   renderTests();
   compileRules();
+}
+
+function pauseDraft() {
+  window.clearTimeout(draftTimer);
+  draftTimer = 0;
+  ui.draftSave.checked = false;
+  setText(
+    ui.draftStatus,
+    message("Draft changed in another tab. Saving paused; current work is unchanged."),
+  );
+  ui.draftStatus.dataset.state = "error";
+}
+
+function saveDraft() {
+  window.clearTimeout(draftTimer);
+  draftTimer = 0;
+  if (!ui.draftSave.checked) return;
+  try {
+    if (localStorage.getItem(draftStorageKey) !== savedDraftText) {
+      pauseDraft();
+      return;
+    }
+    const text = JSON.stringify({
+      format: "regex-for-humans-draft",
+      version: 1,
+      rules: ui.rules.value,
+      flags: currentFlags().split("").sort().join(""),
+      mode: selectedMatchMode(),
+      reverseRegex: ui.reverseRegex.value,
+      example: new URLSearchParams(window.location.search).get("example"),
+      cases: testCases.map((sample) => ({
+        text: sample.text,
+        expected: sample.expected,
+        expectation:
+          expectationDrafts.get(sample.id) ?? (sample.expect ? JSON.stringify(sample.expect) : ""),
+      })),
+    });
+    parseDraft(text);
+    if (text !== savedDraftText) localStorage.setItem(draftStorageKey, text);
+    savedDraftText = text;
+    setText(ui.draftStatus, message("Draft saved in this browser."));
+    delete ui.draftStatus.dataset.state;
+  } catch (error) {
+    setText(
+      ui.draftStatus,
+      message("Draft not saved: {error}. Current work and the last saved draft are unchanged.", {
+        error: error instanceof Error ? message(error.message) : String(error),
+      }),
+    );
+    ui.draftStatus.dataset.state = "error";
+  }
+}
+
+function scheduleDraft() {
+  if (!ui.draftSave.checked) return;
+  window.clearTimeout(draftTimer);
+  draftTimer = window.setTimeout(saveDraft, 300);
+  if (ui.draftStatus.dataset.state !== "pending") {
+    setText(ui.draftStatus, message("Draft has unsaved changes."));
+    ui.draftStatus.dataset.state = "pending";
+  }
+}
+
+function initializeDraft() {
+  ui.draftSave.checked = false;
+  ui.draftSave.disabled = false;
+  try {
+    savedDraftText = localStorage.getItem(draftStorageKey);
+    if (savedDraftText === null) return;
+    const draft = parseDraft(savedDraftText);
+    const requested = new URLSearchParams(window.location.search).get("example");
+    const restore = !hasEdits && (!requested || requested === draft.example);
+    if (restore) {
+      applyFixture(draft);
+      setText(ui.draftStatus, message("Restored saved draft. Review the rules and examples."));
+      requiredElement("test-fixtures", HTMLDetailsElement).open = true;
+    } else setText(ui.draftStatus, message("Draft saving is enabled in this browser."));
+    ui.draftSave.checked = true;
+    if (!restore && hasEdits) scheduleDraft();
+  } catch (error) {
+    setText(
+      ui.draftStatus,
+      message("Saved draft unavailable: {error}. Current work is unchanged.", {
+        error: error instanceof Error ? message(error.message) : String(error),
+      }),
+    );
+    ui.draftStatus.dataset.state = "error";
+  }
 }
 
 function loadSharedFixture() {
@@ -1698,6 +1804,7 @@ document.addEventListener("input", (event) => {
     event.target !== ui.recipeSearch &&
     event.target !== ui.recipeCategory &&
     event.target !== ui.recipeLevel &&
+    event.target !== ui.draftSave &&
     event.target !== ui.fixtureFile
   ) {
     hasEdits = true;
@@ -1821,6 +1928,41 @@ ui.fixtureRestore.addEventListener("click", () => {
   } catch (error) {
     fixtureError(error);
   }
+});
+ui.draftSave.addEventListener("change", () => {
+  window.clearTimeout(draftTimer);
+  draftTimer = 0;
+  try {
+    if (ui.draftSave.checked) {
+      savedDraftText = localStorage.getItem(draftStorageKey);
+      saveDraft();
+    } else {
+      localStorage.removeItem(draftStorageKey);
+      savedDraftText = null;
+      setText(ui.draftStatus, message("Draft saving is off; the saved draft was removed."));
+      delete ui.draftStatus.dataset.state;
+    }
+  } catch {
+    setText(
+      ui.draftStatus,
+      message("Draft storage unavailable. The saved draft could not be read or removed."),
+    );
+    ui.draftStatus.dataset.state = "error";
+  }
+});
+window.addEventListener("pagehide", () => {
+  if (draftTimer) saveDraft();
+});
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && draftTimer) saveDraft();
+});
+window.addEventListener("storage", (event) => {
+  if (
+    ui.draftSave.checked &&
+    (event.key === draftStorageKey || event.key === null) &&
+    event.newValue !== savedDraftText
+  )
+    pauseDraft();
 });
 ui.rules.addEventListener("input", () => {
   // A multiline paste can repeat input events for the same completed value.
@@ -2055,6 +2197,7 @@ ui.groupForm.addEventListener("submit", (event) => {
 for (const input of Object.values(flagInputs)) input.addEventListener("change", compileRules);
 ui.unicodeMode.addEventListener("change", compileRules);
 ui.reverseRegex.addEventListener("input", () => {
+  scheduleDraft();
   ui.reverseRegex.setAttribute("aria-invalid", "false");
   ui.reverseFeedback.hidden = true;
   ui.reverseFeedback.textContent = "";
@@ -2225,6 +2368,7 @@ try {
   requiredElement("test-fixtures", HTMLDetailsElement).open = true;
   if (hasEdits) compileRules();
 }
+initializeDraft();
 
 try {
   const response = await fetch(new URL("../test/fixtures/product-scenarios.json", import.meta.url));

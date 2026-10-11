@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add optional browser draft recovery, separate from manually saved regression fixtures. Preserve rules, flags, match mode, example text and raw unfinished expectation JSON plus pasted reverse input. Keep storage bounded, report failed writes, restore before asynchronous recipes, retain incoming-link/current-edit precedence and pause after another tab changes storage. Turning recovery off removes its draft. Matching and compiler budgets stay unchanged.
+
+- Disable implicit form-option restoration so Firefox's persisted checked flags cannot be mistaken for edits made before app initialization and overwrite a recovered draft with empty initial fields. Actual early user edits remain preserved.
+
 ## 0.1.0-dev.10 (11 October 2026)
 
 - Apply the scoped-runtime guard to `toRegExp({ source, flags })` so cached native source cannot bypass compatibility checks on the receiving runtime. Read each field once, ignore unused segments, preserve native syntax errors and distinguish actual modifier groups from escaped text and nested v-mode classes. Unsupported behavior reports the opener's native-source line and UTF-16 column.

@@ -1,9 +1,11 @@
 import { readExpectation } from "./expectations.js";
 
 /** @typedef {{format: 'regex-for-humans-tests', version: 1, rules: string, flags: string, mode: import('./worker-protocol.d.ts').MatchMode, cases: Array<Omit<import('./worker-protocol.d.ts').TestCase, 'id'>>}} TestFixture */
+/** @typedef {{format: 'regex-for-humans-draft', version: 1, rules: string, flags: string, mode: import('./worker-protocol.d.ts').MatchMode, reverseRegex: string, example: string|null, cases: Array<{text: string, expected: boolean, expectation: string}>}} WorkshopDraft */
 
 export const fixtureLimit = 4 * 1024 * 1024;
 export const fixtureStorageKey = "regex-for-humans:tests.v1";
+export const draftStorageKey = "regex-for-humans:draft.v1";
 export const shareLinkLimit = 32 * 1024;
 const shareSizeMessage = "Share link exceeds 32 KiB. Export JSON to share this workspace.";
 
@@ -15,6 +17,51 @@ function hasOnlyKeys(value, keys) {
     !Array.isArray(value) &&
     Object.keys(value).every((key) => keys.includes(key))
   );
+}
+
+/** Draft fields stay editable even when compilation or expectation validation fails.
+ * @param {string} text @returns {WorkshopDraft}
+ */
+export function parseDraft(text) {
+  if (typeof text !== "string" || text.length > fixtureLimit)
+    throw new RangeError("Draft exceeds the 4 MiB limit.");
+  let value;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    throw new TypeError("Invalid version 1 workshop draft.");
+  }
+  if (
+    !hasOnlyKeys(value, [
+      "format",
+      "version",
+      "rules",
+      "flags",
+      "mode",
+      "reverseRegex",
+      "example",
+      "cases",
+    ]) ||
+    value.format !== "regex-for-humans-draft" ||
+    value.version !== 1 ||
+    typeof value.rules !== "string" ||
+    typeof value.flags !== "string" ||
+    !/^d?g?i?m?s?(?:u|v)y?$/u.test(value.flags) ||
+    (value.mode !== "full" && value.mode !== "search") ||
+    typeof value.reverseRegex !== "string" ||
+    (value.example !== null && typeof value.example !== "string") ||
+    !Array.isArray(value.cases) ||
+    value.cases.length > 100 ||
+    value.cases.some(
+      (sample) =>
+        !hasOnlyKeys(sample, ["text", "expected", "expectation"]) ||
+        typeof sample.text !== "string" ||
+        typeof sample.expected !== "boolean" ||
+        typeof sample.expectation !== "string",
+    )
+  )
+    throw new TypeError("Invalid version 1 workshop draft.");
+  return /** @type {WorkshopDraft} */ (value);
 }
 
 /** Validate the complete file before changing workshop state; rules may still need editing.

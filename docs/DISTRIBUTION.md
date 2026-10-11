@@ -1,5 +1,7 @@
 # Distribution decision record
 
+**Unreleased draft recovery on main:** the optional workshop draft workflow described in [the draft contract](TEST_FIXTURES.md#draft-recovery-on-unreleased-main) follows frozen dev.10. All ten source guides distinguish this addition from the published package and site. Its component checks do not replace a complete new distribution gate; preserve dev.10's immutable archive/tag and hosted runtime until the next verified preview.
+
 ## Published dev.10 (11 October 2026)
 
 [npm `0.1.0-dev.10`](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.10), both registry tags (`latest` and `preview`), and the [GitHub prerelease](https://github.com/OthmaneBlial/Regex-For-Humans/releases/tag/v0.1.0-dev.10) select frozen source `433e438a92643c313e325421515fb495a1d153e9`. The annotated tag object is `6277c078bb7d0d6b8f4616b3b3a7d5a38b65cc60`. Retained, anonymous registry-downloaded and GitHub-downloaded archives agree byte for byte: 397,286 bytes, 49 files, SHA-256 `8efc5bcc3e202d0969f9f3cc8591a406d728cdcfec66821e2d637a0a05332cca`, integrity `sha512-8Hk3wfTG37BoURkhrb+6oW5pZcGmBPyOcWbdOT15pBeIcWBUdc4K7ewedSD3+zqcQkDU5PAETQI9dHZ6uoUsAg==`. Every payload file matches the tag. The GitHub archive digest agrees; its checksum asset has SHA-256 `38c15cc27df32a5bab96d810ab842f51f7ef2bf13af71b73deeb3ea236991c3e`. Exact-archive consumers pass on Node 25 and Node 22; fresh public default and preview installations pass the complete JavaScript/strict TypeScript/API/CLI consumer checks.
