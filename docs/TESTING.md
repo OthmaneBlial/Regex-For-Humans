@@ -1,5 +1,9 @@
 # Testing and compatibility
 
+## Dev.12 candidate verification (11 October 2026)
+
+Verification is in progress for source completion and Markdown reports under dev.12 package/lock metadata. The required complete command, separate Node 22 run, seven native profiles, exact final archive consumers and external publication have not yet produced dev.12 receipts. The successful source-component records below remain separate from this new distribution gate; public dev.11 remains unchanged during preparation.
+
 ## Unreleased Markdown report checks (11 October 2026)
 
 The [Markdown report workflow](MARKDOWN_REPORTS.md) passes four new unit checks and the complete Node 25.9.0/22.23.3 suites: 424 cases each, 420 passes, four existing explicit scoped-native skips and no failures. Final focused checks on both Node editions also pass after adding all five source separators, build/source budgets and the distinction between a canonical substring regex and whole-input mode. Native capture values, UTF-16 spans and replacements agree, while the embedded fixture retains absent/empty captures, Unicode, controls, exact expectations, both modes and all 100 case slots.

@@ -38,7 +38,7 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 
 ## 🧰 O que você pode construir hoje
 
-**Código-fonte (ainda não publicado):** exporte um [relatório Markdown](../MARKDOWN_REPORTS.md) com a versão, as regras, o regex JavaScript exato, as opções, os testes pretendidos e o JSON que pode ser reimportado. A exportação não executa nem certifica os testes.
+**Candidato `0.1.0-dev.12` (ainda não publicado):** exporte um [relatório Markdown](../MARKDOWN_REPORTS.md) com a versão, as regras, o regex JavaScript exato, as opções, os testes pretendidos e o JSON que pode ser reimportado. A exportação não executa nem certifica os testes.
 
 **Código-fonte (ainda não publicado):** use **Complete a rule** ou **Ctrl + Espaço** para completar classes de caracteres integradas, inclusive após uma quantidade (por exemplo, `between 2 and 5 di`), ou referências a capturas anteriores já fechadas (`same as ca`). As referências são oferecidas por número e nome; uma prévia mostra a regra selecionada completa. Cada sugestão precisa compilar com o documento inteiro. Textos entre aspas, comentários e seleções são preservados. Veja [os controles e limites](../EDITOR_COMPLETIONS.md).
 

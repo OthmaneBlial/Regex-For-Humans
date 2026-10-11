@@ -1,5 +1,11 @@
 # Distribution decision record
 
+## Dev.12 candidate (11 October 2026)
+
+The local candidate combines parser/compiler-backed class and closed-capture-reference completion, the full selected-rule preview and reproducible Markdown reports from source milestones `e347aa0`, `3114933` and `9c9beab`. Package/lock metadata selects `0.1.0-dev.12`; public npm tags, the GitHub prerelease and owner Pages remain frozen dev.11. Current README/homepage links continue to describe that published version during preparation.
+
+Required next evidence: the complete verification command, separate Node 22 suite, all seven required native profiles, refreshed real screenshots and synchronized final copy, exact retained-archive consumers on Node 25/22, source/tag agreement, registry/GitHub byte checks and owner Pages/live verification. No new publication is claimed before those steps. Older archives/tags remain immutable, source Actions stays disabled and independent human reviews remain open.
+
 ## Published dev.11 (11 October 2026)
 
 [npm `0.1.0-dev.11`](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.11), both registry tags (`latest` and `preview`), and the [GitHub prerelease](https://github.com/OthmaneBlial/Regex-For-Humans/releases/tag/v0.1.0-dev.11) select frozen source `feff37d69957da31992b46663410522dfab9bd69`. The annotated tag object is `057b6b5dc19bdf94b8d8de700b3bdb7c9e67a5d6`. The retained final archive, anonymous registry download and downloaded GitHub asset agree byte for byte: 408,988 bytes, 50 files, SHA-256 `cfd56bd51ce7d199cba2d6578205eb55c11ef1afbadcecd0ded854a39f635788`, integrity `sha512-JO4zMrrGwWUP0RYe81LxdP1F3LG9s5qisjjAP7uuI1/4SJVrJ74eMUAcAYP5gPSlPdWvspfE2JN/1pocFBenWg==`. Every payload file matches the frozen source/tag. The GitHub checksum asset also agrees, with SHA-256 `74188592b08a99ef24e1b0a6a6b09a6fd1e13f4dd1988b34a9862f1d8c4bcec0`. Initial anonymous registry reads return 404 during processing; the upload is not repeated.

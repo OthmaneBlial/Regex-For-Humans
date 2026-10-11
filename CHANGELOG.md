@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0-dev.12 candidate (11 October 2026)
+
 - Add a local Markdown report download with build metadata, rules, exact JavaScript regex/flags, match mode, intended tests and a lossless reimportable fixture. Validate the complete snapshot without running matching or inventing test results; retain source and both saved stores. Fence user data with adaptive delimiters and expose controls in JSON. Translate controls/help/status in all four interface languages. This remains source-only work beyond dev.11.
 
 - Complete numeric and named references to earlier closed captures using parser/compiler metadata. Retain existing targets and native absent/empty capture behavior; exclude open/forward groups and validate the whole proposed document. Show the complete selected rule below the list for long names on mobile, without changing source or saved drafts while previewing. This remains source-only work beyond dev.11.

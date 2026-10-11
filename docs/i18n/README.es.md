@@ -38,7 +38,7 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 
 ## 🧰 Qué puedes construir hoy
 
-**Código fuente (sin publicar):** exporta un [informe Markdown](../MARKDOWN_REPORTS.md) con la versión, las reglas, la expresión JavaScript exacta, las opciones, las pruebas previstas y el JSON reimportable. Exportar no ejecuta ni certifica las pruebas.
+**Candidato `0.1.0-dev.12` (sin publicar):** exporta un [informe Markdown](../MARKDOWN_REPORTS.md) con la versión, las reglas, la expresión JavaScript exacta, las opciones, las pruebas previstas y el JSON reimportable. Exportar no ejecuta ni certifica las pruebas.
 
 **Código fuente (sin publicar):** usa **Completar una regla** o **Ctrl + Espacio** para completar clases de caracteres integradas, incluso después de una cantidad (por ejemplo, `between 2 and 5 di`), o referencias a capturas anteriores ya cerradas (`same as ca`). Se ofrecen referencias por número y por nombre; una vista previa muestra la regla seleccionada completa. Cada sugerencia debe compilar con todo el documento. Se conservan los textos entre comillas, los comentarios y las selecciones. Consulta [el funcionamiento y los límites](../EDITOR_COMPLETIONS.md).
 

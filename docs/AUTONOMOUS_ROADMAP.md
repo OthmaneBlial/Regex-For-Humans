@@ -1,5 +1,10 @@
 # Autonomous implementation progress
 
+## Dev.12 distribution candidate
+
+- Package/lock metadata now selects dev.12 for the verified source class/reference completion, selected-rule preview and Markdown reports. The public registry, GitHub prerelease and owner Pages remain frozen dev.11; current published-version links are retained during preparation.
+- Run a fresh complete runtime/browser/site/package gate, separate Node 22 and required native-profile checks, then synchronize final copy/screenshots and verify the exact retained archive before freezing/publishing. Record actual registry/GitHub/Pages delivery separately. Preserve previous archives/tags, disabled source Actions and unchecked human gates; the broader mission continues.
+
 ## Unreleased Markdown report milestone
 
 - Source downloads a complete Markdown snapshot with the displayed build label, readable rules, exact JavaScript regex/flags, full/search mode, intended examples/exact expectations and lossless reimportable JSON. Reuse fixture validation, compiler, visible control rendering and the existing local downloader; add no renderer dependency or public package API. Exporting executes no example matching and certifies no result.
