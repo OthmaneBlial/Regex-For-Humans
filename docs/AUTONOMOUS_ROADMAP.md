@@ -4,6 +4,14 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
 
+## Aggregate native worker output source milestone
+
+- Implemented: one private shared budget caps the complete result batch at 1,000 matches, 20,000 captures and 1,048,576 UTF-16 units across values, escaped details and replacement output. Worker reservations precede match/capture record construction and transfer; controller validation precedes resolving results for rendering. Error text is bounded too. Oversized batches return an atomic actionable error, translated into all four workshop interface languages, while inputs remain editable and a fresh normal check recovers.
+- Preserved: native full/search semantics, absent versus empty captures, original replacement flags, the per-example 100-match display limit, the extra exact-expectation probe, cancellation and the 1,200 ms deadline. No public compiler API or dependency is added. These are known-record/text budgets, not exact serialized-byte or native-engine memory guarantees; a controller cannot stop cloning of externally forged messages before receipt.
+- Regression evidence: four native worker-thread tests fail on the byte-identical pre-change worker and pass after implementation. The supported 100-empty-capture/100-example combination now returns only a small error rather than a million capture records. Exact match/capture boundaries, UTF-16 values, escaped/native replacement text, native errors and forged-controller recovery have focused checks. Final cross-browser and source gates are recorded in [testing evidence](TESTING.md).
+- Verified: all 377 final Node 25 checks, the preceding 375-test Node 22 run plus 33 final focused Node 22 checks, clean installed consumers on both runtimes, 48 Chromium desktop/mobile and 48 Firefox/WebKit targeted checks, final lint/types/docs and Pages builds pass. Immutable dev.5/dev.6/dev.7 archive hashes are unchanged; source Actions remains disabled. These gates are separate from the next complete release gate.
+- Next: continue native debugger/explanation investigation and the remaining original mission. Preserve unreleased/public distinctions, retained archive bytes and disabled source Actions; PHP parity and independent human language/usability/screen-reader review remain open.
+
 ## Precise diagnostic range source milestone
 
 - Implemented: optional exclusive same-line UTF-16 `endColumn` metadata reaches compiler errors, public declarations, JSON/CLI serialization and the workshop. Numeric count failures, reversed bounds, invalid capture names and invalid/missing/forward/open references retain their entire original token, including JSON escapes. Highlighting covers every intersecting lexical piece; error navigation selects the complete range. Successful AST/compile shapes and legacy point diagnostics remain unchanged.
@@ -156,8 +164,8 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Bound aggregate worker result volume before transfer and rendering; use the recorded million-capture case, boundary cases and native browser recovery to verify the change. Never silently truncate exact expectations or report untested rows as passes.
-2. Extend precise diagnostics to further parser families where actual source ranges and reliable repairs are available, then continue the developer-adoption workflows from the original mission. Keep execution traces and engine compatibility claims tied to evidence.
+1. Extend precise diagnostics to further parser families where actual source ranges and reliable repairs are available. Preserve original token positions, successful AST shapes and point-only compatibility; prove each new range before implementation.
+2. Continue native debugger/explanation and developer-adoption workflows from the original mission using actual failing cases. Keep execution traces and engine compatibility claims tied to evidence; aggregate worker output is now bounded in unreleased source.
 3. Run the complete distribution gate before the next source milestone is released. Synchronize npm, owner Pages and all ten guides with that verified release while preserving frozen archives and explicit PHP/human-review limits.
 
 ## Site and README milestone

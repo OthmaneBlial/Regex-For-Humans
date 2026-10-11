@@ -1,4 +1,5 @@
 import { expectationChecks, readExpectation } from "./expectations.js";
+import { OUTPUT_LIMITS, OutputBudget } from "./output-budget.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestPayload} TestPayload */
 /** @typedef {import("./worker-protocol.d.ts").TestRequest} TestRequest */
@@ -24,8 +25,8 @@ function validSpan(value, range, text) {
   );
 }
 
-/** @param {TestResult} result @param {string} text @param {number} count @param {MatchMode} mode */
-function validMatches(result, text, count, mode) {
+/** @param {TestResult} result @param {string} text @param {number} count @param {MatchMode} mode @param {OutputBudget} budget */
+function validMatches(result, text, count, mode, budget) {
   const matches = result.matches;
   if (
     !Number.isSafeInteger(count) ||
@@ -44,10 +45,12 @@ function validMatches(result, text, count, mode) {
       !match ||
       typeof match !== "object" ||
       Array.isArray(match) ||
-      !validSpan(match.value, match.range, text) ||
-      match.range.start < nextStart ||
+      typeof match.value !== "string" ||
       !Array.isArray(match.captures) ||
-      match.captures.length !== count
+      match.captures.length !== count ||
+      !budget.add(1, count, match.value.length) ||
+      !validSpan(match.value, match.range, text) ||
+      match.range.start < nextStart
     )
       return false;
     nextStart = match.range.end;
@@ -59,6 +62,7 @@ function validMatches(result, text, count, mode) {
       } else if (
         typeof capture.value !== "string" ||
         capture.value.length > text.length ||
+        !budget.add(0, 0, capture.value.length) ||
         (result.indicesAvailable
           ? !validSpan(capture.value, capture.range, text)
           : capture.range !== null)
@@ -182,7 +186,12 @@ export class TestRunner {
         }
         if (data.id !== id) return;
         if ("error" in data) {
-          if (typeof data.error !== "string" || "results" in data) invalid();
+          if (
+            typeof data.error !== "string" ||
+            data.error.length > OUTPUT_LIMITS.text ||
+            "results" in data
+          )
+            invalid();
           else finish(new TestRunError("WORKER_ERROR", data.error));
           return;
         }
@@ -198,6 +207,7 @@ export class TestRunner {
           return;
         }
         const ids = new Set();
+        const budget = new OutputBudget();
         for (const result of data.results) {
           const expected = expectations.get(result?.id);
           const length = caseLengths.get(result?.id);
@@ -211,6 +221,7 @@ export class TestRunner {
             typeof result.actual !== "boolean" ||
             typeof result.pass !== "boolean" ||
             typeof result.detail !== "string" ||
+            !budget.add(0, 0, result.detail.length) ||
             typeof expected !== "boolean" ||
             (range !== undefined &&
               range !== null &&
@@ -230,7 +241,7 @@ export class TestRunner {
           const text = caseTexts?.get(result.id);
           if (
             captureCount !== undefined
-              ? typeof text !== "string" || !validMatches(result, text, captureCount, mode)
+              ? typeof text !== "string" || !validMatches(result, text, captureCount, mode, budget)
               : result.matches !== undefined ||
                 result.indicesAvailable !== undefined ||
                 result.limitReached !== undefined
@@ -265,6 +276,10 @@ export class TestRunner {
                 ? result.replacement !== undefined
                 : typeof result.replacement !== "string" || result.replacement.length > 65536
             ) {
+              invalid();
+              return;
+            }
+            if (!budget.add(0, 0, result.replacement?.length ?? 0)) {
               invalid();
               return;
             }

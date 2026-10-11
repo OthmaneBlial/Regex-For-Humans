@@ -1,6 +1,7 @@
 import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS } from "../src/limits.js";
 import { expectationChecks, readExpectation } from "./expectations.js";
+import { OUTPUT_LIMIT_MESSAGE, OUTPUT_LIMITS, OutputBudget } from "./output-budget.js";
 import { replaceBounded } from "./replacement.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestRequest} TestRequest */
@@ -75,6 +76,7 @@ self.onmessage = (event) => {
     // A strict input end still applies when line mode enables the m flag.
     const fullExpression =
       mode === "full" ? new RegExp(`^(?:${source})(?![\\s\\S])`, testFlags) : null;
+    const budget = new OutputBudget();
     const results = cases.map((sample) => {
       expression.lastIndex = 0;
       if (fullExpression) fullExpression.lastIndex = 0;
@@ -90,6 +92,7 @@ self.onmessage = (event) => {
       let detail = match ? `Matched ${quoteText(match[0])} at ${match.index}` : "No match";
       if (match && !actual)
         detail = `Found ${quoteText(match[0])} at ${match.index}, not the entire string`;
+      if (!budget.add(0, 0, detail.length)) throw new Error(OUTPUT_LIMIT_MESSAGE);
       /** @type {MatchDetail[]} */
       const matches = [];
       if (explore) {
@@ -97,6 +100,14 @@ self.onmessage = (event) => {
         while (next && matches.length < MAX_MATCHES) {
           if (next.length !== captureCount + 1) throw new Error("Invalid capture metadata.");
           const current = next;
+          if (
+            !budget.add(
+              1,
+              captureCount,
+              current.reduce((length, value) => length + (value?.length ?? 0), 0),
+            )
+          )
+            throw new Error(OUTPUT_LIMIT_MESSAGE);
           matches.push({
             value: current[0],
             range: { start: current.index, end: current.index + current[0].length },
@@ -130,6 +141,7 @@ self.onmessage = (event) => {
         expected?.replacement === undefined
           ? undefined
           : replaceBounded(source, flags, sample.text, expected.replacement.template);
+      if (!budget.add(0, 0, replacement?.length ?? 0)) throw new Error(OUTPUT_LIMIT_MESSAGE);
       const checks =
         expected === undefined
           ? undefined
@@ -156,10 +168,11 @@ self.onmessage = (event) => {
     const reply = { id, results };
     self.postMessage(reply);
   } catch (error) {
+    const message = escapeControls(error instanceof Error ? error.message : String(error));
     /** @type {WorkerReply} */
     const reply = {
       id,
-      error: escapeControls(error instanceof Error ? error.message : String(error)),
+      error: message.length <= OUTPUT_LIMITS.text ? message : OUTPUT_LIMIT_MESSAGE,
     };
     self.postMessage(reply);
   }

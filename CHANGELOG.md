@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Bound complete native worker result batches to 1,000 match records, 20,000 capture records and 1,048,576 UTF-16 units across values, escaped details and replacements. Reserve before building match/capture records, revalidate in the controller, reject oversized output atomically and retain fresh-worker recovery. Translate the actionable error in all four workshop languages without changing native matching, original replacement flags or the existing deadline.
+
 - Keep requested instant scrolling stable by removing document-wide smooth scrolling, which could resume a pending native scroll after returning to the top. Retain explicit source navigation and verify the position across three rendered frames in both themes without changing browser assertions or deadlines.
 
 - Retain precise same-line diagnostic ranges for malformed/oversized repetition counts, reversed bounds, invalid capture names and invalid/missing/forward/open capture references. Add optional exclusive UTF-16 `endColumn` metadata to `CompileError`, typed JSON and CLI JSON while preserving existing start positions and point-only errors. Highlight the complete diagnosed token and select it through workshop error navigation in all interface languages.

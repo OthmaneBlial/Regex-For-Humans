@@ -1022,6 +1022,11 @@ export const translations = {
     "La prueba tardó demasiado y se detuvo.",
     "Le test a pris trop de temps et a été interrompu.",
   ],
+  "Example output is too large. Use fewer examples, captures or matches.": [
+    "示例输出过大。请减少示例、捕获组或匹配数量。",
+    "La salida es demasiado grande. Usa menos ejemplos, capturas o coincidencias.",
+    "Les résultats sont trop volumineux. Réduisez le nombre d’exemples, de captures ou de correspondances.",
+  ],
   "Empty string": ["空字符串", "Cadena vacía", "Chaîne vide"],
   "Example {index} string": [
     "示例 {index} 字符串",

@@ -30,6 +30,10 @@ The browser allows compiled regex sources up to 131,072 UTF-16 code units. This 
 
 ## Browser execution
 
+Unreleased source work additionally bounds each complete result batch to 1,000 match records, 20,000 capture records and 1,048,576 UTF-16 text units. Text includes match/capture values, escaped details and native replacement output; an error reply has the same text ceiling. The private shared budget is reserved before match/capture records are allocated in the worker and checked again by the controller before resolving results for rendering. Overflow discards the whole result batch and reports `Example output is too large. Use fewer examples, captures or matches.`; it never silently omits examples or marks partial results as passing. The existing per-example enumeration limit and exact-expectation boundary probe are preserved. A later check starts fresh after controller errors.
+
+These are bounds on the known result records and text, not exact serialized-byte or engine-allocation limits. The native worker checks before transferring its reply. Controller validation occurs after receipt and cannot prevent structured cloning of an externally forged message. The 1,200 ms termination deadline remains necessary for expensive native matching; copied regexes and the published dev.7 workshop do not gain these unreleased source limits.
+
 The homepage demo accepts matching input up to 80 UTF-16 code units. It keeps longer values intact, marks them invalid and skips regex execution, with a visible link to the workshop's larger testing limit. It only exposes the fixed demo recipes, not custom rules.
 
 The static workshop compiles rules locally. It loads its code and public recipe fixtures from the same origin; it does not submit typed rules or examples to an application backend, add telemetry or require an account. The hosting provider can still see ordinary requests for the static files and may keep access logs.
