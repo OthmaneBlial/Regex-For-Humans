@@ -60,6 +60,9 @@ end
 <p dir="ltr" align="left"><code dir="ltr">Ctrl + Space</code></p>
 <p dir="rtl">پہلے سے موجود حروف کی اقسام مکمل کریں، تعداد کے بعد بھی۔ مثال:</p>
 <p dir="ltr" align="left"><code dir="ltr">between 2 and 5 di</code></p>
+<p dir="rtl">پہلے سے بند ہو چکے کیپچر گروپس کے حوالے بھی نمبر اور نام سے مکمل کیے جا سکتے ہیں۔ مثال:</p>
+<p dir="ltr" align="left"><code dir="ltr">same as ca</code></p>
+<p dir="rtl">پیش منظر منتخب قاعدے کا پورا متن دکھاتا ہے۔</p>
 <p dir="rtl">ہر تجویز کا پوری دستاویز کے ساتھ کمپائل ہونا ضروری ہے۔ اقتباس میں موجود متن، تبصرے اور منتخب متن محفوظ رہتے ہیں۔ <a href="../EDITOR_COMPLETIONS.md">طریقۂ استعمال اور حدود</a> دیکھیں۔</p>
 
 | صلاحیت | <code dir="ltr">npm 0.1.0-dev.11</code> / میزبان ورکشاپ |

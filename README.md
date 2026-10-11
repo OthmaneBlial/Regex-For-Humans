@@ -48,7 +48,7 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 > 🌱 **Development preview (`0.1.0-dev.11`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
 
-**Source checkout (unreleased):** use **Complete a rule** or **Ctrl + Space** to finish built-in character classes, including after a count (for example, `between 2 and 5 di`). Every suggestion must compile with the entire document. Quoted text, comments and selected text are preserved. See [completion scope and controls](docs/EDITOR_COMPLETIONS.md).
+**Source checkout (unreleased):** use **Complete a rule** or **Ctrl + Space** to finish built-in character classes, including after a count (for example, `between 2 and 5 di`), or references to earlier closed captures (`same as ca`). References are offered by number and by name; a preview displays the complete selected rule. Every suggestion must compile with the entire document. Quoted text, comments and selected text are preserved. See [completion scope and controls](docs/EDITOR_COMPLETIONS.md).
 
 | Start here | Continue with |
 | --- | --- |

@@ -1,5 +1,11 @@
 # Autonomous implementation progress
 
+## Unreleased capture-reference completion milestone
+
+- Source extends the finite completion list to numeric/named references to earlier closed captures, using the parser's reference phrase and the compiler's capture metadata. Validate every entire proposed document, preserve existing targets and native participation semantics, and reject open/forward/invalid contexts. The selected-rule preview keeps long names readable on mobile without editing or saving source.
+- Verification: all 12 completion unit checks pass; complete Node 25/22 suites each pass 416 cases with four explicit skips (420 total). All 76 affected Chrome desktop/mobile and 38 Firefox/WebKit checks pass, including four interface languages, both themes, 320px layouts, exact captures/spans and draft persistence. French reference-preview captures are visually inspected. See [the component receipt](TESTING.md#unreleased-capture-reference-completion-checks-11-october-2026).
+- Documentation: all ten guides describe the source-only reference scope. Arabic/Urdu retain separate left-aligned LTR example paragraphs within RTL prose. Completing inside quoted names, capture definitions, properties, flags and block openers remains follow-up; native undo and independent human reviews remain unverified. Frozen dev.11 distribution and disabled source Actions remain unchanged.
+
 ## Unreleased class completion milestone
 
 - Source adds explicit parser-derived built-in character-class completion with current-document/flag validation, native keyboard/mobile controls and all four interface translations. Preserve captures/references, surrounding source, examples and opted-in drafts; guard quotes/comments/selections, IME, stale proposals and existing budgets. See [the finite scope](EDITOR_COMPLETIONS.md). Block/name/property completion remains follow-up.

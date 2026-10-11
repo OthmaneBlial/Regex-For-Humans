@@ -669,6 +669,14 @@ a {
   flex-wrap: wrap;
   gap: 8px;
 }
+.completion-preview code {
+  display: block;
+  margin-top: 6px;
+  font: 12px / 1.6 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  unicode-bidi: plaintext;
+}
 #completion-choice {
   width: 100%;
   min-width: 0;

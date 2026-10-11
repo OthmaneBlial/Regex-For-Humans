@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Complete numeric and named references to earlier closed captures using parser/compiler metadata. Retain existing targets and native absent/empty capture behavior; exclude open/forward groups and validate the whole proposed document. Show the complete selected rule below the list for long names on mobile, without changing source or saved drafts while previewing. This remains source-only work beyond dev.11.
+
 - Add explicit workshop completion for parser-defined built-in character classes, including after counts and in character-class members. Validate each proposed entire document with current flags; preserve surrounding source, captures/references, examples and opted-in drafts. Provide a native keyboard/mobile list with four interface translations, reject quoted/comment/selected text and stale proposals, retain native Enter/Tab and avoid completion during input-method composition. Block/name/property completion remains follow-up; this is separate from the published dev.11 release.
 
 ## 0.1.0-dev.11 (11 October 2026)

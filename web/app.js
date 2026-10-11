@@ -64,6 +64,8 @@ const ui = {
   completeRule: requiredElement("complete-rule", HTMLButtonElement),
   completions: requiredElement("rule-completions", HTMLElement),
   completionChoice: requiredElement("completion-choice", HTMLSelectElement),
+  completionPreview: requiredElement("completion-preview", HTMLElement),
+  completionPreviewField: requiredElement("completion-preview-field", HTMLParagraphElement),
   completionStatus: requiredElement("completion-status", HTMLParagraphElement),
   completionApply: requiredElement("completion-apply", HTMLButtonElement),
   completionClose: requiredElement("completion-close", HTMLButtonElement),
@@ -1641,8 +1643,16 @@ function closeCompletions(restoreFocus = false) {
   ui.completions.hidden = true;
   ui.completeRule.setAttribute("aria-expanded", "false");
   ui.completionChoice.replaceChildren();
+  ui.completionPreview.replaceChildren();
+  ui.completionPreviewField.hidden = true;
   completion = null;
   if (restoreFocus) ui.rules.focus();
+}
+
+function showCompletionPreview() {
+  const choice = completion?.choices[ui.completionChoice.selectedIndex];
+  ui.completionPreviewField.hidden = !choice;
+  ui.completionPreview.textContent = choice?.text ?? "";
 }
 
 function showCompletions() {
@@ -1660,13 +1670,16 @@ function showCompletions() {
     ui.completionChoice.append(option);
   }
   ui.completionChoice.selectedIndex = choices.length ? 0 : -1;
+  showCompletionPreview();
   ui.completionChoice.hidden = !choices.length;
   ui.completionApply.disabled = !choices.length;
   setText(
     ui.completionStatus,
     message(
       choices.length
-        ? "{count} validated suggestions."
+        ? choices.length === 1
+          ? "1 validated suggestion."
+          : "{count} validated suggestions."
         : "No validated suggestions. Use a single cursor outside quoted text and comments, and fix other rule errors first.",
       { count: choices.length },
     ),
@@ -2063,6 +2076,7 @@ ui.rules.addEventListener("input", () => {
 });
 ui.rules.addEventListener("keyup", followSourceCursor);
 ui.completeRule.addEventListener("click", showCompletions);
+ui.completionChoice.addEventListener("change", showCompletionPreview);
 ui.completionApply.addEventListener("click", applyCompletion);
 ui.completionClose.addEventListener("click", () => closeCompletions(true));
 ui.completions.addEventListener("keydown", (event) => {

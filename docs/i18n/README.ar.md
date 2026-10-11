@@ -60,6 +60,9 @@ end
 <p dir="ltr" align="left"><code dir="ltr">Ctrl + Space</code></p>
 <p dir="rtl">يمكن إكمال فئات المحارف المدمجة، بما فيها ما يأتي بعد عدد. مثال:</p>
 <p dir="ltr" align="left"><code dir="ltr">between 2 and 5 di</code></p>
+<p dir="rtl">يمكن أيضًا إكمال مراجع الالتقاطات المغلقة السابقة، بالأرقام والأسماء. مثال:</p>
+<p dir="ltr" align="left"><code dir="ltr">same as ca</code></p>
+<p dir="rtl">تعرض المعاينة النص الكامل للقاعدة المختارة.</p>
 <p dir="rtl">يجب أن ينجح تجميع كل اقتراح مع المستند كاملًا. تُحفظ النصوص بين علامات الاقتباس والتعليقات والنصوص المحددة. راجع <a href="../EDITOR_COMPLETIONS.md">طريقة الاستخدام والحدود</a>.</p>
 
 | الإمكانية | حزمة <code dir="ltr">npm 0.1.0-dev.11</code> / الورشة المستضافة |

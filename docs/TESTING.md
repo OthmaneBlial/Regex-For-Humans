@@ -1,5 +1,11 @@
 # Testing and compatibility
 
+## Unreleased capture-reference completion checks (11 October 2026)
+
+The [completion workflow](EDITOR_COMPLETIONS.md) now also offers complete numeric/named references to earlier closed captures. All 12 completion unit checks pass; complete Node 25.9.0 and Node 22.23.3 suites each finish with 420 cases, 416 passes, four explicit scoped-native skips and no failures. New checks cover nested/open/forward groups, Unicode names and native UTF-16 spans, multi-digit targets, quote-aware logical lines with every separator, existing references, absent versus empty participation, invalid contexts and 120 distinct proposals at the capture budget.
+
+All 76 affected Chrome desktop/mobile and 38 Firefox/WebKit checks pass. The reference flows retain flags/examples, exact native capture values/spans and opted-in drafts through application/reload. Selecting the full-rule preview changes neither source nor saved draft bytes. Four interface languages, both themes, keyboard behavior, focused WCAG A/AA checks and 320px layouts pass; French light/dark reference-preview captures were visually inspected. Ten README/localization checks, lint/types, 805 source links, static/Pages builds and 799 built links also pass. These are source-component checks; frozen npm/hosted dev.11 and independent usability/screen-reader/native-language review remain separate.
+
 ## Unreleased built-in class completion checks (11 October 2026)
 
 The finite [completion workflow](EDITOR_COMPLETIONS.md) passes seven new unit checks and the complete Node 25.9.0 and Node 22.23.3 suites: 415 cases each, 411 passes, four explicit scoped-native skips and no failures. Every parser shorthand is exercised; counts, class members, negation, native UTF-16 capture spans, numeric references, all five line separators, quoted/comment text, malformed surroundings and existing budgets are covered.

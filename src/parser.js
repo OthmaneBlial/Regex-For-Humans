@@ -105,6 +105,8 @@ const SHORTHANDS = new Map([
 
 // Workshop suggestions use the parser's own vocabulary; acceptance still goes through parse.
 export const SHORTHAND_RULES = Object.freeze([...SHORTHANDS.keys()]);
+export const BACKREFERENCE_RULE = "same as capture";
+const BACKREFERENCE_PREFIX = new RegExp(`^${BACKREFERENCE_RULE}(?:\\s+|$)`, "iu");
 
 const START_ANCHOR = /^(line start|start)(?:,\s*|\s+|$)/i;
 const DUPLICATE_START_ANCHOR_MESSAGE = "Use only one start anchor.";
@@ -613,7 +615,7 @@ function parseItem(text, location, rawLine, inClass = false) {
     };
   }
 
-  const backreference = /^same as capture(?:\s+|$)/iu.exec(remaining);
+  const backreference = BACKREFERENCE_PREFIX.exec(remaining);
   if (backreference) {
     const suffix = remaining.slice(backreference[0].length);
     const referenceLocation = {

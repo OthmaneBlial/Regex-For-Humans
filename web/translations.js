@@ -3,6 +3,12 @@
 export const translations = {
   "Complete a rule": ["补全规则", "Completar una regla", "Compléter une règle"],
   "Rule suggestions": ["规则建议", "Sugerencias de reglas", "Suggestions de règles"],
+  "Suggested rule:": ["建议规则：", "Regla sugerida:", "Règle proposée :"],
+  "1 validated suggestion.": [
+    "1 条已验证的建议。",
+    "1 sugerencia validada.",
+    "1 suggestion validée.",
+  ],
   "Apply suggestion": ["应用建议", "Aplicar sugerencia", "Appliquer la suggestion"],
   "Close suggestions": ["关闭建议", "Cerrar sugerencias", "Fermer les suggestions"],
   "{count} validated suggestions.": [
@@ -16,11 +22,11 @@ export const translations = {
       "No hay sugerencias validadas. Coloca un solo cursor fuera del texto entre comillas y los comentarios, y corrige primero los demás errores de reglas.",
       "Aucune suggestion validée. Placez un seul curseur hors des textes entre guillemets et des commentaires, puis corrigez d’abord les autres erreurs de règles.",
     ],
-  "Complete a built-in character class at the cursor, including after a count. Suggestions use English syntax and must compile with the entire document. Ctrl + Space opens the list; Enter applies a choice; Escape closes it.":
+  "Complete a built-in character class or a reference to an earlier closed capture, including after a count. Suggestions use English syntax and must compile with the entire document. Ctrl + Space opens the list; Enter applies a choice; Escape closes it.":
     [
-      "在光标处补全内置字符类，也可用于计数之后。建议使用英语语法，且必须与整个文档一起编译成功。Ctrl + Space 打开列表；Enter 应用选择；Escape 关闭列表。",
-      "Completa una clase de caracteres integrada en el cursor, incluso después de una cantidad. Las sugerencias usan sintaxis inglesa y deben compilar con todo el documento. Ctrl + Space abre la lista; Enter aplica una opción; Escape la cierra.",
-      "Complétez une classe de caractères intégrée au curseur, y compris après une quantité. Les suggestions utilisent la syntaxe anglaise et doivent compiler avec tout le document. Ctrl + Espace ouvre la liste ; Entrée applique un choix ; Échap la ferme.",
+      "补全内置字符类或先前已闭合捕获组的引用，也可用于计数之后。建议使用英语语法，且必须与整个文档一起编译成功。Ctrl + Space 打开列表；Enter 应用选择；Escape 关闭列表。",
+      "Completa una clase de caracteres integrada o una referencia a una captura anterior ya cerrada, incluso después de una cantidad. Las sugerencias usan sintaxis inglesa y deben compilar con todo el documento. Ctrl + Space abre la lista; Enter aplica una opción; Escape la cierra.",
+      "Complétez une classe de caractères intégrée ou une référence à une capture précédente déjà fermée, y compris après une quantité. Les suggestions utilisent la syntaxe anglaise et doivent compiler avec tout le document. Ctrl + Espace ouvre la liste ; Entrée applique un choix ; Échap la ferme.",
     ],
   "Keep a draft in this browser": [
     "在此浏览器中保留草稿",
