@@ -1,5 +1,10 @@
 # Autonomous implementation progress
 
+## Dev.10 distribution candidate
+
+- Prepared: source `b321e83` plus dev.10 package metadata, synchronized ten-language guides, scoped-runtime requirements, homepage and language-reference copy. The candidate includes scoped groups, cached-source protection and the group-wrapper depth correction; no native behavior is approximated.
+- Pending: complete candidate verification, retained archive/source freeze, npm/GitHub publication and actual hosted-site checks. Published dev.9 and older archives remain unchanged. Source Actions stays disabled, human review gates remain unchecked and the wider mission stays active.
+
 ## Cached scoped-source compatibility milestone
 
 - Implemented: `toRegExp({ source, flags })` applies the shared native behavioral guard after constructor validation. Cached metadata reads each field once and ignores segments; escaped text and nested v-mode classes are distinguished from actual modifier groups. Invalid native syntax retains `SyntaxError`; accepted but defective scopes report their native-source line and UTF-16 column. Ordinary metadata retains native acceptance without rule-language restrictions.

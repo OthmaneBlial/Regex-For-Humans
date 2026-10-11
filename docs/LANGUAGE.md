@@ -1,6 +1,6 @@
 # The Regex For Humans language
 
-Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the `0.1.0-dev.9` preview: whole-line comments, groups, lazy repetition, lookaround, boundaries, Unicode properties/classes, native v sets and all eight JavaScript flags.
+Version 1 compiles fixed English rules into JavaScript `RegExp`. It does not guess from free-form text or examples. This guide describes the `0.1.0-dev.10` preview: whole-line comments, groups, lazy repetition, lookaround, boundaries, Unicode properties/classes, native v sets and all eight JavaScript flags.
 
 Write one rule per line. `start` or `line start` can prefix the first rule. Keywords are case-insensitive; quoted text keeps its case. Leading and trailing spaces are ignored.
 
@@ -178,7 +178,9 @@ Existing repetition modifiers apply to a whole block: `optional capture "suffix"
 
 The API keeps `{ source, flags, segments }`. Opening and closing braces produce `kind: "group"` segments with `edge`, `capturing`, `captureIndex`, `name`, and `repetition`. Each segment retains its original line, column, explanation and exact generated-source offsets. Consumers switching on `segments[].kind` should handle the added group variant. The CLI and workshop use this same compiler and trace. Groups, captures and their reverse translations are included in npm `0.1.0-dev.8` and the hosted workshop.
 
-## Scoped flags (unreleased)
+<a name="scoped-flags-unreleased"></a>
+
+## Scoped flags
 
 `group with flags "im-s" {` changes native `i`, `m` and `s` only inside its noncapturing block. Enabled flags go before `-`; disabled flags go after it. Flags must be lowercase, unique and present on only one side. Examples include `"i"`, `"ims"`, `"-i"`, `"im-s"` and `"i-"`. Global `d`, `g`, `u`, `v` and `y` remain unchanged and cannot appear in this clause. Invalid options report `INVALID_GROUP_FLAGS` over the original quoted token.
 
@@ -204,7 +206,7 @@ Native syntax alone is insufficient. An incompatible runtime reports `UNSUPPORTE
 
 JavaScript/TypeScript exports preserve local groups and include an explicit native scoped-behavior requirement. Foreign profiles report `EXPORT_SCOPED_FLAGS` until target-specific behavior is verified. The grammar follows [ECMAScript's native modifier groups](https://tc39.es/ecma262/2025/multipage/text-processing.html#sec-patterns); unsupported options are not rewritten into approximate character classes.
 
-On unreleased main, `toRegExp({ source, flags })` also checks scoped behavior in the receiving runtime and the supplied Unicode mode. It reads each string field once and ignores unused explanation segments. The native constructor runs first, retaining its `SyntaxError` for invalid patterns, flags or unavailable syntax. Accepted syntax with unsupported behavior reports `UNSUPPORTED_TARGET_FEATURE` at the first modifier opener in the supplied native source; columns count UTF-16 units. Escaped modifier-like text and class members do not trigger this check, and ordinary cached patterns retain native acceptance without the rule-language limits. Firefox's defective legacy mode is rejected for legacy cached scopes, while its verified `u/v` modes remain usable.
+In this candidate, `toRegExp({ source, flags })` also checks scoped behavior in the receiving runtime and the supplied Unicode mode. It reads each string field once and ignores unused explanation segments. The native constructor runs first, retaining its `SyntaxError` for invalid patterns, flags or unavailable syntax. Accepted syntax with unsupported behavior reports `UNSUPPORTED_TARGET_FEATURE` at the first modifier opener in the supplied native source; columns count UTF-16 units. Escaped modifier-like text and class members do not trigger this check, and ordinary cached patterns retain native acceptance without the rule-language limits. Firefox's defective legacy mode is rejected for legacy cached scopes, while its verified `u/v` modes remain usable.
 
 <a name="capture-references-unreleased-on-main"></a>
 

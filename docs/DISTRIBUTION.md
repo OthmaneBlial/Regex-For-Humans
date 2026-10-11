@@ -1,5 +1,13 @@
 # Distribution decision record
 
+## Dev.10 candidate preparation (11 October 2026)
+
+The isolated candidate starts from source `b321e83`, including native scoped i/m/s groups, the cached-source runtime guard and the 64-level group-wrapper correction. Package metadata, security policy, homepage, language/compatibility guides and all ten READMEs select `0.1.0-dev.10`. All guides retain the canonical code examples; Arabic/Urdu use RTL prose and isolated LTR syntax. Scoped matching remains unavailable on the tested Node 22/25/26 editions and requires a compatible native runtime.
+
+The underlying source passes 401 Node cases on each tested edition (397 passes and four explicit native-scope skips), 16 focused Chrome desktop/mobile and Firefox/WebKit checks, and clean installed JavaScript/strict TypeScript/API/CLI consumers on Node 25 and Node 22. The complete candidate distribution gate, frozen archive, npm upload, GitHub prerelease and hosted Pages verification are still pending. These component receipts are not publication proof.
+
+At preparation, npm authentication is valid and both registry tags select dev.9. The immutable dev.9 archive and hosted runtime remain unchanged. Source Actions stays disabled; independent human review gates and the wider autonomous mission remain open.
+
 ## Published dev.9 (11 October 2026)
 
 [npm `0.1.0-dev.9`](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.9), both registry tags (`latest` and `preview`), and the [GitHub prerelease](https://github.com/OthmaneBlial/Regex-For-Humans/releases/tag/v0.1.0-dev.9) select frozen source `7254cf3487e464f227eae540a82437fb47329ae6`. The annotated tag object is `0e55fb2378479600721a727bd96ddf053fa6e75c`. The exact retained archive, public registry download and public GitHub asset agree: 382,895 bytes, 48 files, SHA-256 `564311df082f15cc104ec9b10896e38c7d6bef21887c4ac49257ba4fccf5602c`. Every payload file matches the tagged source; the downloaded checksum asset also matches. Both exact-archive consumers pass on Node 25.9.0 and Node 22.23.3. A fresh public installation reproduces the original 19-rule manifest regex and passes two positive/four negative cases. Initial registry reads returned 404 during propagation; publication was not repeated.

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0-dev.10 (11 October 2026)
+
 - Apply the scoped-runtime guard to `toRegExp({ source, flags })` so cached native source cannot bypass compatibility checks on the receiving runtime. Read each field once, ignore unused segments, preserve native syntax errors and distinguish actual modifier groups from escaped text and nested v-mode classes. Unsupported behavior reports the opener's native-source line and UTF-16 column.
 
 - Add native `group with flags "im-s"` scopes with positioned validation, lexical options, backward imports and typed effective flags. Preserve input/line anchor intent, scope restoration, captures, reference-site folding and budgets. Carry local semantics into explanations, analysis, diagrams, failure proofs, group conversion and localized workshop notes; reject unsupported foreign profiles. Probe actual Unicode/cursor modes and guard the observed warmed Node/V8 defect instead of claiming syntax availability proves correct matching.
