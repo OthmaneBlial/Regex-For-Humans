@@ -177,6 +177,8 @@ A biblioteca do código-fonte reúne **31 receitas, 24 categorias e três nívei
 
 Os exemplos com falha recebem [explicações verificáveis](../FAILURE_EXPLANATIONS.md): intervalos nativos, comprimento mínimo demonstrável ou texto literal obrigatório ausente. Quando a etapa exata é desconhecida, a oficina informa isso. Esta adição ao código-fonte ainda não está em dev.6.
 
+Escolha [explicações para iniciantes, intermediários ou especialistas](../EXPLANATION_LEVELS.md). As notas definem termos regex ou detalham posições no código, capturas, referências e opções. Mudar de nível preserva o trabalho sem executar buscas. Esses modos aguardam a próxima publicação.
+
 São verificações de **forma**. Datas impossíveis e `25:99` podem corresponder; valide calendário e intervalos separadamente. IPv4 não limita octetos a 255; UUID não verifica versão, variante ou unicidade. Não consulta disponibilidade de usuários, registros de faturas nem validade de telefones. A receita de formato de versão não valida toda a sintaxe SemVer e a cor exige `#RRGGBB`. Regras de sistema de arquivos são independentes.
 
 ## 🏗️ Padrões maiores, regras ainda legíveis

@@ -4,6 +4,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
 
+## Explanation levels and developer-experience source milestone
+
+- Implemented: beginner definitions, unchanged intermediate meanings and expert source/capture/reference/flag metadata enrich the compiler's typed segments. The level is a presentation choice: rules, examples, flags, source selection and worker state remain unchanged. Notes and controls use all four UI languages and are associated with the existing source buttons for assistive technology.
+- Evidence: all 365 Node tests pass; ten Chromium desktop/mobile level checks and 32 targeted Firefox/WebKit level/diagram/group-edit/failure checks pass. Four additional final Chromium checks verify the latest note-description associations, source selection and localized expert accessibility. All 21 focused reason/level/interface/canonical/translated-README checks pass on Node 22.23.3. Lint/types/links and the clean installed consumer pass. These are targeted browser gates, not a new uninterrupted full command. Two French beginner/expert 320px panels were visually inspected.
+- Documentation: all ten guides describe the levels and preserve their sections, canonical code blocks and RTL/LTR markup. The [level contract](EXPLANATION_LEVELS.md) separates regex-source ranges from actual match ranges. The [developer-experience decisions](DEVELOPER_EXPERIENCE.md) evaluate all 18 requested items, recording implemented workflows and follow-ups without advertising planned functions.
+- Next: run the complete release verification, prepare the next immutable package and synchronize npm, Pages, the ten guides and the Reddit draft. Public distribution remains dev.6 until verified publication. Source CI stays disabled; PHP native parity and independent human reviews retain their explicit limits. The full mission remains active.
+
 ## Failure explanation source milestone
 
 - Implemented: validated native ranges explain unexpected and partial matches. A private AST pass proves conservative consuming lower bounds and mandatory case-sensitive literals; alternatives, optional groups, assertions, backreferences, finite strings and case folding retain explicit limits. Unknown failures say the precise failing step is unavailable. Regex matching remains in the isolated worker.
@@ -122,7 +129,7 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Evaluate and document the remaining developer-experience items from the original mission against the implemented workflows; retain truthful limits on engine tracing and the completed failure explanations, precise expectations and fixture controls.
+1. Run the complete distribution verification against the completed explanation, editor, fixture and example-library milestones; retain truthful limits on tracing and native engine compatibility.
 2. Finish the remaining developer-adoption requirements from the original mission, prioritizing concrete workflows and verified compatibility.
 3. Publish the next validated interface milestone to npm and Pages, keeping the website and all ten guides aligned with the released version and preserving frozen archives.
 

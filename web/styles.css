@@ -933,6 +933,37 @@ a {
   overflow-y: auto;
   padding-right: 3px;
 }
+.explanation-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  color: #eff5eb;
+  font-size: 12px;
+}
+.explanation-controls select {
+  max-width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #9cbbb7;
+  border-radius: 4px;
+  background: #303b50;
+  color: #eff5eb;
+  font-size: 16px;
+}
+.explanation-help,
+.trace-note {
+  display: block;
+  color: #c2d7d0;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.explanation-help {
+  margin: 8px 0 12px;
+}
+.trace-note {
+  margin-top: 6px;
+}
 .empty-trace {
   margin: 0;
   color: #a9c0ba;

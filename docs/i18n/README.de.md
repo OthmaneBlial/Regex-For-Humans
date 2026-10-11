@@ -177,6 +177,8 @@ Die Quellversion enthält **31 Rezepte, 24 Kategorien und drei Schwierigkeitsstu
 
 Fehlgeschlagene Beispiele erhalten [überprüfbare Erklärungen](../FAILURE_EXPLANATIONS.md): native Trefferbereiche, eine nachweisbare Mindestlänge oder fehlenden Pflichttext. Ist der genaue Fehlerschritt unbekannt, sagt der Workshop das ausdrücklich. Diese Quellfunktion ist noch nicht in dev.6 enthalten.
 
+Wähle [Erklärungen für Anfänger, Fortgeschrittene oder Experten](../EXPLANATION_LEVELS.md). Hinweise erklären Regex-Begriffe oder zeigen Quellbereiche, Captures, aufgelöste Referenzen und Flags. Ein Wechsel erhält die Arbeit und führt keine Suche aus. Diese Modi warten auf die nächste Veröffentlichung.
+
 Es sind **Formprüfungen**. Ungültige Daten und `25:99` können passen; Kalender und Wertebereiche separat prüfen. IPv4 begrenzt Oktette nicht auf 255. UUID prüft weder Version, Variante noch Eindeutigkeit. Benutzerverfügbarkeit, Rechnungsregister und Telefonnummerngültigkeit bleiben extern. Die Versionsform ist kein vollständiges SemVer; Farben erfordern `#RRGGBB`. Dateisystemregeln sind separat.
 
 ## 🏗️ Größere Muster, weiterhin lesbare Regeln

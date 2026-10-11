@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add beginner, intermediate and expert workshop explanation levels using typed compiler segments. Keep canonical meanings unchanged; explain unfamiliar terms or expose original source locations, generated-regex UTF-16 ranges, capture identities, resolved reference numbers and flags. Localize controls and notes in all four interface languages, associate notes with keyboard buttons and preserve selected work without rerunning matches.
+- Explain unexpected and partial matches using validated native ranges. For native failures, prove conservative minimum consuming lengths or missing mandatory case-sensitive literals when possible, and explicitly admit unknown failing steps. Handle optional branches, assertions, references, string-valued sets and case folding without inventing a runtime backtracking trace.
 - Expand the shared gallery to 31 recipes across all 24 requested categories and three difficulty levels. Add literal search across English/current-language titles, scope notes, rules and labels, combined category/level filters, empty-result feedback and clearing without changing the workspace. Translate controls, titles and limitations in all four interface languages and retain complete Arabic/Urdu RTL README coverage.
 - Add separate SemVer 2.0 syntax, Unicode letters/marks, URL/header/Markdown fragments, named log extraction, adjacent duplicate references and exact replacement examples with explicit scope limits. Preserve single-block alternatives during reverse translation without accumulating redundant noncapturing groups.
 

@@ -11,6 +11,7 @@ import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
 import { parseExpectation, readExpectation } from "./expectations.js";
+import { explanationNotes } from "./explanation-notes.js";
 import { explainMismatch, failureRequirements } from "./failure-reasons.js";
 import { fixtureLimit, fixtureStorageKey, parseFixture } from "./fixtures.js";
 import { initializeLanguage, message, setAttribute, setText } from "./i18n.js";
@@ -81,6 +82,8 @@ const ui = {
   exportJSON: requiredElement("export-json", HTMLButtonElement),
   diagnostic: requiredElement("diagnostic", HTMLDivElement),
   trace: requiredElement("trace-list", HTMLDivElement),
+  explanationMode: requiredElement("explanation-mode", HTMLSelectElement),
+  explanationHelp: requiredElement("explanation-help", HTMLParagraphElement),
   review: requiredElement("pattern-review", HTMLDetailsElement),
   reviewCount: requiredElement("review-count", HTMLSpanElement),
   reviewStatus: requiredElement("review-status", HTMLParagraphElement),
@@ -332,6 +335,15 @@ function selectText(field, start, end) {
 
 /** @param {ReturnType<typeof compile>["segments"] | null} segments */
 function renderTrace(segments) {
+  const mode = ui.explanationMode.value;
+  const help =
+    mode === "beginner"
+      ? "Read the meaning first; short notes explain regex terms. The compiler's rules and meanings stay in English."
+      : mode === "expert"
+        ? "Ranges refer to the generated regex, in UTF-16 units. Flags: {flags}. Engine export lists compatibility requirements; this is structure, not an execution trace."
+        : "Each rule maps to its generated fragment and compiler explanation.";
+  setText(ui.explanationHelp, message(help, { flags: compiled?.flags ?? "—" }));
+  ui.trace.dataset.mode = mode;
   ui.trace.replaceChildren();
   if (!segments?.length) {
     ui.trace.append(
@@ -343,7 +355,7 @@ function renderTrace(segments) {
     );
     return;
   }
-  for (const segment of segments) {
+  for (const [index, segment] of segments.entries()) {
     const button = make("button", "trace-item");
     button.type = "button";
     setAttribute(
@@ -364,6 +376,13 @@ function renderTrace(segments) {
       ),
     );
     detail.append(make("span", "trace-meaning", segment.explanation));
+    const descriptions = explanationNotes(segment, mode).map((note, noteIndex) => {
+      const text = make("span", "trace-note", message(note.key, note.values));
+      text.id = `explanation-note-${index}-${noteIndex}`;
+      detail.append(text);
+      return text.id;
+    });
+    if (descriptions.length) button.setAttribute("aria-describedby", descriptions.join(" "));
     button.append(detail);
     connectRuleButton(button, segment);
     ui.trace.append(button);
@@ -1624,6 +1643,7 @@ document.addEventListener("input", (event) => {
   if (
     event.target !== ui.language &&
     event.target !== ui.theme &&
+    event.target !== ui.explanationMode &&
     event.target !== ui.builderKind &&
     event.target !== ui.recipeSearch &&
     event.target !== ui.recipeCategory &&
@@ -2001,6 +2021,12 @@ ui.reverseButton.addEventListener("click", () => {
 ui.reverseButton.disabled = false;
 ui.builderKind.disabled = false;
 ui.builderInsert.disabled = false;
+ui.explanationMode.addEventListener("change", () => {
+  const top = ui.trace.scrollTop;
+  renderTrace(compiled?.segments ?? null);
+  showRule(visibleRule);
+  ui.trace.scrollTop = top;
+});
 ui.matchMode.addEventListener("change", updateTestResults);
 ui.addExample.addEventListener("click", () => {
   hasEdits = true;

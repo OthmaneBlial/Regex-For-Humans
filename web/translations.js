@@ -1,6 +1,113 @@
 // Each entry contains Simplified Chinese, Spanish and French; English is the key.
 /** @type {Record<string, [string, string, string]>} */
 export const translations = {
+  "Explanation level": ["解释级别", "Nivel de explicación", "Niveau d’explication"],
+  "Read the meaning first; short notes explain regex terms. The compiler's rules and meanings stay in English.":
+    [
+      "先阅读含义；简短注释解释正则术语。编译器的规则和含义保持英文。",
+      "Lee primero el significado; las notas breves explican los términos regex. Las reglas y los significados del compilador siguen en inglés.",
+      "Lisez d’abord le sens ; des notes expliquent les termes regex. Les règles et les explications du compilateur restent en anglais.",
+    ],
+  "Each rule maps to its generated fragment and compiler explanation.": [
+    "每条规则对应生成的片段和编译器解释。",
+    "Cada regla corresponde a su fragmento generado y a la explicación del compilador.",
+    "Chaque règle correspond au fragment produit et à l’explication du compilateur.",
+  ],
+  "Ranges refer to the generated regex, in UTF-16 units. Flags: {flags}. Engine export lists compatibility requirements; this is structure, not an execution trace.":
+    [
+      "范围指生成正则中的 UTF-16 单元。标志：{flags}。引擎导出列出兼容要求；这里展示结构，并非执行轨迹。",
+      "Los rangos corresponden al regex generado, en unidades UTF-16. Indicadores: {flags}. La exportación indica los requisitos de compatibilidad; esto muestra la estructura, no la ejecución.",
+      "Les plages concernent le regex généré, en unités UTF-16. Options : {flags}. L’export détaille les exigences de compatibilité ; ceci montre la structure, sans tracer l’exécution.",
+    ],
+  "Source line {line}, column {column}; regex UTF-16 range [{start}, {end}).": [
+    "源代码第 {line} 行，第 {column} 列；正则 UTF-16 范围 [{start}, {end})。",
+    "Línea {line}, columna {column} del código; rango UTF-16 del regex [{start}, {end}).",
+    "Source : ligne {line}, colonne {column} ; plage UTF-16 du regex [{start}, {end}).",
+  ],
+  "Capture #{index}; name: {name}.": [
+    "捕获 #{index}；名称：{name}。",
+    "Captura #{index}; nombre: {name}.",
+    "Capture n° {index} ; nom : {name}.",
+  ],
+  "Resolved reference: capture #{index}.": [
+    "已解析的引用：捕获 #{index}。",
+    "Referencia resuelta: captura #{index}.",
+    "Référence résolue : capture n° {index}.",
+  ],
+  "This closes the nested rules above; it does not itself match a closing brace.": [
+    "这会关闭上面的嵌套规则；它本身不匹配右花括号。",
+    "Esto cierra las reglas anidadas anteriores; no coincide por sí mismo con una llave de cierre.",
+    "Ceci ferme les règles imbriquées précédentes ; la règle ne recherche pas une accolade fermante.",
+  ],
+  "A capture remembers the text matched by its inner rules. Its number or name lets you read that text later.":
+    [
+      "捕获保存其内部规则匹配的文本。之后可通过编号或名称读取该文本。",
+      "Una captura guarda el texto que coincida con sus reglas internas. Su número o nombre permite leerlo después.",
+      "Une capture mémorise le texte reconnu par ses règles internes. Son numéro ou son nom permet de le lire ensuite.",
+    ],
+  "A noncapturing group keeps inner rules together without storing a separate captured value.": [
+    "非捕获组把内部规则组合在一起，但不保存独立的捕获值。",
+    "Un grupo sin captura mantiene unidas sus reglas internas sin guardar un valor capturado aparte.",
+    "Un groupe non capturant réunit ses règles internes sans mémoriser une valeur de capture distincte.",
+  ],
+  "An assertion checks a condition at the current position without advancing the match. Lookahead checks forward; lookbehind checks backward.":
+    [
+      "断言在当前位置检查条件，不推进匹配位置。先行断言向前检查，后行断言向后检查。",
+      "Una aserción comprueba una condición en la posición actual sin avanzar la coincidencia. Lookahead comprueba hacia delante; lookbehind, hacia atrás.",
+      "Une assertion vérifie une condition à la position courante sans avancer la correspondance. Lookahead vérifie vers l’avant ; lookbehind vers l’arrière.",
+    ],
+  "An alternative is one possible path. The engine tries paths in their written order; later rules can make it try another path.":
+    [
+      "备选分支是一条可能的路径。引擎按书写顺序尝试；后续规则可能使它改试其他路径。",
+      "Una alternativa es un camino posible. El motor los prueba en el orden escrito; las reglas posteriores pueden llevarlo a probar otro camino.",
+      "Une alternative est un chemin possible. Le moteur les essaie dans l’ordre écrit ; les règles suivantes peuvent l’amener à essayer un autre chemin.",
+    ],
+  "An anchor checks a position at an edge of the input or a line. It adds no text to the match.": [
+    "锚点检查输入或行的边缘位置，不向匹配中添加文本。",
+    "Un ancla comprueba una posición en un extremo de la entrada o de una línea. No añade texto a la coincidencia.",
+    "Une ancre vérifie une position au début ou à la fin de l’entrée ou d’une ligne. Elle n’ajoute aucun texte à la correspondance.",
+  ],
+  "A word boundary compares word-character status on either side of a position. It does not identify natural-language words.":
+    [
+      "单词边界比较一个位置两侧是否为单词字符，并不识别自然语言词语。",
+      "Un límite de palabra compara si hay caracteres de palabra a ambos lados de una posición. No identifica palabras de lenguaje natural.",
+      "Une frontière de mot compare le statut de caractère de mot des deux côtés d’une position. Elle ne reconnaît pas les mots d’une langue naturelle.",
+    ],
+  "A backreference matches text from an earlier capture, not the spelling of that capture's name.":
+    [
+      "反向引用匹配先前捕获的文本，而不是捕获名称本身。",
+      "Una referencia inversa coincide con el texto de una captura anterior, no con las letras de su nombre.",
+      "Une référence arrière reconnaît le texte d’une capture précédente, sans rechercher son nom dans l’entrée.",
+    ],
+  "A literal matches the written text. Punctuation in that text is escaped by the compiler.": [
+    "字面文本匹配所写的内容。编译器会转义其中的标点符号。",
+    "Un literal coincide con el texto escrito. El compilador escapa la puntuación de ese texto.",
+    "Un texte littéral recherche le contenu écrit. Le compilateur échappe sa ponctuation.",
+  ],
+  "A Unicode property selects characters or strings from the runtime's Unicode data; it does not normalize text.":
+    [
+      "Unicode 属性从运行时的 Unicode 数据中选择字符或字符串，不会规范化文本。",
+      "Una propiedad Unicode selecciona caracteres o cadenas de los datos Unicode del entorno; no normaliza el texto.",
+      "Une propriété Unicode sélectionne des caractères ou des chaînes dans les données Unicode du moteur ; elle ne normalise pas le texte.",
+    ],
+  "A character set lists possible matching values. In Unicode sets mode it can also contain strings.":
+    [
+      "字符集列出可能匹配的值。在 Unicode 集合模式下，它也可包含字符串。",
+      "Un conjunto de caracteres enumera los valores posibles. En el modo de conjuntos Unicode también puede contener cadenas.",
+      "Un ensemble de caractères liste les valeurs possibles. En mode ensembles Unicode, il peut aussi contenir des chaînes.",
+    ],
+  "A shorthand or wildcard is a regex abbreviation for permitted characters. The meaning above describes its actual scope.":
+    [
+      "简写或通配符是允许字符的正则缩写。上面的含义说明其实际范围。",
+      "Una abreviatura o comodín representa los caracteres permitidos. El significado anterior describe su alcance real.",
+      "Une classe abrégée ou un caractère générique représente les caractères autorisés. L’explication précédente décrit sa portée réelle.",
+    ],
+  "A quantifier says how often this unit may repeat. Greedy tries more repetitions first; lazy tries fewer first, subject to the rest of the pattern.":
+    [
+      "量词说明该单元可重复多少次。贪婪模式先尝试较多次数，懒惰模式先尝试较少次数，均受后续模式约束。",
+      "Un cuantificador indica cuántas veces puede repetirse esta unidad. Greedy prueba primero más repeticiones; lazy, menos, según lo permita el resto del patrón.",
+      "Un quantificateur indique combien de fois cette unité peut se répéter. Greedy essaie d’abord davantage de répétitions ; lazy en essaie moins, selon la suite du motif.",
+    ],
   "Any match needs at least {minimum} UTF-16 units; this input has {length}.": [
     "任何匹配至少需要 {minimum} 个 UTF-16 单元；此输入有 {length} 个。",
     "Toda coincidencia necesita al menos {minimum} unidades UTF-16; esta entrada tiene {length}.",
