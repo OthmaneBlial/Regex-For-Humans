@@ -103,6 +103,9 @@ const SHORTHANDS = new Map([
   ["path segment characters", PATH_SEGMENT_SOURCE],
 ]);
 
+// Workshop suggestions use the parser's own vocabulary; acceptance still goes through parse.
+export const SHORTHAND_RULES = Object.freeze([...SHORTHANDS.keys()]);
+
 const START_ANCHOR = /^(line start|start)(?:,\s*|\s+|$)/i;
 const DUPLICATE_START_ANCHOR_MESSAGE = "Use only one start anchor.";
 const QUOTE_STYLES = /^['`“”‘’]/u;

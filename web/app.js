@@ -25,6 +25,7 @@ import {
 import { initializeLanguage, message, setAttribute, setText } from "./i18n.js";
 import { insertRule } from "./insert-rule.js";
 import { categories, filterRecipes, levels } from "./library.js";
+import { ruleCompletions } from "./rule-completions.js";
 import { initializeSyntaxEditor } from "./syntax.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 import { textChanges } from "./text-change.js";
@@ -60,6 +61,12 @@ const ui = {
   recipeClear: requiredElement("recipe-clear", HTMLButtonElement),
   rules: requiredElement("rules-input", HTMLTextAreaElement),
   ruleCount: requiredElement("rule-count", HTMLSpanElement),
+  completeRule: requiredElement("complete-rule", HTMLButtonElement),
+  completions: requiredElement("rule-completions", HTMLElement),
+  completionChoice: requiredElement("completion-choice", HTMLSelectElement),
+  completionStatus: requiredElement("completion-status", HTMLParagraphElement),
+  completionApply: requiredElement("completion-apply", HTMLButtonElement),
+  completionClose: requiredElement("completion-close", HTMLButtonElement),
   builderForm: requiredElement("builder-form", HTMLFormElement),
   builderKind: requiredElement("builder-kind", HTMLSelectElement),
   builderInsert: requiredElement("builder-insert", HTMLButtonElement),
@@ -1626,7 +1633,74 @@ function fixtureError(error) {
   ui.fixtureStatus.dataset.state = "error";
 }
 
+/** @type {{source: string, flags: string, start: number, end: number, choices: ReturnType<typeof ruleCompletions>} | null} */
+let completion = null;
+let composingRules = false;
+
+function closeCompletions(restoreFocus = false) {
+  ui.completions.hidden = true;
+  ui.completeRule.setAttribute("aria-expanded", "false");
+  ui.completionChoice.replaceChildren();
+  completion = null;
+  if (restoreFocus) ui.rules.focus();
+}
+
+function showCompletions() {
+  closeCompletions();
+  const source = ui.rules.value;
+  const flags = currentFlags();
+  const start = ui.rules.selectionStart;
+  const end = ui.rules.selectionEnd;
+  const choices = composingRules || start !== end ? [] : ruleCompletions(source, start, { flags });
+  completion = { source, flags, start, end, choices };
+  for (const [index, choice] of choices.entries()) {
+    const option = document.createElement("option");
+    option.value = String(index);
+    option.textContent = choice.text;
+    ui.completionChoice.append(option);
+  }
+  ui.completionChoice.selectedIndex = choices.length ? 0 : -1;
+  ui.completionChoice.hidden = !choices.length;
+  ui.completionApply.disabled = !choices.length;
+  setText(
+    ui.completionStatus,
+    message(
+      choices.length
+        ? "{count} validated suggestions."
+        : "No validated suggestions. Use a single cursor outside quoted text and comments, and fix other rule errors first.",
+      { count: choices.length },
+    ),
+  );
+  ui.completions.hidden = false;
+  ui.completeRule.setAttribute("aria-expanded", "true");
+  (choices.length ? ui.completionChoice : ui.completionClose).focus();
+}
+
+function applyCompletion() {
+  const choice = completion?.choices[ui.completionChoice.selectedIndex];
+  if (
+    !completion ||
+    !choice ||
+    completion.source !== ui.rules.value ||
+    completion.flags !== currentFlags() ||
+    completion.start !== ui.rules.selectionStart ||
+    completion.end !== ui.rules.selectionEnd
+  ) {
+    closeCompletions(true);
+    return;
+  }
+  ui.rules.value = choice.rules;
+  ui.rules.setSelectionRange(choice.caret, choice.caret);
+  hasEdits = true;
+  fixtureRevision++;
+  setScenarioSelection(null);
+  compileRules();
+  ui.rules.focus();
+  followSourceCursor();
+}
+
 function compileRules() {
+  closeCompletions();
   ui.builderFeedback.textContent = "";
   diagramSVG = "";
   reviewResult = null;
@@ -1817,6 +1891,7 @@ document.addEventListener("input", (event) => {
     event.target !== ui.theme &&
     event.target !== ui.explanationMode &&
     event.target !== ui.builderKind &&
+    event.target !== ui.completionChoice &&
     event.target !== ui.recipeSearch &&
     event.target !== ui.recipeCategory &&
     event.target !== ui.recipeLevel &&
@@ -1987,6 +2062,39 @@ ui.rules.addEventListener("input", () => {
   compileRules();
 });
 ui.rules.addEventListener("keyup", followSourceCursor);
+ui.completeRule.addEventListener("click", showCompletions);
+ui.completionApply.addEventListener("click", applyCompletion);
+ui.completionClose.addEventListener("click", () => closeCompletions(true));
+ui.completions.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeCompletions(true);
+  } else if (event.key === "Enter" && event.target === ui.completionChoice) {
+    event.preventDefault();
+    applyCompletion();
+  }
+});
+ui.rules.addEventListener("compositionstart", () => {
+  composingRules = true;
+  closeCompletions();
+});
+ui.rules.addEventListener("compositionend", () => {
+  composingRules = false;
+});
+ui.rules.addEventListener("keydown", (event) => {
+  if (
+    event.ctrlKey &&
+    !event.metaKey &&
+    !event.altKey &&
+    event.code === "Space" &&
+    !event.isComposing &&
+    !composingRules
+  ) {
+    event.preventDefault();
+    showCompletions();
+  } else closeCompletions();
+});
+ui.completeRule.disabled = false;
 ui.rules.addEventListener("mouseup", followSourceCursor);
 ui.rules.addEventListener("scroll", highlightSourceRow);
 new ResizeObserver(highlightSourceRow).observe(ui.rules);

@@ -1,5 +1,13 @@
 # Testing and compatibility
 
+## Unreleased built-in class completion checks (11 October 2026)
+
+The finite [completion workflow](EDITOR_COMPLETIONS.md) passes seven new unit checks and the complete Node 25.9.0 and Node 22.23.3 suites: 415 cases each, 411 passes, four explicit scoped-native skips and no failures. Every parser shorthand is exercised; counts, class members, negation, native UTF-16 capture spans, numeric references, all five line separators, quoted/comment text, malformed surroundings and existing budgets are covered.
+
+All 72 affected Chrome desktop/mobile checks pass, including completion, existing keyboard/accessibility controls, all six builder actions and draft recovery. All 34 affected Firefox/WebKit checks pass. The new workflow verifies native results and captures, unchanged flags/examples, opt-in draft persistence, stale proposals, selections, composition, Escape, native Enter/Tab, four interface languages, both themes, 320px layouts and focused WCAG A/AA checks. The native WebKit Tab destination was measured as the Unicode selector; its test preserves this platform behavior rather than assuming Chrome/Firefox's link focus order. Light/dark French Chrome panel captures were visually inspected.
+
+Lint/types/docs and static builds pass. A dry-run package file list includes the new guide and excludes web/tests/artifacts; it produces no replacement archive. Published dev.11's retained 408,988-byte archive still has SHA-256 `cfd56bd51ce7d199cba2d6578205eb55c11ef1afbadcecd0ded854a39f635788`. These are source-component checks, not a new complete distribution/native-export/publication gate. Independent usability/screen-reader reviews and native undo of programmatic edits remain unverified.
+
 ## Dev.11 candidate verification (11 October 2026)
 
 **Published final-copy receipts:** after the copy/screenshot updates described below, checks pass 788 source links, both complete Node 25.9.0/22.23.3 suites (404 passes/four explicit skips/no failures each), both builds and 782 built links. The final 408,988-byte, 50-file archive passes all installed consumer assertions on both Node editions, and all 64 homepage checks pass again. Every payload matches frozen source/tag `feff37d69957da31992b46663410522dfab9bd69`. Fresh public default/preview consumers pass on Node 25/22 and enforce installed version dev.11; retained, npm and GitHub bytes agree.

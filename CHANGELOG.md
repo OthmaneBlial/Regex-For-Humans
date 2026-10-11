@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add explicit workshop completion for parser-defined built-in character classes, including after counts and in character-class members. Validate each proposed entire document with current flags; preserve surrounding source, captures/references, examples and opted-in drafts. Provide a native keyboard/mobile list with four interface translations, reject quoted/comment/selected text and stale proposals, retain native Enter/Tab and avoid completion during input-method composition. Block/name/property completion remains follow-up; this is separate from the published dev.11 release.
+
 ## 0.1.0-dev.11 (11 October 2026)
 
 - Add optional group-edit comparisons of the validated readable rules and JavaScript regex before application. Retain original tests, exports and saved drafts while previewing, show reference renaming/renumbering, clear stale comparisons after source/options/group-field changes and preserve direct application. Text-only rendering exposes controls and keeps astral characters intact; labels use all four UI languages and both themes.

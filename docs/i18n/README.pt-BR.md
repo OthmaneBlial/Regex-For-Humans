@@ -38,6 +38,8 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 
 ## 🧰 O que você pode construir hoje
 
+**Código-fonte (ainda não publicado):** use **Complete a rule** ou **Ctrl + Espaço** para completar classes de caracteres integradas, inclusive após uma quantidade (por exemplo, `between 2 and 5 di`). Cada sugestão precisa compilar com o documento inteiro. Textos entre aspas, comentários e seleções são preservados. Veja [os controles e limites](../EDITOR_COMPLETIONS.md).
+
 | Recurso | npm `0.1.0-dev.11` / workshop hospedado |
 | --- | --- |
 | Regras → regex JavaScript | ✅ |

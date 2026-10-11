@@ -651,6 +651,34 @@ a {
   flex: none;
   font: 11px var(--mono);
 }
+.rule-completions:not([hidden]) {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--divider);
+  border-radius: 7px;
+  font-size: 12px;
+}
+.rule-completions p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.completion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#completion-choice {
+  width: 100%;
+  min-width: 0;
+  padding: 6px;
+  border: 1px solid var(--control-line);
+  border-radius: 6px;
+  background: var(--control-paper);
+  color: var(--ink);
+  font: 12px / 1.6 var(--mono);
+}
 .reverse-translator {
   margin-top: 8px;
   padding-top: 16px;

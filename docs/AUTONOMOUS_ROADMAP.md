@@ -1,5 +1,11 @@
 # Autonomous implementation progress
 
+## Unreleased class completion milestone
+
+- Source adds explicit parser-derived built-in character-class completion with current-document/flag validation, native keyboard/mobile controls and all four interface translations. Preserve captures/references, surrounding source, examples and opted-in drafts; guard quotes/comments/selections, IME, stale proposals and existing budgets. See [the finite scope](EDITOR_COMPLETIONS.md). Block/name/property completion remains follow-up.
+- Distribution remains frozen dev.11. This source work does not replace its npm archive/tag, GitHub prerelease or hosted runtime. Independent human gates remain unchecked and source Actions stays disabled.
+- Verification: complete Node 25/22 suites each pass 411 cases with four explicit skips (415 total); all 72 affected Chrome desktop/mobile and 34 Firefox/WebKit checks pass. Four interface languages, both themes and 320px layouts retain native keyboard behavior, captures/references, examples and draft recovery. See [the component receipt](TESTING.md#unreleased-built-in-class-completion-checks-11-october-2026). This is not a new distribution gate.
+
 ## Published dev.11 milestone
 
 - Shipped: npm `latest`/`preview`, the GitHub prerelease and owner Pages select verified dev.11. Frozen source `feff37d` and its tag retain the 408,988-byte, 50-file archive with SHA-256 `cfd56bd51ce7d199cba2d6578205eb55c11ef1afbadcecd0ded854a39f635788`; retained, registry and GitHub archives agree and every payload matches the tag. Optional draft recovery and group comparisons are included. See [the publication receipt](DISTRIBUTION.md#published-dev11-11-october-2026).

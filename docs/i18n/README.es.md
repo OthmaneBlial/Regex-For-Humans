@@ -38,6 +38,8 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 
 ## 🧰 Qué puedes construir hoy
 
+**Código fuente (sin publicar):** usa **Completar una regla** o **Ctrl + Espacio** para completar clases de caracteres integradas, incluso después de una cantidad (por ejemplo, `between 2 and 5 di`). Cada sugerencia debe compilar con todo el documento. Se conservan los textos entre comillas, los comentarios y las selecciones. Consulta [el funcionamiento y los límites](../EDITOR_COMPLETIONS.md).
+
 | Capacidad | npm `0.1.0-dev.11` / taller alojado |
 | --- | --- |
 | Reglas → regex JavaScript | ✅ |

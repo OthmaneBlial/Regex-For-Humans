@@ -42,6 +42,8 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 
 ## 🧰 Ce que vous pouvez construire aujourd’hui
 
+**Dépôt source (non publié) :** utilisez **Compléter une règle** ou **Ctrl + Espace** pour terminer les classes de caractères intégrées, y compris après une quantité (par exemple, `between 2 and 5 di`). Chaque suggestion doit compiler avec tout le document. Les textes entre guillemets, commentaires et sélections sont préservés. Voir [le fonctionnement et les limites](../EDITOR_COMPLETIONS.md).
+
 | Capacité | npm `0.1.0-dev.11` / atelier hébergé |
 | --- | --- |
 | Règles lisibles → regex JavaScript | ✅ |

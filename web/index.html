@@ -100,6 +100,14 @@
           </div>
           <div class="rule-focus-slot"><p id="rule-focus" class="rule-focus" hidden></p></div>
           <div class="editor-footer"><p id="rules-help">A controlled language, not a free-form prompt. <a href="./language.html" target="_blank" rel="noopener noreferrer">Read the syntax ↗</a> · <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md" target="_blank" rel="noopener noreferrer">Complex examples ↗</a></p><span id="rule-count">0 rules</span></div>
+          <button id="complete-rule" class="secondary-button" type="button" aria-controls="rule-completions" aria-expanded="false" aria-keyshortcuts="Control+Space" disabled>Complete a rule</button>
+          <section id="rule-completions" class="rule-completions" aria-labelledby="completion-label" hidden>
+            <label id="completion-label" for="completion-choice">Rule suggestions</label>
+            <p id="completion-help" class="field-hint">Complete a built-in character class at the cursor, including after a count. Suggestions use English syntax and must compile with the entire document. Ctrl + Space opens the list; Enter applies a choice; Escape closes it.</p>
+            <select id="completion-choice" size="5" dir="ltr" aria-describedby="completion-help completion-status"></select>
+            <p id="completion-status" role="status"></p>
+            <div class="completion-actions"><button id="completion-apply" class="secondary-button" type="button">Apply suggestion</button><button id="completion-close" class="secondary-button" type="button">Close suggestions</button></div>
+          </section>
           <fieldset class="flag-controls" aria-label="Regex options" aria-describedby="flags-help">
             <label class="flag-toggle"><input id="ignore-case" type="checkbox" autocomplete="off"><span class="toggle-track" aria-hidden="true"></span><span>Ignore case <code>i</code></span></label>
             <label class="flag-toggle"><input id="dot-all" type="checkbox" autocomplete="off"><span class="toggle-track" aria-hidden="true"></span><span>Dot matches newlines <code>s</code></span></label>
