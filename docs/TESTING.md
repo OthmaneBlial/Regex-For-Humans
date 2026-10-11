@@ -10,6 +10,8 @@ Final focused report flows pass six Chrome and six Firefox/WebKit checks after c
 
 The actual GitHub GFM renderer keeps all seven report code blocks and reimportable JSON intact when synthetic input/build text contains long backtick runs, fake headings and HTML. A browser inspection finds one intended top-level heading and no injected script/image elements; native expectation data and the JSON round trip agree. This is a rendering check, not external publication of a user's report. Frozen npm/hosted dev.11 and independent human review remain separate.
 
+Actual GitHub Arabic/Urdu source guides at `9c9beab4309956fcbd08d2c0fd0a9f72005c0ddb` pass at 1280/390/320px; all six captures are visually inspected. Report prose is RTL and Markdown/JSON labels are LTR, without paragraph or document overflow. Each guide preserves 19 RTL headings, seven RTL tables and 20 canonical LTR blocks; all 101 Arabic/97 Urdu native-first paragraphs and 332/338 explicit inline code fragments retain their directions. The three existing completion commands remain single LTR lines.
+
 ## Unreleased capture-reference completion checks (11 October 2026)
 
 The [completion workflow](EDITOR_COMPLETIONS.md) now also offers complete numeric/named references to earlier closed captures. All 12 completion unit checks pass; complete Node 25.9.0 and Node 22.23.3 suites each finish with 420 cases, 416 passes, four explicit scoped-native skips and no failures. New checks cover nested/open/forward groups, Unicode names and native UTF-16 spans, multi-digit targets, quote-aware logical lines with every separator, existing references, absent versus empty participation, invalid contexts and 120 distinct proposals at the capture budget.
