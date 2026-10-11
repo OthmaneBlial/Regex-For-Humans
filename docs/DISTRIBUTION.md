@@ -1,6 +1,16 @@
 # Distribution decision record
 
-## Dev.10 candidate preparation (11 October 2026)
+## Published dev.10 (11 October 2026)
+
+[npm `0.1.0-dev.10`](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.10), both registry tags (`latest` and `preview`), and the [GitHub prerelease](https://github.com/OthmaneBlial/Regex-For-Humans/releases/tag/v0.1.0-dev.10) select frozen source `433e438a92643c313e325421515fb495a1d153e9`. The annotated tag object is `6277c078bb7d0d6b8f4616b3b3a7d5a38b65cc60`. Retained, anonymous registry-downloaded and GitHub-downloaded archives agree byte for byte: 397,286 bytes, 49 files, SHA-256 `8efc5bcc3e202d0969f9f3cc8591a406d728cdcfec66821e2d637a0a05332cca`, integrity `sha512-8Hk3wfTG37BoURkhrb+6oW5pZcGmBPyOcWbdOT15pBeIcWBUdc4K7ewedSD3+zqcQkDU5PAETQI9dHZ6uoUsAg==`. Every payload file matches the tag. The GitHub archive digest agrees; its checksum asset has SHA-256 `38c15cc27df32a5bab96d810ab842f51f7ef2bf13af71b73deeb3ea236991c3e`. Exact-archive consumers pass on Node 25 and Node 22; fresh public default and preview installations pass the complete JavaScript/strict TypeScript/API/CLI consumer checks.
+
+This release adds native scoped i/m/s groups, cached-source runtime protection and the 64-level group-wrapper correction. Scoped groups require a compatible native runtime: tested Node 22 lacks syntax and tested Node 25/26 have measured native behavioral defects, so the feature is refused there. Ordinary supported rules and CLI workflows retain Node 22+ support. Foreign exports reject scoped groups until their semantics are verified.
+
+Owner Pages commit `7245eceae2fddba2ff64cb9a5c3fb1c6808d581c` changes 45 files, all inside the existing `Regex-For-Humans/` folder. [Deployment 38156405794](https://github.com/OthmaneBlial/OthmaneBlial.github.io/actions/runs/38156405794) succeeds; all 81 public files return HTTP 200 and match the validated release build byte for byte. Live Chrome desktop/mobile, Firefox desktop and WebKit mobile checks pass scoped matching, captures, reverse import and cached construction, with no document overflow or page errors. The full candidate command passes; see [the testing record](TESTING.md) for exact counts and runtime boundaries.
+
+All ten guides pin dev.10 and retain 20 identical canonical code blocks. Actual GitHub Arabic/Urdu renders pass desktop/mobile direction checks and visual inspection; an Urdu paragraph was corrected to start with Urdu prose so GitHub's automatic paragraph direction stays RTL. The local Reddit draft now describes dev.10 and remains unposted. Its original 19-rule example still generates the exact supplied regex and passes two positive/four negative cases. Subsequent publication receipts are documentation on this frozen runtime and do not replace its archive or tag. Source Actions remains disabled; independent native-speaker, usability, explanation and screen-reader gates and the wider autonomous mission remain open.
+
+## Historical dev.10 preparation snapshot (11 October 2026)
 
 The isolated candidate starts from source `b321e83`, including native scoped i/m/s groups, the cached-source runtime guard and the 64-level group-wrapper correction. Package metadata, security policy, homepage, language/compatibility guides and all ten READMEs select `0.1.0-dev.10`. All guides retain the canonical code examples; Arabic/Urdu use RTL prose and isolated LTR syntax. Scoped matching remains unavailable on the tested Node 22/25/26 editions and requires a compatible native runtime.
 

@@ -1,6 +1,13 @@
 # Autonomous implementation progress
 
-## Dev.10 distribution candidate
+## Published dev.10 milestone
+
+- Shipped: npm `latest`/`preview` and the GitHub prerelease select frozen source `433e438`. The retained, registry and GitHub archives have identical bytes and SHA-256 `8efc5bcc3e202d0969f9f3cc8591a406d728cdcfec66821e2d637a0a05332cca`; all 49 payload files match the tag. Native scoped groups, cached-source protection and the group-wrapper depth correction are included.
+- Verified: the uninterrupted complete command passes 397 Node cases plus four explicit scoped-native skips, 676 Chromium, 434 Firefox/WebKit and 64 homepage checks, builds, package consumers and a zero-vulnerability audit. Node 22 separately passes its complete suite. Exact-archive and fresh public consumers pass on Node 25/22; the required seven-native-profile corpus passes 8,782 comparisons. Owner Pages deployment `38156405794` succeeds and all 81 public files match; four live browser profiles pass the new scoped workflow without overflow or page errors. See [the publication receipt](DISTRIBUTION.md) and [testing record](TESTING.md).
+- Guides and draft: all ten READMEs retain equivalent executable examples. Arabic/Urdu GitHub renders pass RTL prose/LTR code checks and visual inspection at desktop/mobile widths. The Urdu automatic-direction issue is corrected. The Downloads Reddit draft describes dev.10, preserves the supplied difficult example and remains unposted.
+- Boundary and next work: scoped groups require a compatible native engine and remain unavailable on the tested Node 22/25/26 editions; all seven foreign exports reject them explicitly. Continue auditing the original compiler/workshop/export requirements against native behavior before selecting the next substantive implementation. Preserve immutable releases and disabled source Actions. This completes dev.10 distribution; the wider autonomous mission and independent human review gates remain open.
+
+## Historical dev.10 distribution candidate
 
 - Prepared: source `b321e83` plus dev.10 package metadata, synchronized ten-language guides, scoped-runtime requirements, homepage and language-reference copy. The candidate includes scoped groups, cached-source protection and the group-wrapper depth correction; no native behavior is approximated.
 - Pending: complete candidate verification, retained archive/source freeze, npm/GitHub publication and actual hosted-site checks. Published dev.9 and older archives remain unchanged. Source Actions stays disabled, human review gates remain unchecked and the wider mission stays active.
