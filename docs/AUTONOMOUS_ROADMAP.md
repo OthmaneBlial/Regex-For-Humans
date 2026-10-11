@@ -1,5 +1,12 @@
 # Autonomous implementation progress
 
+## Published dev.8 milestone
+
+- Shipped: npm `latest`/`preview` and the public GitHub prerelease select frozen source `9cc1416`. Retained, registry and GitHub archives have the same 367,873 bytes and SHA-256 `26037077091d064ae484c7120c8bdd6fc5240175976a1b309cfe2789e2eac922`; all 48 payload files match the tag, and the checksum asset agrees.
+- Verified: registry-download consumers pass on Node 25 and Node 22. Fresh-cache installation and npx report dev.8; the original manifest example has the exact supplied regex and passes two positive/four negative cases. Owner Pages deployment `38130254570` succeeds, with all 80 release files matching public bytes. Installed Chrome confirms complete-token error navigation and native named captures/backreferences. All ten guides retain their canonical code blocks and Arabic/Urdu directionality; the Downloads draft is updated and stays unposted. See [the publication receipt](DISTRIBUTION.md).
+- Boundary: subsequent quoted/semantic diagnostic source extensions belong to a later release. Publication receipts are synchronized as documentation on the dev.8 runtime; never replace its archive with advancing `main`. Source Actions stays disabled and independent human reviews remain open.
+- Next: audit the original mission against actual compiler/workshop behavior, prioritize a substantive unmet requirement and continue validated direct-main milestones. This publication completes the dev.8 distribution step, not the full autonomous mission.
+
 ## Semantic diagnostic ranges source milestone
 
 - Implemented: exact original ranges for invalid list/class/sequence items, character-range endpoints and Unicode property aliases, including escaped spelling. Successful AST locations and native matching semantics remain unchanged. Empty aliases and unquoted list items keep point diagnostics; empty list items retain a visible separator marker.
