@@ -3,7 +3,7 @@
 ## Dev.12 distribution candidate
 
 - Package/lock metadata now selects dev.12 for the verified source class/reference completion, selected-rule preview and Markdown reports. The public registry, GitHub prerelease and owner Pages remain frozen dev.11; README/homepage source copy, feature guides, release notes and refreshed real desktop/mobile screenshots now target the candidate for its final archive. External delivery remains pending.
-- Run a fresh complete runtime/browser/site/package gate, separate Node 22 and required native-profile checks, then synchronize final copy/screenshots and verify the exact retained archive before freezing/publishing. Record actual registry/GitHub/Pages delivery separately. Preserve previous archives/tags, disabled source Actions and unchecked human gates; the broader mission continues.
+- Fresh Node 25/22, seven required native profiles, all 726 Chromium checks and prototype clean consumers pass. Ten README/guide/release copies and screenshots are synchronized. Actual GitHub AR/UR rendering passes in six views with canonical LTR code and complete version labels at 320px. Finish 484 Firefox/WebKit and homepage/audit gates, then verify the exact final retained archive before freezing/publishing. Record actual registry/GitHub/Pages delivery separately. Preserve previous archives/tags, disabled source Actions and unchecked human gates; the broader mission continues.
 
 ## Unreleased Markdown report milestone
 
