@@ -21,6 +21,8 @@ const stylesheetVersion = createHash("sha256")
   .update(readFileSync(join(root, "site", "styles.css")))
   .digest("hex")
   .slice(0, 12);
+const workshopPreview = readFileSync(join(root, "site", "assets", "workshop-preview.png"));
+const previewVersion = createHash("sha256").update(workshopPreview).digest("hex").slice(0, 12);
 const homepagePath = join(root, "site", "index.html");
 const homepage = readFileSync(homepagePath, "utf8");
 const appReference = /src="\.\/app\.js(?:\?[^"\s]*)?"/u;
@@ -28,10 +30,19 @@ if (!appReference.test(homepage)) throw new Error("The homepage app module refer
 const stylesheetReference = /href="\.\/styles\.css(?:\?[^"\s]*)?"/u;
 if (!stylesheetReference.test(homepage))
   throw new Error("The homepage stylesheet reference is missing.");
+const previewReference = /<img src="\.\/assets\/workshop-preview\.png(?:\?[^"\s]*)?"[^>]*>/u;
+if (!previewReference.test(homepage))
+  throw new Error("The homepage workshop screenshot reference is missing.");
 writeFileSync(
   homepagePath,
   homepage
     .replace(appReference, `src="./app.js?v=${appVersion}"`)
-    .replace(stylesheetReference, `href="./styles.css?v=${stylesheetVersion}"`),
+    .replace(stylesheetReference, `href="./styles.css?v=${stylesheetVersion}"`)
+    .replace(previewReference, (image) =>
+      image
+        .replace(/src="[^"]*"/u, `src="./assets/workshop-preview.png?v=${previewVersion}"`)
+        .replace(/width="\d+"/u, `width="${workshopPreview.readUInt32BE(16)}"`)
+        .replace(/height="\d+"/u, `height="${workshopPreview.readUInt32BE(20)}"`),
+    ),
 );
 process.stdout.write(`Copied workshop to ${output}\n`);
