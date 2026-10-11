@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Share a workshop snapshot through a validated, bounded URL fragment containing rules, flags, match mode, examples and exact capture/span/replacement expectations. Restore it before asynchronous recipes load, preserve newer edits on in-page navigation, offer explicit loading, and retain manual clipboard recovery and JSON export for larger suites. Localize controls/status in all four interface languages; keep matching in the existing isolated worker.
+
 - Explain failed examples when mandatory literal text occurs at the wrong absolute input edge. Derive bounded prefix/suffix requirements structurally through groups, alternatives and repetition, preserving Unicode pairs; retain conservative fallbacks for line anchors, case folding and variable consumption. Localize both reasons in all four workshop languages without changing native matching, expectation checks or worker limits.
 
 - Retain original ranges for invalid character-list items, class members, string-code-point items, range endpoints and Unicode property aliases. Preserve JSON-escaped spelling and existing start positions in parser and native-property diagnostics; keep successful AST locations and regex output unchanged. Empty property aliases and empty unquoted list items retain point diagnostics.

@@ -4,6 +4,8 @@ import { readExpectation } from "./expectations.js";
 
 export const fixtureLimit = 4 * 1024 * 1024;
 export const fixtureStorageKey = "regex-for-humans:tests.v1";
+export const shareLinkLimit = 32 * 1024;
+const shareSizeMessage = "Share link exceeds 32 KiB. Export JSON to share this workspace.";
 
 /** @param {unknown} value @param {string[]} keys @returns {value is Record<string, unknown>} */
 function hasOnlyKeys(value, keys) {
@@ -56,4 +58,38 @@ export function parseFixture(text) {
     mode: value.mode,
     cases,
   };
+}
+
+/** @param {string} text @param {string} href */
+export function createFixtureLink(text, href) {
+  const base = new URL(href);
+  if (base.protocol !== "https:" && base.protocol !== "http:")
+    throw new TypeError("Share links require an HTTP or HTTPS workshop URL.");
+  const compact = JSON.stringify(parseFixture(text));
+  if (compact.length > shareLinkLimit) throw new RangeError(shareSizeMessage);
+  const bytes = new TextEncoder().encode(compact);
+  if (bytes.length > shareLinkLimit) throw new RangeError(shareSizeMessage);
+  const payload = btoa(String.fromCharCode(...bytes))
+    .replace(/\+/gu, "-")
+    .replace(/\//gu, "_")
+    .replace(/=+$/u, "");
+  const url = new URL(`${base.origin}${base.pathname}`);
+  url.hash = `tests=${payload}`;
+  if (url.href.length > shareLinkLimit) throw new RangeError(shareSizeMessage);
+  return url.href;
+}
+
+/** @param {string} hash @returns {TestFixture|null} */
+export function readFixtureLink(hash) {
+  if (!hash.startsWith("#tests=")) return null;
+  if (hash.length > shareLinkLimit) throw new RangeError(shareSizeMessage);
+  try {
+    const payload = hash.slice(7);
+    if (!/^[A-Za-z0-9_-]+$/u.test(payload) || payload.length % 4 === 1) throw new TypeError();
+    const binary = atob(payload.replace(/-/gu, "+").replace(/_/gu, "/"));
+    const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+    return parseFixture(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+  } catch {
+    throw new TypeError("Invalid share link. Import JSON or copy a new link.");
+  }
 }

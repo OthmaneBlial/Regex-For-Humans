@@ -153,6 +153,51 @@ export const translations = {
   "Import JSON": ["导入 JSON", "Importar JSON", "Importer un JSON"],
   "Export tests": ["导出测试", "Exportar pruebas", "Exporter les tests"],
   "Save locally": ["本地保存", "Guardar localmente", "Sauvegarder localement"],
+  "Copy share link": ["复制分享链接", "Copiar enlace", "Copier le lien de partage"],
+  "Load shared link": ["加载分享链接", "Cargar enlace compartido", "Charger le lien partagé"],
+  "Load the shared link to replace the current rules and examples.": [
+    "加载分享链接将替换当前规则和示例。",
+    "Carga el enlace compartido para reemplazar las reglas y ejemplos actuales.",
+    "Chargez le lien partagé pour remplacer les règles et exemples actuels.",
+  ],
+  "Share link": ["分享链接", "Enlace para compartir", "Lien de partage"],
+  "Links include your rules, examples and expectations. Anyone with the link can read them.": [
+    "链接包含你的规则、示例和预期。拥有链接的任何人都能读取这些内容。",
+    "Los enlaces incluyen tus reglas, ejemplos y expectativas. Cualquiera con el enlace puede leerlos.",
+    "Les liens contiennent vos règles, exemples et attentes. Toute personne disposant du lien peut les lire.",
+  ],
+  "Share link ready.": ["分享链接已就绪。", "Enlace listo.", "Lien de partage prêt."],
+  "Share link copied.": ["分享链接已复制。", "Enlace copiado.", "Lien de partage copié."],
+  "Workspace changed. Copy a new share link.": [
+    "工作区已更改。请复制新的分享链接。",
+    "El espacio de trabajo ha cambiado. Copia un nuevo enlace.",
+    "Le contenu a changé. Copiez un nouveau lien de partage.",
+  ],
+  "Clipboard unavailable. Select the share link and use your copy shortcut.": [
+    "剪贴板不可用。请选择分享链接并使用复制快捷键。",
+    "Portapapeles no disponible. Selecciona el enlace y usa tu atajo para copiar.",
+    "Presse-papiers indisponible. Sélectionnez le lien et utilisez votre raccourci pour copier.",
+  ],
+  "Loaded {count} shared examples.": [
+    "已加载 {count} 个分享示例。",
+    "Se han cargado {count} ejemplos compartidos.",
+    "{count} exemples partagés chargés.",
+  ],
+  "Share link exceeds 32 KiB. Export JSON to share this workspace.": [
+    "分享链接超过 32 KiB。请导出 JSON 来分享此工作区。",
+    "El enlace supera 32 KiB. Exporta JSON para compartir este espacio de trabajo.",
+    "Le lien dépasse 32 KiB. Exportez le JSON pour partager ce contenu.",
+  ],
+  "Invalid share link. Import JSON or copy a new link.": [
+    "分享链接无效。请导入 JSON 或复制新的链接。",
+    "Enlace inválido. Importa JSON o copia un nuevo enlace.",
+    "Lien de partage invalide. Importez un JSON ou copiez un nouveau lien.",
+  ],
+  "Share links require an HTTP or HTTPS workshop URL.": [
+    "分享链接需要 HTTP 或 HTTPS 工作区地址。",
+    "Los enlaces requieren una URL del taller HTTP o HTTPS.",
+    "Les liens de partage nécessitent une URL du workshop en HTTP ou HTTPS.",
+  ],
   "Restore saved tests": [
     "恢复已保存的测试",
     "Restaurar pruebas guardadas",

@@ -13,7 +13,13 @@ import { parseRegexLiteral } from "../src/regex-literal.js";
 import { parseExpectation, readExpectation } from "./expectations.js";
 import { explanationNotes } from "./explanation-notes.js";
 import { explainMismatch, failureRequirements } from "./failure-reasons.js";
-import { fixtureLimit, fixtureStorageKey, parseFixture } from "./fixtures.js";
+import {
+  createFixtureLink,
+  fixtureLimit,
+  fixtureStorageKey,
+  parseFixture,
+  readFixtureLink,
+} from "./fixtures.js";
 import { initializeLanguage, message, setAttribute, setText } from "./i18n.js";
 import { insertRule } from "./insert-rule.js";
 import { categories, filterRecipes, levels } from "./library.js";
@@ -114,6 +120,10 @@ const ui = {
   fixtureExport: requiredElement("fixture-export", HTMLButtonElement),
   fixtureSave: requiredElement("fixture-save", HTMLButtonElement),
   fixtureRestore: requiredElement("fixture-restore", HTMLButtonElement),
+  fixtureShare: requiredElement("fixture-share", HTMLButtonElement),
+  fixtureLoadLink: requiredElement("fixture-load-link", HTMLButtonElement),
+  fixtureLink: requiredElement("fixture-link", HTMLTextAreaElement),
+  fixtureLinkOutput: requiredElement("fixture-link-output", HTMLDivElement),
   fixtureStatus: requiredElement("fixture-status", HTMLParagraphElement),
 };
 
@@ -141,6 +151,7 @@ let selectedScenarioId = null;
 let testCases = [];
 let nextTestId = 1;
 let fixtureRevision = 0;
+let shareSequence = 0;
 /** @type {Map<number, string>} */
 const expectationDrafts = new Map();
 /** @type {Map<number, string>} */
@@ -1000,6 +1011,12 @@ function selectedMatchMode() {
 
 async function updateTestResults() {
   fixtureRevision++;
+  if (!ui.fixtureLinkOutput.hidden) {
+    ui.fixtureLinkOutput.hidden = true;
+    ui.fixtureLink.value = "";
+    setText(ui.fixtureStatus, message("Workspace changed. Copy a new share link."));
+    delete ui.fixtureStatus.dataset.state;
+  }
   const rows = [...ui.testList.querySelectorAll(".test-row")].filter(
     (row) => row instanceof HTMLDivElement,
   );
@@ -1450,12 +1467,38 @@ function applyFixture(fixture) {
   compileRules();
 }
 
+function loadSharedFixture() {
+  const fixture = readFixtureLink(window.location.hash);
+  if (!fixture) return false;
+  applyFixture(fixture);
+  setText(
+    ui.fixtureStatus,
+    message("Loaded {count} shared examples.", { count: fixture.cases.length }),
+  );
+  delete ui.fixtureStatus.dataset.state;
+  ui.fixtureLoadLink.hidden = true;
+  requiredElement("test-fixtures", HTMLDetailsElement).open = true;
+  return true;
+}
+
+function noticeSharedLink() {
+  ui.fixtureLoadLink.hidden = !window.location.hash.startsWith("#tests=");
+  if (!ui.fixtureLoadLink.hidden) {
+    requiredElement("test-fixtures", HTMLDetailsElement).open = true;
+    setText(
+      ui.fixtureStatus,
+      message("Load the shared link to replace the current rules and examples."),
+    );
+    delete ui.fixtureStatus.dataset.state;
+  }
+}
+
 /** @param {unknown} error */
 function fixtureError(error) {
   setText(
     ui.fixtureStatus,
     message("Fixture unavailable: {error}", {
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? message(error.message) : String(error),
     }),
   );
   ui.fixtureStatus.dataset.state = "error";
@@ -1574,7 +1617,9 @@ function useScenario(scenario) {
   ];
   const url = new URL(window.location.href);
   url.searchParams.set("example", scenario.id);
+  if (url.hash.startsWith("#tests=")) url.hash = "";
   window.history.replaceState(null, "", url);
+  ui.fixtureLoadLink.hidden = true;
   renderTests();
   compileRules();
   ui.trace.scrollTop = 0;
@@ -1660,6 +1705,14 @@ document.addEventListener("input", (event) => {
   }
 });
 ui.fixtureImport.addEventListener("click", () => ui.fixtureFile.click());
+ui.fixtureLoadLink.addEventListener("click", () => {
+  try {
+    loadSharedFixture();
+  } catch (error) {
+    fixtureError(error);
+  }
+});
+window.addEventListener("hashchange", noticeSharedLink);
 ui.fixtureFile.addEventListener("change", async () => {
   const file = ui.fixtureFile.files?.[0];
   ui.fixtureFile.value = "";
@@ -1692,6 +1745,48 @@ ui.fixtureExport.addEventListener("click", () => {
     downloadText(currentFixtureText(), "regex-tests.json", "application/json");
     setText(ui.fixtureStatus, message("Test fixture download started."));
     delete ui.fixtureStatus.dataset.state;
+  } catch (error) {
+    fixtureError(error);
+  }
+});
+ui.fixtureShare.addEventListener("click", async () => {
+  const request = ++shareSequence;
+  ui.fixtureLinkOutput.hidden = true;
+  ui.fixtureLink.value = "";
+  try {
+    const link = createFixtureLink(currentFixtureText(), window.location.href);
+    const revision = fixtureRevision;
+    const focused = document.activeElement;
+    const ready = message("Share link ready.");
+    ui.fixtureLink.value = link;
+    ui.fixtureLinkOutput.hidden = false;
+    setText(ui.fixtureStatus, ready);
+    delete ui.fixtureStatus.dataset.state;
+    try {
+      await writeClipboard(link);
+      if (
+        request !== shareSequence ||
+        revision !== fixtureRevision ||
+        ui.fixtureStatus.textContent !== ready()
+      )
+        return;
+      setText(ui.fixtureStatus, message("Share link copied."));
+    } catch {
+      if (
+        request !== shareSequence ||
+        revision !== fixtureRevision ||
+        ui.fixtureStatus.textContent !== ready()
+      )
+        return;
+      if (document.activeElement === focused) {
+        ui.fixtureLink.focus();
+        ui.fixtureLink.select();
+      }
+      setText(
+        ui.fixtureStatus,
+        message("Clipboard unavailable. Select the share link and use your copy shortcut."),
+      );
+    }
   } catch (error) {
     fixtureError(error);
   }
@@ -2043,6 +2138,21 @@ ui.addExample.addEventListener("click", () => {
   ui.testList.lastElementChild?.querySelector("textarea")?.focus();
 });
 ui.addExample.disabled = false;
+/** @param {string} text */
+async function writeClipboard(text) {
+  let timer = 0;
+  try {
+    if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable");
+    await Promise.race([
+      navigator.clipboard.writeText(text),
+      new Promise((_, reject) => {
+        timer = window.setTimeout(() => reject(new Error("Clipboard request timed out")), 1000);
+      }),
+    ]);
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
 ui.copy.addEventListener("click", async () => {
   if (!compiled) return;
   const result = compiled;
@@ -2052,18 +2162,8 @@ ui.copy.addEventListener("click", async () => {
   window.clearTimeout(copyFeedbackTimer);
   setText(ui.copy, message("Copy regex ↗"));
   setDiagnostic("");
-  let requestTimer = 0;
   try {
-    if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable");
-    await Promise.race([
-      navigator.clipboard.writeText(text),
-      new Promise((_, reject) => {
-        requestTimer = window.setTimeout(
-          () => reject(new Error("Clipboard request timed out")),
-          1000,
-        );
-      }),
-    ]);
+    await writeClipboard(text);
   } catch {
     if (compiled !== result || request !== copySequence) return;
     if (document.activeElement !== focused) {
@@ -2106,8 +2206,6 @@ ui.copy.addEventListener("click", async () => {
       }
       return;
     }
-  } finally {
-    window.clearTimeout(requestTimer);
   }
   if (compiled !== result || request !== copySequence) return;
   setDiagnostic("");
@@ -2117,7 +2215,16 @@ ui.copy.addEventListener("click", async () => {
   }, 1800);
 });
 
-if (hasEdits) compileRules();
+try {
+  if (hasEdits && window.location.hash.startsWith("#tests=")) {
+    noticeSharedLink();
+    compileRules();
+  } else if (!loadSharedFixture() && hasEdits) compileRules();
+} catch (error) {
+  fixtureError(error);
+  requiredElement("test-fixtures", HTMLDetailsElement).open = true;
+  if (hasEdits) compileRules();
+}
 
 try {
   const response = await fetch(new URL("../test/fixtures/product-scenarios.json", import.meta.url));

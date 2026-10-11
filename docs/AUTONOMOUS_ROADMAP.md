@@ -1,5 +1,12 @@
 # Autonomous implementation progress
 
+## Shareable snapshot source milestone
+
+- Implemented: complete versioned fixtures can be shared as a bounded URL fragment, including rules, flags, mode, examples and exact native expectations. Loading precedes recipes; initial edits and in-page navigation retain the workspace until explicit replacement. Clipboard failure leaves a labeled manual-copy field, late replies preserve newer feedback, and larger suites retain JSON export. Controls and statuses use all four interface languages and reuse existing visual styles, schema validation and worker matching.
+- Verified: 389 Node tests pass on both supported runtimes, including all 128 flag combinations and encoding/schema/size trust boundaries. All 52 Chromium share/fixture checks pass; 51 Firefox/WebKit checks pass initially and the mouse-focus assumption is corrected with explicit keyboard activation that passes on all four configurations. All 24 existing regex-copy regressions pass. Four locales, both themes, exact captures/replacements, delayed initialization and links above 30,000 characters are covered. Final French 320px panels were visually inspected. See [the component receipt](TESTING.md).
+- Distribution: these are source additions after immutable public dev.8. No fixture backend, automatic storage, matching engine, dependency or deadline change is added. Links expose their content to recipients; the UI explains this. Source Actions stays disabled and independent human reviews remain open.
+- Next: prepare the next distribution milestone from verified source, update the ten equivalent guides and run the complete release gate before publishing a new immutable package and matching Pages runtime. Continue auditing the original mission afterward; this source milestone does not complete it.
+
 ## Input-edge failure explanation source milestone
 
 - Implemented: native no-match results can explain a mandatory literal at the wrong absolute input edge. Typed-AST proofs compose groups, common alternative edges and minimum repetitions, preserve Unicode pairs and bound expansion. Line anchors, ignore-case matching and variable consumption retain truthful fallbacks. Both messages use all four interface languages and safe quoted text; native matching and worker limits are unchanged.

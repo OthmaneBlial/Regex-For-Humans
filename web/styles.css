@@ -672,7 +672,8 @@ a {
   display: block;
   margin: 14px 0 7px;
 }
-#reverse-regex {
+#reverse-regex,
+#fixture-link {
   width: 100%;
   min-height: 68px;
   padding: 10px;
@@ -683,7 +684,8 @@ a {
   color: var(--ink-deep);
   font: 12px / 1.6 var(--mono);
 }
-#reverse-regex:focus {
+#reverse-regex:focus,
+#fixture-link:focus {
   outline: 3px solid #f1bf3980;
   outline-offset: 2px;
 }

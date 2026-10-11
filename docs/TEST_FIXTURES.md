@@ -74,12 +74,25 @@ Imported example strings retain CR and CRLF exactly for testing, storage and exp
 
 Local preservation is manual and uses `regex-for-humans:tests.v1` in this origin's `localStorage`. Reloading does not automatically restore or overwrite a saved fixture. Denied storage, quota errors and corrupt saved data leave the current workshop usable. Export JSON for a durable, shareable regression corpus; browser storage can be cleared. These controls send no rules or examples to a server.
 
+## Share a workshop snapshot
+
+**Unreleased source after dev.8:** the current [distribution receipt](DISTRIBUTION.md) identifies the published runtime; these link controls belong to the next release.
+
+Open **Test fixtures** and choose **Copy share link**. The link preserves the same validated version 1 fixture as JSON export: rules, flags, match mode, positive/negative examples, exact spans, capture values and replacement expectations. Empty suites and syntactically invalid rule drafts remain shareable and editable. Malformed expectation drafts must be repaired before sharing. Interface language, theme and browser storage are not included. The generated URL keeps the workshop origin/path and omits existing query parameters and credentials.
+
+Opening the link in a fresh page restores the snapshot before recipes load. A delayed recipe response cannot replace it or newer edits. If rules were edited before the app loaded, or a new fragment arrives within an existing page, **Load shared link** offers explicit replacement; receiving the link alone preserves the current workspace. Invalid data is validated before any application and leaves current/saved data intact. Choosing a recipe removes an old shared fragment so reloading selects that recipe.
+
+The complete URL is limited to 32,768 ASCII characters (32 KiB). Larger workspaces receive a clear error and remain exportable as JSON; links are never truncated. The field shows the generated link for manual copying when clipboard access is refused, unavailable or times out. Editing the workspace clears the displayed snapshot, and a late clipboard response cannot replace newer feedback or move focus away from another control.
+
+The fixture is compact JSON encoded as UTF-8/base64url in `#tests=…`, with strict decoding and the existing fixture/schema budgets. The URI fragment is handled by the user agent rather than sent during resource retrieval, as defined by [RFC 3986 section 3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5). The workshop does not upload the fixture. This is encoding, not encryption: anyone with the full link can read its contents, and copying or sharing it exposes those rules and examples to the recipient. The controls state this before copying.
+
 ## Bounds
 
 | Item | Limit |
 | --- | --- |
 | Imported file | 4 MiB of bytes, checked before reading |
 | Parsed or locally stored fixture JSON | 4,194,304 UTF-16 units |
+| Complete share URL / received share fragment | 32,768 ASCII characters (32 KiB); larger suites use JSON export |
 | Rules | 16,384 UTF-16 units, with existing compiler line/depth budgets |
 | Cases / text per case | 100 / 2,048 UTF-16 units |
 | Expectation JSON per case | 8,192 UTF-16 units, including its compact serialized form |
