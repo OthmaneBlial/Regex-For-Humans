@@ -1,5 +1,15 @@
 # Testing and compatibility
 
+## Unreleased Markdown report checks (11 October 2026)
+
+The [Markdown report workflow](MARKDOWN_REPORTS.md) passes four new unit checks and the complete Node 25.9.0/22.23.3 suites: 424 cases each, 420 passes, four existing explicit scoped-native skips and no failures. Final focused checks on both Node editions also pass after adding all five source separators, build/source budgets and the distinction between a canonical substring regex and whole-input mode. Native capture values, UTF-16 spans and replacements agree, while the embedded fixture retains absent/empty captures, Unicode, controls, exact expectations, both modes and all 100 case slots.
+
+All 74 affected Chrome desktop/mobile and 36 Firefox/WebKit checks pass, including existing fixtures, draft recovery and Chrome accessibility controls. Real file downloads retain imported CRLF and both saved stores; invalid expectation drafts/source cannot create stale reports. Four interface languages, both themes, native keyboard downloads, WCAG A/AA checks and 320px layouts pass. French light/dark export-panel captures were visually inspected. Ten README/localization checks, lint/types, documentation links and static/Pages builds pass. This is source-component evidence, not a new complete distribution gate.
+
+Final focused report flows pass six Chrome and six Firefox/WebKit checks after clarifying full/search/sticky semantics and retaining the exact unanchored canonical regex for a full-mode snapshot. Four report unit checks pass again on Node 25/22, and the GitHub renderer check passes again for the final report body. Source lint/types and all 819 documentation links pass. The final static/Pages build validates 813 built links; the 52-file dry-run package list includes the report guide and excludes web/tests/artifacts without packing a replacement archive.
+
+The actual GitHub GFM renderer keeps all seven report code blocks and reimportable JSON intact when synthetic input/build text contains long backtick runs, fake headings and HTML. A browser inspection finds one intended top-level heading and no injected script/image elements; native expectation data and the JSON round trip agree. This is a rendering check, not external publication of a user's report. Frozen npm/hosted dev.11 and independent human review remain separate.
+
 ## Unreleased capture-reference completion checks (11 October 2026)
 
 The [completion workflow](EDITOR_COMPLETIONS.md) now also offers complete numeric/named references to earlier closed captures. All 12 completion unit checks pass; complete Node 25.9.0 and Node 22.23.3 suites each finish with 420 cases, 416 passes, four explicit scoped-native skips and no failures. New checks cover nested/open/forward groups, Unicode names and native UTF-16 spans, multi-digit targets, quote-aware logical lines with every separator, existing references, absent versus empty participation, invalid contexts and 120 distinct proposals at the capture budget.

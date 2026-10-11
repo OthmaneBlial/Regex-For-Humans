@@ -1,5 +1,11 @@
 # Autonomous implementation progress
 
+## Unreleased Markdown report milestone
+
+- Source downloads a complete Markdown snapshot with the displayed build label, readable rules, exact JavaScript regex/flags, full/search mode, intended examples/exact expectations and lossless reimportable JSON. Reuse fixture validation, compiler, visible control rendering and the existing local downloader; add no renderer dependency or public package API. Exporting executes no example matching and certifies no result.
+- Verification: complete Node 25/22 suites each pass 420 cases with four explicit skips (424 total); final focused report checks also pass on both. All 74 affected Chrome desktop/mobile and 36 Firefox/WebKit checks pass. Four locales, both themes, native keyboard downloads, 320px layouts, invalid-state recovery and both saved stores retain their behavior. The real GitHub Markdown renderer preserves seven fenced blocks and exact reimport data without injected elements. See [the component receipt](TESTING.md#unreleased-markdown-report-checks-11-october-2026).
+- Documentation: all ten README guides and the [report scope](MARKDOWN_REPORTS.md) distinguish this source feature from frozen dev.11. Arabic/Urdu explicitly isolate Markdown/JSON labels within RTL prose. Independent human reviews and broader editor grammar remain open; source Actions stays disabled and distribution archives/tags remain unchanged.
+
 ## Unreleased capture-reference completion milestone
 
 - Source extends the finite completion list to numeric/named references to earlier closed captures, using the parser's reference phrase and the compiler's capture metadata. Validate every entire proposed document, preserve existing targets and native participation semantics, and reject open/forward/invalid contexts. The selected-rule preview keeps long names readable on mobile without editing or saving source.

@@ -38,6 +38,8 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 
 ## 🧰 Was heute möglich ist
 
+**Quellcode-Version (unveröffentlicht):** Ein [Markdown-Bericht](../MARKDOWN_REPORTS.md) enthält Build-Kennung, Regeln, exakten JavaScript-Regex, Optionen, beabsichtigte Tests und wieder importierbares JSON. Der Export führt die Tests nicht aus und bestätigt nicht ihren Erfolg.
+
 **Quellcode-Version (unveröffentlicht):** Mit **Complete a rule** oder **Strg + Leertaste** lassen sich eingebaute Zeichenklassen vervollständigen, auch nach einer Anzahl (zum Beispiel `between 2 and 5 di`), sowie Referenzen auf zuvor geschlossene Capture-Gruppen (`same as ca`). Referenzen werden nach Nummer und Namen angeboten; eine Vorschau zeigt die vollständige ausgewählte Regel. Jeder Vorschlag muss mit dem gesamten Dokument kompilierbar sein. Text in Anführungszeichen, Kommentare und markierter Text bleiben erhalten. Siehe [Bedienung und Grenzen](../EDITOR_COMPLETIONS.md).
 
 | Fähigkeit | npm `0.1.0-dev.11` / gehosteter Workshop |

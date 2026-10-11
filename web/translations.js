@@ -260,6 +260,17 @@ export const translations = {
     ],
   "Import JSON": ["导入 JSON", "Importar JSON", "Importer un JSON"],
   "Export tests": ["导出测试", "Exportar pruebas", "Exporter les tests"],
+  "Export Markdown report": [
+    "导出 Markdown 报告",
+    "Exportar informe Markdown",
+    "Exporter le rapport Markdown",
+  ],
+  "Download a Markdown snapshot of the build, rules, JavaScript regex, options and intended tests. The export does not run tests.":
+    [
+      "下载包含构建版本、规则、JavaScript 正则、选项和预期测试的 Markdown 快照。导出不会运行测试。",
+      "Descarga una instantánea Markdown con la versión, las reglas, la expresión JavaScript, las opciones y las pruebas previstas. La exportación no ejecuta pruebas.",
+      "Téléchargez un instantané Markdown du build, des règles, du regex JavaScript, des options et des tests prévus. L’export ne lance pas les tests.",
+    ],
   "Save locally": ["本地保存", "Guardar localmente", "Sauvegarder localement"],
   "Copy share link": ["复制分享链接", "Copiar enlace", "Copier le lien de partage"],
   "Load shared link": ["加载分享链接", "Cargar enlace compartido", "Charger le lien partagé"],
@@ -384,6 +395,11 @@ export const translations = {
     "已开始下载测试文件。",
     "Descarga del fixture iniciada.",
     "Téléchargement de la fixture lancé.",
+  ],
+  "Markdown report download started.": [
+    "已开始下载 Markdown 报告。",
+    "Descarga del informe Markdown iniciada.",
+    "Téléchargement du rapport Markdown lancé.",
   ],
   "Tests saved in this browser. Export JSON for a durable copy.": [
     "测试已保存在此浏览器中。请导出 JSON 以保留持久副本。",

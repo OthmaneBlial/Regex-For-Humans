@@ -60,6 +60,8 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 ## 🧰 What you can build today
 
+**Source checkout (unreleased):** export a [Markdown report](docs/MARKDOWN_REPORTS.md) with the build label, rules, exact JavaScript regex, options, intended tests and reimportable JSON. Exporting does not run or certify the tests.
+
 | Capability | npm `0.1.0-dev.11` API / hosted workshop |
 | --- | --- |
 | Readable rules → native JavaScript regex | ✅ |

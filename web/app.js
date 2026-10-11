@@ -25,6 +25,7 @@ import {
 import { initializeLanguage, message, setAttribute, setText } from "./i18n.js";
 import { insertRule } from "./insert-rule.js";
 import { categories, filterRecipes, levels } from "./library.js";
+import { createMarkdownReport } from "./markdown-report.js";
 import { ruleCompletions } from "./rule-completions.js";
 import { initializeSyntaxEditor } from "./syntax.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
@@ -137,6 +138,7 @@ const ui = {
   fixtureFile: requiredElement("fixture-file", HTMLInputElement),
   fixtureImport: requiredElement("fixture-import", HTMLButtonElement),
   fixtureExport: requiredElement("fixture-export", HTMLButtonElement),
+  fixtureMarkdown: requiredElement("fixture-markdown", HTMLButtonElement),
   fixtureSave: requiredElement("fixture-save", HTMLButtonElement),
   fixtureRestore: requiredElement("fixture-restore", HTMLButtonElement),
   fixtureShare: requiredElement("fixture-share", HTMLButtonElement),
@@ -1785,6 +1787,7 @@ function compileRules() {
     }
     renderTrace(null);
   }
+  ui.fixtureMarkdown.disabled = !compiled;
   updateSyntax(rules, ruleError);
   renderGroupEditor();
   renderReview();
@@ -1955,6 +1958,19 @@ ui.fixtureExport.addEventListener("click", () => {
   try {
     downloadText(currentFixtureText(), "regex-tests.json", "application/json");
     setText(ui.fixtureStatus, message("Test fixture download started."));
+    delete ui.fixtureStatus.dataset.state;
+  } catch (error) {
+    fixtureError(error);
+  }
+});
+ui.fixtureMarkdown.addEventListener("click", () => {
+  try {
+    const report = createMarkdownReport(
+      currentFixtureText(),
+      document.querySelector(".build-label")?.textContent ?? "DEVELOPMENT BUILD",
+    );
+    downloadText(report, "regex-report.md", "text/markdown;charset=utf-8");
+    setText(ui.fixtureStatus, message("Markdown report download started."));
     delete ui.fixtureStatus.dataset.state;
   } catch (error) {
     fixtureError(error);
