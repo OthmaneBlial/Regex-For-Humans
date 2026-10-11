@@ -27,6 +27,7 @@ import { insertRule } from "./insert-rule.js";
 import { categories, filterRecipes, levels } from "./library.js";
 import { initializeSyntaxEditor } from "./syntax.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
+import { textChanges } from "./text-change.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestCase} TestCase */
 /** @typedef {import('./library.js').ProductScenario} ProductScenario */
@@ -109,6 +110,13 @@ const ui = {
   groupType: requiredElement("group-type", HTMLSelectElement),
   groupName: requiredElement("group-name", HTMLInputElement),
   groupApply: requiredElement("group-apply", HTMLButtonElement),
+  groupPreviewButton: requiredElement("group-preview-button", HTMLButtonElement),
+  groupPreview: requiredElement("group-preview", HTMLElement),
+  groupPreviewClose: requiredElement("group-preview-close", HTMLButtonElement),
+  groupBeforeRules: requiredElement("group-before-rules", HTMLElement),
+  groupAfterRules: requiredElement("group-after-rules", HTMLElement),
+  groupBeforeRegex: requiredElement("group-before-regex", HTMLElement),
+  groupAfterRegex: requiredElement("group-after-regex", HTMLElement),
   groupLocate: requiredElement("group-locate", HTMLButtonElement),
   groupInfo: requiredElement("group-info", HTMLParagraphElement),
   groupReferences: requiredElement("group-references", HTMLUListElement),
@@ -716,6 +724,7 @@ function selectedGroup() {
 }
 
 function fillGroupFields() {
+  clearGroupPreview();
   const group = selectedGroup();
   if (!group) return;
   ui.groupType.value = !group.capturing ? "none" : group.name === null ? "numbered" : "named";
@@ -754,6 +763,7 @@ function fillGroupFields() {
 }
 
 function renderGroupEditor() {
+  clearGroupPreview();
   const previous = selectedGroup();
   const selected = ui.groupSelect.value;
   groupSegments =
@@ -761,7 +771,13 @@ function renderGroupEditor() {
       segment.kind === "group" && segment.edge === "start" ? [segment] : [],
     ) ?? [];
   ui.groupEditor.hidden = groupSegments.length === 0;
-  for (const field of [ui.groupSelect, ui.groupType, ui.groupApply, ui.groupLocate])
+  for (const field of [
+    ui.groupSelect,
+    ui.groupType,
+    ui.groupApply,
+    ui.groupPreviewButton,
+    ui.groupLocate,
+  ])
     field.disabled = groupSegments.length === 0;
   ui.groupSelect.replaceChildren();
   for (const group of groupSegments) {
@@ -2097,9 +2113,20 @@ ui.output.addEventListener("mouseup", () => {
 });
 ui.groupSelect.addEventListener("change", fillGroupFields);
 ui.groupType.addEventListener("change", () => {
+  clearGroupPreview();
   ui.groupName.disabled = ui.groupType.value !== "named";
   ui.groupName.setAttribute("aria-invalid", "false");
   ui.groupFeedback.textContent = "";
+});
+ui.groupName.addEventListener("input", () => {
+  clearGroupPreview();
+  ui.groupName.setAttribute("aria-invalid", "false");
+  ui.groupFeedback.textContent = "";
+});
+ui.groupPreviewClose.addEventListener("click", () => {
+  clearGroupPreview();
+  ui.groupFeedback.textContent = "";
+  ui.groupPreviewButton.focus();
 });
 ui.groupLocate.addEventListener("click", () => {
   const group = selectedGroup();
@@ -2144,10 +2171,39 @@ ui.builderForm.addEventListener("submit", (event) => {
     ui.builderFeedback.dataset.state = "error";
   }
 });
-ui.groupForm.addEventListener("submit", (event) => {
-  event.preventDefault();
+function clearGroupPreview() {
+  ui.groupPreview.hidden = true;
+  ui.groupPreviewButton.setAttribute("aria-expanded", "false");
+  for (const output of [
+    ui.groupBeforeRules,
+    ui.groupAfterRules,
+    ui.groupBeforeRegex,
+    ui.groupAfterRegex,
+  ])
+    output.replaceChildren();
+}
+
+/** @param {HTMLElement} previous @param {HTMLElement} next @param {string} before @param {string} after */
+function renderGroupChange(previous, next, before, after) {
+  previous.replaceChildren();
+  next.replaceChildren();
+  for (const change of textChanges(before, after)) {
+    for (const [output, tag, text] of /** @type {const} */ ([
+      [previous, "del", change.before],
+      [next, "ins", change.after],
+    ])) {
+      output.append(document.createTextNode(change.prefix));
+      if (text) output.append(make(tag, "", text));
+      output.append(document.createTextNode(change.suffix));
+    }
+  }
+}
+
+/** @param {boolean} preview */
+function changeGroup(preview) {
   const group = selectedGroup();
   if (!compiled || !group) return;
+  clearGroupPreview();
   try {
     const rules = editGroup(
       ui.rules.value,
@@ -2158,6 +2214,26 @@ ui.groupForm.addEventListener("submit", (event) => {
       },
       { flags: compiled.flags },
     );
+    ui.groupName.setAttribute("aria-invalid", "false");
+    if (preview) {
+      if (rules === ui.rules.value) {
+        setText(ui.groupFeedback, message("No group changes to preview."));
+      } else {
+        const result = compile(rules, { flags: compiled.flags });
+        renderGroupChange(ui.groupBeforeRules, ui.groupAfterRules, ui.rules.value, rules);
+        renderGroupChange(
+          ui.groupBeforeRegex,
+          ui.groupAfterRegex,
+          `/${compiled.source}/${compiled.flags}`,
+          `/${result.source}/${result.flags}`,
+        );
+        ui.groupPreview.hidden = false;
+        ui.groupPreviewButton.setAttribute("aria-expanded", "true");
+        setText(ui.groupFeedback, message("Preview ready. Original rules unchanged."));
+      }
+      ui.groupFeedback.dataset.state = "success";
+      return;
+    }
     ui.rules.value = rules;
     hasEdits = true;
     setScenarioSelection(null);
@@ -2193,6 +2269,11 @@ ui.groupForm.addEventListener("submit", (event) => {
       ),
     );
   }
+}
+ui.groupPreviewButton.addEventListener("click", () => changeGroup(true));
+ui.groupForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  changeGroup(false);
 });
 for (const input of Object.values(flagInputs)) input.addEventListener("change", compileRules);
 ui.unicodeMode.addEventListener("change", compileRules);

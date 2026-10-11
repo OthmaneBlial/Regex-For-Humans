@@ -1,5 +1,7 @@
 # Distribution decision record
 
+**Unreleased group previews on main:** the [group comparison workflow](GROUP_PREVIEWS.md) joins draft recovery after dev.10. These workshop-only source changes require their own complete distribution gate before a new npm/site release; dev.10's immutable archive, tag and hosted runtime remain unchanged.
+
 **Unreleased draft recovery on main:** the optional workshop draft workflow described in [the draft contract](TEST_FIXTURES.md#draft-recovery-on-unreleased-main) follows frozen dev.10. All ten source guides distinguish this addition from the published package and site. Its component checks do not replace a complete new distribution gate; preserve dev.10's immutable archive/tag and hosted runtime until the next verified preview.
 
 ## Published dev.10 (11 October 2026)

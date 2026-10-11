@@ -770,6 +770,50 @@ export const translations = {
   "Noncapturing group": ["非捕获组", "Grupo sin captura", "Groupe non capturant"],
   "Capture name": ["捕获组名称", "Nombre de la captura", "Nom de la capture"],
   "Apply group edit": ["应用分组修改", "Aplicar cambio al grupo", "Appliquer la modification"],
+  "Preview group edit": ["预览分组修改", "Vista previa del cambio", "Aperçu de la modification"],
+  "Compare the group edit": [
+    "比较分组修改",
+    "Comparar el cambio al grupo",
+    "Comparer la modification du groupe",
+  ],
+  "Preview keeps your current rules. Apply the edit to test its result.": [
+    "预览会保留当前规则。应用修改后可测试结果。",
+    "La vista previa conserva tus reglas actuales. Aplica el cambio para probar el resultado.",
+    "L’aperçu conserve vos règles actuelles. Appliquez la modification pour tester le résultat.",
+  ],
+  "Before the edit": ["修改前", "Antes del cambio", "Avant la modification"],
+  "After the edit": ["修改后", "Después del cambio", "Après la modification"],
+  "Rules before the edit": [
+    "修改前的规则",
+    "Reglas antes del cambio",
+    "Règles avant la modification",
+  ],
+  "Rules after the edit": [
+    "修改后的规则",
+    "Reglas después del cambio",
+    "Règles après la modification",
+  ],
+  "Regex before the edit": [
+    "修改前的正则",
+    "Regex antes del cambio",
+    "Regex avant la modification",
+  ],
+  "Regex after the edit": [
+    "修改后的正则",
+    "Regex después del cambio",
+    "Regex après la modification",
+  ],
+  "Close preview": ["关闭预览", "Cerrar vista previa", "Fermer l’aperçu"],
+  "No group changes to preview.": [
+    "没有可预览的分组修改。",
+    "No hay cambios al grupo que mostrar.",
+    "Aucune modification de groupe à prévisualiser.",
+  ],
+  "Preview ready. Original rules unchanged.": [
+    "预览已就绪。原规则未改变。",
+    "Vista previa lista. Las reglas originales no han cambiado.",
+    "Aperçu prêt. Les règles d’origine sont inchangées.",
+  ],
   "Go to group rule": ["定位分组规则", "Ir a la regla del grupo", "Aller à la règle du groupe"],
   "References to this group": [
     "对此分组的引用",

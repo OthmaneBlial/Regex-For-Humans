@@ -154,10 +154,29 @@
               <label for="group-select">Group to edit</label><select id="group-select" aria-describedby="group-edit-help" disabled></select>
               <label for="group-type">Group type</label><select id="group-type" disabled><option value="named">Named capture</option><option value="numbered">Numbered capture</option><option value="none">Noncapturing group</option></select>
               <label for="group-name">Capture name</label><input id="group-name" type="text" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-invalid="false" disabled>
-              <div class="group-edit-actions"><button id="group-apply" class="secondary-button" type="submit" disabled>Apply group edit</button><button id="group-locate" class="secondary-button" type="button" disabled>Go to group rule</button></div>
+              <div class="group-edit-actions"><button id="group-apply" class="secondary-button" type="submit" disabled>Apply group edit</button><button id="group-preview-button" class="secondary-button" type="button" aria-controls="group-preview" aria-expanded="false" disabled>Preview group edit</button><button id="group-locate" class="secondary-button" type="button" disabled>Go to group rule</button></div>
             </form>
             <p id="group-info"></p><ul id="group-references" class="group-edit-actions" aria-label="References to this group"></ul>
             <p id="group-feedback" role="status"></p>
+            <section id="group-preview" class="group-preview" aria-labelledby="group-preview-title" hidden>
+              <h3 id="group-preview-title">Compare the group edit</h3>
+              <p>Preview keeps your current rules. Apply the edit to test its result.</p>
+              <div class="group-preview-side">
+                <h4>Before the edit</h4>
+                <!-- biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard focus enables native scrolling of long rules. -->
+                <section class="group-change-code" aria-label="Rules before the edit" tabindex="0" dir="ltr"><code id="group-before-rules"></code></section>
+                <!-- biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard focus enables native scrolling of long regexes. -->
+                <section class="group-change-code" aria-label="Regex before the edit" tabindex="0" dir="ltr"><code id="group-before-regex"></code></section>
+              </div>
+              <div class="group-preview-side">
+                <h4>After the edit</h4>
+                <!-- biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard focus enables native scrolling of long rules. -->
+                <section class="group-change-code" aria-label="Rules after the edit" tabindex="0" dir="ltr"><code id="group-after-rules"></code></section>
+                <!-- biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard focus enables native scrolling of long regexes. -->
+                <section class="group-change-code" aria-label="Regex after the edit" tabindex="0" dir="ltr"><code id="group-after-regex"></code></section>
+              </div>
+              <button id="group-preview-close" class="secondary-button" type="button">Close preview</button>
+            </section>
           </details>
           <details id="pattern-review" class="group-editor pattern-review">
             <summary>Review the pattern <span id="review-count">Open to review</span></summary>

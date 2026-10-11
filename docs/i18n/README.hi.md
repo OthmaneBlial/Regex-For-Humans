@@ -110,6 +110,8 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 **main पर ड्राफ़्ट बहाली (अभी प्रकाशित नहीं)।** **Keep a draft in this browser** चालू करके दोबारा लोड होने पर नियम, फ़्लैग, उदाहरण, चिपकाया गया regex और अधूरी अपेक्षा JSON भी बहाल करें। यह डिफ़ॉल्ट रूप से बंद है, मैनुअल रूप से सहेजे गए टेस्ट से अलग रहता है और बंद करने पर ड्राफ़्ट हटा देता है। [बहाली और स्टोरेज सीमाएँ](../TEST_FIXTURES.md#draft-recovery-on-unreleased-main) देखें।
 
+**main पर समूह संपादन का पूर्वावलोकन (अभी प्रकाशित नहीं)।** **Preview group edit** चुनकर मौजूदा और प्रस्तावित नियमों व regex की तुलना करें, जिसमें बदले हुए नाम या नंबर वाले संदर्भ भी दिखते हैं। पूर्वावलोकन टेस्ट और सहेजा गया ड्राफ़्ट सुरक्षित रखता है; नियम, फ़्लैग या समूह के फ़ील्ड बदलने पर वह हट जाता है। परिणाम जाँचने के लिए बदलाव लागू करें। [पहले/बाद की तुलना और सीमाएँ](../GROUP_PREVIEWS.md) देखें।
+
 नेटिव मैच की सीमाओं या न्यूनतम लंबाई, अनुपस्थित अनिवार्य literal और इनपुट के गलत निरपेक्ष किनारे पर मौजूद literal की प्रमाणित शर्तों से **असफल उदाहरण समझें**। prefix/suffix की जाँच case-sensitive input anchors पर लागू होती है; line anchors और अनिश्चित मामलों में सावधान विवरण बना रहता है। सटीक असफल चरण उपलब्ध न हो तो वर्कशॉप यह स्पष्ट बताती है। यह backtracking का execution trace नहीं है। [असफलता के विवरण](../FAILURE_EXPLANATIONS.md) देखें।
 
 गलत quoted escape, class/list item, range endpoint या Unicode property alias के **सटीक diagnostic पर जाएँ**। highlighting मूल escape वर्तनी और पूरे Unicode surrogate pairs को बनाए रखती है; ज्ञात range न होने पर शुरुआती स्थान तक navigation बना रहता है। लाइब्रेरी और CLI वैकल्पिक `endColumn` देते हैं, जो UTF-16 units में अंतिम सीमा को शामिल किए बिना end column बताता है। [diagnostic ranges](../LANGUAGE.md#errors-and-future-syntax) देखें।

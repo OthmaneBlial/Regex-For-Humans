@@ -93,6 +93,8 @@ The public `toSVG` result is a self-contained static image. Labels use shared ex
 
 ## Group editing
 
+On unreleased main, the workshop's [optional transformation preview](GROUP_PREVIEWS.md) calls the same `editGroup` function and compiler without applying the result or running candidate tests. Bounded complete-line alignment keeps unchanged bodies neutral, then each changed run compares its first-to-last region with visible controls and complete Unicode code points; it is not a second grammar or matcher. Source, flags and group-field changes clear the comparison, while direct application revalidates current inputs and follows the existing compilation/worker path. Preview state adds no persisted schema or public API.
+
 `src/edit-group.js` edits group definitions using the parser's resolved capture table and the same compiler. It validates the original document, traverses group/assertion/alternative nodes in opening order, computes retained capture numbers and patches only the selected header and affected reference tokens. Quote-aware line splitting preserves exact UTF-16 locations across supported line separators. A referenced capture cannot become noncapturing; all other proposals are parsed and compiled again before a string is returned. The public `editGroup` export and workshop form share this behavior; no second grammar or matcher is introduced.
 
 Workshop capture highlighting reuses the native ranges already validated by the worker controller. It can show empty captures and lookaround values outside the consumed match, but never guesses spans for absent captures or runtimes without native indices. Matching retains the existing worker cancellation, result validation and deadline. These additions are not in the published dev.5 package/site.

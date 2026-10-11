@@ -138,6 +138,8 @@ the native rule editor colors keywords, quoted strings, captures, quantifiers, a
 
 **Draft recovery on main (unreleased).** Enable **Keep a draft in this browser** to recover rules, flags, examples, pasted regex and even unfinished expectation JSON after reload. It is off by default, keeps manual saved tests separate and removes the draft when disabled. See [recovery and storage limits](docs/TEST_FIXTURES.md#draft-recovery-on-unreleased-main).
 
+**Group-edit previews on main (unreleased).** Choose **Preview group edit** to compare the current and proposed rules and regex, including renamed or renumbered references. Preview keeps your tests and saved draft; changing source, flags or group fields clears it. Apply the edit to test its result. See [before/after comparisons and their limits](docs/GROUP_PREVIEWS.md).
+
 **Understand a failed example** from native match ranges or provable minimum lengths, missing literals and literal text at the wrong absolute input edge. Prefix/suffix proofs apply to case-sensitive input anchors; line anchors and uncertain cases keep conservative explanations. The workshop admits when the precise failing step is unavailable. This is not a backtracking trace. See [failure explanations](docs/FAILURE_EXPLANATIONS.md).
 
 **Go to the exact diagnostic** for a malformed quoted escape, invalid class/list item, range endpoint or Unicode property alias. Highlighting keeps the original escaped spelling and complete Unicode pairs; errors without a known range retain point navigation. The library and CLI expose optional exclusive UTF-16 `endColumn` metadata. See [diagnostic ranges](docs/LANGUAGE.md#errors-and-future-syntax).

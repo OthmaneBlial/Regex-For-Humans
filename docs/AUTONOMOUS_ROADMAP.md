@@ -1,5 +1,12 @@
 # Autonomous implementation progress
 
+## Optional group transformation preview source milestone
+
+- Implemented: optional before/after rules and regex comparisons reuse the validated group editor, including renamed/renumbered references and flags. Preview keeps current tests, fixture exports and saved drafts. Source/options/group-field changes clear stale output; direct application revalidates current inputs. Text-only rendering exposes controls, retains complete Unicode code points and uses the existing four languages and two themes.
+- Verified: full Node 25 suite passes 404 cases with four explicit scoped-native skips; 17 focused Node 22 cases pass. All 36 affected Chrome and 36 Firefox/WebKit checks pass after bounded line alignment, including group edits, draft preservation, workspace replacement, rejection recovery, keyboard navigation, translated labels, Axe and 320px overflow checks. See [testing](TESTING.md) and [the comparison contract](GROUP_PREVIEWS.md).
+- Boundary: comparisons align complete lines and mark the first-to-last difference in each changed run; they do not prove semantic equivalence or execute candidate matches. Apply the edit to run examples. This source-only workshop addition and draft recovery await a new complete distribution gate; frozen dev.10 remains unchanged. Independent human reviews remain open and source Actions stays disabled.
+- Next: prepare a verified immutable preview when this source increment is ready for distribution, then continue the remaining editor/compiler/export audit. Syntax autocomplete remains an actual unimplemented editor gap; a second accepted grammar is not a solution.
+
 ## Optional draft recovery source milestone
 
 - Implemented: explicit opt-in recovery for rules, flags, match mode, example text, pasted regex and raw unfinished expectation JSON. Reuse existing fixture application and expectation validation, with a separate bounded draft key/schema. Keep manual saved suites separate; handle denied/quota/corrupt storage, lifecycle flushing, incoming/current-edit precedence and external-tab conflicts. Turning the option off removes its draft. Native matching, worker deadlines and compiler budgets stay unchanged.
