@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Retain original ranges for invalid character-list items, class members, string-code-point items, range endpoints and Unicode property aliases. Preserve JSON-escaped spelling and existing start positions in parser and native-property diagnostics; keep successful AST locations and regex output unchanged. Empty property aliases and empty unquoted list items retain point diagnostics.
+
 - Give malformed JSON escapes, incomplete Unicode escapes, unescaped control characters and dangling backslashes precise source ranges. Split workshop highlighting inside quoted values so only the diagnosed range is underlined and selected, preserving surrounding text, Unicode pairs and existing start positions. Missing closing quotes retain point diagnostics at the end of input. This source extension follows the frozen dev.8 candidate.
 
 ## 0.1.0-dev.8 (11 October 2026)

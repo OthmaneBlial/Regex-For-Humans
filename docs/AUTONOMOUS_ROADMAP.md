@@ -1,5 +1,12 @@
 # Autonomous implementation progress
 
+## Semantic diagnostic ranges source milestone
+
+- Implemented: exact original ranges for invalid list/class/sequence items, character-range endpoints and Unicode property aliases, including escaped spelling. Successful AST locations and native matching semantics remain unchanged. Empty aliases and unquoted list items keep point diagnostics; empty list items retain a visible separator marker.
+- Verified: the untouched semantic checks fail two new diagnostic tests. A review regression exposes a zero-width empty-item highlight before its correction. The corrected source passes all 382 Node tests on both supported runtimes, both clean installed consumers and 44 selected Chromium/Firefox/WebKit checks. Highlighting and navigation cover all four interface languages and both themes. See [the source verification receipt](TESTING.md).
+- Distribution: keep frozen dev.8 source `9cc1416` and its retained archive unchanged. Publish and synchronize that candidate when npm's pending browser authentication completes; these later source additions belong to a subsequent release. Source Actions stays disabled and independent human reviews remain open.
+- Next: complete npm/registry/tag/Release/Pages verification and update the Downloads Reddit draft, then audit the original mission against actual compiler and workshop behavior before choosing the next substantive gap.
+
 ## Quoted diagnostic ranges source milestone
 
 - Implemented: shared quoted-value parsing retains the complete invalid JSON escape, malformed/truncated Unicode escape, raw control character or dangling backslash. Unicode spans stop before closing quotes and retain complete surrogate pairs. The syntax mirror splits explicit ranges inside lexical tokens, preserving all original text and existing point-only fallbacks. Existing error navigation uses the same range; no new public field or dependency is added.

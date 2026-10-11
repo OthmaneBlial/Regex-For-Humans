@@ -128,3 +128,98 @@ test("quoted diagnostics select invalid escapes without cutting Unicode pairs or
       error.code === "INVALID_QUOTE" && error.column === 4 && error.endColumn === undefined,
   );
 });
+
+test("character, range and sequence diagnostics retain complete original items", () => {
+  const cases = [
+    ["  one of: A, AB  , C", "INVALID_CHARACTER", "AB"],
+    ['none of: "A", "😀😀"', "INVALID_CHARACTER", '"😀😀"'],
+    [String.raw`text without: A, "\u0061b"`, "INVALID_CHARACTER", String.raw`"\u0061b"`],
+    ['range "ab" to "z"', "INVALID_CHARACTER_RANGE", '"ab"'],
+    ['range "a" to ""', "INVALID_CHARACTER_RANGE", '""'],
+    ['range "z" to "a"', "INVALID_CHARACTER_RANGE", '"a"'],
+    [
+      String.raw`character class: digit, range "\u007a" to "\u0061", space`,
+      "INVALID_CHARACTER_RANGE",
+      String.raw`"\u0061"`,
+    ],
+    ['character class: "AB", digit', "INVALID_CLASS_MEMBER", '"AB"'],
+    ["character class: optional digit, space", "INVALID_CLASS_MEMBER", "optional digit"],
+    ['string code points: "A" + "BC"', "INVALID_STRING_SEQUENCE", '"BC"'],
+    ['string code points: ""', "INVALID_STRING_SEQUENCE", '""'],
+  ];
+  for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"])
+    for (const [source, code, token] of cases)
+      diagnosed(`# ignored 😀 "${separator}${source}`, code, token, 2);
+});
+
+test("property diagnostics preserve raw aliases across parsing and native semantic validation", () => {
+  const cases = [
+    ['  unicode property "Bogus_Property"', "INVALID_UNICODE_PROPERTY", "Bogus_Property"],
+    [
+      String.raw`lazy optional unicode property "\u0073cript=Greek"`,
+      "INVALID_UNICODE_PROPERTY",
+      String.raw`\u0073cript=Greek`,
+    ],
+    [
+      String.raw`character class: "😀", unicode property "\u0073cript=Greek", digit`,
+      "INVALID_UNICODE_PROPERTY",
+      String.raw`\u0073cript=Greek`,
+    ],
+    ['unicode property "Script =Greek"', "INVALID_UNICODE_PROPERTY", "Script =Greek"],
+    ['unicode property "字"', "INVALID_UNICODE_PROPERTY", "字"],
+    [
+      String.raw`unicode property "Line\nBreak"`,
+      "INVALID_UNICODE_PROPERTY",
+      String.raw`Line\nBreak`,
+    ],
+    ['unicode property "RGI_Emoji"', "UNICODE_SETS_REQUIRED", "RGI_Emoji"],
+    ['not unicode property "RGI_Emoji"', "INVALID_STRING_COMPLEMENT", "RGI_Emoji", "v"],
+  ];
+  for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"])
+    for (const [source, code, token, flags] of cases)
+      diagnosed(`# ignored 😀 "${separator}${source}`, code, token, 2, (s) =>
+        compile(s, { flags }),
+      );
+  for (const consumer of [compile, analyze, toSVG, (s) => exportRegex(s, { target: "python" })])
+    diagnosed(
+      String.raw`unicode property "\u0073cript=Greek"`,
+      "INVALID_UNICODE_PROPERTY",
+      String.raw`\u0073cript=Greek`,
+      1,
+      consumer,
+    );
+  assert.throws(
+    () => compile('unicode property ""'),
+    (e) => e.endColumn === undefined,
+  );
+});
+
+test("empty character-list items retain a visible point instead of a zero-width range", () => {
+  for (const prefix of ["one of:", "none of:", "text without:"])
+    for (const gap of ["", "   ", "\t\u00a0"])
+      for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"]) {
+        const line = `  ${prefix} A,${gap}, B`;
+        const source = `# ignored 😀 "${separator}${line}`;
+        let error;
+        try {
+          compile(source);
+        } catch (e) {
+          error = e;
+        }
+        assert(error instanceof CompileError);
+        assert.equal(error.code, "INVALID_CHARACTER");
+        assert.equal(error.line, 2);
+        assert.equal(error.column, line.lastIndexOf(",") + 1);
+        assert.equal(error.endColumn, undefined);
+        const tokens = tokenizeRules(source, error);
+        assert(tokens);
+        assert.equal(tokens.map((t) => source.slice(t.start, t.end)).join(""), source);
+        assert.equal(
+          tokens
+            .filter((t) => t.kind === "invalid")
+            .map((t) => source.slice(t.start, t.end))
+            .join(""),
+          ",",
+        );
+      }
+});

@@ -10,9 +10,7 @@ async function ready(page) {
   await expect(page.locator("#test-list textarea")).toHaveCount(4);
 }
 
-test("diagnosed count and capture ranges are highlighted and selected completely", async ({
-  page,
-}) => {
+test("diagnosed source ranges are highlighted and selected completely", async ({ page }) => {
   await ready(page);
   const editor = page.locator("#rules-input");
   const source = '# ignored 😀 \"\nstart\n  same as capture "\\u006dissing"\nend';
@@ -27,6 +25,12 @@ test("diagnosed count and capture ranges are highlighted and selected completely
         ["digit\n  between 25 and 12 digits", "12"],
         ['capture "😀" {\n}', '"😀"'],
         ["start 1.5 digits", "1.5"],
+        [
+          String.raw`start optional unicode property "\u0073cript=Greek"`,
+          String.raw`\u0073cript=Greek`,
+        ],
+        ["character class: digit, optional space", "optional space"],
+        [String.raw`range "\u007a" to "\u0061"`, String.raw`"\u0061"`],
       ]) {
         await editor.fill(rules);
         await expect(editor).toHaveAttribute("aria-invalid", "true");
@@ -88,6 +92,23 @@ test("quoted escapes retain exact highlighting and error selection in every inte
   await expect(page.locator("#rules-syntax .syntax-invalid")).toHaveCount(0);
   await expect(page.locator(".test-row").first()).toHaveAttribute("data-result", "pass");
   expect(errors).toEqual([]);
+});
+
+test("empty list items keep a visible marker and point navigation", async ({ page }) => {
+  await ready(page);
+  const editor = page.locator("#rules-input");
+  for (const prefix of ["one of:", "none of:", "text without:"]) {
+    const source = `${prefix} A,   , B`;
+    await editor.fill(source);
+    await expect(editor).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#rules-syntax .syntax-invalid")).toHaveText(",");
+    await page.getByRole("button", { name: "Go to error", exact: true }).click();
+    expect(await editor.evaluate((el) => [el.selectionStart, el.selectionEnd])).toEqual([
+      source.lastIndexOf(","),
+      source.lastIndexOf(",") + 1,
+    ]);
+    await expect(editor).toHaveValue(source);
+  }
 });
 
 test("structured tokens preserve native editing, reject markup and follow actual compiler diagnostics", async ({

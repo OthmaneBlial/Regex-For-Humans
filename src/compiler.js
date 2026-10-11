@@ -220,19 +220,23 @@ export function compileAst(parsed, options = {}) {
 
   /** @param {import('./ast.js').PropertyAtomNode|Extract<import('./ast.js').ClassMember, {kind: 'unicodeProperty'}>} property @param {import('./ast.js').Location} location */
   function checkProperty(property, location) {
+    const aliasLocation = {
+      ...property.propertyLocation,
+      endColumn: property.location.column + property.text.length - 1,
+    };
     if (property.propertyType === "string") {
       if (!unicodeSets)
         fail(
           "UNICODE_SETS_REQUIRED",
           "Unicode string properties require the v flag.",
-          property.propertyLocation,
+          aliasLocation,
           "Select v mode; the compiler cannot replace a string property with characters.",
         );
       if (property.negative)
         fail(
           "INVALID_STRING_COMPLEMENT",
           "Unicode string properties cannot be complemented.",
-          property.propertyLocation,
+          aliasLocation,
           "Use a positive string property or complement a character property instead.",
         );
       try {
@@ -241,7 +245,7 @@ export function compileAst(parsed, options = {}) {
         fail(
           "UNSUPPORTED_TARGET_FEATURE",
           `This JavaScript runtime does not support Unicode string property ${quoteText(property.value)}.`,
-          property.propertyLocation,
+          aliasLocation,
           "Use a runtime with native support for this string property.",
         );
       }
@@ -266,7 +270,7 @@ export function compileAst(parsed, options = {}) {
       fail(
         "INVALID_UNICODE_PROPERTY",
         `The Unicode property ${quoteText(property.value)} is not recognized by this JavaScript runtime.`,
-        property.propertyLocation,
+        aliasLocation,
         `Use a case-sensitive character property such as \`Letter\`, \`Script=Greek\` or \`Script_Extensions=Greek\` supported in ${unicodeMode} mode.`,
       );
     }

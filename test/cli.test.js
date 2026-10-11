@@ -723,6 +723,7 @@ test("CLI offers the JSON quote hint without changing positioned literal or list
           message,
           line: 2,
           column,
+          ...(!literal ? { endColumn: column + value.length } : {}),
           hint,
         },
       });

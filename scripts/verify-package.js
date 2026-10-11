@@ -113,6 +113,8 @@ import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
 assert.throws(() => compile("start -12 digits"), error => error instanceof CompileError && error.line === 1 && error.column === 7 && error.endColumn === 10 && error.toJSON().endColumn === 10);
 assert.throws(() => compile(${JSON.stringify(quotedEscapeRules)}), error => error instanceof CompileError && error.code === "INVALID_QUOTE" && error.column === 4 && error.endColumn === 6 && error.toJSON().endColumn === 6);
+assert.throws(() => compile('range "z" to "a"'), error => error instanceof CompileError && error.code === "INVALID_CHARACTER_RANGE" && error.column === 14 && error.endColumn === 17 && error.toJSON().endColumn === 17);
+assert.throws(() => compile('one of: A,,B'), error => error instanceof CompileError && error.code === "INVALID_CHARACTER" && error.column === 11 && error.endColumn === undefined && !("endColumn" in error.toJSON()));
 const commentedRules = ${JSON.stringify('# unfinished " }\nstart\ncapture "tag" {\n"#"\n}\nend')};
 const commentedResult = compile(commentedRules);
 assert.equal(commentedResult.source, "^(?<tag>#)$");

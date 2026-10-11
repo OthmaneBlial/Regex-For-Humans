@@ -212,10 +212,15 @@ function readCharacterList(text, location, rawLine, strings = false) {
       index = end;
     }
     if (!strings && [...value].length !== 1) {
+      const itemLength = text.slice(itemStart, index).trimEnd().length;
       fail(
         "INVALID_CHARACTER",
         "Each character-list item must be one Unicode code point.",
-        { line: location.line, column: location.column + itemStart },
+        {
+          line: location.line,
+          column: location.column + itemStart,
+          ...(itemLength > 0 ? { endColumn: location.column + itemStart + itemLength } : {}),
+        },
         QUOTE_STYLES.test(text.slice(itemStart)) ? QUOTE_HINT : undefined,
       );
     }
@@ -269,11 +274,10 @@ function readStringCodePoints(text, location, rawLine) {
     const pointLocation = { line: location.line, column: location.column + cursor };
     const quoted = readQuoted(rawLine.slice(pointLocation.column - 1), pointLocation);
     if ([...quoted.value].length !== 1)
-      fail(
-        "INVALID_STRING_SEQUENCE",
-        "Each sequence item must be one Unicode code point.",
-        pointLocation,
-      );
+      fail("INVALID_STRING_SEQUENCE", "Each sequence item must be one Unicode code point.", {
+        ...pointLocation,
+        endColumn: pointLocation.column + quoted.length,
+      });
     points.push(quoted.value);
     cursor += quoted.length;
     while (/\s/u.test(text[cursor] ?? "")) cursor += 1;
@@ -723,24 +727,23 @@ function parseItem(text, location, rawLine, inClass = false) {
         line: location.line,
         column: toLocation.column + to.length,
       });
-    /** @type {[string, Location][]} */
+    /** @type {[string, Location, number][]} */
     const endpoints = [
-      [from.value, fromLocation],
-      [to.value, toLocation],
+      [from.value, fromLocation, from.length],
+      [to.value, toLocation, to.length],
     ];
-    for (const [value, endpointLocation] of endpoints) {
+    for (const [value, endpointLocation, length] of endpoints) {
       if ([...value].length !== 1)
-        fail(
-          "INVALID_CHARACTER_RANGE",
-          "Each range endpoint must be one Unicode code point.",
-          endpointLocation,
-        );
+        fail("INVALID_CHARACTER_RANGE", "Each range endpoint must be one Unicode code point.", {
+          ...endpointLocation,
+          endColumn: endpointLocation.column + length,
+        });
     }
     if ((from.value.codePointAt(0) ?? 0) > (to.value.codePointAt(0) ?? 0))
       fail(
         "INVALID_CHARACTER_RANGE",
         "The upper endpoint cannot precede the lower Unicode code point.",
-        toLocation,
+        { ...toLocation, endColumn: toLocation.column + to.length },
       );
     return {
       kind: "atom",
@@ -789,7 +792,10 @@ function parseItem(text, location, rawLine, inClass = false) {
       fail(
         "INVALID_UNICODE_PROPERTY",
         "Use an ASCII Unicode property alias or a property=value pair, without spaces.",
-        propertyLocation,
+        {
+          ...propertyLocation,
+          ...(quoted.length > 2 ? { endColumn: quoteLocation.column + quoted.length - 1 } : {}),
+        },
         "Use `Letter`, `General_Category=Letter` or `Script_Extensions=Greek`; aliases are case-sensitive.",
       );
     return {
@@ -945,11 +951,15 @@ function readClassMembers(text, location, rawLine) {
         memberLocation,
       );
     const node = parseItem(memberText, memberLocation, rawLine, true);
+    const memberErrorLocation = {
+      ...memberLocation,
+      endColumn: memberLocation.column + memberText.length,
+    };
     if (node.kind !== "atom" || node.repetition)
       fail(
         "INVALID_CLASS_MEMBER",
         "Class members must be single characters, ranges, singular shorthands or Unicode properties, without repetition.",
-        memberLocation,
+        memberErrorLocation,
       );
     const base = { location: memberLocation, text: memberText };
     if (node.atomType === "literal" && [...node.value].length === 1)
@@ -971,7 +981,7 @@ function readClassMembers(text, location, rawLine) {
       fail(
         "INVALID_CLASS_MEMBER",
         'Use a one-code-point literal, `range "a" to "z"`, `digit`, `not digit`, `word`, `not word`, `space`, `not space` or a Unicode property.',
-        memberLocation,
+        memberErrorLocation,
       );
     if (cursor === text.length) break;
     const comma = cursor++;
