@@ -53,6 +53,10 @@ Unsupported translations explain their reason rather than emit approximate match
 
 `npm run test:exports` compiles and runs generated snippets with installed native SDKs, checking full match spans and mapped capture values against the JavaScript source patterns. Unavailable SDKs are explicitly skipped. To require the six currently verified runtimes, use `npm run test:exports -- --require=python,rust,go,java,csharp,ruby`. This separate gate does not add native SDKs to the npm package or make them mandatory for ordinary `npm run verify`. See [the verified engine evidence](COMPATIBILITY.md#engine-export-evidence).
 
+## Comments
+
+**Source checkout only:** a line whose first non-whitespace character is `#` is a comment. Quotes, braces and other rule-like text in it are ignored. Comments work between rules, inside groups/assertions/alternatives and between Unicode-set operands. They retain their source locations and count toward the existing source-length and line budgets. A quoted `"#"` is still a literal; inline comments after an instruction are not supported. A document containing only comments has the same empty-source diagnostic as a blank document. npm `0.1.0-dev.6` and its hosted workshop do not include this addition yet.
+
 ## Instructions
 
 | Instruction | Generated source | Matches | Does not match |

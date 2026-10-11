@@ -11,6 +11,7 @@ import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
 import { initializeLanguage, message, setAttribute, setText } from "./i18n.js";
+import { initializeSyntaxEditor } from "./syntax.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 
 /** @typedef {import("./worker-protocol.d.ts").TestCase} TestCase */
@@ -93,6 +94,10 @@ const ui = {
 };
 
 initializeLanguage(document, ui.language);
+const updateSyntax = initializeSyntaxEditor(
+  ui.rules,
+  requiredElement("rules-syntax", HTMLDivElement),
+);
 setText(ui.output, message("Select a recipe or write a rule"));
 
 const flagInputs = {
@@ -475,8 +480,8 @@ function highlightSourceRow() {
   const bottom = measure.scrollHeight - bottomPadding - ui.rules.scrollTop;
   measure.remove();
   ui.rules.dataset.highlight = String(visibleRule.line);
-  ui.rules.style.setProperty("--rule-highlight-top", `${top}px`);
-  ui.rules.style.setProperty("--rule-highlight-bottom", `${bottom}px`);
+  ui.rules.parentElement?.style.setProperty("--rule-highlight-top", `${top}px`);
+  ui.rules.parentElement?.style.setProperty("--rule-highlight-bottom", `${bottom}px`);
 }
 
 /** @param {RuleFocus|null} rule */
@@ -1183,9 +1188,13 @@ function compileRules() {
   window.clearTimeout(copyFeedbackTimer);
   setText(ui.copy, message("Copy regex ↗"));
   const rules = ui.rules.value;
+  /** @type {CompileError|null} */
+  let ruleError = null;
   if (rules.length > LIMITS.sourceLength) setText(ui.ruleCount, message("Over limit"));
   else {
-    const ruleCount = splitLines(rules).filter((line) => line.trim()).length;
+    const ruleCount = splitLines(rules).filter(
+      (line) => line.trim() && !line.trim().startsWith("#"),
+    ).length;
     setText(
       ui.ruleCount,
       message(ruleCount === 1 ? "{count} rule" : "{count} rules", { count: ruleCount }),
@@ -1205,6 +1214,7 @@ function compileRules() {
     setDiagnostic("");
     renderTrace(compiled.segments);
   } catch (error) {
+    if (error instanceof CompileError && error.code !== "EMPTY_SOURCE") ruleError = error;
     compiled = null;
     ui.copy.disabled = true;
     if (error instanceof CompileError && error.code === "EMPTY_SOURCE") {
@@ -1238,6 +1248,7 @@ function compileRules() {
     }
     renderTrace(null);
   }
+  updateSyntax(rules, ruleError);
   renderGroupEditor();
   renderReview();
   renderDiagram();

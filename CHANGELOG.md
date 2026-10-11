@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add structured syntax colors to the native rule editor for keywords, strings, captures, quantifiers, assertions, alternatives and comments, with compiler-linked invalid-token markers. Mirror native wrapping, scrolling and selection; keep contrast in both palettes and plain native editing for forced colors or inputs beyond budgets. Render user text through text nodes without HTML interpretation.
+- Accept whole-line `#` comments in the shared parser, including nested blocks and Unicode-set operands. Ignore quotes and braces in comments while preserving subsequent locations, group edits and unchanged source/line budgets. Quoted hashes remain literals; inline comments remain unsupported.
+
 ## 0.1.0-dev.6 (11 October 2026)
 
 - Add light/dark workshop themes and a system option with live OS appearance changes. Remember the choice locally when possible, recover from denied/invalid storage, and apply appearance before compiler startup. Preserve rules, examples, selections, scroll positions, open panels and generated code without recompilation; translate the native controls through the existing four-language catalog.

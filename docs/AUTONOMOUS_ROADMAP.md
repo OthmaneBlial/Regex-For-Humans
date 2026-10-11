@@ -2,6 +2,14 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+## Structured editor source milestone
+
+- Implemented: a bounded decorative text layer retains the native textarea for editing, selection, undo, copy and accessibility. Keywords, strings, captures/references, quantifiers, assertions, alternatives, comments and invalid tokens have distinct styles; actual compiler diagnostics supply the live error positions. Shared parsing accepts whole-line comments, ignores their quotes/braces and preserves literal hashes, nested structures, source positions and existing budgets.
+- Reliability: CSS anchors keep the mirror within the field during viewport changes; text shares native font, direction, tab stops, wrapping and scrolling. Both palettes preserve token contrast, row navigation paints behind the text, and forced colors or oversized inputs retain plain native editing. User content becomes text nodes, never HTML.
+- Evidence: the corrected uninterrupted full verification passes 340 Node, 486 Chromium desktop/mobile, 270 Firefox/WebKit and 64 homepage checks (1,160 total), consumers, lint/types/docs, builds and an audit with zero vulnerabilities. A clean installed consumer also passes on Node 22.23.3. After reproducing and correcting a resize overflow, 28 focused Chromium, four installed-Chrome and 34 Firefox/WebKit checks pass without weakening assertions or deadlines. Three original syntax captures and the corrected installed-Chrome 320px view were visually inspected.
+- Documentation: all ten guides explicitly distinguish the source additions from public dev.6; 19 second-level headings and 20 identical canonical code blocks remain in every guide. Arabic/Urdu retain RTL prose and LTR code. Frozen npm archives and the public release are unchanged; human reviews remain open.
+- Next: commit/push this validated source milestone, then implement the six construction actions, truthful failure explanations, richer test expectations/fixtures and the remaining example/developer-adoption requirements. Publication remains a separate verified step.
+
 ## Dev.6 public release milestone
 
 - Published: source/tag `79589b1`, npm `0.1.0-dev.6` through both `preview` and `latest`, and the GitHub prerelease with the exact tested archive and `SHA256SUMS`. Retained, registry and GitHub bytes agree; clean installed JavaScript/strict TypeScript/API/CLI consumers pass before and after upload on Node 25.9.0 and Node 22.23.3. Fresh public preview installation and npx return dev.6. Preserve the frozen dev.5 archive and tag.

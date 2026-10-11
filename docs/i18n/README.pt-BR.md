@@ -100,6 +100,8 @@ escolha **Interface language** para inglês, chinês simplificado, espanhol ou f
 
 use **Theme** para seguir a aparência do sistema ou escolher um workshop claro ou escuro. A preferência é salva localmente quando o armazenamento está disponível; mudar a aparência preserva regras, exemplos, seleções e painéis abertos. Veja [a preferência de tema](../ARCHITECTURE.md#theme-preference).
 
+**Somente no código-fonte:** o editor nativo colore palavras-chave, strings, capturas, quantificadores, asserções, alternativas e comentários. O token indicado pelo compilador é sublinhado; digitação, seleção, cópia e rolagem continuam nativas. Cores forçadas e entradas acima dos limites usam texto nativo simples. Linhas de comentário com `#` mantêm suas posições e contam nos limites habituais. Essas mudanças ainda não estão no npm `0.1.0-dev.6` nem no workshop hospedado. Veja os [comentários](../LANGUAGE.md#comments) e o [realce do editor](../ARCHITECTURE.md#editor-highlighting).
+
 1. Escolha uma receita ou escreva uma instrução por linha.
 2. Confira cada trecho gerado e sua explicação.
 3. Adicione exemplos e indique quais deveriam corresponder.

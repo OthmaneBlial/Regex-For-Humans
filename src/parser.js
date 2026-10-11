@@ -30,6 +30,8 @@ export function splitLines(source) {
   let start = 0;
   let quoted = false;
   let escaped = false;
+  let comment = false;
+  let leading = true;
   for (let index = 0; index < source.length; index += 1) {
     const character = source[index];
     if (quoted) {
@@ -38,7 +40,9 @@ export function splitLines(source) {
       else if (character === '"') quoted = false;
       continue;
     }
-    if (character === '"') {
+    if (!comment && leading && character === "#") comment = true;
+    if (!comment && character === '"') {
+      leading = false;
       quoted = true;
       continue;
     }
@@ -46,9 +50,15 @@ export function splitLines(source) {
       lines.push(source.slice(start, index));
       index += 1;
       start = index + 1;
+      comment = false;
+      leading = true;
     } else if ("\n\r\u2028\u2029".includes(character)) {
       lines.push(source.slice(start, index));
       start = index + 1;
+      comment = false;
+      leading = true;
+    } else if (leading && !/\s/u.test(character)) {
+      leading = false;
     }
   }
   lines.push(source.slice(start));
@@ -1054,7 +1064,7 @@ function readSetBlock(node, lines, start, depth) {
   for (let index = start + 1; index < lines.length; index += 1) {
     const raw = lines[index];
     const text = raw.trim();
-    if (!text) continue;
+    if (!text || text.startsWith("#")) continue;
     const location = { line: index + 1, column: raw.indexOf(text) + 1 };
     if (text === "}") {
       if (node.operation !== "union" && node.members.length < 2)
@@ -1106,7 +1116,7 @@ export function parse(source) {
   for (let index = 0; index < lines.length; index += 1) {
     const raw = lines[index];
     const line = raw.trim();
-    if (!line) continue;
+    if (!line || line.startsWith("#")) continue;
     let text = line;
     let column = raw.indexOf(line) + 1;
     const location = () => ({ line: index + 1, column });

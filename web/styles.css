@@ -38,6 +38,14 @@
   --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
   --body: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
   --mono: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  --syntax-keyword: #254e80;
+  --syntax-string: #285b37;
+  --syntax-capture: #66318e;
+  --syntax-quantifier: #705000;
+  --syntax-assertion: #94364f;
+  --syntax-alternation: #853c20;
+  --syntax-comment: #505d56;
+  --syntax-invalid: #a12435;
 }
 
 :root[data-theme="dark"] {
@@ -68,6 +76,14 @@
   --toggle-on: #467095;
   --hero-blue: #2b455d;
   --hero-orange: #493849;
+  --syntax-keyword: #a0caff;
+  --syntax-string: #a9dfb3;
+  --syntax-capture: #ddbaff;
+  --syntax-quantifier: #ffdb91;
+  --syntax-assertion: #ffc0d3;
+  --syntax-alternation: #ffc09e;
+  --syntax-comment: #c0cad7;
+  --syntax-invalid: #ffb5bd;
 }
 
 * {
@@ -405,6 +421,12 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+.rules-editor {
+  position: relative;
+  display: flex;
+  flex: 1 0 auto;
+  min-width: 0;
+}
 #rules-input {
   width: 100%;
   flex: 1 0 auto;
@@ -431,6 +453,91 @@ a {
     var(--rule-mark) var(--rule-highlight-bottom),
     transparent var(--rule-highlight-bottom)
   );
+}
+.syntax-viewport {
+  position: absolute;
+  max-height: calc(100% - 2px);
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 4px;
+  background: var(--input-paper);
+}
+.syntax-source {
+  width: 100%;
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  color: var(--ink-deep);
+}
+.syntax-source::after {
+  content: "\200b";
+}
+.rules-editor[data-colorized] #rules-input {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--ink-deep);
+}
+.rules-editor[data-colorized] #rules-input[data-highlight] {
+  background-image: none;
+}
+.rules-editor:has(#rules-input[data-highlight]) .syntax-viewport {
+  background-image: linear-gradient(
+    to bottom,
+    transparent var(--rule-highlight-top),
+    var(--rule-mark) var(--rule-highlight-top),
+    var(--rule-mark) var(--rule-highlight-bottom),
+    transparent var(--rule-highlight-bottom)
+  );
+}
+#rules-input::selection {
+  color: var(--ink-deep);
+  background: var(--rule-mark);
+}
+.syntax-keyword {
+  color: var(--syntax-keyword);
+}
+.syntax-string {
+  color: var(--syntax-string);
+}
+.syntax-capture {
+  color: var(--syntax-capture);
+}
+.syntax-quantifier {
+  color: var(--syntax-quantifier);
+}
+.syntax-assertion {
+  color: var(--syntax-assertion);
+}
+.syntax-alternation {
+  color: var(--syntax-alternation);
+}
+.syntax-comment {
+  color: var(--syntax-comment);
+}
+.syntax-invalid {
+  position: relative;
+  color: var(--syntax-invalid);
+  text-decoration: underline wavy;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.syntax-invalid:empty::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 1em;
+  border-left: 2px solid var(--syntax-invalid);
+}
+@media (forced-colors: active) {
+  .rules-editor[data-colorized] #rules-input {
+    color: CanvasText;
+    caret-color: CanvasText;
+  }
+  .syntax-viewport {
+    visibility: hidden;
+  }
 }
 .rule-focus {
   margin: 8px 0 0;

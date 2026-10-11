@@ -192,7 +192,7 @@ test("long native-wrapped source lines get a row highlight without moving their 
       top: Number.parseFloat(style.getPropertyValue("--rule-highlight-top")),
       bottom: Number.parseFloat(style.getPropertyValue("--rule-highlight-bottom")),
       row: Number.parseFloat(style.lineHeight),
-      background: style.backgroundImage,
+      background: getComputedStyle(document.getElementById("rules-syntax")).backgroundImage,
     };
   });
   expect(highlight.bottom - highlight.top).toBeGreaterThan(highlight.row * 5);

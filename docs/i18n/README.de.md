@@ -100,6 +100,8 @@ Mit **Interface language** wählst du Englisch, vereinfachtes Chinesisch, Spanis
 
 Mit **Theme** folgt der Workshop dem Systemdesign oder verwendet ein helles oder dunkles Design. Die Auswahl wird lokal gespeichert, wenn Speicher verfügbar ist; Regeln, Beispiele, Auswahlbereiche und offene Bereiche bleiben beim Wechsel erhalten. Siehe [Designauswahl](../ARCHITECTURE.md#theme-preference).
 
+**Nur im Quellcode:** Der native Regeleditor färbt Schlüsselwörter, Zeichenfolgen, Captures, Quantifizierer, Assertions, Alternativen und Kommentare. Das vom Compiler beanstandete Token wird unterstrichen; Eingabe, Auswahl, Kopieren und Scrollen bleiben nativ. Erzwungene Farben und Eingaben über den Budgets verwenden einfachen nativen Text. Kommentarzeilen mit `#` behalten ihre Quellpositionen und zählen zu den üblichen Budgets. Diese Ergänzungen sind noch nicht in npm `0.1.0-dev.6` oder im gehosteten Workshop enthalten. Siehe [Kommentare](../LANGUAGE.md#comments) und [Editor-Hervorhebung](../ARCHITECTURE.md#editor-highlighting).
+
 1. Rezept auswählen oder eine Anweisung pro Zeile schreiben.
 2. Generierte Fragmente und Erklärungen nachvollziehen.
 3. Beispiele hinzufügen und erwartete Treffer kennzeichnen.

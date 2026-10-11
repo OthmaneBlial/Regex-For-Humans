@@ -181,6 +181,8 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 <p dir="ltr" align="left" lang="en"><strong>Theme</strong> · System · Light · Dark</p>
 
+**في نسخة المصدر فقط:** يلوّن محرر القواعد الأصلي الكلمات المفتاحية والسلاسل والالتقاطات وأعداد التكرار والتوكيدات والبدائل والتعليقات. يضع خطًا تحت الرمز الذي يشير إليه المترجم، مع إبقاء الكتابة والتحديد والنسخ والتمرير بسلوكها الأصلي. تعرض أوضاع الألوان المفروضة والمدخلات المتجاوزة للحدود نصًا أصليًا عاديًا. تحتفظ أسطر التعليق التي تبدأ بـ <code dir="ltr">#</code> بمواضعها وتُحسب ضمن حدود الحجم والأسطر المعتادة. هذه الإضافات ليست بعد في حزمة <code dir="ltr">npm 0.1.0-dev.6</code> أو الورشة المستضافة. راجع [التعليقات](../LANGUAGE.md#comments) و[تلوين المحرر](../ARCHITECTURE.md#editor-highlighting).
+
 <p dir="ltr" align="left"><strong>Interface language</strong> · English · 简体中文 · Español · Français</p>
 
 1. اختر وصفة أو اكتب تعليمة واحدة في كل سطر.

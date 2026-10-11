@@ -110,6 +110,12 @@ try {
     `import { analyze, compile, editGroup, exportRegex, regexToRules, toRegExp, toSVG, CompileError } from "regex-for-humans";
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
+const commentedRules = ${JSON.stringify('# unfinished " }\nstart\ncapture "tag" {\n"#"\n}\nend')};
+const commentedResult = compile(commentedRules);
+assert.equal(commentedResult.source, "^(?<tag>#)$");
+assert.equal(commentedResult.segments[0].line, 2);
+assert.equal(toRegExp(commentedResult).exec("#").groups.tag, "#");
+assert.ok(toSVG(commentedRules).includes('data-kind="group"'));
 const editableRules = ${JSON.stringify('capture "word" {\nletter\n}\nsame as capture "word"')};
 const jsExport = exportRegex(editableRules, { flags: "dgy" });
 const exportedNative = runInNewContext(jsExport.code + "\\nregex");
@@ -631,6 +637,19 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
   const cliResult = JSON.parse(run([...cliArgs, "--json", "-"], { cwd: consumer, input: rules }));
   if (cliResult.source !== "^ABC\\d{3}$" || cliResult.flags !== "u") {
     throw new Error("Installed CLI produced an unexpected expression.");
+  }
+  const commentCli = JSON.parse(
+    run([...cliArgs, "--json", "-"], {
+      cwd: consumer,
+      input: '# unfinished " }\nstart\n"#"\nend',
+    }),
+  );
+  if (
+    commentCli.source !== "^#$" ||
+    commentCli.flags !== "u" ||
+    commentCli.segments[0].line !== 2
+  ) {
+    throw new Error("Installed CLI lost whole-line comments or their source positions.");
   }
   const flagged = JSON.parse(
     run([...cliArgs, "--flags=ygvsimd", "--json", "-"], { cwd: consumer, input: "digit" }),

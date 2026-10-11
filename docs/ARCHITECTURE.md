@@ -55,13 +55,19 @@ References are resolved against the completed capture table after parsing. A ref
 
 `web/translations.js` supplies Simplified Chinese, Spanish and French messages with English keys. `web/i18n.js` binds trusted initial UI text and explicit dynamic messages to text nodes, and accessible names to attributes. Language changes update those bindings in place without compiling, posting worker messages, rebuilding test inputs or resetting open panels. Weak maps let removed rows and their closures be collected. Substitution runs once and assigns text, never HTML; code, capture names, captured values and user inputs are not scanned for translations.
 
-The four-language selector updates the document language and remembers its choice in local storage when available; denied storage and unknown saved languages keep the workshop usable. Controlled English grammar remains independent of interface translation. Compiler explanations, diagnostic detail, exported engine requirements and diagram labels remain English and are called out beside the selector. This source feature is not yet in the hosted dev.5 workshop. Native-speaker and real screen-reader review remain separate gates.
+The four-language selector updates the document language and remembers its choice in local storage when available; denied storage and unknown saved languages keep the workshop usable. Controlled English grammar remains independent of interface translation. Compiler explanations, diagnostic detail, exported engine requirements and diagram labels remain English and are called out beside the selector. The interface is available in the hosted dev.6 workshop. Native-speaker and real screen-reader review remain separate gates.
 
 ## Theme preference
 
 The dependency-free `web/theme.js` module loads before the compiler entry point and applies a validated local theme preference. The native selector follows the system color scheme by default, reacts to media changes in system mode, and remembers explicit light/dark choices when storage is available. Invalid saved values fall back to system mode; denied storage does not prevent selection or compilation. Its handler is attached before the selector is enabled.
 
 Theme changes update only the root data attribute and CSS palette. They do not rebuild nodes, compile rules or post worker requests; fields, selections, scrolling and open panels stay intact. Appearance choices during recipe loading are excluded from user rule edits, so initial examples still load. Theme labels use the existing four-language catalog. Semantic colors distinguish ordinary text, accent-button ink and persistent dark code/navigation surfaces; standalone SVG diagrams retain their own readable export palette.
+
+## Editor highlighting
+
+The source workshop retains its native textarea for keyboard input, selection, undo, copy and accessibility. `web/syntax.js` renders a decorative, hidden-from-accessibility text layer using text nodes and a bounded lexical scanner. Tokens distinguish keywords, JSON strings, capture names/references, repetition, assertions, alternatives and whole-line comments. The compiler remains the validator: its first positioned diagnostic underlines the corresponding token; the existing error action selects the precise native source position. Coloring does not simulate regex execution.
+
+The mirror shares the textarea's font, padding, width, tab stops, scrolling and wrapping. Row navigation paints its background behind the colored text. Both palettes keep token contrast against the ordinary and focused-row surfaces. Forced colors expose the native text, and inputs over source/line budgets fall back to plain native editing without allocating a large mirror. Language and theme changes do not edit rules or recompile. Whole-line comments use the shared parser and still consume both source and line budgets. These additions are source-only pending a later npm/Pages release.
 
 ## Structural visualization
 
