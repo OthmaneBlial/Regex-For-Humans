@@ -2,9 +2,9 @@
 
 ## Dev.12 candidate (11 October 2026)
 
-The local candidate combines parser/compiler-backed class and closed-capture-reference completion, the full selected-rule preview and reproducible Markdown reports from source milestones `e347aa0`, `3114933` and `9c9beab`. Package/lock metadata selects `0.1.0-dev.12`; public npm tags, the GitHub prerelease and owner Pages remain frozen dev.11. Current README/homepage links continue to describe that published version during preparation.
+The local candidate combines parser/compiler-backed class and closed-capture-reference completion, the full selected-rule preview and reproducible Markdown reports from source milestones `e347aa0`, `3114933` and `9c9beab`. Package/lock metadata selects `0.1.0-dev.12`; public npm tags, the GitHub prerelease and owner Pages remain frozen dev.11. Current README links describe that published version during preparation. Homepage source links/copy and refreshed screenshots target the dev.12 candidate; they have not been deployed.
 
-Required next evidence: the complete verification command, separate Node 22 suite, all seven required native profiles, refreshed real screenshots and synchronized final copy, exact retained-archive consumers on Node 25/22, source/tag agreement, registry/GitHub byte checks and owner Pages/live verification. No new publication is claimed before those steps. Older archives/tags remain immutable, source Actions stays disabled and independent human reviews remain open.
+Fresh candidate Node 25/22 suites pass (424 cases each, 420 passes and four explicit existing skips), seven required native profiles pass 8,782 span/capture comparisons, and a retained 420,613-byte prototype passes its clean-consumer check. The prototype predates final copy/screenshots and must not be published. The complete command is still running its browser/homepage gates. Required next evidence: completion of those gates, synchronized final README copy, exact final retained-archive consumers on Node 25/22, source/tag agreement, registry/GitHub byte checks and owner Pages/live verification. No new publication is claimed before those steps. Older archives/tags remain immutable, source Actions stays disabled and independent human reviews remain open.
 
 ## Published dev.11 (11 October 2026)
 

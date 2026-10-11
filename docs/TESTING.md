@@ -2,7 +2,7 @@
 
 ## Dev.12 candidate verification (11 October 2026)
 
-Verification is in progress for source completion and Markdown reports under dev.12 package/lock metadata. The required complete command, separate Node 22 run, seven native profiles, exact final archive consumers and external publication have not yet produced dev.12 receipts. The successful source-component records below remain separate from this new distribution gate; public dev.11 remains unchanged during preparation.
+Verification is in progress for source completion and Markdown reports under dev.12 package/lock metadata. Fresh Node 25.9.0 and separate Node 22.23.3 runs each pass 420 of 424 cases, with four existing explicit scoped-native skips and no failures. All seven required native profiles pass 8,782 full span/mapped-capture comparisons. The retained prototype archive passes a clean-consumer check at 420,613 bytes; it predates final copy/screenshots and is not the publication archive. Fresh local smoke checks pass on Chrome desktop/mobile, Firefox desktop and WebKit mobile: raw draft recovery, nonmutating group previews, native captures/spans, closed-capture completion and Markdown roundtrip, with no document overflow or page errors. Wait for debounced draft writes to finish before checking that a preview/export preserves storage. Three real candidate screenshots are refreshed and visually inspected, alongside desktop/mobile group-preview details. The complete command is continuing through 726 Chromium checks, then Firefox/WebKit and homepage checks. Exact final archive consumers and external publication remain pending; public dev.11 remains unchanged during preparation.
 
 ## Unreleased Markdown report checks (11 October 2026)
 

@@ -2,7 +2,7 @@
 
 ## Dev.12 distribution candidate
 
-- Package/lock metadata now selects dev.12 for the verified source class/reference completion, selected-rule preview and Markdown reports. The public registry, GitHub prerelease and owner Pages remain frozen dev.11; current published-version links are retained during preparation.
+- Package/lock metadata now selects dev.12 for the verified source class/reference completion, selected-rule preview and Markdown reports. The public registry, GitHub prerelease and owner Pages remain frozen dev.11; README published-version links are retained during preparation. Homepage source copy/links and refreshed real desktop/mobile screenshots target the candidate without being deployed.
 - Run a fresh complete runtime/browser/site/package gate, separate Node 22 and required native-profile checks, then synchronize final copy/screenshots and verify the exact retained archive before freezing/publishing. Record actual registry/GitHub/Pages delivery separately. Preserve previous archives/tags, disabled source Actions and unchecked human gates; the broader mission continues.
 
 ## Unreleased Markdown report milestone
