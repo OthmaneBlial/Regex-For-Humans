@@ -1,6 +1,26 @@
 // Each entry contains Simplified Chinese, Spanish and French; English is the key.
 /** @type {Record<string, [string, string, string]>} */
 export const translations = {
+  "Build a rule": ["构建规则", "Construir una regla", "Construire une règle"],
+  "Rule to add": ["要添加的规则", "Regla que añadir", "Règle à ajouter"],
+  "Capture group": ["捕获组", "Grupo de captura", "Groupe de capture"],
+  "Optional section": ["可选部分", "Sección opcional", "Section facultative"],
+  Alternative: ["分支", "Alternativa", "Alternative"],
+  Repetition: ["重复", "Repetición", "Répétition"],
+  "Character class": ["字符类", "Clase de caracteres", "Classe de caractères"],
+  Assertion: ["断言", "Aserción", "Assertion"],
+  "Insert rule": ["插入规则", "Insertar regla", "Insérer la règle"],
+  "Insert a template before the current line or selection, between the outer anchors. Edit it freely in the rule field.":
+    [
+      "在当前行或选区之前插入模板，并保留外层锚点。可在规则输入框中自由编辑。",
+      "Inserta una plantilla antes de la línea o selección actual, entre los anclajes exteriores. Edítala libremente en el campo de reglas.",
+      "Insérez un modèle avant la ligne ou la sélection actuelle, entre les ancres extérieures. Modifiez-le librement dans le champ des règles.",
+    ],
+  "Rule inserted on line {line}. Edit the template in the rule field.": [
+    "已在第 {line} 行插入规则。可在规则输入框中编辑模板。",
+    "Regla insertada en la línea {line}. Edita la plantilla en el campo de reglas.",
+    "Règle insérée à la ligne {line}. Modifiez le modèle dans le champ des règles.",
+  ],
   Theme: ["主题", "Tema", "Thème"],
   System: ["跟随系统", "Sistema", "Système"],
   Light: ["浅色", "Claro", "Clair"],

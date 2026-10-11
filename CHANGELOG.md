@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add six native workshop construction actions for captures, optional sections, alternatives, repetition, character classes and assertions. Insert validated editable templates at logical line boundaries inside outer anchors; retain existing rules, indentation, separators, flags, examples and reference targets, updating numbered references when needed. Reject invalid or oversized candidates before changing the editor, and keep delayed recipe loading from overwriting actual insertions. Translate controls and feedback in all four interface languages.
 - Add structured syntax colors to the native rule editor for keywords, strings, captures, quantifiers, assertions, alternatives and comments, with compiler-linked invalid-token markers. Mirror native wrapping, scrolling and selection; keep contrast in both palettes and plain native editing for forced colors or inputs beyond budgets. Render user text through text nodes without HTML interpretation.
 - Accept whole-line `#` comments in the shared parser, including nested blocks and Unicode-set operands. Ignore quotes and braces in comments while preserving subsequent locations, group edits and unchanged source/line budgets. Quoted hashes remain literals; inline comments remain unsupported.
 

@@ -11,6 +11,7 @@ import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
 import { initializeLanguage, message, setAttribute, setText } from "./i18n.js";
+import { insertRule } from "./insert-rule.js";
 import { initializeSyntaxEditor } from "./syntax.js";
 import { TestRunError, TestRunner } from "./test-runner.js";
 
@@ -39,6 +40,10 @@ const ui = {
   recipeNote: requiredElement("recipe-note", HTMLParagraphElement),
   rules: requiredElement("rules-input", HTMLTextAreaElement),
   ruleCount: requiredElement("rule-count", HTMLSpanElement),
+  builderForm: requiredElement("builder-form", HTMLFormElement),
+  builderKind: requiredElement("builder-kind", HTMLSelectElement),
+  builderInsert: requiredElement("builder-insert", HTMLButtonElement),
+  builderFeedback: requiredElement("builder-feedback", HTMLParagraphElement),
   ignoreCase: requiredElement("ignore-case", HTMLInputElement),
   dotAll: requiredElement("dot-all", HTMLInputElement),
   global: requiredElement("global-flag", HTMLInputElement),
@@ -1173,7 +1178,17 @@ function renderTests() {
   }
 }
 
+function currentFlags() {
+  return (
+    Object.entries(flagInputs)
+      .filter(([, input]) => input.checked)
+      .map(([flag]) => flag)
+      .join("") + ui.unicodeMode.value
+  );
+}
+
 function compileRules() {
+  ui.builderFeedback.textContent = "";
   diagramSVG = "";
   reviewResult = null;
   selectedRule = null;
@@ -1201,12 +1216,7 @@ function compileRules() {
     );
   }
   try {
-    const flags =
-      Object.entries(flagInputs)
-        .filter(([, input]) => input.checked)
-        .map(([flag]) => flag)
-        .join("") + ui.unicodeMode.value;
-    compiled = compile(rules, { flags });
+    compiled = compile(rules, { flags: currentFlags() });
     ui.output.textContent = `/${compiled.source}/${compiled.flags}`;
     setText(ui.flagsSummary, flagsDescription(compiled.flags));
     ui.copy.disabled = false;
@@ -1306,7 +1316,8 @@ function renderScenarioButtons() {
 }
 
 document.addEventListener("input", (event) => {
-  if (event.target !== ui.language && event.target !== ui.theme) hasEdits = true;
+  if (event.target !== ui.language && event.target !== ui.theme && event.target !== ui.builderKind)
+    hasEdits = true;
 });
 ui.rules.addEventListener("input", () => {
   setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);
@@ -1447,6 +1458,45 @@ ui.groupLocate.addEventListener("click", () => {
   const group = selectedGroup();
   if (group) selectLine(group.line);
 });
+ui.builderForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  try {
+    const added = insertRule(ui.rules.value, ui.rules.selectionStart, ui.builderKind.value, {
+      flags: currentFlags(),
+    });
+    ui.rules.value = added.rules;
+    hasEdits = true;
+    setScenarioSelection(null);
+    compileRules();
+    selectLine(added.line, added.column);
+    followSourceCursor();
+    setText(
+      ui.builderFeedback,
+      message("Rule inserted on line {line}. Edit the template in the rule field.", {
+        line: added.line,
+      }),
+    );
+    ui.builderFeedback.dataset.state = "success";
+  } catch (error) {
+    setText(
+      ui.builderFeedback,
+      message("Edit rejected. Original rules unchanged. {error}", {
+        error:
+          error instanceof CompileError
+            ? message("Line {line}, column {column}: {error}{hint}", {
+                line: error.line,
+                column: error.column,
+                error: escapeControls(error.message),
+                hint: error.hint ? ` ${error.hint}` : "",
+              })
+            : error instanceof Error
+              ? error.message
+              : String(error),
+      }),
+    );
+    ui.builderFeedback.dataset.state = "error";
+  }
+});
 ui.groupForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const group = selectedGroup();
@@ -1566,6 +1616,8 @@ ui.reverseButton.addEventListener("click", () => {
   }
 });
 ui.reverseButton.disabled = false;
+ui.builderKind.disabled = false;
+ui.builderInsert.disabled = false;
 ui.matchMode.addEventListener("change", updateTestResults);
 ui.addExample.addEventListener("click", () => {
   hasEdits = true;

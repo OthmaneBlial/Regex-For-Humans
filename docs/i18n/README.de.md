@@ -102,6 +102,8 @@ Mit **Theme** folgt der Workshop dem Systemdesign oder verwendet ein helles oder
 
 **Nur im Quellcode:** Der native Regeleditor färbt Schlüsselwörter, Zeichenfolgen, Captures, Quantifizierer, Assertions, Alternativen und Kommentare. Das vom Compiler beanstandete Token wird unterstrichen; Eingabe, Auswahl, Kopieren und Scrollen bleiben nativ. Erzwungene Farben und Eingaben über den Budgets verwenden einfachen nativen Text. Kommentarzeilen mit `#` behalten ihre Quellpositionen und zählen zu den üblichen Budgets. Diese Ergänzungen sind noch nicht in npm `0.1.0-dev.6` oder im gehosteten Workshop enthalten. Siehe [Kommentare](../LANGUAGE.md#comments) und [Editor-Hervorhebung](../ARCHITECTURE.md#editor-highlighting).
 
+**Nur im Quellcode:** Das Konstruktionspanel fügt bearbeitbare Vorlagen für Captures, optionale Abschnitte, Alternativen, Wiederholungen, Zeichenklassen und Assertions vor der aktuellen Zeile oder Auswahl innerhalb der äußeren Anker ein. Ein neuer Capture erhält die Ziele bestehender nummerierter Referenzen. Ungültige oder zu große Einfügungen lassen Regeln und Auswahl unverändert; Flags und Beispiele bleiben erhalten. Das Panel ist noch nicht im gehosteten Workshop dev.6 enthalten. Siehe [Regelkonstruktion](../ARCHITECTURE.md#rule-construction).
+
 1. Rezept auswählen oder eine Anweisung pro Zeile schreiben.
 2. Generierte Fragmente und Erklärungen nachvollziehen.
 3. Beispiele hinzufügen und erwartete Treffer kennzeichnen.

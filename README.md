@@ -130,6 +130,8 @@ Use **Theme** to follow your system appearance or choose a light or dark worksho
 
 **Source checkout only:** the native rule editor colors keywords, quoted strings, captures, quantifiers, assertions, alternatives and comments. It underlines the compiler's diagnosed token while retaining normal typing, selection, copy and scrolling; forced colors and inputs beyond the budgets use plain native text. Whole-line `#` comments keep their source locations and consume the usual budgets. These additions are not in npm `0.1.0-dev.6` or the hosted workshop yet. See [comments](docs/LANGUAGE.md#comments) and [editor highlighting](docs/ARCHITECTURE.md#editor-highlighting).
 
+**Source checkout only:** **Build a rule** inserts editable capture, optional-section, alternative, repetition, character-class and assertion templates before the current line or selection, inside outer anchors. Adding a capture keeps existing numbered references aimed at the same groups. Invalid or oversized insertions retain the original rules and selection; flags and examples stay in place. This panel is not yet in the hosted dev.6 workshop. See [rule construction](docs/ARCHITECTURE.md#rule-construction).
+
 1. **Pick a recipe** or write one instruction per line.
 2. **Follow the fragments** to see what every rule means.
 3. **Try your examples** and mark what should match.

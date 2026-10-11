@@ -70,6 +70,20 @@
           <div class="panel-heading"><span class="step-number">01</span><div><p class="kicker">THE INPUT ✍️</p><h2 id="rules-title">Write your rules</h2></div></div>
           <p id="recipe-note" class="recipe-note" hidden></p>
           <noscript><p class="recipe-note">This workshop needs JavaScript to compile rules and test examples. <a href="./language.html">Read the syntax guide</a> without JavaScript.</p></noscript>
+          <details id="rule-builder" class="reverse-translator rule-builder">
+            <summary>Build a rule</summary>
+            <p id="builder-help" class="field-hint">Insert a template before the current line or selection, between the outer anchors. Edit it freely in the rule field.</p>
+            <form id="builder-form" class="builder-form" aria-label="Build a rule">
+              <label for="builder-kind">Rule to add</label>
+              <select id="builder-kind" aria-describedby="builder-help builder-feedback" disabled>
+                <option value="capture">Capture group</option><option value="optional">Optional section</option>
+                <option value="alternative">Alternative</option><option value="repetition">Repetition</option>
+                <option value="class">Character class</option><option value="assertion">Assertion</option>
+              </select>
+              <button id="builder-insert" class="secondary-button" type="submit" aria-controls="rules-input" disabled>Insert rule</button>
+            </form>
+            <p id="builder-feedback" role="status"></p>
+          </details>
           <label for="rules-input" class="field-label">Write your rules</label>
           <div class="rules-editor">
             <textarea id="rules-input" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-invalid="false" aria-describedby="rules-help recipe-note diagnostic" placeholder="start &quot;ABC&quot;&#10;3 digits&#10;end"></textarea>

@@ -102,6 +102,8 @@ Usa **Theme** para seguir la apariencia del sistema o elegir un taller claro u o
 
 **Solo en el código fuente:** el editor nativo colorea palabras clave, cadenas, capturas, cuantificadores, aserciones, alternativas y comentarios. Subraya el token señalado por el compilador y mantiene la escritura, selección, copia y desplazamiento nativos. Los colores forzados y las entradas que superan los límites usan texto nativo simple. Las líneas de comentario con `#` conservan sus posiciones y cuentan en los límites habituales. Estos cambios todavía no están en npm `0.1.0-dev.6` ni en el taller alojado. Consulta los [comentarios](../LANGUAGE.md#comments) y el [resaltado del editor](../ARCHITECTURE.md#editor-highlighting).
 
+**Solo en el código fuente:** el panel de construcción inserta plantillas editables de captura, sección opcional, alternativa, repetición, clase de caracteres y aserción antes de la línea o selección actual, entre los anclajes exteriores. Añadir una captura conserva los destinos de las referencias numéricas existentes. Las inserciones inválidas o demasiado grandes conservan las reglas y la selección; los flags y ejemplos permanecen. Este panel todavía no está en el taller alojado dev.6. Consulta la [construcción de reglas](../ARCHITECTURE.md#rule-construction).
+
 1. Elige una receta o escribe una instrucción por línea.
 2. Examina cada fragmento generado y su explicación.
 3. Añade ejemplos e indica cuáles deberían coincidir.

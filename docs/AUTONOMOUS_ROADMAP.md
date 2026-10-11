@@ -2,6 +2,13 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+## Rule construction source milestone
+
+- Implemented: six native actions insert editable capture, optional section, alternative, repetition, character class and assertion templates. The shared parser/compiler validates original and candidate rules before application; logical selection boundaries and leading/trailing root anchors retain existing rules and selected text. Capture insertion reuses `editGroup` to preserve reference targets, updating numeric indices when needed. Existing flags, examples and rejection recovery remain intact; actual insertions survive delayed recipe loading.
+- Evidence: one uninterrupted full gate passes 345 Node, 494 Chromium desktop/mobile, 278 Firefox/WebKit and 64 homepage checks (1,181 total), consumers, lint/types/docs, builds and an audit with zero vulnerabilities. All 21 focused construction/catalog/README checks and a clean installed consumer pass on Node 22.23.3. The final French light/dark 320px captures were inspected. Supplemental skip-link checks preserve every assertion in all four projects and use native Option-Tab for implicit buttons on macOS WebKit.
+- Documentation: all ten guides distinguish the source panel from hosted dev.6, retaining 19 second-level headings and 20 identical canonical code blocks; Arabic/Urdu retain RTL prose with LTR code and a short English control label. No dependency or public npm API was added. Public artifacts remain unchanged and GitHub Actions stays disabled.
+- Remaining: truthful failure explanations, precise span/capture/empty-value/replacement expectations with exportable regression fixtures, all 24 searchable example categories and difficulty levels, developer adoption and the next verified publication. The full original mission remains active; human reviews and PHP runtime parity stay unverified.
+
 ## Structured editor source milestone
 
 - Implemented: a bounded decorative text layer retains the native textarea for editing, selection, undo, copy and accessibility. Keywords, strings, captures/references, quantifiers, assertions, alternatives, comments and invalid tokens have distinct styles; actual compiler diagnostics supply the live error positions. Shared parsing accepts whole-line comments, ignores their quotes/braces and preserves literal hashes, nested structures, source positions and existing budgets.
@@ -90,9 +97,9 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Implement the six editable construction actions: capture, optional section, alternative, repetition, character class and assertion.
-2. Add deterministically explainable test failures and richer span/capture/empty-value/replacement expectations with exportable regression fixtures.
-3. Expand the curated, searchable example library and finish the remaining developer-adoption requirements from the original mission.
+1. Add precise span/capture/empty-value/replacement expectations, batch execution, import/export and regression preservation to the workshop's test cases.
+2. Add deterministically explainable test failures using native results and necessary conditions; retain truthful limits on engine tracing.
+3. Expand the curated, searchable library to all 24 requested categories with beginner/intermediate/expert levels, and finish the remaining developer-adoption requirements from the original mission.
 4. Publish the next validated interface milestone to npm and Pages, keeping the website and all ten guides aligned with the released version and preserving frozen archives.
 
 ## Site and README milestone

@@ -547,7 +547,10 @@ test("example resize heights follow their identities when adding and removing ro
   }
 });
 
-test("skip link focuses the workshop without resetting edited rules", async ({ page }) => {
+test("skip link focuses the workshop without resetting edited rules", async ({
+  page,
+  browserName,
+}) => {
   await page.goto("/?example=line-rule");
   const editor = page.getByRole("textbox", { name: "Write your rules" });
   await editor.fill('start "XYZ"\nend');
@@ -562,7 +565,19 @@ test("skip link focuses the workshop without resetting edited rules", async ({ p
   await page.keyboard.press("Tab");
   await expect(page.getByRole("combobox", { name: "Theme", exact: true })).toBeFocused();
   await page.keyboard.press("Tab");
+  await expect(page.locator("#rule-builder summary")).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#rule-builder")).toHaveAttribute("open", "");
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#builder-kind")).toBeFocused();
+  // Safari on macOS includes implicit buttons through its native Option-Tab traversal.
+  await page.keyboard.press(
+    browserName === "webkit" && process.platform === "darwin" ? "Alt+Tab" : "Tab",
+  );
+  await expect(page.locator("#builder-insert")).toBeFocused();
+  await page.keyboard.press("Tab");
   await expect(editor).toBeFocused();
+  await expect(editor).toHaveValue('start "XYZ"\nend');
 });
 
 test("example controls have distinct numbered accessible names after delayed recipes", async ({

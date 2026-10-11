@@ -69,6 +69,12 @@ The source workshop retains its native textarea for keyboard input, selection, u
 
 The mirror shares the textarea's font, padding, width, tab stops, scrolling and wrapping. Row navigation paints its background behind the colored text. Both palettes keep token contrast against the ordinary and focused-row surfaces. Forced colors expose the native text, and inputs over source/line budgets fall back to plain native editing without allocating a large mirror. Language and theme changes do not edit rules or recompile. Whole-line comments use the shared parser and still consume both source and line budgets. These additions are source-only pending a later npm/Pages release.
 
+## Rule construction
+
+The source workshop's native **Build a rule** form offers capture, optional section, alternative, repetition, character class and assertion templates. `web/insert-rule.js` validates the original AST and candidate with the shared parser/compiler before the editor changes. Insertion is before the logical line containing the selection start, bounded by leading/trailing root anchors; same-line anchors can be split safely. Existing rules, indentation, logical line separators and selected text are retained; numbered references are updated when adding a capture changes their targets' indices. The generated rules stay editable by hand.
+
+A capture starts as a noncapturing prototype and is converted through the existing `editGroup` implementation, preserving the targets of numbered references. The application recompiles and focuses the inserted rule only after validation succeeds; rejected edits retain source and selection. Flags and existing examples stay in place, and feedback is rendered as text. Choosing a template during recipe loading does not suppress defaults, while an actual insertion is treated as an edit and survives delayed loading. Controls use the existing four-language catalog and both palettes. This is a source-only workshop feature, with no new npm API or dependency.
+
 ## Structural visualization
 
 `src/diagram.js` parses the same readable language and validates that AST through `compileAst` before layout. Compiler segments supply exact generated-source ranges and source locations. Containers draw nested sequences, source-ordered alternative paths and bounded repetition loops; assertions keep their check separate from the consuming rail, with lookbehind arrows pointing backwards. Character-class operands stay one semantic leaf, including string sets and nested operations. Quantifiers are not expanded into repeated nodes.
