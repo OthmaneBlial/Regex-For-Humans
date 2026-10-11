@@ -8,7 +8,7 @@
 
 把清晰的英文规则编译成 JavaScript 正则表达式，并逐段理解结果。
 
-[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.7)
+[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.8)
 
 🔒 本地运行 · 🧩 无运行时依赖 · ⚡ 一个编译器，三种使用方式
 
@@ -34,11 +34,11 @@ end
 
 这是**固定词汇**的规则语言，每条指令都有精确定义。库、CLI 和工作台使用同一个确定性编译器。不认识的指令会返回行、列和修复提示。所有译本中的规则语法仍然使用英文，不会翻译关键字。
 
-> 🌱 预览版 `0.1.0-dev.7` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
+> 🌱 预览版 `0.1.0-dev.8` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
 
 ## 🧰 现在可以做什么
 
-| 能力 | npm `0.1.0-dev.7` / 托管工作台 |
+| 能力 | npm `0.1.0-dev.8` / 托管工作台 |
 | --- | --- |
 | 规则 → JavaScript 正则 | ✅ |
 | 支持的正则 → 可编辑规则 | ✅ |
@@ -62,17 +62,17 @@ end
 
 本地工作坊新增 **Edit groups and references**，可重命名捕获组、切换分组类型并定位引用。编号变化后，数字引用仍指向原来的捕获组；仍被引用的捕获组不能改为非捕获组，拒绝操作时保留原规则。**Highlight** 根据原生索引高亮捕获范围，支持空捕获和消耗的匹配范围之外的捕获。`editGroup` API 返回经过验证的规则。参见[编辑分组](../LANGUAGE.md#editing-groups)。
 
-当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.7` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
+当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.8` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
 
-源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。npm `0.1.0-dev.7` 已包含这些功能。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
+源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。npm `0.1.0-dev.8` 已包含这些功能。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
 
-源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。npm `0.1.0-dev.7` 已包含这些功能，参见[单词边界](../LANGUAGE.md#word-boundaries)。
+源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。npm `0.1.0-dev.8` 已包含这些功能，参见[单词边界](../LANGUAGE.md#word-boundaries)。
 
-源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。npm `0.1.0-dev.7` 已包含这些功能，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
+源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。npm `0.1.0-dev.8` 已包含这些功能，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
 
-源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.7` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
+源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.8` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
 
-npm `0.1.0-dev.7` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
+npm `0.1.0-dev.8` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
 
 ## 🌍 导出到你的编程语言
 
@@ -92,7 +92,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.7`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
+输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.8`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
 
 ## 🎮 试一个模式
 
@@ -255,7 +255,7 @@ end
 
 ## 🧲 用命名捕获提取字段
 
-此示例可使用 npm `0.1.0-dev.7` 或在线工作台运行。
+此示例可使用 npm `0.1.0-dev.8` 或在线工作台运行。
 
 ```text
 start
@@ -358,6 +358,8 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 
 无效 UTF-8 会被拒绝，不会静默替换。JSON 保留诊断代码；参数错误用 `CLI_USAGE`，文件或执行错误用 `CLI_ERROR`。控制字符以可见转义显示；解码 JSON 可恢复原始数据。即使 stderr 写入失败，也会以非零状态退出。
 
+JSON 诊断可能包含 `endColumn`：同一行内从 1 开始计数、右端不包含的 UTF-16 列号。工作坊会高亮并选中完整的已知问题片段；没有范围信息的错误仍可定位到起始位置。
+
 ### 🔄 CLI 逆向转换
 
 ```sh
@@ -408,11 +410,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | 从 `lastIndex` 匹配，遇到间隙即停止 |
 | `v` | `{ flags: 'v' }` | 原生 v 模式 Unicode 字符类与补集 |
 
-**预览版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.7` 已包含这些功能。
+**预览版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.8` 已包含这些功能。
 
-选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.7` 已包含这些功能。
+选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.8` 已包含这些功能。
 
-嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.7` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
+嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.8` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
 
 ## 🛠️ 本地开发
 
@@ -458,6 +460,8 @@ CI=1 npm run verify
 **字符类覆盖全部 Unicode 吗？** 不覆盖。`digit` 是 ASCII，`letter` 是 `[A-Za-z]`，`word` 遵循 `\w`。
 
 **有哪些上限？** 16,384个 UTF-16 单位、200行、有界重复最多1,000次、嵌套64层；最多100个示例，每个2,048单位，worker 期限1,200 ms。一个 emoji 通常占两个 UTF-16 单位。
+
+整批结果也有上限：1,000 个匹配、20,000 个捕获项，以及 1,048,576 个 UTF-16 单位的结果文本。输出过大时，整次运行会停止；规则和示例仍可编辑。
 
 **离线可用吗？** 库和 CLI 本地运行。安装依赖后可本地构建和运行工作台。不宣称提供 PWA 或离线缓存。
 

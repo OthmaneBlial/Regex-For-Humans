@@ -8,7 +8,7 @@
 
 Klare englische Regeln werden zu einem JavaScript-Regex, dessen einzelne Teile nachvollziehbar bleiben.
 
-[🚀 Workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Website](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Syntax](../LANGUAGE.md) · [📦 npm-Vorschau](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.7)
+[🚀 Workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Website](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Syntax](../LANGUAGE.md) · [📦 npm-Vorschau](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.8)
 
 🔒 Lokale Ausführung · 🧩 Keine Laufzeitabhängigkeiten · ⚡ Ein Compiler, drei Oberflächen
 
@@ -34,11 +34,11 @@ end
 
 Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden denselben deterministischen Compiler. Unbekannte Anweisungen erhalten eine Diagnose mit Zeile, Spalte und Korrekturhinweis. Die Regelsyntax bleibt in allen Übersetzungen Englisch.
 
-> 🌱 Die Vorschau `0.1.0-dev.7` benötigt für Bibliothek und CLI **Node.js 22+**. Der Workshop läuft ohne Installation. Menschliche Tests zur Bedienbarkeit und mit Screenreadern stehen noch aus.
+> 🌱 Die Vorschau `0.1.0-dev.8` benötigt für Bibliothek und CLI **Node.js 22+**. Der Workshop läuft ohne Installation. Menschliche Tests zur Bedienbarkeit und mit Screenreadern stehen noch aus.
 
 ## 🧰 Was heute möglich ist
 
-| Fähigkeit | npm `0.1.0-dev.7` / gehosteter Workshop |
+| Fähigkeit | npm `0.1.0-dev.8` / gehosteter Workshop |
 | --- | --- |
 | Regeln → JavaScript-Regex | ✅ |
 | Unterstützter Regex → bearbeitbare Regeln | ✅ |
@@ -62,17 +62,17 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 
 Der lokale Workshop bietet **Edit groups and references**, um Captures umzubenennen, ihren Typ zu ändern und ihre Referenzen zu finden. Numerische Referenzen behalten bei einer neuen Nummerierung ihr ursprüngliches Ziel; ein referenziertes Capture lässt sich nicht entfernen, und die Regeln bleiben dabei unverändert. **Highlight** markiert den nativen Eingabebereich, auch bei leeren Captures oder außerhalb des konsumierten Treffers. Die API `editGroup` gibt validierte Regeln zurück. Siehe [Gruppen bearbeiten](../LANGUAGE.md#editing-groups).
 
-Im Quellcode erzeugt `lazy digits` den Ausdruck `\d+?`: zuerst eine Ziffer versuchen, dann bei Bedarf für die folgenden Regeln mehr Wiederholungen. Verfügbar in npm `0.1.0-dev.7`. Siehe [Wiederholungsregeln](../LANGUAGE.md#repetition).
+Im Quellcode erzeugt `lazy digits` den Ausdruck `\d+?`: zuerst eine Ziffer versuchen, dann bei Bedarf für die folgenden Regeln mehr Wiederholungen. Verfügbar in npm `0.1.0-dev.8`. Siehe [Wiederholungsregeln](../LANGUAGE.md#repetition).
 
-Der Quellcode unterstützt auch `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Sie prüfen den Text um die aktuelle Position, ohne Zeichen zu verbrauchen. Captures behalten native Werte und Positionen, auch außerhalb des verbrauchten Treffers; Lookbehind benötigt Laufzeitunterstützung. Verfügbar in npm `0.1.0-dev.7`. Siehe [Lookaround-Assertions](../LANGUAGE.md#lookaround-assertions).
+Der Quellcode unterstützt auch `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Sie prüfen den Text um die aktuelle Position, ohne Zeichen zu verbrauchen. Captures behalten native Werte und Positionen, auch außerhalb des verbrauchten Treffers; Lookbehind benötigt Laufzeitunterstützung. Verfügbar in npm `0.1.0-dev.8`. Siehe [Lookaround-Assertions](../LANGUAGE.md#lookaround-assertions).
 
-Der Quellcode unterstützt `word boundary` (`\b`) und `not word boundary` (`\B`). Sie verbrauchen keine Zeichen. JavaScript zählt ASCII-Buchstaben, Ziffern und Unterstriche als Wortzeichen; mit `i` kommen entsprechende Unicode-Zeichen durch Groß-/Kleinschreibungsfaltung hinzu. Das ist keine sprachliche Wortsegmentierung. Verfügbar in npm `0.1.0-dev.7`; siehe [Wortgrenzen](../LANGUAGE.md#word-boundaries).
+Der Quellcode unterstützt `word boundary` (`\b`) und `not word boundary` (`\B`). Sie verbrauchen keine Zeichen. JavaScript zählt ASCII-Buchstaben, Ziffern und Unterstriche als Wortzeichen; mit `i` kommen entsprechende Unicode-Zeichen durch Groß-/Kleinschreibungsfaltung hinzu. Das ist keine sprachliche Wortsegmentierung. Verfügbar in npm `0.1.0-dev.8`; siehe [Wortgrenzen](../LANGUAGE.md#word-boundaries).
 
-Der Quellcode akzeptiert außerdem `unicode property "L"` und `not unicode property "L"` für natives `\p{L}` und `\P{L}`. `L` bedeutet Letter; Aliase unterscheiden Groß- und Kleinschreibung, die Zuordnung nutzt die Unicode-Daten der Laufzeit. Zählwerte und `lazy` funktionieren wie gewohnt. Mit `i` kann das native Komplement im `u`-Modus auch durch Groß-/Kleinschreibungsfaltung äquivalente Buchstaben umfassen. Verfügbar in npm `0.1.0-dev.7`; siehe [Unicode-Eigenschaften](../LANGUAGE.md#unicode-properties).
+Der Quellcode akzeptiert außerdem `unicode property "L"` und `not unicode property "L"` für natives `\p{L}` und `\P{L}`. `L` bedeutet Letter; Aliase unterscheiden Groß- und Kleinschreibung, die Zuordnung nutzt die Unicode-Daten der Laufzeit. Zählwerte und `lazy` funktionieren wie gewohnt. Mit `i` kann das native Komplement im `u`-Modus auch durch Groß-/Kleinschreibungsfaltung äquivalente Buchstaben umfassen. Verfügbar in npm `0.1.0-dev.8`; siehe [Unicode-Eigenschaften](../LANGUAGE.md#unicode-properties).
 
-Der Quellcode unterstützt `range "α" to "ω"` und `character class: digit, "_"`. Eine Klasse vereint Literale mit genau einem Unicode-Codepunkt, Bereiche, einzelne Kurzformen und Unicode-Eigenschaften; `not character class:` negiert die gesamte Vereinigung. Wiederholungszahlen und `lazy` gelten für die Klasse. Eigenschaftskomplemente behalten die native `u`/`i`-Semantik. Verfügbar in npm `0.1.0-dev.7`; siehe [Zeichenklassen](../LANGUAGE.md#composable-character-classes).
+Der Quellcode unterstützt `range "α" to "ω"` und `character class: digit, "_"`. Eine Klasse vereint Literale mit genau einem Unicode-Codepunkt, Bereiche, einzelne Kurzformen und Unicode-Eigenschaften; `not character class:` negiert die gesamte Vereinigung. Wiederholungszahlen und `lazy` gelten für die Klasse. Eigenschaftskomplemente behalten die native `u`/`i`-Semantik. Verfügbar in npm `0.1.0-dev.8`; siehe [Zeichenklassen](../LANGUAGE.md#composable-character-classes).
 
-npm `0.1.0-dev.7` enthält Gruppen, Captures, Rückreferenzen und geordnete Alternativen in Bibliothek und CLI. Der Workshop ergänzt Capture-Ansichten und mehrere Suchtreffer. Siehe [Kompatibilität](../COMPATIBILITY.md) und [Veröffentlichungsnachweise](../DISTRIBUTION.md).
+npm `0.1.0-dev.8` enthält Gruppen, Captures, Rückreferenzen und geordnete Alternativen in Bibliothek und CLI. Der Workshop ergänzt Capture-Ansichten und mehrere Suchtreffer. Siehe [Kompatibilität](../COMPATIBILITY.md) und [Veröffentlichungsnachweise](../DISTRIBUTION.md).
 
 ## 🌍 In deine Sprache exportieren
 
@@ -92,7 +92,7 @@ CLI ohne globale Installation:
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-Ausgabe: `/^ABC\d{3}$/u`. Für eine feste Version verwende `regex-for-humans@0.1.0-dev.7`. Es gibt keine Laufzeitabhängigkeiten oder eigenständigen Betriebssystem-Binärdateien.
+Ausgabe: `/^ABC\d{3}$/u`. Für eine feste Version verwende `regex-for-humans@0.1.0-dev.8`. Es gibt keine Laufzeitabhängigkeiten oder eigenständigen Betriebssystem-Binärdateien.
 
 ## 🎮 Mit einem Muster arbeiten
 
@@ -255,7 +255,7 @@ Zeilenumbrüche sind wörtliche Zeichen. Die Anwendung validiert Beträge, Telef
 
 ## 🧲 Felder mit benannten Captures extrahieren
 
-Dieses Beispiel funktioniert mit npm `0.1.0-dev.7` und im veröffentlichten Workshop.
+Dieses Beispiel funktioniert mit npm `0.1.0-dev.8` und im veröffentlichten Workshop.
 
 ```text
 start
@@ -358,6 +358,8 @@ UTF-8-Datei oder stdin lesen. Vor Dateinamen mit `-` ein `--` setzen. Exitcodes:
 
 Fehlerhaftes UTF-8 wird ohne stillen Ersatz abgelehnt. JSON erhält Diagnosecodes, `CLI_USAGE` bei Argumentfehlern und `CLI_ERROR` bei Datei-/Laufzeitfehlern. Steuerzeichen werden sichtbar maskiert; JSON-Dekodierung stellt die Daten wieder her. Auch bei defektem stderr ist der Exitcode ungleich null.
 
+JSON-Diagnosen können `endColumn` enthalten: die exklusive Endspalte derselben Zeile, ab 1 in UTF-16-Einheiten gezählt. Die Werkstatt hebt den gesamten bekannten Fehlerbereich hervor und wählt ihn aus. Ohne Bereich bleibt die Navigation zur Anfangsposition erhalten.
+
 ### 🔄 Rückübersetzung im CLI
 
 ```sh
@@ -408,11 +410,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | Match bei `lastIndex`; Abbruch an der ersten Lücke |
 | `v` | `{ flags: 'v' }` | Native Unicode-Klassen und Komplemente im v-Modus |
 
-**Im Vorschaupaket:** Alle acht Flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` werden unterstützt, etwa mit `{ flags: 'dgiv' }` oder `--flags dgiv`. Die Ausgabe verwendet `dgimsuvy`; doppelte Flags und u/v zusammen sind ungültig, u bleibt Standard. m lässt sich ausdrücklich wählen oder durch Zeilenanker aktivieren; Eingabeanker bleiben auch bei gemischten Modi absolut. Die Rückübersetzung bewahrt Optionen und verändert `lastIndex` nicht. Der Workshop beginnt jedes Beispiel bei 0 und zeigt bis zu 100 Matches; kopierte g/y-Regexe bleiben zustandsbehaftet. Fehlende native Fähigkeiten erhalten ausdrückliche Diagnosen. Verfügbar in npm `0.1.0-dev.7`.
+**Im Vorschaupaket:** Alle acht Flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` werden unterstützt, etwa mit `{ flags: 'dgiv' }` oder `--flags dgiv`. Die Ausgabe verwendet `dgimsuvy`; doppelte Flags und u/v zusammen sind ungültig, u bleibt Standard. m lässt sich ausdrücklich wählen oder durch Zeilenanker aktivieren; Eingabeanker bleiben auch bei gemischten Modi absolut. Die Rückübersetzung bewahrt Optionen und verändert `lastIndex` nicht. Der Workshop beginnt jedes Beispiel bei 0 und zeigt bis zu 100 Matches; kopierte g/y-Regexe bleiben zustandsbehaftet. Fehlende native Fähigkeiten erhalten ausdrückliche Diagnosen. Verfügbar in npm `0.1.0-dev.8`.
 
-**Im Vorschaupaket:** Wähle `v` für `one of strings: "a", "ab", ""` oder `unicode property "RGI_Emoji"`. Native Mengen versuchen längere Elemente zuerst, unabhängig von der Listenreihenfolge; folgende Regeln können ein kürzeres Element erfordern. Leere Zeichenketten sind erlaubt. Verwende `string "ab"` innerhalb einer Klasse. Zeichenketteneigenschaften sowie leere Elemente oder Elemente mit mehreren Codepunkten können nicht komplementiert werden. Verfügbar in npm `0.1.0-dev.7`.
+**Im Vorschaupaket:** Wähle `v` für `one of strings: "a", "ab", ""` oder `unicode property "RGI_Emoji"`. Native Mengen versuchen längere Elemente zuerst, unabhängig von der Listenreihenfolge; folgende Regeln können ein kürzeres Element erfordern. Leere Zeichenketten sind erlaubt. Verwende `string "ab"` innerhalb einer Klasse. Zeichenketteneigenschaften sowie leere Elemente oder Elemente mit mehreren Codepunkten können nicht komplementiert werden. Verfügbar in npm `0.1.0-dev.8`.
 
-**Im Vorschaupaket:** Verschachtelte Mengen verwenden `character set union {`, `character set intersection {` und `character set subtraction {`, abgeschlossen mit `}`. Jede Zeile enthält ein Zeichen, einen Bereich, eine Klasse, eine Eigenschaft, eine Zeichenfolgenmenge oder eine weitere Menge. Die Schnittmenge behält gemeinsame Elemente; die Differenz entfernt rechte Elemente aus dem ersten Operanden. Wiederholungen und `lazy` gelten für den gesamten Block. `not` folgt den nativen strukturellen Beschränkungen für Zeichenfolgen; eine leere Vereinigung findet nichts. Wähle `v`; Verfügbar in npm `0.1.0-dev.7`. [Syntax und Beispiele](../LANGUAGE.md#nested-unicode-set-operations).
+**Im Vorschaupaket:** Verschachtelte Mengen verwenden `character set union {`, `character set intersection {` und `character set subtraction {`, abgeschlossen mit `}`. Jede Zeile enthält ein Zeichen, einen Bereich, eine Klasse, eine Eigenschaft, eine Zeichenfolgenmenge oder eine weitere Menge. Die Schnittmenge behält gemeinsame Elemente; die Differenz entfernt rechte Elemente aus dem ersten Operanden. Wiederholungen und `lazy` gelten für den gesamten Block. `not` folgt den nativen strukturellen Beschränkungen für Zeichenfolgen; eine leere Vereinigung findet nichts. Wähle `v`; Verfügbar in npm `0.1.0-dev.8`. [Syntax und Beispiele](../LANGUAGE.md#nested-unicode-set-operations).
 
 ## 🛠️ Lokal entwickeln
 
@@ -458,6 +460,8 @@ Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sät
 **Decken Klassen ganz Unicode ab?** Nein. `digit` ist ASCII, `letter` ist `[A-Za-z]`, `word` folgt `\w`.
 
 **Welche Limits gelten?** 16.384 UTF-16-Einheiten, 200 Zeilen, begrenzte Wiederholungen bis 1.000 und Tiefe 64; 100 Beispiele mit jeweils höchstens 2.048 Einheiten und 1.200 ms Worker-Zeit. Ein Emoji benötigt meist zwei UTF-16-Einheiten.
+
+Auch ganze Ergebnisbatches sind begrenzt: 1.000 Treffer, 20.000 Erfassungen und 1.048.576 UTF-16-Einheiten Ergebnistext. Bei zu großer Ausgabe stoppt der gesamte Lauf; Regeln und Beispiele bleiben bearbeitbar.
 
 **Offline nutzbar?** Bibliothek und CLI laufen lokal. Nach Installation der Abhängigkeiten kann der Workshop lokal gebaut und bereitgestellt werden. Keine PWA oder Offline-Cache-Zusage.
 

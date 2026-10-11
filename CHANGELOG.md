@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0-dev.8 (11 October 2026)
+
 - Ignore duplicate rule-input events for the exact text already rendered. A native Chromium multiline paste could otherwise compile the same completed value hundreds of times, repeatedly replace the worker and delay its reply past the unchanged 1,200 ms deadline. Preserve pending native matching, real rule/example edits and flag changes; retain the aggregate output limits and existing recovery assertions.
 
 - Verify generated PHP code natively on PHP 8.5.11 / PCRE2 10.44, closing the unavailable-runtime gate. Require all seven foreign runtimes for the recorded 8,782 span/capture comparisons, add literal template-data coverage and report the actual PHP/PCRE2 editions without loading user INI files. Update the API requirement, workshop label, homepage and all ten README guides with the tested editions and corpus limits; preserve generated regex semantics and explicit unsupported-profile diagnostics.
