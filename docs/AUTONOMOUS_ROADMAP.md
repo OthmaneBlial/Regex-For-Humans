@@ -1,5 +1,12 @@
 # Autonomous implementation progress
 
+## Exact dev.8 candidate and authentication checkpoint
+
+- Prepared and pushed: `9cc141674ef3f9bd622188153a4b361284d28261`. Both supported Node checks pass all 377 tests; both clean installed consumers use the same 367,873-byte, 48-file archive. SHA-256 is `26037077091d064ae484c7120c8bdd6fc5240175976a1b309cfe2789e2eac922`. All payload files match that source commit; no temporary helper is included. Preserve this archive and tag this exact source when publishing, even if later source work advances `main`.
+- Documentation: all ten guides retain 20 identical canonical blocks. The live GitHub Arabic/Urdu guides each expose 19 RTL sections and 20 LTR code blocks, including isolated new technical fields; desktop and measured 355-pixel introductions pass layout/visual inspection. Candidate homepage checks, final lint/types/links and Pages builds pass. See [the exact testing receipt](TESTING.md).
+- External blocker: npm's existing CLI session returns HTTP 401. A web renewal is open for the maintainer to complete e-mail verification directly; never receive or transmit that code in chat. Publication, dev.8 tag/Release, owner Pages synchronization and the Downloads draft's version update wait for actual authentication. Public npm/Pages remain dev.7; source Actions stays disabled and old archive hashes are unchanged.
+- Independent next work: improve known quoted-value/property/class diagnostic ranges and native explanation/debugger evidence while preserving the frozen release candidate. The full original mission remains active. Human translation, usability and screen-reader reviews remain open.
+
 ## Complete dev.8 source release gate
 
 - Completed: uninterrupted `CI=1 npm run verify` on runtime checkpoint `3d3f64a` passes all 1,367 checks: 377 Node, 584 Chromium, 342 Firefox/WebKit and 64 homepage checks. Lint/types, source/built links, the installed consumer, Pages builds, social-card rendering and zero-vulnerability audit pass. The homepage's generated script cache fingerprint changes; source runtime/declarations stay fixed throughout the gate.
