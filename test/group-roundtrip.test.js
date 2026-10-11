@@ -4,6 +4,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { compile, regexToRules, toRegExp } from "../index.js";
 import { LIMITS } from "../src/parser.js";
+import { flagSets } from "./fixtures/advanced-flags-corpus.js";
 
 const samples = [
   "",
@@ -95,12 +96,25 @@ test("generated group/reference combinations round-trip against native matches a
   }
 });
 
+test("reference-only groups retain Unicode names and nested repetition semantics", () => {
+  check(new RegExp(String.raw`(?<\u{1D49C}>a)(?:\k<\u{1D49C}>)2`, "u"), ["aa2", "AA2", "a2"]);
+  check(/(a)(?:\1+){2}/u, ["a", "aa", "aaa", "aaaa", "aaab", "baaa"]);
+});
+
 test("forward/open reference diagnostics point into original regex source without running it", () => {
   for (const [source, column, message] of [
     [String.raw`\1(a)`, 1, "A capture reference must follow its capture."],
+    [String.raw`(?:\1)(a)`, 4, "A capture reference must follow its capture."],
     [String.raw`😀\k<later>(?<later>a)`, 3, "A capture reference must follow its capture."],
+    [String.raw`(?:\k<later>)(?<later>a)`, 4, "A capture reference must follow its capture."],
     [String.raw`(a\1)`, 3, "A capture reference must follow the capture's closing brace."],
+    [String.raw`(a(?:\1))`, 6, "A capture reference must follow the capture's closing brace."],
     [String.raw`(?<a>😀\k<a>)`, 8, "A capture reference must follow the capture's closing brace."],
+    [
+      String.raw`(?<a>😀(?:\k<a>))`,
+      11,
+      "A capture reference must follow the capture's closing brace.",
+    ],
   ]) {
     const regex = new RegExp(source, "u");
     regex.lastIndex = 7;
@@ -119,6 +133,92 @@ test("forward/open reference diagnostics point into original regex source withou
     line: 1,
     column: LIMITS.groupDepth + 1,
   });
+});
+
+test("compiler atom wrappers round-trip at the group depth limit under all 128 flag combinations", () => {
+  const values = [
+    "",
+    "A",
+    "AA",
+    "Aa",
+    "AA2",
+    "AAA",
+    "AAB",
+    "AABAB",
+    "AzA",
+    "AzzAB",
+    "aab",
+    "AA\n",
+    "\nAA",
+    "😀AA",
+    "\ud83d",
+    "\ude00",
+  ];
+  for (const parent of ["group", "capture"]) {
+    for (const [body, witness] of [
+      ["same as capture 1", "AA"],
+      ['same as capture 1\n"2"', "AA2"],
+      ['same as capture "prefix"', "AA"],
+      ["2 same as capture 1", "AAA"],
+      ['optional "AB"', "AAB"],
+      ['2 "AB"', "AABAB"],
+      ['lazy between 1 and 2 "AB"', "AABAB"],
+    ]) {
+      const rules = `start\ncapture "prefix" {\n"A"\n}\n${`${parent} {\noptional "z"\n`.repeat(LIMITS.groupDepth)}${body}\n${"}\n".repeat(LIMITS.groupDepth)}end`;
+      for (const flags of flagSets) {
+        const original = toRegExp(compile(rules, { flags }));
+        assert.ok(original.test(witness), `${parent}: ${body}/${flags}`);
+        original.lastIndex = 7;
+        const translated = regexToRules(original);
+        assert.equal(original.lastIndex, 7);
+        const rebuilt = toRegExp(compile(translated.rules, { flags: translated.flags }));
+        assert.equal(rebuilt.flags, original.flags);
+        for (const value of values) {
+          for (const cursor of [0, 1]) {
+            original.lastIndex = cursor;
+            rebuilt.lastIndex = cursor;
+            for (let step = 0; step < 2; step += 1) {
+              assert.deepEqual(
+                rebuilt.exec(value),
+                original.exec(value),
+                `${parent}: ${body}/${flags}: ${JSON.stringify(value)}, cursor ${cursor}, step ${step}`,
+              );
+              assert.equal(rebuilt.lastIndex, original.lastIndex);
+            }
+          }
+        }
+      }
+    }
+  }
+});
+
+test("scalar wrapper normalization keeps structural and recursive group depth bounded", () => {
+  for (const flags of ["u", "v"]) {
+    for (const [source, column] of [
+      [
+        `${"(".repeat(LIMITS.groupDepth + 1)}a${")".repeat(LIMITS.groupDepth + 1)}`,
+        LIMITS.groupDepth + 1,
+      ],
+      [
+        `${"(?:".repeat(LIMITS.groupDepth + 1)}A\\d${")".repeat(LIMITS.groupDepth + 1)}`,
+        LIMITS.groupDepth * 3 + 1,
+      ],
+      [
+        `${"(?:".repeat(LIMITS.groupDepth + 1)}\\u{D83D}\\u{DE00}${")".repeat(LIMITS.groupDepth + 1)}`,
+        LIMITS.groupDepth * 3 + 1,
+      ],
+      [
+        `${"(?:".repeat(LIMITS.groupDepth + 2)}a${")".repeat(LIMITS.groupDepth + 2)}`,
+        (LIMITS.groupDepth + 1) * 3 + 1,
+      ],
+    ]) {
+      assert.throws(() => regexToRules(new RegExp(source, flags)), {
+        code: "GROUP_DEPTH_LIMIT",
+        line: 1,
+        column,
+      });
+    }
+  }
 });
 
 test("CLI reverse imports captures and references as reusable JSON rules", () => {

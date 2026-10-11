@@ -1,5 +1,11 @@
 # Autonomous implementation progress
 
+## Group-wrapper depth source milestone
+
+- Fixed: repeated-literal and numeric-reference wrappers can be reverse-translated at the 64-level rule-block limit. Reference-only noncapturing groups normalize to scalar rules, preserving surrounding repetition, numeric-reference boundaries and original reference diagnostic columns.
+- Verified: 392 Node tests pass on Node 25.9.0 and Node 22.23.3. The depth-boundary corpus preserves full matches, captures, indices and cursors through 114,688 comparisons per runtime under all 128 flag combinations. All 16 targeted group workshop checks pass in Chrome desktop/mobile, Firefox and WebKit; genuinely excessive structural groups, deeper recursion and separate-surrogate groups remain rejected. Clean JavaScript/strict TypeScript/API/CLI package consumers and lint/type/documentation checks pass.
+- Distribution boundary: this is an unreleased source increment after frozen dev.9. Its npm archive, GitHub assets and hosted workshop remain the verified published dev.9 delivery. Human usability, explanation and screen-reader reviews remain unchecked.
+
 ## Published dev.9 milestone
 
 - Shipped: frozen source `7254cf3` is on main, npm `latest`/`preview` and the public GitHub prerelease. Its retained, registry and GitHub archives agree at 382,895 bytes and SHA-256 `564311df082f15cc104ec9b10896e38c7d6bef21887c4ac49257ba4fccf5602c`; all 48 payload files match the tag. Ten equivalent guides describe precise diagnostic ranges, input-edge failure proofs and complete snapshot links, retaining 20 canonical code blocks, RTL Arabic/Urdu prose and LTR technical code. Current-version screenshots were visually inspected.

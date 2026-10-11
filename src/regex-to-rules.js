@@ -39,7 +39,7 @@ const UNSUPPORTED_HINT =
   "Supported syntax includes literals, anchors, common character classes, greedy/lazy repetition, nested groups, captures, backward capture references, ordered alternatives, lookahead/lookbehind and d/g/i/m/s/u/v/y flags. Forward/open references are not supported.";
 const LINE_TERMINATORS = ["\n", "\r", "\u2028", "\u2029"];
 
-/** @typedef {{end: number, literal?: string, phrase?: string, strings?: {value: string, codePoints?: string[]}[], classSet?: {operation: import('./ast.js').ClassSetOperation, negative: boolean, members: SetOperandToken[], close: number}, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, assertion?: {direction: 'ahead'|'behind', negative: boolean, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
+/** @typedef {{end: number, index?: number, literal?: string, phrase?: string, strings?: {value: string, codePoints?: string[]}[], classSet?: {operation: import('./ast.js').ClassSetOperation, negative: boolean, members: SetOperandToken[], close: number}, empty?: boolean, allCharacters?: boolean, nativeDot?: boolean, category?: string, set?: {values: string[], negative: boolean}, group?: {capturing: boolean, name: string|null, atoms: PositionedAtom[], close: number}, assertion?: {direction: 'ahead'|'behind', negative: boolean, atoms: PositionedAtom[], close: number}, alternation?: {branches: {atoms: PositionedAtom[], index: number}[], close: number}}} AtomToken */
 /** @typedef {AtomToken & {index: number}} SetOperandToken */
 /** @typedef {{end: number, kind: 'zeroOrMore'|'oneOrMore'|'optional'|'exact'|'range'|'atLeast'|null, min?: number, max?: number, lazy?: boolean}} QuantifierToken */
 /** @typedef {AtomToken & QuantifierToken & {index: number}} PositionedAtom */
@@ -387,7 +387,9 @@ function readCaptureName(source, start, end) {
 
 /** @param {string} source @param {number} start @param {boolean} multiline @param {number} depth @param {boolean} unicodeSets @returns {AtomToken} */
 function readGroup(source, start, multiline, depth, unicodeSets) {
-  if (depth >= LIMITS.groupDepth) {
+  // The compiler wraps repeated literals and numeric references without adding a rule block.
+  const scalarLimit = depth === LIMITS.groupDepth && source.startsWith("(?:", start);
+  if (depth >= LIMITS.groupDepth && !scalarLimit) {
     fail("GROUP_DEPTH_LIMIT", `Groups cannot nest more than ${LIMITS.groupDepth} levels.`, {
       line: 1,
       column: start + 1,
@@ -435,13 +437,24 @@ function readGroup(source, start, multiline, depth, unicodeSets) {
   const end = close + 1;
   if (capturing) return { end, group: { capturing, name, atoms, close } };
   if (atoms.length === 0) return { end, phrase: "any character", empty: true };
-  if (atoms.length === 1 && atoms[0].alternation && atoms[0].kind === null)
-    return { end, alternation: { ...atoms[0].alternation, close } };
+  if (
+    atoms.length === 1 &&
+    atoms[0].kind === null &&
+    atoms[0].phrase?.startsWith("same as capture ")
+  )
+    return { end, phrase: atoms[0].phrase, index: atoms[0].index };
 
   // Keep the existing compact literal-group output when merging cannot join surrogate atoms.
   let value = "";
   for (const atom of atoms) {
     if (atom.literal === undefined || atom.kind !== null || joinsSurrogates(value, atom.literal)) {
+      if (scalarLimit)
+        fail("GROUP_DEPTH_LIMIT", `Groups cannot nest more than ${LIMITS.groupDepth} levels.`, {
+          line: 1,
+          column: start + 1,
+        });
+      if (atoms.length === 1 && atom.alternation && atom.kind === null)
+        return { end, alternation: { ...atom.alternation, close } };
       return { end, group: { capturing, name, atoms, close } };
     }
     value += atom.literal;
@@ -541,7 +554,7 @@ function readSequence(source, start, multiline, depth, unicodeSets) {
     if (quantifier.kind !== null && source[cursor] === "?")
       quantifier = { ...quantifier, lazy: true, end: ++cursor };
     if (atom.empty) quantifier = { ...quantifier, end: cursor, kind: "exact", min: 0 };
-    atoms.push({ ...atom, ...quantifier, index });
+    atoms.push({ ...atom, ...quantifier, index: atom.index ?? index });
   }
   return { atoms, end: cursor };
 }

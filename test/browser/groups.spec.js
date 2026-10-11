@@ -61,15 +61,34 @@ test("regex imports preserve nested captures and references in editable rules", 
   await page.locator("#test-list .test-row textarea").first().fill("CAT cat");
   await expect(page.locator("#test-list .test-row").first()).toHaveAttribute("data-result", "pass");
   const previous = await page.locator("#rules-input").inputValue();
-  await reverse.fill(String.raw`/😀\1(a)/u`);
+  await reverse.fill(String.raw`/😀(?:\1)(a)/u`);
   await reverse.press("Control+Enter");
   await expect(reverse).toHaveAttribute("aria-invalid", "true");
   await expect(page.locator("#reverse-feedback")).toContainText(
-    "Column 3: A capture reference must follow its capture.",
+    "Column 6: A capture reference must follow its capture.",
   );
   await expect(page.locator("#rules-input")).toHaveValue(previous);
   await page.getByRole("button", { name: "Go to regex error", exact: true }).press("Enter");
   expect(
     await reverse.evaluate((field) => field.value.slice(field.selectionStart, field.selectionEnd)),
   ).toBe("\\");
+});
+
+test("regex imports retain compiler reference wrappers at the maximum group depth", async ({
+  page,
+}) => {
+  const depth = 64;
+  const source = `(?<prefix>A)${"(".repeat(depth)}(?:\\1)${")".repeat(depth)}`;
+  const rules = `capture "prefix" {\n"A"\n}\n${"capture {\n".repeat(depth)}same as capture 1\n${"}\n".repeat(depth).trimEnd()}`;
+  await page.goto("/");
+  await expect(page.locator("#example-list button").first()).toBeEnabled();
+  await page.locator("#reverse-translator summary").click();
+  const reverse = page.locator("#reverse-regex");
+  await reverse.fill(`/${source}/du`);
+  await reverse.press("Control+Enter");
+  await expect(reverse).toHaveAttribute("aria-invalid", "false");
+  await expect(page.locator("#rules-input")).toHaveValue(rules);
+  await expect(page.locator("#regex-output")).toHaveText(`/${source}/du`);
+  await page.locator("#test-list .test-row textarea").first().fill("AA");
+  await expect(page.locator("#test-list .test-row").first()).toHaveAttribute("data-result", "pass");
 });
