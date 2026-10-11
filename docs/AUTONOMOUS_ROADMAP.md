@@ -4,6 +4,12 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
 
+## Published dev.7 milestone
+
+- Published: npm `preview`/`latest` and the GitHub prerelease resolve to dev.7 at source tag `09490f5`. The retained npm archive, registry download and GitHub asset have the same SHA-256; exact-archive consumers pass on Node 25 and Node 22. The ten guides and site use the published version. The local Reddit draft covers the groups and new workshop features while preserving the supplied difficult regex.
+- Verified: one uninterrupted source command passes all 1,339 tests, consumers, lint/types/docs/builds and the zero-vulnerability audit. Later version/documentation gates pass separately. Native source exports pass 7,388 span/capture comparisons across six available foreign engines. The Pages deployment succeeds; all 79 release-build files match their public bytes. Installed Chrome verifies comments, recipe filters, capture/reference editing, beginner/expert explanations and saved exact fixtures. The workshop has no document overflow at a measured 320px CSS width. Actual Arabic/Urdu guides retain RTL prose, inline versions and 20 LTR code blocks.
+- Next: continue the original mission using the [developer-experience decisions](DEVELOPER_EXPERIENCE.md), compiler diagnostic/source-range work and debugger/runtime-budget investigation as candidates to verify and prioritize. PHP native parity and independent language, usability and screen-reader studies remain unverified. Preserve the immutable release archives/tags and disabled source Actions. The complete original mission remains active; this release is one completed milestone. Exact identities and evidence are in [DISTRIBUTION.md](DISTRIBUTION.md) and [TESTING.md](TESTING.md).
+
 ## Dev.7 candidate preparation
 
 - Prepared: package/lock, changelog, all ten README guides, current product contracts and homepage align with dev.7 in an isolated verification checkout. Source-only publication notices are removed from the current feature descriptions; dated historical receipts remain intact. Arabic/Urdu version labels now stay within RTL paragraphs using explicit LTR code elements.
