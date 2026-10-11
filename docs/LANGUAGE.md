@@ -204,6 +204,8 @@ Native syntax alone is insufficient. An incompatible runtime reports `UNSUPPORTE
 
 JavaScript/TypeScript exports preserve local groups and include an explicit native scoped-behavior requirement. Foreign profiles report `EXPORT_SCOPED_FLAGS` until target-specific behavior is verified. The grammar follows [ECMAScript's native modifier groups](https://tc39.es/ecma262/2025/multipage/text-processing.html#sec-patterns); unsupported options are not rewritten into approximate character classes.
 
+On unreleased main, `toRegExp({ source, flags })` also checks scoped behavior in the receiving runtime and the supplied Unicode mode. It reads each string field once and ignores unused explanation segments. The native constructor runs first, retaining its `SyntaxError` for invalid patterns, flags or unavailable syntax. Accepted syntax with unsupported behavior reports `UNSUPPORTED_TARGET_FEATURE` at the first modifier opener in the supplied native source; columns count UTF-16 units. Escaped modifier-like text and class members do not trigger this check, and ordinary cached patterns retain native acceptance without the rule-language limits. Firefox's defective legacy mode is rejected for legacy cached scopes, while its verified `u/v` modes remain usable.
+
 <a name="capture-references-unreleased-on-main"></a>
 
 ## Capture references

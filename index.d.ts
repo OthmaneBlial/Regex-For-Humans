@@ -245,4 +245,5 @@ export interface ReverseTranslation {
 }
 export function regexToRules(regex: RegExp): ReverseTranslation;
 export function regexMatchingThroughLines(lines: string): string;
+/** Construct from source/flags only, retaining native syntax errors and checking scoped runtime behavior. */
 export function toRegExp(result: CompileResult | Pick<CompileResult, "source" | "flags">): RegExp;

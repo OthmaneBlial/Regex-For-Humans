@@ -258,6 +258,14 @@ const snapshot = toRegExp({
   get flags() { return ++flagReads === 1 ? "isu" : "g"; }
 });
 if (sourceReads !== 1 || flagReads !== 1 || snapshot.source !== "^A.😀$" || snapshot.flags !== "isu" || !snapshot.test(${JSON.stringify("a\n😀")}) || snapshot.test("CHANGED")) throw new Error("Installed helper did not construct from its validated metadata");
+let scopedResult;
+try { scopedResult = compile('group with flags "i" {\\n"a"\\n}'); }
+catch (error) { assert.equal(error.code, "UNSUPPORTED_TARGET_FEATURE"); }
+const cachedScope = { source: "(?i:a)", flags: "u" };
+if (scopedResult) assert.equal(toRegExp(cachedScope).test("A"), true);
+else assert.throws(() => toRegExp(cachedScope), error => error instanceof SyntaxError || error.code === "UNSUPPORTED_TARGET_FEATURE");
+assert.equal(toRegExp({ source: "[(?i:)]", flags: "u" }).test("("), true);
+assert.equal(toRegExp({ source: "a{2001}", flags: "u" }).source, "a{2001}");
 for (const [flags, expected] of [["", "u"], ["i", "iu"], ["s", "su"], ["is", "isu"], ["si", "isu"]]) {
   if (compile("digit", { flags }).flags !== expected) throw new Error("Wrong option flag normalization");
 }

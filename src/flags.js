@@ -8,6 +8,27 @@ export function applyModifiers(flags, modifiers) {
     .join("");
 }
 
+/** Locate a modifier opener in constructor-validated native source.
+ * @param {string} source @param {boolean} unicodeSets @returns {number}
+ */
+export function modifierGroupStart(source, unicodeSets) {
+  let classDepth = 0;
+  for (let index = 0; index < source.length; index++) {
+    const value = source[index];
+    if (value === "\\") index++;
+    else if (value === "[" && (!classDepth || unicodeSets)) classDepth++;
+    else if (value === "]" && classDepth) classDepth--;
+    else if (
+      !classDepth &&
+      value === "(" &&
+      source[index + 1] === "?" &&
+      /^[ims-]$/u.test(source[index + 2] ?? "")
+    )
+      return index;
+  }
+  return -1;
+}
+
 /** Check native scope behavior in the requested Unicode/cursor mode.
  * @param {string} [flags]
  */

@@ -1,5 +1,11 @@
 # Autonomous implementation progress
 
+## Cached scoped-source compatibility milestone
+
+- Implemented: `toRegExp({ source, flags })` applies the shared native behavioral guard after constructor validation. Cached metadata reads each field once and ignores segments; escaped text and nested v-mode classes are distinguished from actual modifier groups. Invalid native syntax retains `SyntaxError`; accepted but defective scopes report their native-source line and UTF-16 column. Ordinary metadata retains native acceptance without rule-language restrictions.
+- Verified: the new regression fails before the correction. All 401 Node cases finish on Node 22.23.3, Node 25.9.0 and Node 26.11.1 with 397 passes, four explicit scoped-native skips and no failures. All 16 targeted Chrome desktop/mobile and Firefox/WebKit checks pass, including the full scoped native corpus and cached Unicode/legacy modes. Clean installed JavaScript/strict TypeScript/API/CLI consumers pass on Node 25 and Node 22. Firefox's defective legacy cached scopes are rejected without blocking its verified u/v behavior.
+- Distribution: this source correction follows the scoped-group milestone below. Frozen dev.9, retained archives and public Pages remain unchanged. The wider mission and independent human reviews remain open; the next release requires its own synchronized guides and distribution checks.
+
 ## Scoped i/m/s source milestone
 
 - Implemented: native `group with flags "im-s"` scopes preserve enclosing flags, lexical case/line/dot behavior, captures and reference-site folding. Parser ranges, source spans, typed effective flags, imports, explanations, structural analysis, SVGs, conservative failure proofs, syntax highlighting and localized explanation levels share the same semantics. Converting a scoped group into a capture keeps an inner noncapturing option boundary and renumbers references; added wrappers must fit existing budgets. Foreign exports fail explicitly until their scoped behavior is verified.

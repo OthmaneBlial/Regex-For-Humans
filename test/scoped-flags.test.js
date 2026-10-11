@@ -17,6 +17,64 @@ import { scopedInputs, scopedPatterns } from "./fixtures/scoped-flags-corpus.js"
 
 const supported = supportsModifiers();
 
+test("cached modifier metadata uses the runtime guard and keeps original field access", () => {
+  let syntax = true;
+  try {
+    // biome-ignore lint/complexity/useRegexLiterals: Node 22 must parse this feature probe.
+    new RegExp("(?i:a)", "u");
+  } catch {
+    syntax = false;
+  }
+  let sourceReads = 0;
+  let flagReads = 0;
+  const metadata = {
+    get source() {
+      sourceReads++;
+      return "a\r\nb(?i:c)";
+    },
+    get flags() {
+      flagReads++;
+      return "u";
+    },
+    get segments() {
+      throw new Error("Cached construction must not read explanation segments.");
+    },
+  };
+  if (!syntax) assert.throws(() => toRegExp(metadata), SyntaxError);
+  else if (!supported)
+    assert.throws(() => toRegExp(metadata), {
+      code: "UNSUPPORTED_TARGET_FEATURE",
+      line: 2,
+      column: 2,
+    });
+  else assert.equal(toRegExp(metadata).test("a\r\nbC"), true);
+  assert.deepEqual([sourceReads, flagReads], [1, 1]);
+  for (const [source, flags, line, column] of [
+    ['"a\r\nb(?i:c)', "u", 2, 2],
+    ["[[](?i:a)", "u", 1, 4],
+    [String.raw`\\(?i:a)`, "u", 1, 3],
+    [String.raw`[[\q{\(\?i:a\)}]](?i:b)`, "v", 1, 18],
+  ]) {
+    if (!syntax) assert.throws(() => toRegExp({ source, flags }), SyntaxError);
+    else if (!supportsModifiers(flags))
+      assert.throws(() => toRegExp({ source, flags }), {
+        code: "UNSUPPORTED_TARGET_FEATURE",
+        line,
+        column,
+      });
+    else assert.equal(toRegExp({ source, flags }).flags, flags);
+  }
+});
+
+test("cached construction distinguishes modifier groups from escaped and class text", () => {
+  for (const source of [String.raw`\(\?i:a\)`, "[(?i:)]", String.raw`\\\(\?i:a\)`, "a{2001}"])
+    assert.equal(toRegExp({ source, flags: "u" }).source, new RegExp(source, "u").source);
+  assert.throws(() => toRegExp({ source: "(?i:a)", flags: "uu" }), SyntaxError);
+  assert.throws(() => toRegExp({ source: "(?ii:a)", flags: "u" }), SyntaxError);
+  const vSource = String.raw`[[\q{\(\?i:a\)}]]`;
+  assert.equal(toRegExp({ source: vSource, flags: "v" }).test("(?i:a)"), true);
+});
+
 test("scoped flag groups are native, bounded and leave enclosing flags unchanged", () => {
   const rules = 'start\ngroup with flags "i-s" {\n"a"\nany character\n}\n"B"\nend';
   if (!supported) {
