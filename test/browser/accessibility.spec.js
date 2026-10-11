@@ -242,15 +242,15 @@ test("a diagnostic can focus its exact source position from the keyboard", async
   await page.goto("/");
   await expect(page.locator("#regex-output")).toHaveText("/^ABC\\d{3}$/u");
   const editor = page.locator("#rules-input");
-  for (const [rules, marker] of [
-    ['start "😀"\u2028  unexpected words', "unexpected"],
-    ['start "😀"\n"bad\\q"', "\\q"],
-    ['start "😀"\n"missing', null],
-    ['start "😀"\n"missing   ', null],
-    ['start 2 "missing\u00a0 ', null],
-    ['start "😀"\none of: "missing   ', null],
-    ['start "😀"\ntext without: a, "missing   ', null],
-    ['start "😀"\nnone of: a, "bad\t ', "\t"],
+  for (const [rules, marker, selectionLength] of [
+    ['start "😀"\u2028  unexpected words', "unexpected", 1],
+    ['start "😀"\n"bad\\q"', "\\q", 2],
+    ['start "😀"\n"missing', null, 0],
+    ['start "😀"\n"missing   ', null, 0],
+    ['start 2 "missing\u00a0 ', null, 0],
+    ['start "😀"\none of: "missing   ', null, 0],
+    ['start "😀"\ntext without: a, "missing   ', null, 0],
+    ['start "😀"\nnone of: a, "bad\t ', "\t", 1],
   ]) {
     await editor.fill(rules);
     await page.getByRole("button", { name: "Go to error", exact: true }).press("Enter");
@@ -258,7 +258,7 @@ test("a diagnostic can focus its exact source position from the keyboard", async
     const position = marker === null ? rules.length : rules.indexOf(marker);
     expect(
       await editor.evaluate((input) => ({ start: input.selectionStart, end: input.selectionEnd })),
-    ).toEqual({ start: position, end: position + Number(marker !== null) });
+    ).toEqual({ start: position, end: position + selectionLength });
   }
   const longRules = `${"digit\n".repeat(199)}unsupported words`;
   await editor.fill(longRules);

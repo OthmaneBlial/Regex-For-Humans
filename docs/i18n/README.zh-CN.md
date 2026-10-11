@@ -8,7 +8,7 @@
 
 把清晰的英文规则编译成 JavaScript 正则表达式，并逐段理解结果。
 
-[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.8)
+[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.9)
 
 🔒 本地运行 · 🧩 无运行时依赖 · ⚡ 一个编译器，三种使用方式
 
@@ -34,11 +34,11 @@ end
 
 这是**固定词汇**的规则语言，每条指令都有精确定义。库、CLI 和工作台使用同一个确定性编译器。不认识的指令会返回行、列和修复提示。所有译本中的规则语法仍然使用英文，不会翻译关键字。
 
-> 🌱 预览版 `0.1.0-dev.8` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
+> 🌱 预览版 `0.1.0-dev.9` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
 
 ## 🧰 现在可以做什么
 
-| 能力 | npm `0.1.0-dev.8` / 托管工作台 |
+| 能力 | npm `0.1.0-dev.9` / 托管工作台 |
 | --- | --- |
 | 规则 → JavaScript 正则 | ✅ |
 | 支持的正则 → 可编辑规则 | ✅ |
@@ -62,17 +62,17 @@ end
 
 本地工作坊新增 **Edit groups and references**，可重命名捕获组、切换分组类型并定位引用。编号变化后，数字引用仍指向原来的捕获组；仍被引用的捕获组不能改为非捕获组，拒绝操作时保留原规则。**Highlight** 根据原生索引高亮捕获范围，支持空捕获和消耗的匹配范围之外的捕获。`editGroup` API 返回经过验证的规则。参见[编辑分组](../LANGUAGE.md#editing-groups)。
 
-当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.8` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
+当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.9` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
 
-源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。npm `0.1.0-dev.8` 已包含这些功能。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
+源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。npm `0.1.0-dev.9` 已包含这些功能。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
 
-源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。npm `0.1.0-dev.8` 已包含这些功能，参见[单词边界](../LANGUAGE.md#word-boundaries)。
+源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。npm `0.1.0-dev.9` 已包含这些功能，参见[单词边界](../LANGUAGE.md#word-boundaries)。
 
-源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。npm `0.1.0-dev.8` 已包含这些功能，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
+源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。npm `0.1.0-dev.9` 已包含这些功能，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
 
-源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.8` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
+源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.9` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
 
-npm `0.1.0-dev.8` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
+npm `0.1.0-dev.9` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
 
 ## 🌍 导出到你的编程语言
 
@@ -92,7 +92,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.8`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
+输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.9`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
 
 ## 🎮 试一个模式
 
@@ -106,6 +106,12 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 精确预期检查完整的 UTF-16 范围、按组号排列的捕获值（`null` 表示未参与，`""` 表示参与了空匹配），以及使用原始标志的 JavaScript 替换结果。测试文件支持带版本的 JSON 导入/导出和手动本地保存/恢复。无效草稿或文件不会覆盖当前工作；导入的 CR/CRLF 保持原样，直到编辑示例输入框。参见[测试文件格式、示例和限制](../TEST_FIXTURES.md)。
 
+用 **Copy share link** **分享完整工作坊快照**：规则、标志、匹配模式、示例和精确预期都会保存在一个 URL 中。新页面会先恢复快照，再加载配方；**Load shared link** 仅在明确操作后替换已有工作。剪贴板被拒绝时，可以在文本框中手动复制。链接上限为 32 KiB；更大的测试集使用 JSON 导出。拥有链接的任何人都能读取内容，它没有加密。参见[分享方式及限制](../TEST_FIXTURES.md#share-a-workshop-snapshot)。
+
+通过原生匹配范围，或可证明的最小长度、缺失的必需文本以及位于错误绝对输入边界的文本，**理解失败的示例**。前缀和后缀检查适用于区分大小写的输入锚点；行锚点和不确定情况仍采用保守说明。无法确定具体失败步骤时，工作坊会明确说明。这不是回溯执行轨迹。参见[失败说明](../FAILURE_EXPLANATIONS.md)。
+
+对于引号内无效转义、字符类或列表中的无效项、范围端点和 Unicode 属性别名，**跳转到精确诊断位置**。高亮保留原始转义写法及完整的 Unicode 代理对；没有已知范围的错误仍定位到起点。库和 CLI 可提供可选的 `endColumn`，表示不包含右端的 UTF-16 列位置。参见[诊断范围](../LANGUAGE.md#errors-and-future-syntax)。
+
 1. 选择配方，或每行写一条指令。
 2. 查看生成的片段及其解释。
 3. 添加输入示例，标明哪些应该匹配。
@@ -115,7 +121,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 在当前工作台中展开匹配，可查看捕获值及引擎提供的位置。未参与匹配的组与捕获到空字符串的组分别显示；重复组显示最后一次捕获。**Search anywhere** 最多列出 100 个不重叠匹配，遇到空匹配后前进一个 Unicode 码点。位置按 UTF-16 代码单元计数，结束位置不包含在范围内。如果引擎不支持捕获索引，只显示值，不推测位置。
 
-[![桌面工作台的真实截图](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![桌面工作台的真实截图](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e6ff4e7f61e2)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [移动端截图及校验和](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)。
 
@@ -255,7 +261,7 @@ end
 
 ## 🧲 用命名捕获提取字段
 
-此示例可使用 npm `0.1.0-dev.8` 或在线工作台运行。
+此示例可使用 npm `0.1.0-dev.9` 或在线工作台运行。
 
 ```text
 start
@@ -410,11 +416,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | 从 `lastIndex` 匹配，遇到间隙即停止 |
 | `v` | `{ flags: 'v' }` | 原生 v 模式 Unicode 字符类与补集 |
 
-**预览版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.8` 已包含这些功能。
+**预览版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.9` 已包含这些功能。
 
-选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.8` 已包含这些功能。
+选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.9` 已包含这些功能。
 
-嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.8` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
+嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.9` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
 
 ## 🛠️ 本地开发
 
@@ -482,7 +488,7 @@ CI=1 npm run verify
 | [对比](../COMPETITOR_GAPS.md) | 来源和待补能力 |
 | [贡献](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | 环境和约定 |
 
-**2026年10月11日本地验证：** 1,138项测试通过：334项 Node 测试、478项 Chromium 桌面/移动检查、262项 Firefox/WebKit 检查和64项网站检查。构建及独立 JavaScript/TypeScript 项目中的包安装均通过，审计报告0个漏洞。另一个独立消费者检查也在 Node 22.23.3 通过。这些结果仅描述当前快照；真人易用性和屏幕阅读器评估仍待完成。
+**版本验证：**[验证记录](../TESTING.md)分别记录编译器和 CLI 测试、Chromium 桌面与移动端流程、Firefox/WebKit 检查、网站测试、独立 JavaScript/TypeScript 项目中的包验证及依赖审计。Node 22 的包使用方验证单独进行。真人易用性、翻译和屏幕阅读器评估仍待完成。
 
 ## 结构风险检查
 

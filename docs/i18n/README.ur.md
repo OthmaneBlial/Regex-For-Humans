@@ -10,7 +10,7 @@
 
 چند واضح انگریزی ہدایات کو JavaScript کے ایسے ریگولر ایکسپریشن میں بدلیں جس کے ہر حصے کو آپ سمجھ سکیں۔
 
-[🚀 ورکشاپ کھولیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 ویب سائٹ](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 قواعد کا طریقہ](../LANGUAGE.md) · [📦 npm کا آزمائشی نسخہ](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.8)
+[🚀 ورکشاپ کھولیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 ویب سائٹ](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 قواعد کا طریقہ](../LANGUAGE.md) · [📦 npm کا آزمائشی نسخہ](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.9)
 
 🔒 مقامی طور پر چلتا ہے · 🧩 رن ٹائم کی کوئی اضافی dependency نہیں · ⚡ ایک کمپائلر، تین انٹرفیس
 
@@ -52,11 +52,11 @@ end
 
 الفاظ کا مجموعہ **مقرر ہے**: ہر ہدایت کا ایک واضح مطلب ہے۔ لائبریری، کمانڈ لائن اور ورکشاپ ایک ہی deterministic کمپائلر استعمال کرتے ہیں۔ نامعلوم ہدایت پر سطر، کالم اور اصلاح کی تجویز ملتی ہے۔ تمام ترجموں میں قواعد لکھنے کی زبان انگریزی ہی رہتی ہے۔
 
-> 🌱 لائبریری اور کمانڈ لائن کے آزمائشی نسخے <code dir="ltr">0.1.0-dev.8</code> کے لیے **Node.js 22 یا جدید تر** درکار ہے۔ آن لائن ورکشاپ بغیر انسٹال کیے چلتی ہے۔ استعمال میں آسانی اور اسکرین ریڈر کے انسانی جائزے ابھی باقی ہیں۔
+> 🌱 لائبریری اور کمانڈ لائن کے آزمائشی نسخے <code dir="ltr">0.1.0-dev.9</code> کے لیے **Node.js 22 یا جدید تر** درکار ہے۔ آن لائن ورکشاپ بغیر انسٹال کیے چلتی ہے۔ استعمال میں آسانی اور اسکرین ریڈر کے انسانی جائزے ابھی باقی ہیں۔
 
 ## 🧰 آج کیا بنایا جا سکتا ہے؟
 
-| صلاحیت | <code dir="ltr">npm 0.1.0-dev.8</code> / میزبان ورکشاپ |
+| صلاحیت | <code dir="ltr">npm 0.1.0-dev.9</code> / میزبان ورکشاپ |
 | ---: | ---: |
 | قابلِ مطالعہ قواعد → JavaScript regex | ✅ |
 | معاونت یافتہ regex → قابلِ ترمیم قواعد | ✅ |
@@ -82,11 +82,11 @@ end
 
 <p dir="ltr" align="left"><code dir="ltr">Edit groups and references</code></p>
 
-نمبر بدلنے کے بعد بھی عددی references اپنے اصل capture کی طرف اشارہ کرتے ہیں۔ جس capture کا reference موجود ہو، اسے noncapturing بنانے کی کوشش مسترد ہوتی ہے اور اصل قواعد برقرار رہتے ہیں۔ <code dir="ltr">Highlight</code> بٹن اصل native indices سے capture کی جگہ دکھاتا ہے، خواہ capture خالی ہو یا consumed match سے باہر ہو۔ <code dir="ltr">editGroup</code> API تصدیق شدہ قواعد واپس کرتی ہے۔ یہ اضافے npm پیکیج اور میزبان ورکشاپ میں دستیاب ہیں۔ ورژن <code dir="ltr">0.1.0-dev.8</code>۔
+نمبر بدلنے کے بعد بھی عددی references اپنے اصل capture کی طرف اشارہ کرتے ہیں۔ جس capture کا reference موجود ہو، اسے noncapturing بنانے کی کوشش مسترد ہوتی ہے اور اصل قواعد برقرار رہتے ہیں۔ <code dir="ltr">Highlight</code> بٹن اصل native indices سے capture کی جگہ دکھاتا ہے، خواہ capture خالی ہو یا consumed match سے باہر ہو۔ <code dir="ltr">editGroup</code> API تصدیق شدہ قواعد واپس کرتی ہے۔ یہ اضافے npm پیکیج اور میزبان ورکشاپ میں دستیاب ہیں۔ ورژن <code dir="ltr">0.1.0-dev.9</code>۔
 
 [گروپ کی تدوین](../LANGUAGE.md#editing-groups) دیکھیں۔
 
-موجودہ سورس میں <code dir="ltr">lazy digits</code> سے <code dir="ltr">\d+?</code> بنتا ہے: پہلے ایک ہندسہ آزمائیں، پھر اگلے قواعد کی ضرورت کے مطابق تکرار بڑھائیں۔npm <code dir="ltr">0.1.0-dev.8</code> میں دستیاب ہے۔ [تکرار کے قواعد](../LANGUAGE.md#repetition) دیکھیں۔
+موجودہ سورس میں <code dir="ltr">lazy digits</code> سے <code dir="ltr">\d+?</code> بنتا ہے: پہلے ایک ہندسہ آزمائیں، پھر اگلے قواعد کی ضرورت کے مطابق تکرار بڑھائیں۔npm <code dir="ltr">0.1.0-dev.9</code> میں دستیاب ہے۔ [تکرار کے قواعد](../LANGUAGE.md#repetition) دیکھیں۔
 
 سورس میں یہ چار صورتیں بھی دستیاب ہیں:
 
@@ -99,7 +99,7 @@ end
 
 </div>
 
-یہ اردگرد کے متن کو جانچتے ہیں، اسے match میں شامل نہیں کرتے۔ Captures کی اصل values اور positions برقرار رہتی ہیں، چاہے وہ match کے باہر ہوں؛ lookbehind کے لیے انجن کی معاونت ضروری ہے۔npm <code dir="ltr">0.1.0-dev.8</code> میں دستیاب ہے۔ [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) دیکھیں۔
+یہ اردگرد کے متن کو جانچتے ہیں، اسے match میں شامل نہیں کرتے۔ Captures کی اصل values اور positions برقرار رہتی ہیں، چاہے وہ match کے باہر ہوں؛ lookbehind کے لیے انجن کی معاونت ضروری ہے۔npm <code dir="ltr">0.1.0-dev.9</code> میں دستیاب ہے۔ [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) دیکھیں۔
 
 سورس میں لفظ کی حدود کے لیے یہ صورتیں بھی دستیاب ہیں:
 
@@ -110,14 +110,14 @@ end
 
 </div>
 
-یہ assertions کوئی حرف consume نہیں کرتیں۔ JavaScript میں word characters سے مراد ASCII حروف، ہندسے اور underscore ہیں؛ <code dir="ltr">i</code> کے ساتھ case folding کے مساوی حروف بھی شامل ہوتے ہیں۔ یہ قدرتی زبان کے الفاظ کی تقسیم نہیں ہے۔npm <code dir="ltr">0.1.0-dev.8</code> میں دستیاب ہے۔ [لفظ کی حدود](../LANGUAGE.md#word-boundaries) دیکھیں۔
+یہ assertions کوئی حرف consume نہیں کرتیں۔ JavaScript میں word characters سے مراد ASCII حروف، ہندسے اور underscore ہیں؛ <code dir="ltr">i</code> کے ساتھ case folding کے مساوی حروف بھی شامل ہوتے ہیں۔ یہ قدرتی زبان کے الفاظ کی تقسیم نہیں ہے۔npm <code dir="ltr">0.1.0-dev.9</code> میں دستیاب ہے۔ [لفظ کی حدود](../LANGUAGE.md#word-boundaries) دیکھیں۔
 
 سورس میں یہ دو قواعد بھی دستیاب ہیں:
 
 - <code dir="ltr">unicode property "L"</code>
 - <code dir="ltr">not unicode property "L"</code>
 
-پہلے سے <code dir="ltr">\p{L}</code> اور دوسرے سے <code dir="ltr">\P{L}</code> بنتا ہے۔ نام <code dir="ltr">L</code> حروف کی category ہے۔ Aliases میں بڑے اور چھوٹے حروف کا فرق اہم ہے؛ classification انجن کے Unicode data پر منحصر ہے۔ Counts اور <code dir="ltr">lazy</code> معمول کے مطابق کام کرتے ہیں۔ فلیگ <code dir="ltr">i</code> کے ساتھ native <code dir="ltr">u</code> complement میں case folding کے مساوی حروف بھی آ سکتے ہیں۔npm <code dir="ltr">0.1.0-dev.8</code> میں دستیاب ہے۔ [Unicode properties](../LANGUAGE.md#unicode-properties) دیکھیں۔
+پہلے سے <code dir="ltr">\p{L}</code> اور دوسرے سے <code dir="ltr">\P{L}</code> بنتا ہے۔ نام <code dir="ltr">L</code> حروف کی category ہے۔ Aliases میں بڑے اور چھوٹے حروف کا فرق اہم ہے؛ classification انجن کے Unicode data پر منحصر ہے۔ Counts اور <code dir="ltr">lazy</code> معمول کے مطابق کام کرتے ہیں۔ فلیگ <code dir="ltr">i</code> کے ساتھ native <code dir="ltr">u</code> complement میں case folding کے مساوی حروف بھی آ سکتے ہیں۔npm <code dir="ltr">0.1.0-dev.9</code> میں دستیاب ہے۔ [Unicode properties](../LANGUAGE.md#unicode-properties) دیکھیں۔
 
 سورس میں یہ صورتیں بھی دستیاب ہیں:
 
@@ -125,9 +125,9 @@ end
 <p dir="ltr" align="left"><code dir="ltr">character class: digit, "_"</code></p>
 <p dir="ltr" align="left"><code dir="ltr">not character class: digit</code></p>
 
-ایک class میں ایک Unicode code point کے literals، ranges، singular shorthands اور Unicode properties جمع کیے جا سکتے ہیں۔ تیسری صورت پوری union کو negate کرتی ہے۔ Counts اور <code dir="ltr">lazy</code> پوری class پر لاگو ہوتے ہیں؛ property complements کا native <code dir="ltr">u</code>/<code dir="ltr">i</code> رویہ برقرار رہتا ہے۔npm <code dir="ltr">0.1.0-dev.8</code> میں دستیاب ہے؛ [character classes](../LANGUAGE.md#composable-character-classes) دیکھیں۔
+ایک class میں ایک Unicode code point کے literals، ranges، singular shorthands اور Unicode properties جمع کیے جا سکتے ہیں۔ تیسری صورت پوری union کو negate کرتی ہے۔ Counts اور <code dir="ltr">lazy</code> پوری class پر لاگو ہوتے ہیں؛ property complements کا native <code dir="ltr">u</code>/<code dir="ltr">i</code> رویہ برقرار رہتا ہے۔npm <code dir="ltr">0.1.0-dev.9</code> میں دستیاب ہے؛ [character classes](../LANGUAGE.md#composable-character-classes) دیکھیں۔
 
-لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.8</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
+لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.9</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
 
 ## 🌍 اپنی پروگرامنگ زبان میں ایکسپورٹ کریں
 
@@ -143,7 +143,7 @@ end
 
 جاوا اسکرپٹ اور ٹائپ اسکرپٹ اصل پیٹرن برقرار رکھتے ہیں۔ دوسرے اہداف پہلے ساختی درخت سے معاون regex رویہ تبدیل کرتے ہیں، پھر درست escaping کے ساتھ سورس کوڈ بناتے ہیں۔ سات اصل انجنوں پر تیار شدہ کوڈ کے تقابلی ٹیسٹ کامیاب ہیں؛ export profile کو <code dir="ltr">PHP 8.5.11 / PCRE2 10.44</code> پر جانچا گیا ہے۔ آزمائے گئے نسخے اور ٹیسٹ مجموعے کی حدود [مطابقت کی رہنمائی](../COMPATIBILITY.md#engine-exports) میں درج ہیں۔
 
-شرائط اور capture mapping ساتھ رکھیں: دوسرے انجن <code dir="ltr">gN</code> نام استعمال کرتے ہیں اور غیر شریک capture کا نام موجود نہ بھی ہو سکتا ہے۔ ان پٹ درست Unicode ہونا چاہیے۔ غیر معاون flags <code dir="ltr">d/g/i/y</code>، Unicode properties اور assertion، capture یا repetition کے غیر موافق رویے پر مقام سمیت diagnostic ملتا ہے۔ کوڈ یا مکمل <code dir="ltr">JSON</code> ڈاؤن لوڈ کریں؛ براؤزر کی مثالیں اب بھی جاوا اسکرپٹ میں چلتی ہیں۔ یہ اضافے npm پیکیج اور میزبان ورکشاپ میں دستیاب ہیں۔ ورژن <code dir="ltr">0.1.0-dev.8</code>۔
+شرائط اور capture mapping ساتھ رکھیں: دوسرے انجن <code dir="ltr">gN</code> نام استعمال کرتے ہیں اور غیر شریک capture کا نام موجود نہ بھی ہو سکتا ہے۔ ان پٹ درست Unicode ہونا چاہیے۔ غیر معاون flags <code dir="ltr">d/g/i/y</code>، Unicode properties اور assertion، capture یا repetition کے غیر موافق رویے پر مقام سمیت diagnostic ملتا ہے۔ کوڈ یا مکمل <code dir="ltr">JSON</code> ڈاؤن لوڈ کریں؛ براؤزر کی مثالیں اب بھی جاوا اسکرپٹ میں چلتی ہیں۔ یہ اضافے npm پیکیج اور میزبان ورکشاپ میں دستیاب ہیں۔ ورژن <code dir="ltr">0.1.0-dev.9</code>۔
 
 تفصیل [انجن پروفائلز اور حدود](../LANGUAGE.md#engine-exports) میں ہے۔
 
@@ -167,7 +167,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 </div>
 
-نتیجہ: <code dir="ltr">/^ABC\d{3}$/u</code>۔ کسی خاص ورژن کے لیے <code dir="ltr">regex-for-humans@0.1.0-dev.8</code> استعمال کریں۔ رن ٹائم کی اضافی dependencies یا ہر نظام کے لیے الگ executable فراہم نہیں کیا گیا۔
+نتیجہ: <code dir="ltr">/^ABC\d{3}$/u</code>۔ کسی خاص ورژن کے لیے <code dir="ltr">regex-for-humans@0.1.0-dev.9</code> استعمال کریں۔ رن ٹائم کی اضافی dependencies یا ہر نظام کے لیے الگ executable فراہم نہیں کیا گیا۔
 
 ## 🎮 کوئی pattern آزمائیں
 
@@ -183,6 +183,12 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 درست توقعات پوری <code dir="ltr">UTF-16</code> حدود کی فہرست، گروپ نمبر کے مطابق کیپچر کی قدریں اور اصل فلیگ کے ساتھ جاوا اسکرپٹ کے متبادل نتائج جانچتی ہیں۔ <code dir="ltr">null</code> کا مطلب غیر شریک کیپچر ہے اور <code dir="ltr">""</code> کا مطلب خالی متن پکڑنے والا کیپچر ہے۔ ٹیسٹ فائلیں ورژن والے <code dir="ltr">JSON</code> کی درآمد/برآمد اور دستی مقامی محفوظ کرنے/بحال کرنے کی سہولت دیتی ہیں۔ غلط مسودے یا فائلیں موجودہ کام محفوظ رکھتی ہیں؛ درآمد شدہ <code dir="ltr">CR/CRLF</code> مثال کا خانہ تبدیل کرنے تک بعینہٖ برقرار رہتے ہیں۔ [ٹیسٹ فائلوں کی ساخت، مثالیں اور حدود](../TEST_FIXTURES.md) دیکھیں۔
 
+**پوری ورکشاپ کا اسنیپ شاٹ شیئر کریں** بذریعہ <code dir="ltr">Copy share link</code>: قواعد، فلیگ، میچ موڈ، مثالیں اور درست توقعات ایک <code dir="ltr">URL</code> میں محفوظ رہتی ہیں۔ نیا صفحہ ترکیبیں لوڈ ہونے سے پہلے انہیں بحال کرتا ہے؛ <code dir="ltr">Load shared link</code> موجودہ کام کو صرف واضح کارروائی کے بعد بدلتا ہے۔ کلپ بورڈ کی اجازت نہ ملے تو دستی نقل کے لیے خانہ دستیاب رہتا ہے۔ لنک کی حد <code dir="ltr">32 KiB</code> ہے؛ بڑے ٹیسٹ مجموعے <code dir="ltr">JSON</code> برآمد استعمال کرتے ہیں۔ لنک رکھنے والا کوئی بھی شخص مواد پڑھ سکتا ہے: یہ رمز بند نہیں ہے۔ [شیئر کرنے کا طریقہ اور حدود](../TEST_FIXTURES.md#share-a-workshop-snapshot) دیکھیں۔
+
+اصل میچ کی حدود یا کم از کم لمبائی، غائب لازمی متن اور ان پٹ کے غلط مطلق کنارے پر موجود متن کی ثابت شدہ شرطوں سے **ناکام مثال کی وجہ سمجھیں**۔ سابقے اور لاحقے کی جانچ بڑے اور چھوٹے حروف میں فرق کرنے والے ان پٹ اینکرز پر لاگو ہوتی ہے؛ سطر کے اینکرز اور غیر یقینی صورتوں میں محتاط وضاحت برقرار رہتی ہے۔ درست ناکام مرحلہ معلوم نہ ہو تو ورکشاپ صاف بتاتی ہے۔ یہ بیک ٹریکنگ کا اجرائی ریکارڈ نہیں ہے۔ [ناکامی کی وضاحتیں](../FAILURE_EXPLANATIONS.md) دیکھیں۔
+
+غلط اقتباسی <code dir="ltr">escape</code>، کلاس یا فہرست کے غلط جز، حد کے سرے یا <code dir="ltr">Unicode</code> <code dir="ltr">property alias</code> کے **درست تشخیصی حصے پر جائیں**۔ نمایاں حصہ اصل <code dir="ltr">escape</code> لکھائی اور مکمل <code dir="ltr">Unicode</code> جوڑوں کو برقرار رکھتا ہے؛ حدود معلوم نہ ہونے پر ابتدائی مقام تک جانے کی سہولت باقی رہتی ہے۔ لائبریری اور <code dir="ltr">CLI</code> اختیاری <code dir="ltr">endColumn</code> دیتے ہیں، جو <code dir="ltr">UTF-16</code> اکائیوں میں آخری کالم ہے اور آخری حد کو خود شامل نہیں کرتا۔ [تشخیصی حدود](../LANGUAGE.md#errors-and-future-syntax) دیکھیں۔
+
 <p dir="ltr" align="left" lang="en"><strong>Build a rule</strong></p>
 
 <p dir="ltr" align="left"><strong>Interface language</strong> · English · 简体中文 · Español · Français</p>
@@ -196,7 +202,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 موجودہ ورکشاپ میں match کھول کر capture کی قدریں اور مقامات دیکھیں۔ **Capture نہیں ہوا** اور **خالی متن capture ہوا** الگ دکھائے جاتے ہیں؛ بار بار آنے والا گروپ اپنی آخری capture دکھاتا ہے۔ **Search anywhere** زیادہ سے زیادہ 100 غیر متداخل matches دکھاتا ہے اور خالی match کے بعد مکمل Unicode code point آگے بڑھتا ہے۔ مقامات UTF-16 units میں ہیں؛ آخری حد شامل نہیں۔ اگر انجن capture indices نہ دے تو قدریں دکھائی جاتی ہیں، مقامات اندازے سے نہیں بنائے جاتے۔
 
-[![ڈیسک ٹاپ ورکشاپ کی حقیقی تصویر](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![ڈیسک ٹاپ ورکشاپ کی حقیقی تصویر](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e6ff4e7f61e2)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [موبائل منظر اور checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)۔
 
@@ -356,7 +362,7 @@ end
 
 ## 🧲 نام والے captures سے fields نکالیں
 
-یہ مثال npm نسخے <code dir="ltr">0.1.0-dev.8</code> اور شائع شدہ ورکشاپ میں کام کرتی ہے۔
+یہ مثال npm نسخے <code dir="ltr">0.1.0-dev.9</code> اور شائع شدہ ورکشاپ میں کام کرتی ہے۔
 
 <div dir="ltr" align="left">
 
@@ -541,9 +547,9 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | <code dir="ltr">y</code> | <code dir="ltr">{ flags: 'y' }</code> | <code dir="ltr">lastIndex</code> پر match، پہلی رکاوٹ پر رکنا |
 | <code dir="ltr">v</code> | <code dir="ltr">{ flags: 'v' }</code> | Native v-mode Unicode classes اور complements |
 
-**npm preview میں:** آٹھوں flags <code dir="ltr">d</code>، <code dir="ltr">g</code>، <code dir="ltr">i</code>، <code dir="ltr">m</code>، <code dir="ltr">s</code>، <code dir="ltr">u</code>، <code dir="ltr">v</code>، <code dir="ltr">y</code> دستیاب ہیں۔ نتیجے کی ترتیب <code dir="ltr">dgimsuvy</code> ہے؛ duplicates اور u/v ساتھ دینے پر خرابی آتی ہے، u ڈیفالٹ ہے۔ m الگ option یا line anchors سے فعال ہوتا ہے؛ دونوں انداز ملانے پر input anchors مکمل حدود برقرار رکھتے ہیں۔ Reverse translation options محفوظ رکھتی ہے اور <code dir="ltr">lastIndex</code> نہیں بدلتی۔ Workshop ہر مثال 0 سے شروع کرتا ہے اور زیادہ سے زیادہ 100 matches دکھاتا ہے؛ copied g/y regex کی state برقرار رہتی ہے۔ غیر موجود native صلاحیتوں کے واضح diagnostics ملتے ہیں۔npm <code dir="ltr">0.1.0-dev.8</code> میں دستیاب ہے۔
+**npm preview میں:** آٹھوں flags <code dir="ltr">d</code>، <code dir="ltr">g</code>، <code dir="ltr">i</code>، <code dir="ltr">m</code>، <code dir="ltr">s</code>، <code dir="ltr">u</code>، <code dir="ltr">v</code>، <code dir="ltr">y</code> دستیاب ہیں۔ نتیجے کی ترتیب <code dir="ltr">dgimsuvy</code> ہے؛ duplicates اور u/v ساتھ دینے پر خرابی آتی ہے، u ڈیفالٹ ہے۔ m الگ option یا line anchors سے فعال ہوتا ہے؛ دونوں انداز ملانے پر input anchors مکمل حدود برقرار رکھتے ہیں۔ Reverse translation options محفوظ رکھتی ہے اور <code dir="ltr">lastIndex</code> نہیں بدلتی۔ Workshop ہر مثال 0 سے شروع کرتا ہے اور زیادہ سے زیادہ 100 matches دکھاتا ہے؛ copied g/y regex کی state برقرار رہتی ہے۔ غیر موجود native صلاحیتوں کے واضح diagnostics ملتے ہیں۔npm <code dir="ltr">0.1.0-dev.9</code> میں دستیاب ہے۔
 
-<p dir="rtl"><strong>npm preview میں:</strong> strings کے sets اور Unicode string properties کے لیے <code dir="ltr">v</code> منتخب کریں۔ Native انجن فہرست کی ترتیب سے قطع نظر لمبے ارکان پہلے آزماتا ہے؛ بعد کے قواعد چھوٹے رکن پر واپس جانے کا تقاضا کر سکتے ہیں۔ خالی strings بھی درست ہیں۔ تیسری صورت class کے اندر استعمال کریں۔ String property یا ایسی class کا complement نہیں بنایا جا سکتا جس میں خالی string یا کئی Unicode code points والا رکن ہو۔ یہ سہولتیں npm <code dir="ltr">0.1.0-dev.8</code> میں دستیاب ہیں۔</p>
+<p dir="rtl"><strong>npm preview میں:</strong> strings کے sets اور Unicode string properties کے لیے <code dir="ltr">v</code> منتخب کریں۔ Native انجن فہرست کی ترتیب سے قطع نظر لمبے ارکان پہلے آزماتا ہے؛ بعد کے قواعد چھوٹے رکن پر واپس جانے کا تقاضا کر سکتے ہیں۔ خالی strings بھی درست ہیں۔ تیسری صورت class کے اندر استعمال کریں۔ String property یا ایسی class کا complement نہیں بنایا جا سکتا جس میں خالی string یا کئی Unicode code points والا رکن ہو۔ یہ سہولتیں npm <code dir="ltr">0.1.0-dev.9</code> میں دستیاب ہیں۔</p>
 
 <p dir="ltr" align="left"><code dir="ltr">one of strings: "a", "ab", ""</code></p>
 <p dir="ltr" align="left"><code dir="ltr">unicode property "RGI_Emoji"</code></p>
@@ -637,7 +643,7 @@ CI=1 npm run verify
 | [موازنہ](../COMPETITOR_GAPS.md) | Sources اور باقی صلاحیتیں |
 | [حصہ ڈالیں](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup اور conventions |
 
-**11 اکتوبر 2026 کو مقامی جانچ:** <code dir="ltr">1,138</code> tests کامیاب ہیں: <code dir="ltr">334</code> Node tests، <code dir="ltr">478</code> desktop/mobile Chromium checks، <code dir="ltr">262</code> Firefox/WebKit checks اور <code dir="ltr">64</code> site checks۔ Builds اور الگ JavaScript/TypeScript منصوبے میں package installation بھی کامیاب ہیں؛ audit میں کوئی vulnerability رپورٹ نہیں ہوئی۔ الگ package consumer کی جانچ <code dir="ltr">Node 22.23.3</code> پر بھی کامیاب ہے۔ نتائج اسی snapshot کے ہیں؛ استعمال اور screen reader کے انسانی جائزے ابھی باقی ہیں۔
+**ریلیز کی جانچ:** [تصدیق کا ریکارڈ](../TESTING.md) کمپائلر اور <code dir="ltr">CLI</code> کے ٹیسٹ، کمپیوٹر اور موبائل پر <code dir="ltr">Chromium</code> کے استعمال، <code dir="ltr">Firefox/WebKit</code> اور ویب سائٹ کی جانچ، الگ <code dir="ltr">JavaScript/TypeScript</code> منصوبوں میں پیکیج کے استعمال اور انحصار کی جانچ کو الگ درج کرتا ہے۔ <code dir="ltr">Node 22</code> پر پیکیج استعمال کرنے والے منصوبوں کی جانچ الگ ہوتی ہے۔ استعمال، ترجمے اور اسکرین ریڈر کے انسانی جائزے ابھی باقی ہیں۔
 
 ## ساختی خطرات کا جائزہ
 

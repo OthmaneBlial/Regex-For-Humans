@@ -76,7 +76,7 @@ Local preservation is manual and uses `regex-for-humans:tests.v1` in this origin
 
 ## Share a workshop snapshot
 
-**Unreleased source after dev.8:** the current [distribution receipt](DISTRIBUTION.md) identifies the published runtime; these link controls belong to the next release.
+**dev.9:** snapshot links are included in this preview. The [distribution receipt](DISTRIBUTION.md) records the actual publication and verification state.
 
 Open **Test fixtures** and choose **Copy share link**. The link preserves the same validated version 1 fixture as JSON export: rules, flags, match mode, positive/negative examples, exact spans, capture values and replacement expectations. Empty suites and syntactically invalid rule drafts remain shareable and editable. Malformed expectation drafts must be repaired before sharing. Interface language, theme and browser storage are not included. The generated URL keeps the workshop origin/path and omits existing query parameters and credentials.
 

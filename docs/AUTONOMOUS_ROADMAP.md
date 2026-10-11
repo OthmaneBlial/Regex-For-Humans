@@ -1,5 +1,11 @@
 # Autonomous implementation progress
 
+## dev.9 distribution preparation
+
+- Prepared: an isolated candidate based on `14b4e5c` pins dev.9 in the package, ten equivalent guides and homepage. It documents precise quoted/property/class ranges, absolute input-edge failure proofs and complete snapshot links. The 20 canonical code blocks stay identical; Arabic/Urdu preserve RTL prose and LTR technical content. Genuine current-version desktop/mobile captures show named captures and sharing controls; all three images were visually inspected.
+- Verification: 389 Node checks and the clean installed-package consumer pass in the first complete-command attempt. That attempt reveals a legacy keyboard-navigation test expecting one character for `\q`; the intended two-character range is now asserted explicitly, while point/EOF, focus and scrolling checks remain. Both focused desktop/mobile checks pass. The stopped attempt is not recorded as a complete release pass. The final uninterrupted command and exact retained-archive consumers remain pending.
+- Next: freeze the candidate, complete validation, promote and push it to main, publish its exact archive, and synchronize its tag/Release and the existing owner Pages folder. Verify registry/public bytes and update the Downloads Reddit draft. Preserve old archives and disabled source Actions. The original autonomous mission and independent human review gates remain open.
+
 ## Shareable snapshot source milestone
 
 - Implemented: complete versioned fixtures can be shared as a bounded URL fragment, including rules, flags, mode, examples and exact native expectations. Loading precedes recipes; initial edits and in-page navigation retain the workspace until explicit replacement. Clipboard failure leaves a labeled manual-copy field, late replies preserve newer feedback, and larger suites retain JSON export. Controls and statuses use all four interface languages and reuse existing visual styles, schema validation and worker matching.

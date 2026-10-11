@@ -12,7 +12,7 @@ The workshop explains disagreements between the expected match result and the va
 | An input-end anchor requires a literal suffix that occurs elsewhere | The quoted literal required at input end |
 | None of those conditions explains a native failure | Explicitly says the precise failing step is unavailable |
 
-**Source after dev.8:** input-edge proofs are an unreleased extension. The [distribution snapshot](DISTRIBUTION.md) identifies the actual published runtime.
+**dev.9:** input-edge proofs are included in this preview. The [distribution snapshot](DISTRIBUTION.md) records publication and verification separately.
 
 Ranges and lengths count UTF-16 units, not graphemes. For example, `😀A!` has four units, and searching for `A` returns `[2, 3)`. Full-input mode rejects that partial match; search mode accepts it.
 

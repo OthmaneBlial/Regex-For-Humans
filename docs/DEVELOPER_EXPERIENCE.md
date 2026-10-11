@@ -1,11 +1,11 @@
 # Developer experience decisions
 
-This evaluates every item in section 16 of the autonomous mission against the implemented workshop and package. It distinguishes current source workflows from follow-up work; an evaluated idea is not advertised as shipped. The [distribution receipt](DISTRIBUTION.md) identifies the published version; arbitrary fixture links below are source additions after dev.8.
+This evaluates every item in section 16 of the autonomous mission against the implemented workshop and package. It distinguishes preview workflows from follow-up work; an evaluated idea is not advertised as shipped. The [distribution receipt](DISTRIBUTION.md) records publication and verification separately. Arbitrary fixture links are included in dev.9.
 
 | Item | Current evidence and decision |
 | --- | --- |
 | Copy to clipboard | The regex copy button includes permission failure and manual-selection recovery. Keep this working path. |
-| Shareable URLs | Every one of the 31 recipes has a stable `?example=` link. Unreleased source also copies a complete versioned fixture into a bounded URL fragment, restores it before recipes load and offers explicit replacement when another link arrives in an edited page. Clipboard failure leaves a manual-copy field; large suites retain JSON export. See [the snapshot contract](TEST_FIXTURES.md#share-a-workshop-snapshot). |
+| Shareable URLs | Every one of the 31 recipes has a stable `?example=` link. The dev.9 workshop also copies a complete versioned fixture into a bounded URL fragment, restores it before recipes load and offers explicit replacement when another link arrives in an edited page. Clipboard failure leaves a manual-copy field; large suites retain JSON export. See [the snapshot contract](TEST_FIXTURES.md#share-a-workshop-snapshot). |
 | Local autosave | Versioned fixtures support explicit validated save/restore. Keep saving manual for this release so incomplete JSON drafts cannot replace a saved valid regression suite. Automatic draft recovery would need its own separate draft contract. |
 | Keyboard shortcuts | Ctrl/Cmd + Enter translates the pasted regex. Native controls, source links, editor selection and diagram navigation have keyboard checks. Rule edits compile immediately; they need no extra compile shortcut. |
 | Searchable examples | Literal English/current-language search combines with 24 categories and three difficulty levels, preserving the workspace. |

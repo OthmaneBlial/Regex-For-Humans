@@ -8,7 +8,7 @@
 
 Convierte reglas claras en inglés en una expresión regular JavaScript cuyas partes puedes seguir.
 
-[🚀 Taller](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Sitio](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Sintaxis](../LANGUAGE.md) · [📦 Versión preliminar de npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.8)
+[🚀 Taller](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Sitio](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Sintaxis](../LANGUAGE.md) · [📦 Versión preliminar de npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.9)
 
 🔒 Ejecución local · 🧩 Sin dependencias en tiempo de ejecución · ⚡ Un compilador, tres interfaces
 
@@ -34,11 +34,11 @@ end
 
 El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Biblioteca, CLI y taller comparten el compilador determinista. Las frases desconocidas producen un diagnóstico con línea, columna y sugerencia. La sintaxis de las reglas se mantiene en inglés en todas las traducciones.
 
-> 🌱 La versión preliminar `0.1.0-dev.8` requiere **Node.js 22+** para la biblioteca y el CLI. El taller funciona sin instalación. Las revisiones humanas de usabilidad y lectores de pantalla siguen pendientes.
+> 🌱 La versión preliminar `0.1.0-dev.9` requiere **Node.js 22+** para la biblioteca y el CLI. El taller funciona sin instalación. Las revisiones humanas de usabilidad y lectores de pantalla siguen pendientes.
 
 ## 🧰 Qué puedes construir hoy
 
-| Capacidad | npm `0.1.0-dev.8` / taller alojado |
+| Capacidad | npm `0.1.0-dev.9` / taller alojado |
 | --- | --- |
 | Reglas → regex JavaScript | ✅ |
 | Regex compatible → reglas editables | ✅ |
@@ -62,17 +62,17 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 
 El taller ofrece **Edit groups and references** para renombrar capturas, cambiar su tipo y localizar sus referencias. Las referencias numéricas conservan su destino al cambiar la numeración; eliminar una captura referenciada se rechaza sin modificar las reglas. **Highlight** resalta el intervalo nativo de una captura, incluso si está vacía o fuera del texto consumido. La API `editGroup` devuelve reglas validadas. Consulta la [edición de grupos](../LANGUAGE.md#editing-groups).
 
-En el código fuente, `lazy digits` genera `\d+?`: prueba primero un dígito y amplía la repetición si las reglas siguientes lo requieren. Disponible en npm `0.1.0-dev.8`. Consulta las [reglas de repetición](../LANGUAGE.md#repetition).
+En el código fuente, `lazy digits` genera `\d+?`: prueba primero un dígito y amplía la repetición si las reglas siguientes lo requieren. Disponible en npm `0.1.0-dev.9`. Consulta las [reglas de repetición](../LANGUAGE.md#repetition).
 
-El código fuente también admite `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Comprueban el texto alrededor de la posición actual sin consumirlo. Las capturas conservan sus valores y posiciones nativos, incluso fuera del texto consumido; la retrospección requiere un motor compatible. Disponible en npm `0.1.0-dev.8`. Consulta las [aserciones](../LANGUAGE.md#lookaround-assertions).
+El código fuente también admite `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Comprueban el texto alrededor de la posición actual sin consumirlo. Las capturas conservan sus valores y posiciones nativos, incluso fuera del texto consumido; la retrospección requiere un motor compatible. Disponible en npm `0.1.0-dev.9`. Consulta las [aserciones](../LANGUAGE.md#lookaround-assertions).
 
-El código fuente acepta `word boundary` (`\b`) y `not word boundary` (`\B`). No consumen caracteres. JavaScript considera caracteres de palabra las letras ASCII, los dígitos y el guion bajo, además de sus equivalentes al ignorar mayúsculas con `i`. Esto no segmenta palabras del lenguaje natural. Disponible en npm `0.1.0-dev.8`; consulta los [límites de palabra](../LANGUAGE.md#word-boundaries).
+El código fuente acepta `word boundary` (`\b`) y `not word boundary` (`\B`). No consumen caracteres. JavaScript considera caracteres de palabra las letras ASCII, los dígitos y el guion bajo, además de sus equivalentes al ignorar mayúsculas con `i`. Esto no segmenta palabras del lenguaje natural. Disponible en npm `0.1.0-dev.9`; consulta los [límites de palabra](../LANGUAGE.md#word-boundaries).
 
-El código fuente también acepta `unicode property "L"` y `not unicode property "L"` como `\p{L}` y `\P{L}` nativos. `L` significa Letter; los alias distinguen mayúsculas y la clasificación usa los datos Unicode del motor. Los recuentos y `lazy` funcionan normalmente. Con `i`, el complemento nativo en modo `u` puede incluir letras equivalentes al ignorar mayúsculas. Disponible en npm `0.1.0-dev.8`; consulta las [propiedades Unicode](../LANGUAGE.md#unicode-properties).
+El código fuente también acepta `unicode property "L"` y `not unicode property "L"` como `\p{L}` y `\P{L}` nativos. `L` significa Letter; los alias distinguen mayúsculas y la clasificación usa los datos Unicode del motor. Los recuentos y `lazy` funcionan normalmente. Con `i`, el complemento nativo en modo `u` puede incluir letras equivalentes al ignorar mayúsculas. Disponible en npm `0.1.0-dev.9`; consulta las [propiedades Unicode](../LANGUAGE.md#unicode-properties).
 
-El código fuente admite `range "α" to "ω"` y `character class: digit, "_"`. Una clase combina literales de un punto Unicode, rangos, abreviaturas singulares y propiedades Unicode; `not character class:` niega toda la unión. Los recuentos y `lazy` se aplican a la clase. Los complementos conservan el comportamiento nativo `u`/`i`. Disponible en npm `0.1.0-dev.8`; consulta [clases de caracteres](../LANGUAGE.md#composable-character-classes).
+El código fuente admite `range "α" to "ω"` y `character class: digit, "_"`. Una clase combina literales de un punto Unicode, rangos, abreviaturas singulares y propiedades Unicode; `not character class:` niega toda la unión. Los recuentos y `lazy` se aplican a la clase. Los complementos conservan el comportamiento nativo `u`/`i`. Disponible en npm `0.1.0-dev.9`; consulta [clases de caracteres](../LANGUAGE.md#composable-character-classes).
 
-npm `0.1.0-dev.8` incluye grupos, capturas, referencias anteriores y alternativas ordenadas en la biblioteca y el CLI. El taller añade inspección de capturas y múltiples coincidencias de búsqueda. Consulta [compatibilidad](../COMPATIBILITY.md) y [publicación](../DISTRIBUTION.md).
+npm `0.1.0-dev.9` incluye grupos, capturas, referencias anteriores y alternativas ordenadas en la biblioteca y el CLI. El taller añade inspección de capturas y múltiples coincidencias de búsqueda. Consulta [compatibilidad](../COMPATIBILITY.md) y [publicación](../DISTRIBUTION.md).
 
 ## 🌍 Exportar a tu lenguaje
 
@@ -92,7 +92,7 @@ Ejecuta el CLI sin instalación global:
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-Imprime `/^ABC\d{3}$/u`. Para fijar la versión, usa `regex-for-humans@0.1.0-dev.8`. No hay dependencias de ejecución ni ejecutables independientes por sistema operativo.
+Imprime `/^ABC\d{3}$/u`. Para fijar la versión, usa `regex-for-humans@0.1.0-dev.9`. No hay dependencias de ejecución ni ejecutables independientes por sistema operativo.
 
 ## 🎮 Experimentar con un patrón
 
@@ -104,7 +104,13 @@ el editor nativo colorea palabras clave, cadenas, capturas, cuantificadores, ase
 
 el panel de construcción inserta plantillas editables de captura, sección opcional, alternativa, repetición, clase de caracteres y aserción antes de la línea o selección actual, entre los anclajes exteriores. Añadir una captura conserva los destinos de las referencias numéricas existentes. Las inserciones inválidas o demasiado grandes conservan las reglas y la selección; los flags y ejemplos permanecen. Consulta la [construcción de reglas](../ARCHITECTURE.md#rule-construction).
 
-las expectativas exactas comprueban todos los rangos UTF-16, los valores de captura en orden (`null` para ausencia, `""` para una captura vacía) y los resultados de reemplazo JavaScript con los indicadores originales. Los fixtures permiten importar/exportar JSON versionado y guardar/restaurar ejemplos localmente de forma manual. Los borradores o archivos inválidos conservan el trabajo actual; los CR/CRLF importados permanecen exactos hasta editar el campo del ejemplo. Consulta el [formato, los ejemplos y los límites de los fixtures](../TEST_FIXTURES.md).
+Las expectativas exactas comprueban todos los rangos UTF-16, los valores de captura en orden (`null` para ausencia, `""` para una captura vacía) y los resultados de reemplazo JavaScript con los indicadores originales. Los fixtures permiten importar/exportar JSON versionado y guardar/restaurar ejemplos localmente de forma manual. Los borradores o archivos inválidos conservan el trabajo actual; los CR/CRLF importados permanecen exactos hasta editar el campo del ejemplo. Consulta el [formato, los ejemplos y los límites de los fixtures](../TEST_FIXTURES.md).
+
+**Comparte un taller completo** con **Copy share link**: reglas, indicadores, modo de coincidencia, ejemplos y expectativas exactas se conservan en una URL. Una página nueva los restaura antes de cargar las recetas; **Load shared link** reemplaza explícitamente el trabajo actual. Si se deniega el portapapeles, queda un campo para copiar manualmente. Los enlaces tienen un límite de 32 KiB; las suites mayores usan exportación JSON. Cualquiera con el enlace puede leer su contenido: no está cifrado. Consulta [el uso compartido y sus límites](../TEST_FIXTURES.md#share-a-workshop-snapshot).
+
+**Entiende un ejemplo que falla** mediante rangos nativos o condiciones demostrables de longitud mínima, literales obligatorios ausentes y texto situado en el extremo absoluto incorrecto de la entrada. Las pruebas de prefijo y sufijo se aplican a anclas de entrada sensibles a mayúsculas; las anclas de línea y los casos inciertos conservan explicaciones prudentes. El taller indica cuándo no conoce el paso exacto del fallo. No es una traza de backtracking. Consulta [las explicaciones de fallos](../FAILURE_EXPLANATIONS.md).
+
+**Ve al diagnóstico exacto** de un escape entre comillas mal formado, un elemento inválido de clase o lista, un extremo de rango o un alias de propiedad Unicode. El resaltado conserva los escapes originales y los pares Unicode completos; sin rango conocido, sigue disponible la navegación al punto inicial. La biblioteca y el CLI exponen `endColumn` opcional, un final exclusivo en unidades UTF-16. Consulta [los rangos de diagnóstico](../LANGUAGE.md#errors-and-future-syntax).
 
 1. Elige una receta o escribe una instrucción por línea.
 2. Examina cada fragmento generado y su explicación.
@@ -115,7 +121,7 @@ Una coincidencia parcial muestra contexto escapado y resaltado; una coincidencia
 
 En el taller actual, abre una coincidencia para ver las capturas y sus posiciones nativas. Un grupo ausente y una captura vacía son distintos; los grupos repetidos muestran su último valor. **Search anywhere** lista hasta 100 coincidencias sin solapamiento y avanza un punto de código Unicode después de una coincidencia vacía. Las posiciones cuentan unidades UTF-16, con el final excluido. Si el motor no ofrece índices, se muestran valores sin deducir posiciones.
 
-[![Captura real del taller de escritorio](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e1a2f3784e8c)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![Captura real del taller de escritorio](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e6ff4e7f61e2)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [Vista móvil y sumas de comprobación](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md).
 
@@ -255,7 +261,7 @@ Los saltos de línea son literales. La aplicación debe validar importes, númer
 
 ## 🧲 Extraer campos con capturas con nombre
 
-Este ejemplo funciona con npm `0.1.0-dev.8` y en el taller publicado.
+Este ejemplo funciona con npm `0.1.0-dev.9` y en el taller publicado.
 
 ```text
 start
@@ -410,11 +416,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | Coincide en `lastIndex`; se detiene al primer hueco |
 | `v` | `{ flags: 'v' }` | Clases Unicode y complementos nativos en modo v |
 
-**En la vista previa:** se aceptan los ocho flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y`, con `{ flags: 'dgiv' }` o `--flags dgiv`. La salida usa el orden `dgimsuvy`; rechaza duplicados y combinar u/v, y u es el valor predeterminado. m puede ser explícito o activarse con anclas de línea; las anclas de entrada siguen siendo absolutas al mezclar ambos modos. La traducción inversa conserva las opciones sin modificar `lastIndex`. El workshop inicia cada ejemplo en 0 y enumera hasta 100 coincidencias; los regex g/y copiados siguen teniendo estado. Las capacidades nativas ausentes reciben diagnósticos explícitos. Disponible en npm `0.1.0-dev.8`.
+**En la vista previa:** se aceptan los ocho flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y`, con `{ flags: 'dgiv' }` o `--flags dgiv`. La salida usa el orden `dgimsuvy`; rechaza duplicados y combinar u/v, y u es el valor predeterminado. m puede ser explícito o activarse con anclas de línea; las anclas de entrada siguen siendo absolutas al mezclar ambos modos. La traducción inversa conserva las opciones sin modificar `lastIndex`. El workshop inicia cada ejemplo en 0 y enumera hasta 100 coincidencias; los regex g/y copiados siguen teniendo estado. Las capacidades nativas ausentes reciben diagnósticos explícitos. Disponible en npm `0.1.0-dev.9`.
 
-**En la vista previa:** selecciona `v` para `one of strings: "a", "ab", ""` o `unicode property "RGI_Emoji"`. Los conjuntos nativos prueban primero los miembros más largos, sin depender del orden de la lista; las reglas posteriores pueden exigir uno más corto. Se permiten cadenas vacías. Usa `string "ab"` dentro de una clase. Las propiedades de cadenas y los miembros vacíos o de varios puntos de código no se pueden complementar. Disponible en npm `0.1.0-dev.8`.
+**En la vista previa:** selecciona `v` para `one of strings: "a", "ab", ""` o `unicode property "RGI_Emoji"`. Los conjuntos nativos prueban primero los miembros más largos, sin depender del orden de la lista; las reglas posteriores pueden exigir uno más corto. Se permiten cadenas vacías. Usa `string "ab"` dentro de una clase. Las propiedades de cadenas y los miembros vacíos o de varios puntos de código no se pueden complementar. Disponible en npm `0.1.0-dev.9`.
 
-**En la vista previa:** los conjuntos anidados usan `character set union {`, `character set intersection {` y `character set subtraction {`, cerrados con `}`. Cada línea contiene un carácter, rango, clase, propiedad, conjunto de cadenas o conjunto anidado. La intersección conserva miembros comunes; la resta elimina los miembros de la derecha del primer operando. Las repeticiones y `lazy` se aplican al bloque completo. `not` respeta las restricciones estructurales nativas sobre cadenas; una unión vacía no coincide con nada. Selecciona `v`; Disponible en npm `0.1.0-dev.8`. [Sintaxis y ejemplos](../LANGUAGE.md#nested-unicode-set-operations).
+**En la vista previa:** los conjuntos anidados usan `character set union {`, `character set intersection {` y `character set subtraction {`, cerrados con `}`. Cada línea contiene un carácter, rango, clase, propiedad, conjunto de cadenas o conjunto anidado. La intersección conserva miembros comunes; la resta elimina los miembros de la derecha del primer operando. Las repeticiones y `lazy` se aplican al bloque completo. `not` respeta las restricciones estructurales nativas sobre cadenas; una unión vacía no coincide con nada. Selecciona `v`; Disponible en npm `0.1.0-dev.9`. [Sintaxis y ejemplos](../LANGUAGE.md#nested-unicode-set-operations).
 
 ## 🛠️ Desarrollar localmente
 
@@ -482,7 +488,7 @@ Cada lote de resultados también tiene límites: 1000 coincidencias, 20 000 capt
 | [Comparación](../COMPETITOR_GAPS.md) | Fuentes y capacidades pendientes |
 | [Contribuir](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Preparación y convenciones |
 
-**Verificado localmente el 11 de octubre de 2026:** pasan 1.138 pruebas: 334 de Node, 478 controles Chromium de escritorio/móvil, 262 de Firefox/WebKit y 64 del sitio. También pasan las compilaciones y la instalación en un proyecto JavaScript/TypeScript independiente; la auditoría no informa vulnerabilidades. Otra instalación independiente pasa con Node 22.23.3. Son resultados de esta versión; las revisiones humanas de uso y lectores de pantalla siguen abiertas.
+**Validación de la versión:** el [registro de verificación](../TESTING.md) distingue las pruebas del compilador y la CLI, los recorridos Chromium de escritorio y móvil, los controles Firefox/WebKit y del sitio, los proyectos JavaScript/TypeScript independientes y la auditoría de dependencias. Las instalaciones con Node 22 se comprueban por separado. Las revisiones humanas de uso, traducción y lectores de pantalla siguen pendientes.
 
 ## Revisión de riesgos estructurales
 
