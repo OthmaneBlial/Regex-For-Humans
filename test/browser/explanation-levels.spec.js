@@ -95,15 +95,15 @@ test("explanation level survives delayed recipes, reverse translation and invali
 });
 
 for (const mode of ["beginner", "intermediate", "expert"]) {
-  test(`${mode} explanations localize and remain accessible in both themes at 320px`, async ({
-    page,
-  }) => {
-    await page.goto("/");
-    await page.setViewportSize({ width: 320, height: 800 });
-    await page.locator("#rules-input").fill('capture "word" {\n"<img>{line}"\n}');
-    await expect(page.locator("#regex-output")).toContainText("word");
-    const key = "Source line {line}, column {column}; regex UTF-16 range [{start}, {end}).";
-    for (const locale of ["en", "zh-CN", "es", "fr"]) {
+  for (const locale of ["en", "zh-CN", "es", "fr"])
+    test(`${locale} ${mode} explanations remain accessible in both themes at 320px`, async ({
+      page,
+    }) => {
+      await page.goto("/");
+      await page.setViewportSize({ width: 320, height: 800 });
+      await page.locator("#rules-input").fill('capture "word" {\n"<img>{line}"\n}');
+      await expect(page.locator("#regex-output")).toContainText("word");
+      const key = "Source line {line}, column {column}; regex UTF-16 range [{start}, {end}).";
       await page.locator("#interface-language").selectOption(locale);
       await expect(page.locator('label[for="explanation-mode"]')).toHaveText(
         translate(locale, "Explanation level"),
@@ -121,6 +121,5 @@ for (const mode of ["beginner", "intermediate", "expert"]) {
         );
         expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
       }
-    }
-  });
+    });
 }

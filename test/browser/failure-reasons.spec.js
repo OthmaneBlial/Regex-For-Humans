@@ -2,6 +2,35 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { translate } from "../../web/i18n.js";
 
+test("wrong anchored literal positions explain failures in every interface language", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const rules = page.locator("#rules-input");
+  await rules.fill('start\n"ABC"\n1 digit\n"XYZ"\nend');
+  const row = page.locator(".test-row").first();
+  const input = row.locator("textarea").first();
+  const reason = row.locator(".failure-reason");
+  for (const locale of ["en", "zh-CN", "es", "fr"]) {
+    await page.locator("#interface-language").selectOption(locale);
+    for (const theme of ["light", "dark"]) {
+      await page.locator("#interface-theme").selectOption(theme);
+      for (const [text, key, literal] of [
+        ["!ABC1XYZ", "The input must begin with {literal}.", '"ABC"'],
+        ["ABC1XYZ!", "The input must end with {literal}.", '"XYZ"'],
+      ]) {
+        await input.fill(text);
+        await expect(reason).toHaveText(translate(locale, key, { literal }));
+        await expect(row).toHaveAttribute("data-result", "fail");
+      }
+    }
+  }
+  await input.fill("ABC1XYZ");
+  await expect(row).toHaveAttribute("data-result", "pass");
+  await expect(reason).toBeHidden();
+  await expect(reason).toBeEmpty();
+});
+
 test("failure explanations prove necessary conditions and clear after edits or invalid rules", async ({
   page,
 }) => {
@@ -57,29 +86,35 @@ test("failure explanations show actual UTF-16 ranges and retain exact expectatio
   await expect(row.locator(".failure-reason")).toBeHidden();
 });
 
-test("failure explanations are described to inputs, localized and accessible at 320px", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await page.setViewportSize({ width: 320, height: 800 });
-  await page.locator("#rules-input").fill('start\n"<img onerror=alert(1)> {minimum}"\nend');
-  const row = page.locator(".test-row").first();
-  const input = row.locator("textarea").first();
-  await input.fill("x".repeat(40));
-  const key = "Required literal {literal} is absent from the input.";
-  const literal = '"<img onerror=alert(1)> {minimum}"';
-  for (const locale of ["en", "zh-CN", "es", "fr"]) {
-    await page.locator("#interface-language").selectOption(locale);
-    await expect(row.locator(".failure-reason")).toHaveText(translate(locale, key, { literal }));
-    for (const theme of ["light", "dark"]) {
-      await page.locator("#interface-theme").selectOption(theme);
-      await expect(row.locator("img")).toHaveCount(0);
-      const id = await row.locator(".failure-reason").getAttribute("id");
-      await expect(input).toHaveAttribute("aria-describedby", new RegExp(id));
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
-        true,
-      );
-      expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-    }
-  }
-});
+const markupText = "<img onerror=alert(1)> {minimum}";
+for (const [scenario, value, key] of [
+  ["missing literal", "x".repeat(40), "Required literal {literal} is absent from the input."],
+  ["input start", `x${markupText}`, "The input must begin with {literal}."],
+  ["input end", `${markupText}x`, "The input must end with {literal}."],
+])
+  for (const locale of ["en", "zh-CN", "es", "fr"])
+    test(`${locale} failure explanations for ${scenario} are described and accessible at 320px`, async ({
+      page,
+    }) => {
+      await page.goto("/");
+      await page.setViewportSize({ width: 320, height: 800 });
+      await page.locator("#rules-input").fill(`start\n${JSON.stringify(markupText)}\nend`);
+      const row = page.locator(".test-row").first();
+      const input = row.locator("textarea").first();
+      await input.fill(value);
+      const literal = JSON.stringify(markupText);
+      await page.locator("#interface-language").selectOption(locale);
+      for (const theme of ["light", "dark"]) {
+        await page.locator("#interface-theme").selectOption(theme);
+        await expect(row.locator(".failure-reason")).toHaveText(
+          translate(locale, key, { literal }),
+        );
+        await expect(row.locator("img")).toHaveCount(0);
+        const id = await row.locator(".failure-reason").getAttribute("id");
+        await expect(input).toHaveAttribute("aria-describedby", new RegExp(id));
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+          true,
+        );
+        expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+      }
+    });

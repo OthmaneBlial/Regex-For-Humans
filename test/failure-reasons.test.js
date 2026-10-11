@@ -4,8 +4,127 @@ import test from "node:test";
 import { compile, regexToRules } from "../index.js";
 import { explainMismatch, failureRequirements } from "../web/failure-reasons.js";
 import { translations } from "../web/translations.js";
+import { flagSets } from "./fixtures/advanced-flags-corpus.js";
 
 const noMatch = { id: 1, actual: false, pass: false, detail: "", matchRange: null };
+
+test("anchored failures explain literals present at the wrong input edge", () => {
+  const rules = 'start\n"ABC"\n1 digit\n"XYZ"\nend';
+  const compiled = compile(rules);
+  const required = failureRequirements(rules, compiled.flags);
+  for (const [input, key, literal] of [
+    ["!ABC1XYZ", "The input must begin with {literal}.", "ABC"],
+    ["ABC1XYZ!", "The input must end with {literal}.", "XYZ"],
+  ]) {
+    assert.equal(new RegExp(compiled.source, compiled.flags).exec(input), null);
+    assert.deepEqual(explainMismatch(required, input, true, noMatch), {
+      key,
+      values: { literal },
+    });
+  }
+});
+
+const edgePatterns = [
+  [/(?<tag>ABC)\dXYZ/u, "ABC", "XYZ"],
+  [/(?:ab){2}\d!/u, "abab", "!"],
+  [/(?:AB){2,}XYZ/u, "ABAB", "ABABXYZ"],
+  [/(?:incoming\/foo|incoming\/bar)\dXYZ/u, "incoming/", "XYZ"],
+  [/(?:😀A|😀B)Z?!/u, "😀", "!"],
+  [/(?:😀|😁)!/u, undefined, "!"],
+  [/X?A!/u, undefined, "A!"],
+  [/(?:)*A!/u, "A!", "A!"],
+  [/\d{0}A!/u, "A!", "A!"],
+  [/(?=A)A\d!/u, "A", "!"],
+  [/(?!B)A\d!/u, "A", "!"],
+  [/\bA\dZ\b/u, "A", "Z"],
+  [/(?<a>A)?\k<a>!/u, undefined, "!"],
+  [/(?:A|)!/u, undefined, "!"],
+  [/اردو\dالعربية/u, "اردو", "العربية"],
+];
+
+test("literal edge proofs preserve groups, alternatives, repetition and Unicode boundaries", () => {
+  for (const [pattern, startLiteral, endLiteral] of edgePatterns) {
+    const rules = `start\n${regexToRules(pattern).rules}\nend`;
+    const required = failureRequirements(rules, "u");
+    assert.equal(required.startLiteral, startLiteral, String(pattern));
+    assert.equal(required.endLiteral, endLiteral, String(pattern));
+    const folded = failureRequirements(rules, "iu");
+    assert.equal(folded.startLiteral, undefined);
+    assert.equal(folded.endLiteral, undefined);
+  }
+  const fixed = failureRequirements('start\neither {\n"A"\n"A"\n}\n"!"\nend', "u");
+  assert.equal(fixed.startLiteral, "A!");
+  assert.equal(fixed.endLiteral, "A!");
+  const lines = failureRequirements('line start\n"A"\nline end', "mu");
+  assert.equal(lines.startLiteral, undefined);
+  assert.equal(lines.endLiteral, undefined);
+  for (const [rules, input, startLiteral, endLiteral] of [
+    ['line start\n"A"\nend', "before\nA", undefined, "A"],
+    ['start\n"A"\nline end', "A\nafter", "A", undefined],
+    ['"A"', "beforeAafter", undefined, undefined],
+  ]) {
+    const compiled = compile(rules, { flags: "mu" });
+    assert(new RegExp(compiled.source, compiled.flags).exec(input));
+    const required = failureRequirements(rules, compiled.flags);
+    assert.equal(required.startLiteral, startLiteral);
+    assert.equal(required.endLiteral, endLiteral);
+  }
+  const huge = `${"1000 group {\n".repeat(12)}"A"\n${"}\n".repeat(12)}`;
+  const bounded = failureRequirements(`start\n"edge"\n${huge}"tail"\nend`, "u");
+  assert.equal(bounded.minimum, 2049);
+  assert.equal(bounded.startLiteral, "edge");
+  assert.equal(bounded.endLiteral, "tail");
+});
+
+test("all 128 flag combinations retain necessary edges for native successful matches", () => {
+  const examples = [
+    "ABC1XYZ",
+    "abc1xyz",
+    "abab1!",
+    "ABABXYZ",
+    "ABABABXYZ",
+    "incoming/foo1XYZ",
+    "incoming/bar2XYZ",
+    "😀A!",
+    "😀BZ!",
+    "😀!",
+    "😁!",
+    "A!",
+    "XA!",
+    "A1!",
+    "A1Z",
+    "!",
+    "AA!",
+    "اردو1العربية",
+    "e\u0301",
+    "\r",
+    "\n",
+    "\u2028",
+    "\u2029",
+  ];
+  const corpus = [
+    ...new Set(["", ...examples.flatMap((s) => [s, `!${s}`, `${s}!`, `\n${s}`, `${s}\n`])]),
+  ];
+  let matches = 0;
+  for (const [pattern] of edgePatterns) {
+    const rules = `start\n${regexToRules(pattern).rules}\nend`;
+    for (const flags of flagSets) {
+      const compiled = compile(rules, { flags });
+      const required = failureRequirements(rules, compiled.flags);
+      const native = new RegExp(compiled.source, compiled.flags);
+      for (const input of corpus) {
+        native.lastIndex = 0;
+        if (!native.exec(input)) continue;
+        matches++;
+        assert(input.length >= required.minimum);
+        for (const literal of required.literals) assert(input.includes(literal), literal);
+        if (required.startLiteral) assert(input.startsWith(required.startLiteral));
+        if (required.endLiteral) assert(input.endsWith(required.endLiteral));
+      }
+    }
+  }
+  assert(matches > 1000);
+});
 
 test("necessary conditions respect optional branches, assertions, strings and case folding", () => {
   for (const [regex, minimum, literals] of [

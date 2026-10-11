@@ -118,6 +118,16 @@ export const translations = {
     "El texto literal obligatorio {literal} no aparece en la entrada.",
     "Le texte littéral obligatoire {literal} est absent de l’entrée.",
   ],
+  "The input must begin with {literal}.": [
+    "输入必须以 {literal} 开头。",
+    "La entrada debe comenzar con {literal}.",
+    "L’entrée doit commencer par {literal}.",
+  ],
+  "The input must end with {literal}.": [
+    "输入必须以 {literal} 结尾。",
+    "La entrada debe terminar con {literal}.",
+    "L’entrée doit se terminer par {literal}.",
+  ],
   "The native match covers [{start}, {end}); full-input mode requires [0, {length}).": [
     "原生匹配覆盖 [{start}, {end})；完整输入模式要求 [0, {length})。",
     "La coincidencia nativa cubre [{start}, {end}); el modo de entrada completa exige [0, {length}).",

@@ -2,7 +2,7 @@ import { classMayContainStrings } from "../src/ast.js";
 import { parse } from "../src/parser.js";
 
 /** @typedef {import('../src/ast.js').RuleNode} RuleNode */
-/** @typedef {{minimum: number, literals: string[]}} Requirements */
+/** @typedef {{minimum: number, literals: string[], startLiteral?: string, endLiteral?: string}} Requirements */
 /** @typedef {{key: string, values?: Record<string, string | number>}} Reason */
 
 /** @param {RuleNode} node */
@@ -55,11 +55,71 @@ function requirements(nodes, ignoreCase) {
   return { minimum, literals: [...literals] };
 }
 
+/** A necessary literal edge and whether it describes all consumption in the sequence.
+ * @param {RuleNode[]} nodes @param {boolean} backwards
+ * @returns {{value: string, exact: boolean}}
+ */
+function literalEdge(nodes, backwards) {
+  let value = "";
+  for (const node of backwards ? nodes.toReversed() : nodes) {
+    if (node.kind === "anchor" || node.kind === "assertion" || node.kind === "boundary") continue;
+    const repetition = node.repetition;
+    const count = minimumCount(node);
+    const fixedCount =
+      !repetition ||
+      repetition.kind === "exact" ||
+      (repetition.kind === "range" && repetition.min === repetition.max);
+    if (!count && fixedCount) continue;
+    let unit;
+    if (node.kind === "group") unit = literalEdge(node.nodes, backwards);
+    else if (node.kind === "alternation") {
+      const branches = node.branches.map((branch) => literalEdge(branch, backwards));
+      const common = [...branches[0].value];
+      if (backwards) common.reverse();
+      for (const branch of branches.slice(1)) {
+        const points = [...branch.value];
+        if (backwards) points.reverse();
+        let shared = 0;
+        while (shared < common.length && common[shared] === points[shared]) shared++;
+        common.length = shared;
+      }
+      if (backwards) common.reverse();
+      unit = {
+        value: common.join(""),
+        exact: branches.every((branch) => branch.exact && branch.value === branches[0].value),
+      };
+    } else if (node.kind === "atom" && node.atomType === "literal")
+      unit = { value: node.value, exact: true };
+    else return { value, exact: false };
+    if (unit.exact && !unit.value) continue;
+    if (!count) return { value, exact: false };
+    // Larger fixed runs already exceed the workshop input limit; do not expand them.
+    const length = unit.value.length * (unit.exact ? count : 1);
+    if (value.length + length > 2048) return { value, exact: false };
+    const part = unit.exact ? unit.value.repeat(count) : unit.value;
+    value = backwards ? part + value : value + part;
+    if (!unit.exact || !fixedCount) return { value, exact: false };
+  }
+  return { value, exact: true };
+}
+
 /** Call only after successful compilation. No regex matching runs here.
  * @param {string} rules @param {string} flags @returns {Requirements}
  */
 export function failureRequirements(rules, flags) {
-  return requirements(parse(rules).nodes, flags.includes("i"));
+  const { nodes } = parse(rules);
+  const ignoreCase = flags.includes("i");
+  const required = requirements(nodes, ignoreCase);
+  if (!ignoreCase)
+    for (const edge of ["start", "end"]) {
+      if (
+        !nodes.some((node) => node.kind === "anchor" && node.mode === "input" && node.edge === edge)
+      )
+        continue;
+      const { value } = literalEdge(nodes, edge === "end");
+      if (value) required[edge === "start" ? "startLiteral" : "endLiteral"] = value;
+    }
+  return required;
 }
 
 /** Explain a disagreement using validated native results and necessary conditions.
@@ -86,6 +146,16 @@ export function explainMismatch(required, input, expected, result) {
     return {
       key: "Required literal {literal} is absent from the input.",
       values: { literal: missing },
+    };
+  if (required.startLiteral && !input.startsWith(required.startLiteral))
+    return {
+      key: "The input must begin with {literal}.",
+      values: { literal: required.startLiteral },
+    };
+  if (required.endLiteral && !input.endsWith(required.endLiteral))
+    return {
+      key: "The input must end with {literal}.",
+      values: { literal: required.endLiteral },
     };
   return { key: "The native engine found no match. A precise failing step is unavailable." };
 }

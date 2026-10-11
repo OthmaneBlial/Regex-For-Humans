@@ -1,5 +1,12 @@
 # Autonomous implementation progress
 
+## Input-edge failure explanation source milestone
+
+- Implemented: native no-match results can explain a mandatory literal at the wrong absolute input edge. Typed-AST proofs compose groups, common alternative edges and minimum repetitions, preserve Unicode pairs and bound expansion. Line anchors, ignore-case matching and variable consumption retain truthful fallbacks. Both messages use all four interface languages and safe quoted text; native matching and worker limits are unchanged.
+- Verified: the original helper fails the new wrong-edge regression. All 385 Node checks pass on Node 25 and Node 22; six focused checks pass again on both after mixed-anchor review. The native-success corpus uses all 128 flag combinations. All 62 Chromium component checks pass; 59 Firefox/WebKit checks pass initially and the three deadline failures pass in an unchanged targeted rerun. Locale-separated accessibility matrices preserve every assertion, both themes and the original deadlines. See [the component verification receipt](TESTING.md).
+- Distribution: this source extension follows immutable public dev.8. Keep npm, the published Pages runtime and retained archives unchanged until the next verified release. Source Actions stays disabled and independent human reviews stay open.
+- Next: evaluate remaining workshop developer-experience requirements against the existing fixture import/export and clipboard flows before choosing the next small, verified milestone. The original autonomous mission remains active.
+
 ## Published dev.8 milestone
 
 - Shipped: npm `latest`/`preview` and the public GitHub prerelease select frozen source `9cc1416`. Retained, registry and GitHub archives have the same 367,873 bytes and SHA-256 `26037077091d064ae484c7120c8bdd6fc5240175976a1b309cfe2789e2eac922`; all 48 payload files match the tag, and the checksum asset agrees.
