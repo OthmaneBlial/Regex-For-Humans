@@ -1,5 +1,12 @@
 # Autonomous implementation progress
 
+## Duplicate native rule-input source milestone
+
+- Found: the complete source command at `197dfa6` passes 377 Node tests and 581 Chromium checks, but its aggregate-output UI scenario reaches the unchanged deadline. Native Chromium profiling reveals hundreds of input events for the same completed multiline value, repeatedly compiling identical rules and replacing workers. The command stops before the remaining compatibility/site/audit gates; it is not a complete release pass.
+- Fixed: ignore identical rule-input values already rendered. Keep actual source, example and flag changes, pending native replies, aggregate budgets and the 1,200 ms deadline intact. A request-count regression fails before the change and verifies pending-match preservation, native capture results and ignore-case changes afterward.
+- Verified: 24 selected Chromium desktop/mobile checks and 24 Firefox/WebKit equivalents pass on normal isolated builds with byte-identical runtime/test files. Root lint/types and all 659 local Markdown links pass. Instrumented reproductions support the diagnosis; their timings are local observations rather than universal performance guarantees.
+- Next: rerun the uninterrupted release command on the committed correction before preparing the next npm/Pages distribution. Preserve the ten guides, immutable archives and disabled source Actions. The complete original mission remains active.
+
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.

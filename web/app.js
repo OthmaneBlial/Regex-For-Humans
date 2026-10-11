@@ -150,6 +150,8 @@ const exactCaseText = new Set();
 let reverseErrorPosition = null;
 /** @type {ReturnType<typeof compile> | null} */
 let compiled = null;
+/** @type {string | null} */
+let renderedRules = null;
 /** @type {ReturnType<typeof exportRegex> | null} */
 let exported = null;
 /** @type {import('../index.d.ts').GroupSegment[]} */
@@ -1475,6 +1477,7 @@ function compileRules() {
   window.clearTimeout(copyFeedbackTimer);
   setText(ui.copy, message("Copy regex ↗"));
   const rules = ui.rules.value;
+  renderedRules = rules;
   /** @type {CompileError|null} */
   let ruleError = null;
   if (rules.length > LIMITS.sourceLength) setText(ui.ruleCount, message("Over limit"));
@@ -1725,6 +1728,8 @@ ui.fixtureRestore.addEventListener("click", () => {
   }
 });
 ui.rules.addEventListener("input", () => {
+  // A multiline paste can repeat input events for the same completed value.
+  if (ui.rules.value === renderedRules) return;
   setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);
   compileRules();
 });

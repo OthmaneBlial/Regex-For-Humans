@@ -4,6 +4,53 @@ import { translate } from "../../web/i18n.js";
 
 const outputError = "Example output is too large. Use fewer examples, captures or matches.";
 
+test("identical rule input events preserve the active worker while real edits still run", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    window.matchRequests = 0;
+    const NativeWorker = window.Worker;
+    window.Worker = class extends NativeWorker {
+      postMessage(...args) {
+        window.matchRequests++;
+        return super.postMessage(...args);
+      }
+    };
+  });
+  await page.goto("/");
+  await expect(page.locator("#example-list button").first()).toBeEnabled();
+  const row = page.locator("#test-list .test-row").first();
+  await row.locator("textarea").fill("A");
+  await page.locator("#rules-input").fill('capture {\n"A"\n}');
+  await expect(row).toHaveAttribute("data-result", "pass");
+  const pending = await page.evaluate(() => {
+    const rules = document.querySelector("#rules-input");
+    rules.value += "\n# pending native match";
+    rules.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText" }));
+    const requests = window.matchRequests;
+    for (let i = 0; i < 40; i++)
+      rules.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText" }));
+    return {
+      requests,
+      after: window.matchRequests,
+      state: document.querySelector("#test-summary").dataset.state,
+    };
+  });
+  expect(pending.after).toBe(pending.requests);
+  expect(pending.state).toBe("neutral");
+  await expect(row).toHaveAttribute("data-result", "pass");
+  await expect(page.locator("#regex-output")).toHaveText("/(A)/u");
+  await page.locator("#rules-input").fill('capture {\n"B"\n}');
+  await expect(row).toHaveAttribute("data-result", "fail");
+  await row.locator("textarea").fill("B");
+  await expect(row).toHaveAttribute("data-result", "pass");
+  await row.locator("textarea").fill("b");
+  await expect(row).toHaveAttribute("data-result", "fail");
+  await page.locator("#ignore-case").check();
+  await expect(row).toHaveAttribute("data-result", "pass");
+  await expect(page.locator("#regex-output")).toHaveText("/(B)/iu");
+});
+
 test("native workers reject aggregate output atomically and recover at unchanged deadlines", async ({
   page,
 }) => {
