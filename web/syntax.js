@@ -42,6 +42,13 @@ export function tokenizeRules(source, diagnostic = null) {
   if (source.length > LIMITS.sourceLength) return null;
   /** @type {SyntaxToken[]} */
   const tokens = [];
+  /** @param {number} start @param {number} end @param {TokenKind} kind */
+  function append(start, end, kind) {
+    if (start === end) return;
+    const last = tokens.at(-1);
+    if (last?.kind === kind) last.end = end;
+    else tokens.push({ start, end, kind });
+  }
   let index = 0;
   let line = 1;
   let column = 1;
@@ -94,12 +101,22 @@ export function tokenizeRules(source, diagnostic = null) {
       diagnostic.column < column + index - start &&
       (diagnostic.endColumn ?? diagnostic.column + 1) > column
     ) {
-      kind = "invalid";
       marked = true;
-    }
-    const last = tokens.at(-1);
-    if (last?.kind === kind) last.end = index;
-    else tokens.push({ start, end: index, kind });
+      if (diagnostic.endColumn === undefined) append(start, index, "invalid");
+      else {
+        const from = Math.max(start, start + diagnostic.column - column);
+        const to = Math.min(index, start + diagnostic.endColumn - column);
+        const originalKind =
+          kind === "invalid"
+            ? captures.has(previous) && previous !== "group"
+              ? "capture"
+              : "string"
+            : kind;
+        append(start, from, originalKind);
+        append(from, to, "invalid");
+        append(to, index, originalKind);
+      }
+    } else append(start, index, kind);
     if (newline) {
       line++;
       if (line > LIMITS.lines && (index < source.length || line > LIMITS.lines + 1)) return null;

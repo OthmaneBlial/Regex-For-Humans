@@ -734,7 +734,7 @@ test("CLI offers the JSON quote hint without changing positioned literal or list
   }
 });
 
-test("CLI preserves original quote error positions after trailing whitespace", () => {
+test("CLI preserves quote positions and control-character ranges after trailing whitespace", () => {
   for (const prefix of ["start 2 ", "none of: a, ", "text without: a, "]) {
     for (const trailing of ["   ", "\u00a0 ", "\t "]) {
       const line = `  ${prefix}"😀${trailing}`;
@@ -747,6 +747,7 @@ test("CLI preserves original quote error positions after trailing whitespace", (
           : "Missing closing double quote.",
         line: 2,
         column: control ? line.indexOf("\t") + 1 : line.length + 1,
+        ...(control ? { endColumn: line.indexOf("\t") + 2 } : {}),
       };
       const structured = run(["--json", "-"], rules);
       assert.equal(structured.status, 1);

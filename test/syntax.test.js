@@ -138,3 +138,34 @@ test("syntax highlighting stays bounded, supports blank trailing lines and disti
   assert.equal(tokens.find((token) => token.kind === "quantifier").start, source.indexOf("3"));
   assert.equal(tokens.at(-1).kind, "string");
 });
+
+test("explicit diagnostic ranges split lexical tokens and preserve all surrounding text", () => {
+  for (const [source, fault] of [
+    ['capture "😀tag" {', "😀tag"],
+    ["start 3 digits end", "3 digits"],
+    [String.raw`"\u12`, String.raw`\u12`],
+  ]) {
+    const start = source.indexOf(fault);
+    const tokens = tokenizeRules(source, {
+      line: 1,
+      column: start + 1,
+      endColumn: start + fault.length + 1,
+    });
+    assert(tokens);
+    assert.equal(tokens.map((t) => source.slice(t.start, t.end)).join(""), source);
+    assert.equal(
+      tokens
+        .filter((t) => t.kind === "invalid")
+        .map((t) => source.slice(t.start, t.end))
+        .join(""),
+      fault,
+    );
+    let end = 0;
+    for (const token of tokens) {
+      assert.equal(token.start, end);
+      assert(token.end > token.start);
+      end = token.end;
+    }
+    assert.equal(end, source.length);
+  }
+});

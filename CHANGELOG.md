@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Give malformed JSON escapes, incomplete Unicode escapes, unescaped control characters and dangling backslashes precise source ranges. Split workshop highlighting inside quoted values so only the diagnosed range is underlined and selected, preserving surrounding text, Unicode pairs and existing start positions. Missing closing quotes retain point diagnostics at the end of input. This source extension follows the frozen dev.8 candidate.
+
 ## 0.1.0-dev.8 (11 October 2026)
 
 - Ignore duplicate rule-input events for the exact text already rendered. A native Chromium multiline paste could otherwise compile the same completed value hundreds of times, repeatedly replace the worker and delay its reply past the unchanged 1,200 ms deadline. Preserve pending native matching, real rule/example edits and flag changes; retain the aggregate output limits and existing recovery assertions.

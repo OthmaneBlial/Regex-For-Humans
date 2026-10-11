@@ -95,3 +95,36 @@ test("all AST consumers retain error spans while legacy point diagnostics remain
     (error) => error instanceof CompileError && error.endColumn === undefined,
   );
 });
+
+test("quoted diagnostics select invalid escapes without cutting Unicode pairs or closing quotes", () => {
+  const cases = [
+    [String.raw`  start 2 "😀\q"`, String.raw`\q`],
+    [String.raw`capture "bad\q" {`, String.raw`\q`],
+    [String.raw`same as capture "bad\q"`, String.raw`\q`],
+    [String.raw`one of: "A", "\q"`, String.raw`\q`],
+    [String.raw`one of strings: "A", "\q"`, String.raw`\q`],
+    [String.raw`range "\q" to "Z"`, String.raw`\q`],
+    [String.raw`range "A" to "\q"`, String.raw`\q`],
+    [String.raw`character class: digit, unicode property "\q"`, String.raw`\q`],
+    [String.raw`unicode property "\q"`, String.raw`\q`],
+    [String.raw`"\x41"`, String.raw`\x`],
+    [String.raw`"\😀"`, String.raw`\😀`],
+    [String.raw`"\u12x4"`, String.raw`\u12x4`],
+    [String.raw`"\u000😀"`, String.raw`\u000😀`],
+    [String.raw`"\u12"`, String.raw`\u12`],
+    [String.raw`"\u12`, String.raw`\u12`],
+    [String.raw`"\u"`, String.raw`\u`],
+    ['"😀\t"', "\t"],
+    ['"😀\\', "\\"],
+  ];
+  for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"])
+    for (const [source, token] of cases)
+      diagnosed(`# ignored 😀 \"${separator}${source}`, "INVALID_QUOTE", token, 2);
+  for (const consumer of [compile, analyze, toSVG, (s) => exportRegex(s, { target: "python" })])
+    diagnosed(String.raw`"😀\q"`, "INVALID_QUOTE", String.raw`\q`, 1, consumer);
+  assert.throws(
+    () => compile('"😀'),
+    (error) =>
+      error.code === "INVALID_QUOTE" && error.column === 4 && error.endColumn === undefined,
+  );
+});

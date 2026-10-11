@@ -47,6 +47,49 @@ test("diagnosed count and capture ranges are highlighted and selected completely
   await expect(page.locator("#rules-syntax .syntax-invalid")).toHaveCount(0);
 });
 
+test("quoted escapes retain exact highlighting and error selection in every interface language", async ({
+  page,
+}) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await ready(page);
+  const editor = page.locator("#rules-input");
+  for (const locale of ["en", "zh-CN", "es", "fr"]) {
+    await page.locator("#interface-language").selectOption(locale);
+    for (const theme of ["light", "dark"]) {
+      await page.locator("#interface-theme").selectOption(theme);
+      for (const [line, fault] of [
+        [String.raw`  start 2 "😀\q"`, String.raw`\q`],
+        [String.raw`unicode property "\u12x4"`, String.raw`\u12x4`],
+        [String.raw`"\u000😀"`, String.raw`\u000😀`],
+        [String.raw`"\u12`, String.raw`\u12`],
+      ]) {
+        const source = `# ignored 😀 \"\n${line}`;
+        await editor.fill(source);
+        await expect(editor).toHaveAttribute("aria-invalid", "true");
+        await expect(page.locator("#rules-syntax .syntax-source")).toHaveText(source, {
+          useInnerText: false,
+        });
+        await expect(page.locator("#rules-syntax .syntax-invalid")).toHaveText(fault);
+        await page
+          .getByRole("button", { name: translate(locale, "Go to error"), exact: true })
+          .click();
+        expect(await editor.evaluate((el) => [el.selectionStart, el.selectionEnd])).toEqual([
+          source.indexOf(fault),
+          source.indexOf(fault) + fault.length,
+        ]);
+        await expect(editor).toHaveValue(source);
+      }
+    }
+  }
+  await editor.fill("start\n2 digits\nend");
+  await page.locator("#test-list textarea").first().fill("42");
+  await expect(editor).toHaveAttribute("aria-invalid", "false");
+  await expect(page.locator("#rules-syntax .syntax-invalid")).toHaveCount(0);
+  await expect(page.locator(".test-row").first()).toHaveAttribute("data-result", "pass");
+  expect(errors).toEqual([]);
+});
+
 test("structured tokens preserve native editing, reject markup and follow actual compiler diagnostics", async ({
   page,
 }, testInfo) => {

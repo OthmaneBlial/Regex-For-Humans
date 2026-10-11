@@ -136,20 +136,31 @@ function parseCount(count, location) {
 /** @param {string} text @param {Location} location @returns {{value: string, length: number}} */
 function readQuoted(text, location) {
   if (!text.startsWith('"')) fail("INVALID_QUOTE", "Expected a double-quoted value.", location);
-  /** @param {string} message @param {number} index @returns {never} */
-  const failAt = (message, index) =>
-    fail("INVALID_QUOTE", message, { line: location.line, column: location.column + index });
+  /** @param {string} message @param {number} index @param {number} [length] @returns {never} */
+  const failAt = (message, index, length = 0) =>
+    fail("INVALID_QUOTE", message, {
+      line: location.line,
+      column: location.column + index,
+      ...(length > 0 ? { endColumn: location.column + index + length } : {}),
+    });
   let escapeStart = -1;
   for (let index = 1; index < text.length; index += 1) {
     const character = text[index];
     if (escapeStart >= 0) {
       if (character === "u") {
         if (!/^[0-9a-f]{4}$/iu.test(text.slice(index + 1, index + 5))) {
-          failAt("Use four hexadecimal digits after \\u.", escapeStart);
+          const quote = text.indexOf('"', index + 1);
+          let end = Math.min(index + 5, quote < 0 ? text.length : quote);
+          if ((text.codePointAt(end - 1) ?? 0) > 0xffff) end += 1;
+          failAt("Use four hexadecimal digits after \\u.", escapeStart, end - escapeStart);
         }
         index += 4;
       } else if (!'"\\/bfnrt'.includes(character)) {
-        failAt("Invalid JSON escape.", escapeStart);
+        failAt(
+          "Invalid JSON escape.",
+          escapeStart,
+          1 + ((text.codePointAt(index) ?? 0) > 0xffff ? 2 : 1),
+        );
       }
       escapeStart = -1;
     } else if (character === "\\") {
@@ -161,10 +172,10 @@ function readQuoted(text, location) {
         failAt("Invalid quoted value.", index);
       }
     } else if (character.charCodeAt(0) < 0x20) {
-      failAt("Escape control characters inside quoted values.", index);
+      failAt("Escape control characters inside quoted values.", index, 1);
     }
   }
-  if (escapeStart >= 0) failAt("Incomplete JSON escape.", escapeStart);
+  if (escapeStart >= 0) failAt("Incomplete JSON escape.", escapeStart, 1);
   return failAt("Missing closing double quote.", text.length);
 }
 

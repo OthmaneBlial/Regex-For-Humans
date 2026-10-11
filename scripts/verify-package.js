@@ -88,6 +88,7 @@ try {
   const directionText = `A${String.fromCodePoint(0x202e)}B`;
   const directionRules = JSON.stringify(directionText);
   const directionSource = String.raw`A\u202eB`;
+  const quotedEscapeRules = String.raw`"😀\q"`;
   const controlText = `A${String.fromCodePoint(0, 0x1b, 0x7f, 0x9b, 0x9d, 0x2028, 0x2029)}B`;
   const controlRules = JSON.stringify(controlText);
   const unicodePairSource = String.raw`^[\uD83D\uDE00]{2}$`;
@@ -111,6 +112,7 @@ try {
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
 assert.throws(() => compile("start -12 digits"), error => error instanceof CompileError && error.line === 1 && error.column === 7 && error.endColumn === 10 && error.toJSON().endColumn === 10);
+assert.throws(() => compile(${JSON.stringify(quotedEscapeRules)}), error => error instanceof CompileError && error.code === "INVALID_QUOTE" && error.column === 4 && error.endColumn === 6 && error.toJSON().endColumn === 6);
 const commentedRules = ${JSON.stringify('# unfinished " }\nstart\ncapture "tag" {\n"#"\n}\nend')};
 const commentedResult = compile(commentedRules);
 assert.equal(commentedResult.source, "^(?<tag>#)$");
@@ -570,6 +572,20 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
     { cwd: consumer },
   );
   const cliArgs = [npmCli, "exec", "--offline", "--yes=false", "--", "regex-for-humans"];
+  const quotedFailure = spawnSync(process.execPath, [...cliArgs, "--json", "-"], {
+    cwd: consumer,
+    input: quotedEscapeRules,
+    encoding: "utf8",
+  });
+  const quotedError = JSON.parse(quotedFailure.stderr).error;
+  if (
+    quotedFailure.status !== 1 ||
+    quotedFailure.stdout !== "" ||
+    quotedError.code !== "INVALID_QUOTE" ||
+    quotedError.column !== 4 ||
+    quotedError.endColumn !== 6
+  )
+    throw new Error("Installed CLI lost the complete invalid JSON escape range.");
   const installedStrings = JSON.parse(
     run([...cliArgs, "--flags=dgv", "--json", "-"], {
       cwd: consumer,

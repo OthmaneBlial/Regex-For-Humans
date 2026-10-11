@@ -1,5 +1,12 @@
 # Autonomous implementation progress
 
+## Quoted diagnostic ranges source milestone
+
+- Implemented: shared quoted-value parsing retains the complete invalid JSON escape, malformed/truncated Unicode escape, raw control character or dangling backslash. Unicode spans stop before closing quotes and retain complete surrogate pairs. The syntax mirror splits explicit ranges inside lexical tokens, preserving all original text and existing point-only fallbacks. Existing error navigation uses the same range; no new public field or dependency is added.
+- Regression evidence: the untouched parser fails the new range check; the parser-only correction still fails the mirror's whole-token highlight. The combined correction passes 379 Node tests on both Node 25 and Node 22, both clean installed consumers and 24 native Chromium desktop/mobile/Firefox/WebKit syntax flows. Four interface languages, both themes, exact cursor ranges, fresh matching, contrast, source limits and forced colors are covered. A legacy CLI JSON assertion is updated only for the newly specified control-character range. See [the source verification receipt](TESTING.md).
+- Distribution boundary: this is unreleased source after dev.8 candidate `9cc1416`. Keep its 367,873-byte archive and all earlier retained releases unchanged; publication still targets that exact candidate after npm authentication. Do not rebuild its archive from advancing `main`. Build and publish the dev.8 Pages runtime from the same candidate; synchronize publication receipts as a documentation follow-up. The full mission and human review gates remain open.
+- Next: improve semantic property/class-member/range-endpoint diagnostics, then extend deterministic native failure/debugger evidence. npm/Pages publication, registry/tag/asset verification and the Downloads draft update remain pending the maintainer's authentication step; source Actions remains disabled.
+
 ## Exact dev.8 candidate and authentication checkpoint
 
 - Prepared and pushed: `9cc141674ef3f9bd622188153a4b361284d28261`. Both supported Node checks pass all 377 tests; both clean installed consumers use the same 367,873-byte, 48-file archive. SHA-256 is `26037077091d064ae484c7120c8bdd6fc5240175976a1b309cfe2789e2eac922`. All payload files match that source commit; no temporary helper is included. Preserve this archive and tag this exact source when publishing, even if later source work advances `main`.
