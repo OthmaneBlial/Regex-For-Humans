@@ -4,6 +4,14 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
 
+## Precise diagnostic range source milestone
+
+- Implemented: optional exclusive same-line UTF-16 `endColumn` metadata reaches compiler errors, public declarations, JSON/CLI serialization and the workshop. Numeric count failures, reversed bounds, invalid capture names and invalid/missing/forward/open references retain their entire original token, including JSON escapes. Highlighting covers every intersecting lexical piece; error navigation selects the complete range. Successful AST/compile shapes and legacy point diagnostics remain unchanged.
+- Corrected: global smooth scrolling could resume a pending native scroll after an explicit return to zero. A controlled reproduction on published source verifies the actual stylesheet mode and isolates the effect. Remove the global animation; retain the existing scroll assertion and add checks across three rendered frames. The language guide also drops obsolete claims that documented v sets and newer supported flags cannot be reverse-translated.
+- Verified: 368 Node tests, 91 focused Node 22 checks, 32 Chromium desktop/mobile and 32 Firefox/WebKit syntax/theme/library checks, clean installed consumers on Node 25 and Node 22, lint/types/docs and builds pass. The three new Node regressions fail before the implementation. These targeted browser checks are distinct from the published dev.7 full gate. See [testing evidence](TESTING.md).
+- Next evidence: the actual match-worker module, connected through an isolated Node worker-thread bridge, accepts 100 examples × 100 empty search matches × 100 captures and produces 1,000,000 capture records. Its reply serializes to 43,373,410 bytes; the observed round trip is 1,610ms on this run. This is a repeatable payload-size finding, not a browser-freeze proof or a universal benchmark. Add aggregate reply/transfer/render budgets with explicit atomic errors and controller validation while preserving native matching semantics and recovery.
+- Distribution: this milestone remains unreleased source work. Preserve npm/Pages dev.7, immutable retained archives/tags and disabled source Actions. PHP parity, independent human reviews and the complete original mission remain open.
+
 ## Published dev.7 milestone
 
 - Published: npm `preview`/`latest` and the GitHub prerelease resolve to dev.7 at source tag `09490f5`. The retained npm archive, registry download and GitHub asset have the same SHA-256; exact-archive consumers pass on Node 25 and Node 22. The ten guides and site use the published version. The local Reddit draft covers the groups and new workshop features while preserving the supplied difficult regex.
@@ -148,9 +156,9 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Run the complete distribution verification against the completed explanation, editor, fixture and example-library milestones; retain truthful limits on tracing and native engine compatibility.
-2. Finish the remaining developer-adoption requirements from the original mission, prioritizing concrete workflows and verified compatibility.
-3. Publish the next validated interface milestone to npm and Pages, keeping the website and all ten guides aligned with the released version and preserving frozen archives.
+1. Bound aggregate worker result volume before transfer and rendering; use the recorded million-capture case, boundary cases and native browser recovery to verify the change. Never silently truncate exact expectations or report untested rows as passes.
+2. Extend precise diagnostics to further parser families where actual source ranges and reliable repairs are available, then continue the developer-adoption workflows from the original mission. Keep execution traces and engine compatibility claims tied to evidence.
+3. Run the complete distribution gate before the next source milestone is released. Synchronize npm, owner Pages and all ten guides with that verified release while preserving frozen archives and explicit PHP/human-review limits.
 
 ## Site and README milestone
 

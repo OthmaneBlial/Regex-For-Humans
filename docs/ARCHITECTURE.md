@@ -129,6 +129,8 @@ CLI reverse mode reads a UTF-8 file or stdin. JSON returns the API's `{ rules, f
 
 ## Diagnostics and changes to the language
 
+The source checkout adds optional same-line `CompileError.endColumn` metadata for numeric count failures, reversed bounds, invalid capture names and capture-reference failures. The parser supplies these ranges from the original count/name/reference text rather than inferring a token in the UI. Reference AST locations and public successful compile results keep their existing shapes. JSON and CLI serialization preserve the optional field; the syntax mirror marks every lexical piece intersecting it, and error navigation selects its complete UTF-16 range. Point-only diagnostics retain their existing fallback. See [the unreleased diagnostic contract](LANGUAGE.md#errors-and-future-syntax).
+
 `CompileError` carries a stable machine-readable `code`, a human message and one-based `line`/`column`; columns count UTF-16 code units, matching JavaScript string indices. An optional `hint` gives recovery advice. Invalid input must fail before returning a compile result. CLI JSON rule errors use `error.toJSON()`; invalid arguments use `CLI_USAGE`, and file/runtime errors use `CLI_ERROR`. New rule errors need a distinct code, a location test and readable wording. When a line contains a prefix or comma-separated anchor, verify that the reported column points to the relevant remaining instruction.
 
 The documentation calls the implemented grammar **language version 1**. That is a grammar label, not a claim that npm package version 1.0 exists. The first npm candidate is the development preview `0.1.0-dev`; [DISTRIBUTION.md](DISTRIBUTION.md) records its actual publication status. Stable-release human reviews remain open.

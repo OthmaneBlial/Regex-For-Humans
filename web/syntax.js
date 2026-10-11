@@ -2,7 +2,7 @@ import { LIMITS } from "../src/limits.js";
 
 /** @typedef {"text"|"keyword"|"string"|"capture"|"quantifier"|"assertion"|"alternation"|"comment"|"invalid"} TokenKind */
 /** @typedef {{start: number, end: number, kind: TokenKind}} SyntaxToken */
-/** @typedef {{line: number, column: number}} DiagnosticLocation */
+/** @typedef {{line: number, column: number, endColumn?: number}} DiagnosticLocation */
 
 const gap = String.raw`[^\S\r\n\u2028\u2029]+`;
 const pieces = new RegExp(
@@ -91,8 +91,8 @@ export function tokenizeRules(source, diagnostic = null) {
     }
     if (
       diagnostic?.line === line &&
-      diagnostic.column >= column &&
-      diagnostic.column < column + index - start
+      diagnostic.column < column + index - start &&
+      (diagnostic.endColumn ?? diagnostic.column + 1) > column
     ) {
       kind = "invalid";
       marked = true;

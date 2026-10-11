@@ -110,6 +110,7 @@ try {
     `import { analyze, compile, editGroup, exportRegex, regexToRules, toRegExp, toSVG, CompileError } from "regex-for-humans";
 import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
+assert.throws(() => compile("start -12 digits"), error => error instanceof CompileError && error.line === 1 && error.column === 7 && error.endColumn === 10 && error.toJSON().endColumn === 10);
 const commentedRules = ${JSON.stringify('# unfinished " }\nstart\ncapture "tag" {\n"#"\n}\nend')};
 const commentedResult = compile(commentedRules);
 assert.equal(commentedResult.source, "^(?<tag>#)$");
@@ -526,6 +527,11 @@ const atLeast: Repetition = { kind: "atLeast", min: 3 };
 const reverse: ReverseTranslation = regexToRules(/^\\d{3,}$/u);
 const rules: string = reverse.rules;
 const line: number = new CompileError("UNKNOWN_RULE", "Invalid rule", { line: 1, column: 1 }).toJSON().line;
+const rangedError = new CompileError("INVALID_REPETITION", "Invalid count", { line: 1, column: 7, endColumn: 10 });
+const endColumn: number | undefined = rangedError.endColumn;
+const jsonEndColumn: number | undefined = rangedError.toJSON().endColumn;
+// @ts-expect-error end columns are numeric UTF-16 positions
+new CompileError("INVALID_REPETITION", "Invalid count", { line: 1, column: 7, endColumn: "10" });
 // @ts-expect-error rules must be a string
 compile(3);
 // @ts-expect-error flags must be a string

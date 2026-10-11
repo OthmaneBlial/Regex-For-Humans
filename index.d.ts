@@ -201,6 +201,8 @@ export interface CompileErrorJSON {
   message: string;
   line: number;
   column: number;
+  /** Exclusive one-based UTF-16 column on the same logical source line, when known. */
+  endColumn?: number;
   hint?: string;
 }
 
@@ -208,9 +210,15 @@ export class CompileError extends Error {
   code: string;
   line: number;
   column: number;
+  endColumn?: number;
   hint?: string;
 
-  constructor(code: string, message: string, location: SourceLocation, hint?: string);
+  constructor(
+    code: string,
+    message: string,
+    location: SourceLocation & { endColumn?: number },
+    hint?: string,
+  );
   toJSON(): CompileErrorJSON;
 }
 

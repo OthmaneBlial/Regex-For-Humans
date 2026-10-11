@@ -659,6 +659,7 @@ test("CLI exposes bounded counts and positioned range errors", () => {
     message: "The upper count cannot be smaller than the lower count.",
     line: 1,
     column: invalid.indexOf("2") + 1,
+    endColumn: invalid.indexOf("2") + 2,
     hint: "Put the smaller count first, such as `between 2 and 4 digits`.",
   });
 });
@@ -760,13 +761,14 @@ test("CLI preserves original quote error positions after trailing whitespace", (
 });
 
 test("CLI reports malformed and incomplete exact counts with structured repair hints", () => {
-  for (const [rules, message, hint, line, column] of [
+  for (const [rules, message, hint, line, column, endColumn] of [
     [
       "start 1.5 digits",
       "Counts must be nonnegative integers.",
       "Write counts with digits 0–9 only, such as `3`.",
       1,
       7,
+      10,
     ],
     [
       "start\n  -1 digits",
@@ -774,6 +776,7 @@ test("CLI reports malformed and incomplete exact counts with structured repair h
       "Write counts with digits 0–9 only, such as `3`.",
       2,
       3,
+      5,
     ],
     [
       "٣ digits",
@@ -781,6 +784,7 @@ test("CLI reports malformed and incomplete exact counts with structured repair h
       "Write counts with digits 0–9 only, such as `3`.",
       1,
       1,
+      2,
     ],
     ["start 3", "A count needs an item.", "Use `3 digits`, with the count before the item.", 1, 7],
   ]) {
@@ -789,7 +793,14 @@ test("CLI reports malformed and incomplete exact counts with structured repair h
     assert.equal(result.stdout, "", rules);
     assert.deepEqual(
       JSON.parse(result.stderr).error,
-      { code: "INVALID_REPETITION", message, line, column, hint },
+      {
+        code: "INVALID_REPETITION",
+        message,
+        line,
+        column,
+        ...(endColumn === undefined ? {} : { endColumn }),
+        hint,
+      },
       rules,
     );
   }

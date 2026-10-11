@@ -264,7 +264,7 @@ function renderExport() {
     );
     if (error instanceof CompileError) {
       ui.exportError.hidden = false;
-      ui.exportError.onclick = () => selectLine(error.line, error.column);
+      ui.exportError.onclick = () => selectLine(error.line, error.column, error.endColumn);
     }
   }
 }
@@ -281,14 +281,16 @@ function downloadText(text, filename, type) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-/** @param {number} number @param {number} [column] */
-function selectLine(number, column) {
+/** @param {number} number @param {number} [column] @param {number} [endColumn] */
+function selectLine(number, column, endColumn) {
   // Include the first excess code unit so source-limit errors can still select it.
   const lines = splitLines(ui.rules.value.slice(0, LIMITS.sourceLength + 1));
   const start = lines.slice(0, number - 1).reduce((sum, line) => sum + line.length + 1, 0);
   const end = start + (lines[number - 1]?.length ?? 0);
   const position = column === undefined ? start : Math.min(start + column - 1, end);
-  selectText(ui.rules, position, column === undefined ? end : Math.min(position + 1, end));
+  const selectionEnd =
+    column === undefined ? end : Math.min(start + (endColumn ?? column + 1) - 1, end);
+  selectText(ui.rules, position, selectionEnd);
 }
 
 /** @param {HTMLTextAreaElement} field @param {number} start @param {number} end */
@@ -1522,7 +1524,7 @@ function compileRules() {
       if (error instanceof CompileError) {
         const jump = make("button", "secondary-button", message("Go to error"));
         jump.type = "button";
-        jump.addEventListener("click", () => selectLine(error.line, error.column));
+        jump.addEventListener("click", () => selectLine(error.line, error.column, error.endColumn));
         ui.diagnostic.append(jump);
       }
     }

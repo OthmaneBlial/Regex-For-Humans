@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { translate } from "../../web/i18n.js";
 
 const rules =
   '# source text <img src=x onerror=alert(1)> unfinished "\nstart\ncapture "channel" {\n  either {\n    "AA"\n    2 digits\n  }\n}\nfollowed by {\n  word boundary\n}\nend';
@@ -8,6 +9,43 @@ async function ready(page) {
   await page.goto("/");
   await expect(page.locator("#test-list textarea")).toHaveCount(4);
 }
+
+test("diagnosed count and capture ranges are highlighted and selected completely", async ({
+  page,
+}) => {
+  await ready(page);
+  const editor = page.locator("#rules-input");
+  const source = '# ignored 😀 \"\nstart\n  same as capture "\\u006dissing"\nend';
+  const token = '"\\u006dissing"';
+  for (const locale of ["en", "zh-CN", "es", "fr"]) {
+    await page.locator("#interface-language").selectOption(locale);
+    for (const theme of ["light", "dark"]) {
+      await page.locator("#interface-theme").selectOption(theme);
+      for (const [rules, fault] of [
+        [source, token],
+        ["# comment\n  start -12 digits\nend", "-12"],
+        ["digit\n  between 25 and 12 digits", "12"],
+        ['capture "😀" {\n}', '"😀"'],
+        ["start 1.5 digits", "1.5"],
+      ]) {
+        await editor.fill(rules);
+        await expect(editor).toHaveAttribute("aria-invalid", "true");
+        await expect(page.locator("#rules-syntax .syntax-invalid")).toHaveText(fault);
+        await page
+          .getByRole("button", { name: translate(locale, "Go to error"), exact: true })
+          .click();
+        expect(await editor.evaluate((el) => [el.selectionStart, el.selectionEnd])).toEqual([
+          rules.indexOf(fault),
+          rules.indexOf(fault) + fault.length,
+        ]);
+        await expect(editor).toHaveValue(rules);
+      }
+    }
+  }
+  await editor.fill("start\n3 digits\nend");
+  await expect(editor).toHaveAttribute("aria-invalid", "false");
+  await expect(page.locator("#rules-syntax .syntax-invalid")).toHaveCount(0);
+});
 
 test("structured tokens preserve native editing, reject markup and follow actual compiler diagnostics", async ({
   page,
@@ -70,6 +108,15 @@ test("structured tokens preserve native editing, reject markup and follow actual
     expect(Math.min(...contrast)).toBeGreaterThanOrEqual(4.5);
     await expect(editor).toHaveValue(rules);
     await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
+    const positions = await page.evaluate(async () => {
+      const positions = [];
+      for (let frame = 0; frame < 3; frame++) {
+        await new Promise(requestAnimationFrame);
+        positions.push(scrollY);
+      }
+      return positions;
+    });
+    expect(positions).toEqual([0, 0, 0]);
     await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
     await page.screenshot({ path: testInfo.outputPath(`syntax-${theme}.png`), fullPage: true });
   }

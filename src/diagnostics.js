@@ -1,4 +1,4 @@
-/** @typedef {import('./ast.js').Location} Location */
+/** @typedef {import('./ast.js').Location & {endColumn?: number}} Location */
 
 export class CompileError extends Error {
   /** @param {string} code @param {string} message @param {Location} location @param {string=} hint */
@@ -8,6 +8,7 @@ export class CompileError extends Error {
     this.code = code;
     this.line = location.line;
     this.column = location.column;
+    if (location.endColumn !== undefined) this.endColumn = location.endColumn;
     if (hint) this.hint = hint;
   }
 
@@ -17,6 +18,7 @@ export class CompileError extends Error {
       message: this.message,
       line: this.line,
       column: this.column,
+      ...(this.endColumn === undefined ? {} : { endColumn: this.endColumn }),
       ...(this.hint ? { hint: this.hint } : {}),
     };
   }

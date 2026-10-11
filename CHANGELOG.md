@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Keep requested instant scrolling stable by removing document-wide smooth scrolling, which could resume a pending native scroll after returning to the top. Retain explicit source navigation and verify the position across three rendered frames in both themes without changing browser assertions or deadlines.
+
+- Retain precise same-line diagnostic ranges for malformed/oversized repetition counts, reversed bounds, invalid capture names and invalid/missing/forward/open capture references. Add optional exclusive UTF-16 `endColumn` metadata to `CompileError`, typed JSON and CLI JSON while preserving existing start positions and point-only errors. Highlight the complete diagnosed token and select it through workshop error navigation in all interface languages.
+
 ## 0.1.0-dev.7 (11 October 2026)
 
 - Reserve stable space for the source-rule preview so hovering explanations cannot repeatedly shift the editor or interrupt native flag clicks and scrolling. Keep long preview text in the accessible DOM while visually shortening it to one line.

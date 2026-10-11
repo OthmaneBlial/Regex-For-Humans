@@ -117,17 +117,18 @@ const COUNT_PREFIX = /^([+-]?(?:\p{Nd}|\.\p{Nd})\S*)(?:\s+|$)/u;
 
 /** @param {string} count @param {Location} location @returns {number} */
 function parseCount(count, location) {
+  const range = { ...location, endColumn: location.column + count.length };
   if (!/^[0-9]+$/u.test(count)) {
     fail(
       "INVALID_REPETITION",
       "Counts must be nonnegative integers.",
-      location,
+      range,
       "Write counts with digits 0–9 only, such as `3`.",
     );
   }
   const number = Number(count);
   if (!Number.isSafeInteger(number) || number > LIMITS.repetition) {
-    fail("REPETITION_LIMIT", `Repetition counts must be at most ${LIMITS.repetition}.`, location);
+    fail("REPETITION_LIMIT", `Repetition counts must be at most ${LIMITS.repetition}.`, range);
   }
   return number;
 }
@@ -376,6 +377,8 @@ function parseItem(text, location, rawLine, inClass = false) {
     const maxLocation = {
       line: location.line,
       column: location.column + range[1].length + range[2].length + range[3].length,
+      endColumn:
+        location.column + range[1].length + range[2].length + range[3].length + range[4].length,
     };
     const max = parseCount(range[4], maxLocation);
     if (max < min) {
@@ -532,11 +535,10 @@ function parseItem(text, location, rawLine, inClass = false) {
       const quoted = readQuoted(suffix, nameLocation);
       name = quoted.value;
       if (!CAPTURE_NAME.test(name)) {
-        fail(
-          "INVALID_CAPTURE_NAME",
-          "A capture name must be a JavaScript identifier.",
-          nameLocation,
-        );
+        fail("INVALID_CAPTURE_NAME", "A capture name must be a JavaScript identifier.", {
+          ...nameLocation,
+          endColumn: nameLocation.column + quoted.length,
+        });
       }
       suffix = suffix.slice(quoted.length).trim();
     }
@@ -584,7 +586,7 @@ function parseItem(text, location, rawLine, inClass = false) {
         fail(
           "INVALID_CAPTURE_REFERENCE",
           "Use one quoted capture name or a positive capture number.",
-          referenceLocation,
+          { ...referenceLocation, endColumn: referenceLocation.column + suffix.length },
         );
       }
       reference = quoted.value;
@@ -594,7 +596,7 @@ function parseItem(text, location, rawLine, inClass = false) {
         fail(
           "INVALID_CAPTURE_REFERENCE",
           "Use one quoted capture name or a positive capture number.",
-          referenceLocation,
+          { ...referenceLocation, endColumn: referenceLocation.column + suffix.length },
         );
       }
     }
@@ -1219,25 +1221,29 @@ export function parse(source) {
   if (rootNodes.length === 0)
     fail("EMPTY_SOURCE", "Enter at least one instruction.", { line: 1, column: 1 });
   for (const { node, openGroups } of references) {
+    const referenceRange = {
+      ...node.referenceLocation,
+      endColumn: node.location.column + node.text.length,
+    };
     const target =
       typeof node.reference === "string" ? names.get(node.reference) : captures[node.reference - 1];
     if (!target)
       fail(
         "MISSING_CAPTURE_REFERENCE",
         `Capture ${typeof node.reference === "string" ? quoteText(node.reference) : node.reference} is not defined.`,
-        node.referenceLocation,
+        referenceRange,
       );
     if (target.location.line > node.location.line)
       fail(
         "FORWARD_CAPTURE_REFERENCE",
         "A capture reference must follow its capture.",
-        node.referenceLocation,
+        referenceRange,
       );
     if (openGroups.includes(target))
       fail(
         "SELF_CAPTURE_REFERENCE",
         "A capture reference must follow the capture's closing brace.",
-        node.referenceLocation,
+        referenceRange,
       );
     node.captureIndex = target.captureIndex ?? 0;
   }
