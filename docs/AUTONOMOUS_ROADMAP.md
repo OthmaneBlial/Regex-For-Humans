@@ -1,6 +1,13 @@
 # Autonomous implementation progress
 
-## Dev.11 distribution candidate
+## Published dev.11 milestone
+
+- Shipped: npm `latest`/`preview`, the GitHub prerelease and owner Pages select verified dev.11. Frozen source `feff37d` and its tag retain the 408,988-byte, 50-file archive with SHA-256 `cfd56bd51ce7d199cba2d6578205eb55c11ef1afbadcecd0ded854a39f635788`; retained, registry and GitHub archives agree and every payload matches the tag. Optional draft recovery and group comparisons are included. See [the publication receipt](DISTRIBUTION.md#published-dev11-11-october-2026).
+- Verified: complete runtime checks pass 404 Node cases/four explicit skips, 706 Chrome, 464 Firefox/WebKit and 64 homepage checks. Final-copy Node 25/22 suites, builds, exact archive/public consumers and 64 homepage checks pass separately; all seven native profiles pass 8,782 comparisons. Pages deployment `38164762629` succeeds, all 83 release files match, and four hosted browser profiles pass the new workflows without overflow/page errors.
+- Guides and draft: ten equivalent guides and real dev.11 screenshots are synchronized. Actual GitHub Arabic/Urdu desktop/mobile renders preserve RTL prose/tables/headings and LTR canonical code; all four captures are inspected. The local Reddit draft is updated, its original manifest example is verified against a fresh public installation, and no external post is sent.
+- Boundary and next work: source Actions stays disabled, archives/tags remain immutable and independent human reviews remain unchecked. This finishes dev.11 distribution, while the wider mission continues. Audit the remaining compiler/export/editor requirements against current behavior; syntax autocomplete remains an actual editor gap, and adding a second grammar would not solve it.
+
+## Historical dev.11 distribution candidate
 
 - Prepared locally: package/lock metadata, all ten release guides, homepage links and changelog select dev.11 for optional drafts plus validated group comparisons. Source compiler/API/declarations remain unchanged; guides retain canonical code and RTL/LTR boundaries.
 - Verified: the complete verification stage passes 404 Node cases/four explicit skips, 706 Chrome, 464 Firefox/WebKit and 64 homepage checks with a zero-vulnerability audit. Node 22 passes its complete 408-case suite. All seven required native profiles pass 8,782 comparisons after restoring the retained PHP executable to the command's PATH. Four local live-workflow profiles pass; real dev.11 screenshots are refreshed. See [the candidate testing receipt](TESTING.md#dev11-candidate-verification-11-october-2026).
