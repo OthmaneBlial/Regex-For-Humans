@@ -1,5 +1,9 @@
 # Distribution decision record
 
+## Dev.11 preparation snapshot (11 October 2026)
+
+The dev.11 candidate combines optional browser draft recovery and validated group-edit previews from source commits `3748f4c` and `4be8b4f`. Package metadata, the ten README guides and homepage version links select dev.11 in the local candidate. Runtime/compiler/public declarations are unchanged. The complete verification stage and separate Node 22 suite pass; all seven required native profiles pass 8,782 comparisons after restoring the retained PHP runtime to the command's PATH. See [the testing receipt](TESTING.md#dev11-candidate-verification-11-october-2026). The prototype archive predates two version-guide edits and the refreshed screenshots/receipts; preserve it separately. Final copy/build/package checks, retained-final-archive consumers, immutable source/tag freeze, npm/GitHub publication and owner Pages/live verification still need their own receipts. Public registry tags and hosted runtime remain dev.10 until those steps succeed; preparing this copy is not publication proof. Older archives stay immutable and source Actions remains disabled.
+
 **Unreleased group previews on main:** the [group comparison workflow](GROUP_PREVIEWS.md) joins draft recovery after dev.10. These workshop-only source changes require their own complete distribution gate before a new npm/site release; dev.10's immutable archive, tag and hosted runtime remain unchanged.
 
 **Unreleased draft recovery on main:** the optional workshop draft workflow described in [the draft contract](TEST_FIXTURES.md#draft-recovery-on-unreleased-main) follows frozen dev.10. All ten source guides distinguish this addition from the published package and site. Its component checks do not replace a complete new distribution gate; preserve dev.10's immutable archive/tag and hosted runtime until the next verified preview.

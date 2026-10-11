@@ -1,5 +1,11 @@
 # Autonomous implementation progress
 
+## Dev.11 distribution candidate
+
+- Prepared locally: package/lock metadata, all ten release guides, homepage links and changelog select dev.11 for optional drafts plus validated group comparisons. Source compiler/API/declarations remain unchanged; guides retain canonical code and RTL/LTR boundaries.
+- Verified: the complete verification stage passes 404 Node cases/four explicit skips, 706 Chrome, 464 Firefox/WebKit and 64 homepage checks with a zero-vulnerability audit. Node 22 passes its complete 408-case suite. All seven required native profiles pass 8,782 comparisons after restoring the retained PHP executable to the command's PATH. Four local live-workflow profiles pass; real dev.11 screenshots are refreshed. See [the candidate testing receipt](TESTING.md#dev11-candidate-verification-11-october-2026).
+- Pending: final copy/build/package checks, retained final archive and exact consumers, source/tag freeze, npm/GitHub publication and owner Pages/live proof. Preserve the prototype archive separately; public dev.10 remains untouched until the new evidence exists. Source Actions stays disabled, human reviews remain unchecked and the wider mission continues.
+
 ## Optional group transformation preview source milestone
 
 - Implemented: optional before/after rules and regex comparisons reuse the validated group editor, including renamed/renumbered references and flags. Preview keeps current tests, fixture exports and saved drafts. Source/options/group-field changes clear stale output; direct application revalidates current inputs. Text-only rendering exposes controls, retains complete Unicode code points and uses the existing four languages and two themes.

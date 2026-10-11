@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0-dev.11 (11 October 2026)
+
 - Add optional group-edit comparisons of the validated readable rules and JavaScript regex before application. Retain original tests, exports and saved drafts while previewing, show reference renaming/renumbering, clear stale comparisons after source/options/group-field changes and preserve direct application. Text-only rendering exposes controls and keeps astral characters intact; labels use all four UI languages and both themes.
 
 - Add optional browser draft recovery, separate from manually saved regression fixtures. Preserve rules, flags, match mode, example text and raw unfinished expectation JSON plus pasted reverse input. Keep storage bounded, report failed writes, restore before asynchronous recipes, retain incoming-link/current-edit precedence and pause after another tab changes storage. Turning recovery off removes its draft. Matching and compiler budgets stay unchanged.

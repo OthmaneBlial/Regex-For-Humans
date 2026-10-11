@@ -8,7 +8,7 @@
 
 अंग्रेज़ी में लिखे स्पष्ट नियमों को ऐसे JavaScript regex में बदलें, जिसके हर हिस्से का अर्थ समझ सकें।
 
-[🚀 वर्कशॉप](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 वेबसाइट](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 सिंटैक्स](../LANGUAGE.md) · [📦 npm प्रीव्यू](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.10)
+[🚀 वर्कशॉप](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 वेबसाइट](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 सिंटैक्स](../LANGUAGE.md) · [📦 npm प्रीव्यू](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.11)
 
 🔒 स्थानीय निष्पादन · 🧩 कोई runtime dependency नहीं · ⚡ एक compiler, तीन इंटरफ़ेस
 
@@ -34,11 +34,11 @@ end
 
 शब्दावली **निश्चित** है और हर निर्देश का सटीक अर्थ है। लाइब्रेरी, CLI और वर्कशॉप एक ही deterministic compiler इस्तेमाल करते हैं। अनजान निर्देश पर पंक्ति, कॉलम और सुधार का सुझाव मिलता है। सभी अनुवादों में नियमों का सिंटैक्स अंग्रेज़ी में ही रहता है।
 
-> 🌱 प्रीव्यू `0.1.0-dev.10` की लाइब्रेरी और CLI के लिए **Node.js 22+** चाहिए। ऑनलाइन वर्कशॉप को इंस्टॉल नहीं करना पड़ता। उपयोग में आसानी और screen reader की मानवीय समीक्षा अभी बाकी है।
+> 🌱 प्रीव्यू `0.1.0-dev.11` की लाइब्रेरी और CLI के लिए **Node.js 22+** चाहिए। ऑनलाइन वर्कशॉप को इंस्टॉल नहीं करना पड़ता। उपयोग में आसानी और screen reader की मानवीय समीक्षा अभी बाकी है।
 
 ## 🧰 अभी क्या बनाया जा सकता है
 
-| क्षमता | npm `0.1.0-dev.10` / होस्टेड वर्कशॉप |
+| क्षमता | npm `0.1.0-dev.11` / होस्टेड वर्कशॉप |
 | --- | --- |
 | नियम → JavaScript regex | ✅ |
 | समर्थित regex → संपादन योग्य नियम | ✅ |
@@ -62,17 +62,17 @@ end
 
 स्थानीय वर्कशॉप में **Edit groups and references** से capture का नाम या समूह का प्रकार बदलें और उसके references तक जाएँ। नंबर बदलने पर भी संख्यात्मक references अपने मूल capture को इंगित करते हैं। जिस capture का reference मौजूद है, उसे noncapturing बनाने पर बदलाव अस्वीकार होता है और मूल नियम सुरक्षित रहते हैं। **Highlight** native indices से capture की जगह दिखाता है, चाहे capture खाली हो या consumed match से बाहर हो। `editGroup` API जाँचे गए नियम लौटाता है। [समूह संपादन](../LANGUAGE.md#editing-groups) देखें।
 
-वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ।npm `0.1.0-dev.10` में उपलब्ध है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
+वर्तमान source में `lazy digits` से `\d+?` बनता है: पहले एक अंक आज़माएँ, फिर अगले नियमों की जरूरत हो तो दोहराव बढ़ाएँ।npm `0.1.0-dev.11` में उपलब्ध है। [दोहराव के नियम](../LANGUAGE.md#repetition) देखें।
 
-सोर्स में `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }` भी उपलब्ध हैं। ये वर्तमान स्थान के आसपास के टेक्स्ट को जाँचते हैं, बिना अक्षर consume किए। Captures की native values और positions बनी रहती हैं, भले वे match के बाहर हों; lookbehind के लिए runtime support चाहिए।npm `0.1.0-dev.10` में उपलब्ध है। [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) देखें।
+सोर्स में `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }` भी उपलब्ध हैं। ये वर्तमान स्थान के आसपास के टेक्स्ट को जाँचते हैं, बिना अक्षर consume किए। Captures की native values और positions बनी रहती हैं, भले वे match के बाहर हों; lookbehind के लिए runtime support चाहिए।npm `0.1.0-dev.11` में उपलब्ध है। [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) देखें।
 
-सोर्स में `word boundary` (`\b`) और `not word boundary` (`\B`) उपलब्ध हैं। ये कोई अक्षर consume नहीं करते। JavaScript में word characters ASCII अक्षर, अंक और underscore हैं; `i` के साथ case folding के समकक्ष अक्षर भी शामिल होते हैं। यह प्राकृतिक भाषा के शब्दों का विभाजन नहीं है।npm `0.1.0-dev.10` में उपलब्ध है। [शब्द सीमाएँ](../LANGUAGE.md#word-boundaries) देखें।
+सोर्स में `word boundary` (`\b`) और `not word boundary` (`\B`) उपलब्ध हैं। ये कोई अक्षर consume नहीं करते। JavaScript में word characters ASCII अक्षर, अंक और underscore हैं; `i` के साथ case folding के समकक्ष अक्षर भी शामिल होते हैं। यह प्राकृतिक भाषा के शब्दों का विभाजन नहीं है।npm `0.1.0-dev.11` में उपलब्ध है। [शब्द सीमाएँ](../LANGUAGE.md#word-boundaries) देखें।
 
-सोर्स में `unicode property "L"` और `not unicode property "L"` से native `\p{L}` और `\P{L}` बनते हैं। `L` का अर्थ Letter है; aliases case-sensitive हैं और वर्गीकरण runtime के Unicode data पर निर्भर करता है। Counts और `lazy` सामान्य रूप से काम करते हैं। `i` के साथ native `u` complement में case-folding के समकक्ष अक्षर भी शामिल हो सकते हैं।npm `0.1.0-dev.10` में उपलब्ध है। [Unicode properties](../LANGUAGE.md#unicode-properties) देखें।
+सोर्स में `unicode property "L"` और `not unicode property "L"` से native `\p{L}` और `\P{L}` बनते हैं। `L` का अर्थ Letter है; aliases case-sensitive हैं और वर्गीकरण runtime के Unicode data पर निर्भर करता है। Counts और `lazy` सामान्य रूप से काम करते हैं। `i` के साथ native `u` complement में case-folding के समकक्ष अक्षर भी शामिल हो सकते हैं।npm `0.1.0-dev.11` में उपलब्ध है। [Unicode properties](../LANGUAGE.md#unicode-properties) देखें।
 
-सोर्स में `range "α" to "ω"` और `character class: digit, "_"` उपलब्ध हैं। एक class में एक Unicode code point के literals, ranges, singular shorthands और Unicode properties जोड़ सकते हैं। `not character class:` पूरी union को नकारता है; counts और `lazy` पूरी class पर लागू होते हैं। Property complements का native `u`/`i` व्यवहार सुरक्षित रहता है।npm `0.1.0-dev.10` में उपलब्ध है; [character classes](../LANGUAGE.md#composable-character-classes) देखें।
+सोर्स में `range "α" to "ω"` और `character class: digit, "_"` उपलब्ध हैं। एक class में एक Unicode code point के literals, ranges, singular shorthands और Unicode properties जोड़ सकते हैं। `not character class:` पूरी union को नकारता है; counts और `lazy` पूरी class पर लागू होते हैं। Property complements का native `u`/`i` व्यवहार सुरक्षित रहता है।npm `0.1.0-dev.11` में उपलब्ध है; [character classes](../LANGUAGE.md#composable-character-classes) देखें।
 
-npm `0.1.0-dev.10` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
+npm `0.1.0-dev.11` की लाइब्रेरी और CLI में groups, captures, पीछे के references और क्रमबद्ध alternatives उपलब्ध हैं। वर्कशॉप में captures की जाँच और कई search matches भी मिलते हैं। [अनुकूलता](../COMPATIBILITY.md) और [प्रकाशन रिकॉर्ड](../DISTRIBUTION.md) देखें।
 
 ## 🌍 अपनी प्रोग्रामिंग भाषा में निर्यात करें
 
@@ -92,7 +92,7 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-परिणाम `/^ABC\d{3}$/u` है। निश्चित संस्करण के लिए `regex-for-humans@0.1.0-dev.10` इस्तेमाल करें। runtime dependencies या हर OS के लिए अलग standalone executable उपलब्ध नहीं हैं।
+परिणाम `/^ABC\d{3}$/u` है। निश्चित संस्करण के लिए `regex-for-humans@0.1.0-dev.11` इस्तेमाल करें। runtime dependencies या हर OS के लिए अलग standalone executable उपलब्ध नहीं हैं।
 
 ## 🎮 पैटर्न आज़माएँ
 
@@ -108,9 +108,9 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 **Copy share link** से **पूरी वर्कशॉप का स्नैपशॉट साझा करें**: नियम, फ़्लैग, मैच मोड, उदाहरण और सटीक अपेक्षाएँ एक URL में सुरक्षित रहती हैं। नया पेज रेसिपी लोड होने से पहले इन्हें बहाल करता है; **Load shared link** मौजूदा काम को स्पष्ट कार्रवाई के बाद बदलता है। क्लिपबोर्ड की अनुमति न मिले तो फ़ील्ड से मैनुअल कॉपी कर सकते हैं। लिंक की सीमा 32 KiB है; बड़े टेस्ट समूह JSON निर्यात का उपयोग करते हैं। लिंक पाने वाला कोई भी व्यक्ति सामग्री पढ़ सकता है: यह एन्क्रिप्टेड नहीं है। [साझाकरण और सीमाएँ](../TEST_FIXTURES.md#share-a-workshop-snapshot) देखें।
 
-**main पर ड्राफ़्ट बहाली (अभी प्रकाशित नहीं)।** **Keep a draft in this browser** चालू करके दोबारा लोड होने पर नियम, फ़्लैग, उदाहरण, चिपकाया गया regex और अधूरी अपेक्षा JSON भी बहाल करें। यह डिफ़ॉल्ट रूप से बंद है, मैनुअल रूप से सहेजे गए टेस्ट से अलग रहता है और बंद करने पर ड्राफ़्ट हटा देता है। [बहाली और स्टोरेज सीमाएँ](../TEST_FIXTURES.md#draft-recovery-on-unreleased-main) देखें।
+**ड्राफ़्ट बहाली।** **Keep a draft in this browser** चालू करके दोबारा लोड होने पर नियम, फ़्लैग, उदाहरण, चिपकाया गया regex और अधूरी अपेक्षा JSON भी बहाल करें। यह डिफ़ॉल्ट रूप से बंद है, मैनुअल रूप से सहेजे गए टेस्ट से अलग रहता है और बंद करने पर ड्राफ़्ट हटा देता है। [बहाली और स्टोरेज सीमाएँ](../TEST_FIXTURES.md#draft-recovery-on-unreleased-main) देखें।
 
-**main पर समूह संपादन का पूर्वावलोकन (अभी प्रकाशित नहीं)।** **Preview group edit** चुनकर मौजूदा और प्रस्तावित नियमों व regex की तुलना करें, जिसमें बदले हुए नाम या नंबर वाले संदर्भ भी दिखते हैं। पूर्वावलोकन टेस्ट और सहेजा गया ड्राफ़्ट सुरक्षित रखता है; नियम, फ़्लैग या समूह के फ़ील्ड बदलने पर वह हट जाता है। परिणाम जाँचने के लिए बदलाव लागू करें। [पहले/बाद की तुलना और सीमाएँ](../GROUP_PREVIEWS.md) देखें।
+**समूह संपादन का पूर्वावलोकन।** **Preview group edit** चुनकर मौजूदा और प्रस्तावित नियमों व regex की तुलना करें, जिसमें बदले हुए नाम या नंबर वाले संदर्भ भी दिखते हैं। पूर्वावलोकन टेस्ट और सहेजा गया ड्राफ़्ट सुरक्षित रखता है; नियम, फ़्लैग या समूह के फ़ील्ड बदलने पर वह हट जाता है। परिणाम जाँचने के लिए बदलाव लागू करें। [पहले/बाद की तुलना और सीमाएँ](../GROUP_PREVIEWS.md) देखें।
 
 नेटिव मैच की सीमाओं या न्यूनतम लंबाई, अनुपस्थित अनिवार्य literal और इनपुट के गलत निरपेक्ष किनारे पर मौजूद literal की प्रमाणित शर्तों से **असफल उदाहरण समझें**। prefix/suffix की जाँच case-sensitive input anchors पर लागू होती है; line anchors और अनिश्चित मामलों में सावधान विवरण बना रहता है। सटीक असफल चरण उपलब्ध न हो तो वर्कशॉप यह स्पष्ट बताती है। यह backtracking का execution trace नहीं है। [असफलता के विवरण](../FAILURE_EXPLANATIONS.md) देखें।
 
@@ -125,7 +125,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 मौजूदा workshop में match खोलकर capture के मान और इंजन से मिले स्थान देखें। अनुपस्थित समूह और खाली string अलग दिखते हैं; दोहराया गया समूह अपना अंतिम capture दिखाता है। **Search anywhere** अधिकतम 100 बिना overlap वाले matches दिखाता है और खाली match के बाद एक Unicode code point आगे बढ़ता है। स्थान UTF-16 units में गिने जाते हैं; अंतिम सीमा शामिल नहीं होती। Capture indices न मिलने पर मान दिखाए जाते हैं, स्थानों का अनुमान नहीं लगाया जाता।
 
-[![डेस्कटॉप वर्कशॉप का वास्तविक स्क्रीनशॉट](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=e6ff4e7f61e2)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+[![डेस्कटॉप वर्कशॉप का वास्तविक स्क्रीनशॉट](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=c3ae9d3d6e2d)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
 [मोबाइल दृश्य और checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)।
 
@@ -265,7 +265,7 @@ end
 
 ## 🧲 नाम वाले captures से fields निकालें
 
-यह उदाहरण npm `0.1.0-dev.10` और प्रकाशित वर्कशॉप में काम करता है।
+यह उदाहरण npm `0.1.0-dev.11` और प्रकाशित वर्कशॉप में काम करता है।
 
 ```text
 start
@@ -420,11 +420,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | `lastIndex` पर match; पहली खाली जगह पर रुकता है |
 | `v` | `{ flags: 'v' }` | Native v-mode Unicode classes और complements |
 
-**npm preview:** आठों flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` स्वीकार हैं, जैसे `{ flags: 'dgiv' }` या `--flags dgiv`। आउटपुट क्रम `dgimsuvy` है; duplicates और u/v को साथ देना त्रुटि है, तथा u डिफ़ॉल्ट रहता है। m स्पष्ट option या line anchors से सक्रिय होता है; दोनों प्रकार मिलाने पर input anchors पूर्ण सीमाएँ बनाए रखते हैं। Reverse translation options बचाता है और `lastIndex` नहीं बदलता। Workshop हर उदाहरण 0 से शुरू करता है और अधिकतम 100 matches दिखाता है; copied g/y regex में state बनी रहती है। अनुपलब्ध native क्षमताएँ स्पष्ट diagnostics देती हैं।npm `0.1.0-dev.10` में उपलब्ध है।
+**npm preview:** आठों flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` स्वीकार हैं, जैसे `{ flags: 'dgiv' }` या `--flags dgiv`। आउटपुट क्रम `dgimsuvy` है; duplicates और u/v को साथ देना त्रुटि है, तथा u डिफ़ॉल्ट रहता है। m स्पष्ट option या line anchors से सक्रिय होता है; दोनों प्रकार मिलाने पर input anchors पूर्ण सीमाएँ बनाए रखते हैं। Reverse translation options बचाता है और `lastIndex` नहीं बदलता। Workshop हर उदाहरण 0 से शुरू करता है और अधिकतम 100 matches दिखाता है; copied g/y regex में state बनी रहती है। अनुपलब्ध native क्षमताएँ स्पष्ट diagnostics देती हैं।npm `0.1.0-dev.11` में उपलब्ध है।
 
-**npm preview में:** `v` चुनकर `one of strings: "a", "ab", ""` या `unicode property "RGI_Emoji"` इस्तेमाल करें। Native sets सूची के क्रम से स्वतंत्र होकर लंबे सदस्यों को पहले आज़माते हैं; आगे के नियम छोटे सदस्य पर वापस जाने की माँग कर सकते हैं। खाली strings भी मान्य हैं। Class में `string "ab"` इस्तेमाल करें। String properties और खाली या कई code points वाले सदस्यों का complement नहीं बनाया जा सकता।npm `0.1.0-dev.10` में उपलब्ध है।
+**npm preview में:** `v` चुनकर `one of strings: "a", "ab", ""` या `unicode property "RGI_Emoji"` इस्तेमाल करें। Native sets सूची के क्रम से स्वतंत्र होकर लंबे सदस्यों को पहले आज़माते हैं; आगे के नियम छोटे सदस्य पर वापस जाने की माँग कर सकते हैं। खाली strings भी मान्य हैं। Class में `string "ab"` इस्तेमाल करें। String properties और खाली या कई code points वाले सदस्यों का complement नहीं बनाया जा सकता।npm `0.1.0-dev.11` में उपलब्ध है।
 
-**npm preview में:** nested sets के लिए `character set union {`, `character set intersection {` और `character set subtraction {` लिखें और `}` से बंद करें। हर पंक्ति एक अक्षर, range, class, property, strings का set या nested set है। Intersection साझा सदस्यों को रखता है; subtraction पहले operand से दाएँ सदस्यों को हटाता है। Counts और `lazy` पूरे block पर लागू होते हैं। `not` strings के native संरचनात्मक नियमों का पालन करता है; खाली union कुछ भी match नहीं करता। `v` चुनें; npm `0.1.0-dev.10` में उपलब्ध है। [Syntax और उदाहरण](../LANGUAGE.md#nested-unicode-set-operations)।
+**npm preview में:** nested sets के लिए `character set union {`, `character set intersection {` और `character set subtraction {` लिखें और `}` से बंद करें। हर पंक्ति एक अक्षर, range, class, property, strings का set या nested set है। Intersection साझा सदस्यों को रखता है; subtraction पहले operand से दाएँ सदस्यों को हटाता है। Counts और `lazy` पूरे block पर लागू होते हैं। `not` strings के native संरचनात्मक नियमों का पालन करता है; खाली union कुछ भी match नहीं करता। `v` चुनें; npm `0.1.0-dev.11` में उपलब्ध है। [Syntax और उदाहरण](../LANGUAGE.md#nested-unicode-set-operations)।
 
 **समूह के स्थानीय flags।** `group with flags "i" {` खोलें, उसके भीतर `"hello"` रखें और `}` से बंद करें। इससे `(?i:hello)` बनता है। समूह `HELLO` को स्वीकार करता है, जबकि आगे के नियमों में अक्षरों के बड़े या छोटे रूप का व्यवहार पहले जैसा रहता है। `"im-s"` समूह के भीतर case-insensitive तुलना और line anchors चालू करता है और dot-all बंद करता है। Nested समूह से बाहर आने पर बाहरी विकल्प बहाल होते हैं; ब्लॉक के भीतर captures भी रख सकते हैं। [Syntax और उदाहरण](../LANGUAGE.md#scoped-flags-unreleased)।
 

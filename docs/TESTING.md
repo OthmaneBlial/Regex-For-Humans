@@ -1,5 +1,13 @@
 # Testing and compatibility
 
+## Dev.11 candidate verification (11 October 2026)
+
+The `npm run verify` stage completes successfully on Node 25.9.0: 408 Node cases (404 passes, four explicit scoped-native skips, no failures), 706 Chrome desktop/mobile checks, 464 Firefox/WebKit checks and 64 homepage checks. Lint/types, documentation links, static/Pages builds, the prototype package consumer, share-card generation and the zero-vulnerability audit pass. A separate complete Node 22.23.3 suite also finishes with 404 passes/four skips/no failures.
+
+The chained required-native stage initially stops because PHP is absent from the terminal PATH, after the complete verification stage has finished. The retained native PHP executable reports PHP 8.5.11 / PCRE2 10.44; adding its directory only to the verification command's PATH makes all seven required profiles pass 8,782 full-span/mapped-capture comparisons. No assertion, target requirement, worker deadline or compiler budget is weakened.
+
+Two version-reference guides changed after the first archive was packed. The final copy also refreshes real dev.11 README/homepage captures and these receipts. Runtime, compiler, public API and declarations remain unchanged. The prototype archive is retained separately; final documentation/build/package checks, exact archive consumers and source/tag agreement are required before publication. Four local browser profiles additionally verify unfinished draft recovery, preview preservation, applied native captures/spans and 320px layouts without page errors. These local receipts are distinct from actual npm/GitHub/Pages delivery and independent human reviews.
+
 ## Unreleased group transformation preview checks
 
 The optional [group comparison workflow](GROUP_PREVIEWS.md) passes the complete Node 25 suite: 408 cases, 404 passes, four explicit scoped-native skips and no failures. Its four text-change tests include 500 deterministic reconstruction cases, exact Unicode/control handling, nonoverlapping context, repeated-line alignment, insertions/deletions, unchanged bodies and the compiler-line-budget/fallback boundary. Seventeen focused Node 22 cases pass. All 36 affected Chrome desktop/mobile and 36 Firefox/WebKit checks pass after line alignment, covering the seven preview workflows, existing direct group editing and draft recovery. These are component receipts, not a new full distribution gate.
