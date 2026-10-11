@@ -1,6 +1,6 @@
 # Workshop Markdown reports
 
-This is **unreleased source work** beyond the frozen npm/hosted dev.11 release.
+This guide describes the local Markdown report download in the **dev.12 workshop**.
 
 Open **Test fixtures** and choose **Export Markdown report** to download `regex-report.md`. The current rules must compile and the fixture's options, examples and exact expectation JSON must be valid. Fix a rejected field and export again; errors leave the source, unfinished expectation text and saved fixtures intact.
 

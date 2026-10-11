@@ -1,6 +1,6 @@
 # Workshop rule completion
 
-This feature is **unreleased source work**. The published npm/hosted dev.11 release does not include it; its frozen archive and tag remain unchanged.
+This guide describes rule completion in the **dev.12 workshop**. Suggestions use compiler-validated English rules.
 
 Place a single cursor after a partial built-in character class or capture reference, then choose **Complete a rule** or press **Ctrl + Space** in the editor. The native suggestion list accepts arrow keys; **Enter** or **Apply suggestion** applies the selected choice. The preview below the list displays the complete selected rule, including long names on narrow screens, without editing or saving the source. **Escape** or **Close suggestions** restores focus without editing. Normal Enter and Tab keep their native textarea behavior. On systems that reserve Ctrl + Space, use the button.
 
