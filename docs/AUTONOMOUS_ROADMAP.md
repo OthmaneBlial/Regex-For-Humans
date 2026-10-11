@@ -2,6 +2,16 @@
 
 Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verify and push coherent changes directly to `main`, then continue. Preserve deterministic compilation and existing working behavior.
 
+## Dev.6 public release milestone
+
+- Published: source/tag `79589b1`, npm `0.1.0-dev.6` through both `preview` and `latest`, and the GitHub prerelease with the exact tested archive and `SHA256SUMS`. Retained, registry and GitHub bytes agree; clean installed JavaScript/strict TypeScript/API/CLI consumers pass before and after upload on Node 25.9.0 and Node 22.23.3. Fresh public preview installation and npx return dev.6. Preserve the frozen dev.5 archive and tag.
+- Hosted: Pages source `c7d45e5`, successful deployment 38099174848 and all 66 public files matching the built site. Installed Chrome verifies the new tools, capture/reference edits, four interface languages and themes with native matching, no page errors and no overflow at 320px. The source repository's Actions remains disabled.
+- Documentation: ten complete README guides describe the released APIs and workshop features. Actual GitHub Arabic/Urdu guides pass all three 1280/390/320px widths after font loading, with 19 RTL headings and 20 LTR code blocks. Three public captures were visually inspected. The Downloads Reddit draft now describes dev.6; its exact manifest example passes against the public package. It remains unposted.
+- Validation: the 1,138-test implementation gate remains authoritative for unchanged logic. Release metadata additionally passes all 334 Node tests, 64 homepage checks, ten README contracts on Node 22, builds, lint/types/docs and an audit with zero vulnerabilities. See [distribution receipts](DISTRIBUTION.md) and [testing](TESTING.md).
+- Next: continue structured rule highlighting, builders, truthful debugger improvements, examples and the remaining original mission. PHP runtime parity and independent human reviews stay explicitly open.
+
+The source-milestone entries below retain their historical validation counts and publication status at the time of implementation; the public release above supersedes their pending npm/Pages steps.
+
 ## Workshop theme source milestone
 
 - Implemented: independent system/light/dark theme bootstrap before compiler loading, validated local preferences, live OS appearance changes in system mode and optional storage. Theme changes update the root attribute and palette without recompiling or rebuilding fields; existing state-preservation checks now cover both themes in all four interface languages. Preference changes while recipes load still allow the initial examples to appear.
