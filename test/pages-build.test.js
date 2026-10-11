@@ -8,13 +8,16 @@ import test from "node:test";
 test("Pages app and stylesheet URLs change with their inputs and stay stable otherwise", () => {
   const root = mkdtempSync(join(tmpdir(), "regex-for-humans-pages-"));
   try {
-    for (const directory of ["scripts", "site", "dist"]) mkdirSync(join(root, directory));
+    for (const directory of ["scripts", "site", "site/assets", "dist"])
+      mkdirSync(join(root, directory));
     writeFileSync(join(root, "package.json"), JSON.stringify({ type: "module" }));
     const script = join(root, "scripts", "build-pages-workshop.js");
     cpSync(new URL("../scripts/build-pages-workshop.js", import.meta.url), script);
     for (const name of ["app.js", "index.html", "styles.css"]) {
       cpSync(new URL(`../site/${name}`, import.meta.url), join(root, "site", name));
     }
+    const previewPath = join(root, "site", "assets", "workshop-preview.png");
+    cpSync(new URL("../site/assets/workshop-preview.png", import.meta.url), previewPath);
     const workshopPath = join(root, "dist", "index.html");
     const workshopHtml = (version) =>
       `<script type="module" src="./web/app.js?v=${version}"></script>`;
@@ -64,6 +67,29 @@ test("Pages app and stylesheet URLs change with their inputs and stay stable oth
     assert.notEqual(changedCompiler, changedApp);
     assert.equal(stylesheetUrl(), changedStylesheet);
     assert.equal(version(), changedCompiler);
+    const preview = () => {
+      const image = readFileSync(homepagePath, "utf8").match(
+        /<img src="\.\/assets\/workshop-preview\.png[^>]*>/u,
+      )?.[0];
+      assert(image);
+      return {
+        url: image.match(/src="([^"]+)"/u)?.[1],
+        width: Number(image.match(/width="(\d+)"/u)?.[1]),
+        height: Number(image.match(/height="(\d+)"/u)?.[1]),
+      };
+    };
+    const initialPreview = preview();
+    cpSync(new URL("../media/screenshots/workshop-mobile-dev.png", import.meta.url), previewPath);
+    assert.equal(version(), changedCompiler, "A screenshot change does not change the app module.");
+    const changedPreview = preview();
+    const changedImage = readFileSync(previewPath);
+    assert.notEqual(changedPreview.url, initialPreview.url);
+    assert.notEqual(changedPreview.width, initialPreview.width);
+    assert.equal(changedPreview.width, changedImage.readUInt32BE(16));
+    assert.equal(changedPreview.height, changedImage.readUInt32BE(20));
+    assert.equal(stylesheetUrl(), changedStylesheet);
+    assert.equal(version(), changedCompiler);
+    assert.deepEqual(preview(), changedPreview);
     const validHomepage = readFileSync(homepagePath, "utf8");
     writeFileSync(homepagePath, validHomepage.replace('href="./styles.css', 'href="./missing.css'));
     const missingStylesheet = build();
