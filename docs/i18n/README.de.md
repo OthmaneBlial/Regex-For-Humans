@@ -175,6 +175,8 @@ Unbekannte Syntax wird weder entfernt noch angenähert. **Go to regex error** ma
 
 Die Quellversion enthält **31 Rezepte, 24 Kategorien und drei Schwierigkeitsstufen**. Titel, Grenzen und Regeln sind in den vier Oberflächensprachen durchsuchbar; Filter sind kombinierbar. Diese Ergänzungen sind noch nicht in dev.6 veröffentlicht. Siehe den [Bibliotheksleitfaden](../EXAMPLE_LIBRARY.md).
 
+Fehlgeschlagene Beispiele erhalten [überprüfbare Erklärungen](../FAILURE_EXPLANATIONS.md): native Trefferbereiche, eine nachweisbare Mindestlänge oder fehlenden Pflichttext. Ist der genaue Fehlerschritt unbekannt, sagt der Workshop das ausdrücklich. Diese Quellfunktion ist noch nicht in dev.6 enthalten.
+
 Es sind **Formprüfungen**. Ungültige Daten und `25:99` können passen; Kalender und Wertebereiche separat prüfen. IPv4 begrenzt Oktette nicht auf 255. UUID prüft weder Version, Variante noch Eindeutigkeit. Benutzerverfügbarkeit, Rechnungsregister und Telefonnummerngültigkeit bleiben extern. Die Versionsform ist kein vollständiges SemVer; Farben erfordern `#RRGGBB`. Dateisystemregeln sind separat.
 
 ## 🏗️ Größere Muster, weiterhin lesbare Regeln

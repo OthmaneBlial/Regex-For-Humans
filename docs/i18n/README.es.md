@@ -175,6 +175,8 @@ La sintaxis no compatible falla, sin eliminación ni aproximación. **Go to rege
 
 La biblioteca del código fuente reúne **31 recetas, 24 categorías y tres niveles**. Busca títulos, límites y reglas en los cuatro idiomas de la interfaz y combina los filtros. Estos añadidos aún no están publicados en dev.6. Consulta la [guía](../EXAMPLE_LIBRARY.md).
 
+Los ejemplos fallidos incluyen [explicaciones verificables](../FAILURE_EXPLANATIONS.md): rangos nativos, longitud mínima demostrable o texto literal obligatorio ausente. Si se desconoce el paso exacto del fallo, el taller lo indica. Esta función del código fuente aún no está en dev.6.
+
 Son comprobaciones de **forma**: una fecha imposible o `25:99` puede coincidir. Valida calendario y rangos aparte. IPv4 no limita octetos a 255; UUID no verifica versión, variante ni unicidad. No se consulta disponibilidad de usuarios, registros de facturas ni validez telefónica. La receta de forma de versión no valida toda la sintaxis SemVer; el color exige `#RRGGBB`. Las reglas del sistema de archivos son independientes.
 
 ## 🏗️ Patrones más grandes, reglas igual de claras

@@ -1,6 +1,31 @@
 // Each entry contains Simplified Chinese, Spanish and French; English is the key.
 /** @type {Record<string, [string, string, string]>} */
 export const translations = {
+  "Any match needs at least {minimum} UTF-16 units; this input has {length}.": [
+    "任何匹配至少需要 {minimum} 个 UTF-16 单元；此输入有 {length} 个。",
+    "Toda coincidencia necesita al menos {minimum} unidades UTF-16; esta entrada tiene {length}.",
+    "Toute correspondance nécessite au moins {minimum} unités UTF-16 ; cette entrée en contient {length}.",
+  ],
+  "Required literal {literal} is absent from the input.": [
+    "输入中缺少必需的字面文本 {literal}。",
+    "El texto literal obligatorio {literal} no aparece en la entrada.",
+    "Le texte littéral obligatoire {literal} est absent de l’entrée.",
+  ],
+  "The native match covers [{start}, {end}); full-input mode requires [0, {length}).": [
+    "原生匹配覆盖 [{start}, {end})；完整输入模式要求 [0, {length})。",
+    "La coincidencia nativa cubre [{start}, {end}); el modo de entrada completa exige [0, {length}).",
+    "La correspondance native couvre [{start}, {end}) ; le mode entrée complète exige [0, {length}).",
+  ],
+  "The native engine matched [{start}, {end}); this example expects no match.": [
+    "原生引擎匹配了 [{start}, {end})；此示例预期不匹配。",
+    "El motor nativo encontró una coincidencia en [{start}, {end}); este ejemplo espera ninguna.",
+    "Le moteur natif a trouvé une correspondance sur [{start}, {end}) ; cet exemple n’en attend aucune.",
+  ],
+  "The native engine found no match. A precise failing step is unavailable.": [
+    "原生引擎未找到匹配。无法提供确切的失败步骤。",
+    "El motor nativo no encontró coincidencias. No se dispone del paso exacto del fallo.",
+    "Le moteur natif n’a trouvé aucune correspondance. L’étape précise de l’échec est inconnue.",
+  ],
   "Test fixtures": ["测试用例文件", "Fixtures de pruebas", "Fixtures de tests"],
   "Keep rules, flags, examples and exact expectations in a versioned JSON file. Saving and restoring locally are manual; storage belongs to this browser and can be cleared.":
     [

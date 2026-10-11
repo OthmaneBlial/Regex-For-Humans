@@ -175,6 +175,8 @@ Sintaxe incompatível falha sem ser removida ou aproximada. **Go to regex error*
 
 A biblioteca do código-fonte reúne **31 receitas, 24 categorias e três níveis**. Pesquise títulos, limites e regras nos quatro idiomas da interface e combine filtros. Essas adições ainda não foram publicadas em dev.6. Veja o [guia](../EXAMPLE_LIBRARY.md).
 
+Os exemplos com falha recebem [explicações verificáveis](../FAILURE_EXPLANATIONS.md): intervalos nativos, comprimento mínimo demonstrável ou texto literal obrigatório ausente. Quando a etapa exata é desconhecida, a oficina informa isso. Esta adição ao código-fonte ainda não está em dev.6.
+
 São verificações de **forma**. Datas impossíveis e `25:99` podem corresponder; valide calendário e intervalos separadamente. IPv4 não limita octetos a 255; UUID não verifica versão, variante ou unicidade. Não consulta disponibilidade de usuários, registros de faturas nem validade de telefones. A receita de formato de versão não valida toda a sintaxe SemVer e a cor exige `#RRGGBB`. Regras de sistema de arquivos são independentes.
 
 ## 🏗️ Padrões maiores, regras ainda legíveis

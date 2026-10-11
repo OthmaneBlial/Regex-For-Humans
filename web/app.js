@@ -11,6 +11,7 @@ import { escapeControls, quoteText } from "../src/display.js";
 import { LIMITS, splitLines } from "../src/parser.js";
 import { parseRegexLiteral } from "../src/regex-literal.js";
 import { parseExpectation, readExpectation } from "./expectations.js";
+import { explainMismatch, failureRequirements } from "./failure-reasons.js";
 import { fixtureLimit, fixtureStorageKey, parseFixture } from "./fixtures.js";
 import { initializeLanguage, message, setAttribute, setText } from "./i18n.js";
 import { insertRule } from "./insert-rule.js";
@@ -979,7 +980,14 @@ async function updateTestResults() {
   const rows = [...ui.testList.querySelectorAll(".test-row")].filter(
     (row) => row instanceof HTMLDivElement,
   );
-  for (const row of rows) row.querySelector(".expectation-checks")?.replaceChildren();
+  for (const row of rows) {
+    row.querySelector(".expectation-checks")?.replaceChildren();
+    const reason = row.querySelector(".failure-reason");
+    if (reason instanceof HTMLElement) {
+      reason.replaceChildren();
+      reason.hidden = true;
+    }
+  }
   if (expectationErrors.size) {
     testRunner.cancel();
     rows.forEach((row, index) => {
@@ -1052,6 +1060,7 @@ async function updateTestResults() {
     const captures = compiled.segments.flatMap((segment) =>
       segment.kind === "group" && segment.edge === "start" && segment.capturing ? [segment] : [],
     );
+    const required = failureRequirements(ui.rules.value, compiled.flags);
     const results = await testRunner.run({
       source: compiled.source,
       flags: compiled.flags,
@@ -1089,6 +1098,19 @@ async function updateTestResults() {
       );
       renderMatchPreview(row, testCases[index].text, evaluation.matchRange);
       renderCaptureExplorer(row, evaluation, captures, testCases[index].text);
+      const reason = explainMismatch(
+        required,
+        testCases[index].text,
+        testCases[index].expected,
+        evaluation,
+      );
+      const explanation = row.querySelector(".failure-reason");
+      if (reason && explanation instanceof HTMLElement) {
+        const values = { ...reason.values };
+        if (typeof values.literal === "string") values.literal = quoteText(values.literal);
+        setText(explanation, message(reason.key, values));
+        explanation.hidden = false;
+      }
       const checks = row.querySelector(".expectation-checks");
       if (checks) {
         for (const [key, label] of [
@@ -1205,7 +1227,10 @@ function renderTests() {
     if (view) input.setSelectionRange(view.start, view.end, view.direction);
     setAttribute(input, "placeholder", message("Empty string"));
     setAttribute(input, "aria-label", message("Example {index} string", { index: number }));
-    input.setAttribute("aria-describedby", `example-limits example-result-${sample.id}`);
+    input.setAttribute(
+      "aria-describedby",
+      `example-limits example-result-${sample.id} example-reason-${sample.id}`,
+    );
     input.addEventListener("input", () => {
       exactCaseText.delete(sample.id);
       sample.text = input.value;
@@ -1219,7 +1244,10 @@ function renderTests() {
       "aria-label",
       message("Expected match result for example {index}", { index: number }),
     );
-    expected.setAttribute("aria-describedby", `example-result-${sample.id}`);
+    expected.setAttribute(
+      "aria-describedby",
+      `example-result-${sample.id} example-reason-${sample.id}`,
+    );
     for (const [value, label] of [
       ["true", "Should match"],
       ["false", "Should not match"],
@@ -1240,7 +1268,10 @@ function renderTests() {
     preview.hidden = true;
     preview.setAttribute("aria-hidden", "true");
     const feedback = make("div", "test-feedback");
-    feedback.append(result, preview);
+    const reason = make("p", "failure-reason");
+    reason.id = `example-reason-${sample.id}`;
+    reason.hidden = true;
+    feedback.append(result, preview, reason);
     const remove = make("button", "remove-example", "×");
     remove.type = "button";
     setAttribute(remove, "aria-label", message("Remove example {index}", { index: number }));

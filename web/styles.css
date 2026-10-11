@@ -1188,6 +1188,12 @@ a {
   font: 11px / 1.35 var(--mono);
   overflow-wrap: anywhere;
 }
+.failure-reason {
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font: 11px / 1.45 var(--mono);
+  overflow-wrap: anywhere;
+}
 .match-preview {
   display: block;
   margin-top: 4px;

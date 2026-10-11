@@ -4,6 +4,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
 
+## Failure explanation source milestone
+
+- Implemented: validated native ranges explain unexpected and partial matches. A private AST pass proves conservative consuming lower bounds and mandatory case-sensitive literals; alternatives, optional groups, assertions, backreferences, finite strings and case folding retain explicit limits. Unknown failures say the precise failing step is unavailable. Regex matching remains in the isolated worker.
+- Verification: all 363 Node tests pass. The new six Chromium checks and 34 related desktop/mobile regressions pass, together with 46 targeted Firefox/WebKit checks (449 local checks total). All 19 selected reason, interface, canonical-README and translated-README checks pass on Node 22.23.3. Lint/types/source and built links, the Pages build and the clean installed JavaScript/strict TypeScript/API/CLI consumer also pass. These are targeted browser gates, not a fresh full verification command. Four interface languages and both palettes pass automated accessibility at 320px; the two French mobile panels were visually inspected.
+- Documentation: all ten guides link the explanation contract, retain their existing sections and canonical code blocks, and preserve Arabic/Urdu RTL prose with isolated LTR technical fragments. No dependency or public npm API was added. This is a source milestone; public npm/Pages remain dev.6.
+- Remaining: evaluate the developer-experience items in the original mission and publish the next verified npm/Pages release. Frozen archives, disabled source CI, PHP native parity and independent human reviews keep their existing boundaries. The full original mission remains active.
+
 ## Searchable example library source milestone
 
 - Implemented: 31 shared recipes covering all 24 requested categories and beginner/intermediate/expert levels. Native search and combined filters match English and current-language text as literal terms. Filtering preserves rules, flags, examples, exact expectations, selected recipe and URL; delayed or invalid catalog loading leaves manual work usable.
@@ -115,7 +122,7 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Extend deterministically explainable test failures using native results and necessary conditions; retain truthful limits on engine tracing and the completed precise expectation/fixture controls.
+1. Evaluate and document the remaining developer-experience items from the original mission against the implemented workflows; retain truthful limits on engine tracing and the completed failure explanations, precise expectations and fixture controls.
 2. Finish the remaining developer-adoption requirements from the original mission, prioritizing concrete workflows and verified compatibility.
 3. Publish the next validated interface milestone to npm and Pages, keeping the website and all ten guides aligned with the released version and preserving frozen archives.
 

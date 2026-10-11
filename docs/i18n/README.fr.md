@@ -179,6 +179,8 @@ Les constructions inconnues sont refusées, jamais supprimées ni approximées. 
 
 La bibliothèque source compte désormais **31 recettes, 24 catégories et trois niveaux**. Recherchez titres, limites et règles dans les quatre langues de l’interface, puis combinez les filtres. Ces ajouts ne sont pas encore publiés dans dev.6. Consultez le [guide de la bibliothèque](../EXAMPLE_LIBRARY.md).
 
+Les exemples en échec reçoivent des [explications vérifiables](../FAILURE_EXPLANATIONS.md) : positions natives, longueur minimale prouvable ou texte obligatoire absent. Si l’étape précise est inconnue, l’atelier l’indique. Cet ajout source n’est pas encore dans dev.6.
+
 Ces recettes vérifient des **formes**. Une date impossible ou `25:99` peut correspondre ; validez le calendrier et les plages séparément. IPv4 ne borne pas les octets à 255. UUID ne garantit ni version, ni variante, ni unicité. Les téléphones et factures ne vérifient aucun registre ; les noms d’utilisateur ne vérifient pas la disponibilité. La recette de forme de version n’est pas un validateur SemVer complet. La couleur exige `#RRGGBB`. Les règles du système de fichiers restent distinctes.
 
 ## 🏗️ Des motifs plus grands, toujours lisibles
