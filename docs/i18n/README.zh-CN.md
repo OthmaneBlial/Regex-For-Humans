@@ -8,7 +8,7 @@
 
 把清晰的英文规则编译成 JavaScript 正则表达式，并逐段理解结果。
 
-[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.5)
+[🚀 在线工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 项目网站](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 语法](../LANGUAGE.md) · [📦 npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.6)
 
 🔒 本地运行 · 🧩 无运行时依赖 · ⚡ 一个编译器，三种使用方式
 
@@ -34,11 +34,11 @@ end
 
 这是**固定词汇**的规则语言，每条指令都有精确定义。库、CLI 和工作台使用同一个确定性编译器。不认识的指令会返回行、列和修复提示。所有译本中的规则语法仍然使用英文，不会翻译关键字。
 
-> 🌱 预览版 `0.1.0-dev.5` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
+> 🌱 预览版 `0.1.0-dev.6` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
 
 ## 🧰 现在可以做什么
 
-| 能力 | npm `0.1.0-dev.5` |
+| 能力 | npm `0.1.0-dev.6` / 托管工作台 |
 | --- | --- |
 | 规则 → JavaScript 正则 | ✅ |
 | 支持的正则 → 可编辑规则 | ✅ |
@@ -54,31 +54,31 @@ end
 | [组合字符类](../LANGUAGE.md#composable-character-classes) | ✅ |
 | [Unicode 字符串和嵌套集合](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | 全部八个 JavaScript 标志 | ✅ |
-| [编辑分组与高亮捕获范围](../LANGUAGE.md#editing-groups) | — |
-| [交互式结构图与SVG导出](../LANGUAGE.md#structural-diagrams) | — |
-| [结构风险检查](../LANGUAGE.md#structural-risk-review) | — |
-| [面向目标引擎的代码导出](../LANGUAGE.md#engine-exports) | — |
+| [编辑分组与高亮捕获范围](../LANGUAGE.md#editing-groups) | ✅ |
+| [交互式结构图与SVG导出](../LANGUAGE.md#structural-diagrams) | ✅ |
+| [结构风险检查](../LANGUAGE.md#structural-risk-review) | ✅ |
+| [面向目标引擎的代码导出](../LANGUAGE.md#engine-exports) | ✅ |
 | 自由英文 | — |
 
-**仅在源码版本中提供：**本地工作坊新增 **Edit groups and references**，可重命名捕获组、切换分组类型并定位引用。编号变化后，数字引用仍指向原来的捕获组；仍被引用的捕获组不能改为非捕获组，拒绝操作时保留原规则。**Highlight** 根据原生索引高亮捕获范围，支持空捕获和消耗的匹配范围之外的捕获。`editGroup` API 返回经过验证的规则。这些新增功能尚未包含在 npm `0.1.0-dev.5` 或线上工作坊中。参见[编辑分组](../LANGUAGE.md#editing-groups)。
+本地工作坊新增 **Edit groups and references**，可重命名捕获组、切换分组类型并定位引用。编号变化后，数字引用仍指向原来的捕获组；仍被引用的捕获组不能改为非捕获组，拒绝操作时保留原规则。**Highlight** 根据原生索引高亮捕获范围，支持空捕获和消耗的匹配范围之外的捕获。`editGroup` API 返回经过验证的规则。参见[编辑分组](../LANGUAGE.md#editing-groups)。
 
-当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.5` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
+当前源码中，`lazy digits` 生成 `\d+?`：先尝试一个数字，再根据后续规则增加重复次数。npm `0.1.0-dev.6` 已包含这些功能。参见[重复规则](../LANGUAGE.md#repetition)。
 
-源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。npm `0.1.0-dev.5` 已包含这些功能。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
+源码还支持 `followed by { … }`、`not followed by { … }`、`preceded by { … }`、`not preceded by { … }`。这些断言检查当前位置周围的文本，但不消耗字符。捕获保留原生值和位置，其范围可能在完整匹配之外；后行断言需要运行时支持。npm `0.1.0-dev.6` 已包含这些功能。参见[环视断言](../LANGUAGE.md#lookaround-assertions)。
 
-源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。npm `0.1.0-dev.5` 已包含这些功能，参见[单词边界](../LANGUAGE.md#word-boundaries)。
+源码支持 `word boundary`（`\b`）和 `not word boundary`（`\B`），不消耗字符。JavaScript 的单词字符是 ASCII 字母、数字和下划线；启用 `i` 时也包括大小写折叠等价字符。这不属于自然语言分词。npm `0.1.0-dev.6` 已包含这些功能，参见[单词边界](../LANGUAGE.md#word-boundaries)。
 
-源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。npm `0.1.0-dev.5` 已包含这些功能，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
+源码还支持 `unicode property "L"` 和 `not unicode property "L"`，分别生成原生 `\p{L}` 和 `\P{L}`。`L` 表示 Letter；别名区分大小写，字符分类取决于运行时的 Unicode 数据。次数限制和 `lazy` 同样适用。在 `u` 模式下启用 `i` 时，原生补集可能包含大小写折叠等价的字母。npm `0.1.0-dev.6` 已包含这些功能，参见 [Unicode 属性](../LANGUAGE.md#unicode-properties)。
 
-源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.5` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
+源码支持 `range "α" to "ω"` 和 `character class: digit, "_"`。一个字符类可组合单个 Unicode 码点的字面量、范围、单数简写和 Unicode 属性；`not character class:` 对整个并集取反。次数和 `lazy` 应用于整个类，属性补集保留原生 `u`/`i` 行为。npm `0.1.0-dev.6` 已包含这些功能；参见[字符类](../LANGUAGE.md#composable-character-classes)。
 
-npm `0.1.0-dev.5` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
+npm `0.1.0-dev.6` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
 
 ## 🌍 导出到你的编程语言
 
-**仅限仓库源码：**在本地工作台打开 **Export to a programming language**，调用 `exportRegex(rules, { target: "python" })`，或运行 `node bin/regex-for-humans.js --target python --json rules.txt`。九种格式包括 JavaScript、TypeScript、Python、Rust、Go、Java、C#、PHP 和 Ruby。JavaScript/TypeScript 保留现有原生模式；其他目标先从 AST 转换支持的正则语义，再生成正确转义的源代码。
+在本地工作台打开 **Export to a programming language**，调用 `exportRegex(rules, { target: "python" })`，或运行 `node bin/regex-for-humans.js --target python --json rules.txt`。九种格式包括 JavaScript、TypeScript、Python、Rust、Go、Java、C#、PHP 和 Ruby。JavaScript/TypeScript 保留现有原生模式；其他目标先从 AST 转换支持的正则语义，再生成正确转义的源代码。
 
-生成代码已通过六个原生引擎的对比检查；**PHP 尚未经过原生运行验证**。请保留要求和捕获映射：其他引擎使用 `gN` 名称，未参与的捕获可能不存在。输入必须是格式正确的 Unicode。不支持的标志（`d/g/i/y`）、Unicode 属性，以及不兼容的断言、捕获或重复行为会返回带位置的诊断。可下载代码或完整 JSON；浏览器示例仍由 JavaScript 执行。这些功能尚未包含在 npm `0.1.0-dev.5` 或已发布的工作台中。详见[引擎配置与限制](../LANGUAGE.md#engine-exports)。
+生成代码已通过六个原生引擎的对比检查；**PHP 尚未经过原生运行验证**。请保留要求和捕获映射：其他引擎使用 `gN` 名称，未参与的捕获可能不存在。输入必须是格式正确的 Unicode。不支持的标志（`d/g/i/y`）、Unicode 属性，以及不兼容的断言、捕获或重复行为会返回带位置的诊断。可下载代码或完整 JSON；浏览器示例仍由 JavaScript 执行。详见[引擎配置与限制](../LANGUAGE.md#engine-exports)。
 
 ## 📦 安装预览版
 
@@ -92,13 +92,13 @@ npm install regex-for-humans@preview
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.5`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
+输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.6`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
 
 ## 🎮 试一个模式
 
-**仅限源码版本：**通过 **Interface language** 选择英语、简体中文、西班牙语或法语。界面标签、示例说明、匹配反馈和导航控件会更新，但不会改变规则、测试字符串、选择范围、已展开的面板或生成的代码。存储可用时，语言选择会保留在本机。规则仍使用受控英语；编译器解释、图表标签和导出的技术要求仍使用英语。此界面尚未发布到托管的 dev.5 工作台。参见[工作台本地化](../ARCHITECTURE.md#workshop-localization)。
+通过 **Interface language** 选择英语、简体中文、西班牙语或法语。界面标签、示例说明、匹配反馈和导航控件会更新，但不会改变规则、测试字符串、选择范围、已展开的面板或生成的代码。存储可用时，语言选择会保留在本机。规则仍使用受控英语；编译器解释、图表标签和导出的技术要求仍使用英语。参见[工作台本地化](../ARCHITECTURE.md#workshop-localization)。
 
-**仅限源码版本：**通过 **Theme** 跟随系统外观，或选择浅色、深色工作台。存储可用时，选择会保留在本机；切换外观不会改变规则、测试字符串、选择范围或已展开的面板。参见[主题偏好](../ARCHITECTURE.md#theme-preference)。
+通过 **Theme** 跟随系统外观，或选择浅色、深色工作台。存储可用时，选择会保留在本机；切换外观不会改变规则、测试字符串、选择范围或已展开的面板。参见[主题偏好](../ARCHITECTURE.md#theme-preference)。
 
 1. 选择配方，或每行写一条指令。
 2. 查看生成的片段及其解释。
@@ -230,7 +230,7 @@ end
 
 ## 🧲 用命名捕获提取字段
 
-此示例可使用 npm `0.1.0-dev.5` 或在线工作台运行。
+此示例可使用 npm `0.1.0-dev.6` 或在线工作台运行。
 
 ```text
 start
@@ -326,7 +326,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--dot-all` | 开启 `s` |
 | `--flags` | 选择原生 JavaScript flags；u/v 不能同时使用 |
 | `--help` | 帮助 |
-| `--target` | 仅限仓库源码：导出到指定语言，详见[引擎配置](../LANGUAGE.md#engine-exports) |
+| `--target` | 导出到指定语言，详见[引擎配置](../LANGUAGE.md#engine-exports) |
 | `--version` | 包版本 |
 
 读取 UTF-8 文件或 stdin。以 `-` 开头的文件名之前加 `--`。退出码：成功/帮助/版本为 `0`，无效规则或输入输出错误为 `1`，参数错误为 `2`。
@@ -383,11 +383,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | 从 `lastIndex` 匹配，遇到间隙即停止 |
 | `v` | `{ flags: 'v' }` | 原生 v 模式 Unicode 字符类与补集 |
 
-**预览版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.5` 已包含这些功能。
+**预览版本：**支持全部八个 flags：`d`、`g`、`i`、`m`、`s`、`u`、`v`、`y`，可使用 `{ flags: 'dgiv' }` 或 `--flags dgiv`。输出顺序固定为 `dgimsuvy`；重复标志及 u/v 同时使用会报错，默认仍为 u。m 可显式指定或由行锚点启用；混用时输入锚点仍保持绝对边界。逆向转换保留选项且不修改 `lastIndex`。Workshop 每个示例都从 0 开始，最多列出 100 次匹配；复制的 g/y 正则仍有状态。不支持的原生能力会明确报错。npm `0.1.0-dev.6` 已包含这些功能。
 
-**仅限源码版本：**选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.5` 已包含这些功能。
+选择 `v` 后，可使用 `one of strings: "a", "ab", ""` 或 `unicode property "RGI_Emoji"`。原生集合优先尝试较长成员，与列表顺序无关；后续规则可能要求回溯到较短成员。允许空字符串。类中可使用 `string "ab"`。字符串属性以及空字符串或多码点成员不能取补集。npm `0.1.0-dev.6` 已包含这些功能。
 
-**仅限源码版本：**嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.5` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
+嵌套集合使用 `character set union {`、`character set intersection {` 或 `character set subtraction {`，以 `}` 结束。每行表示一个字符、范围、字符类、属性、字符串集合或嵌套集合。交集保留共同成员；差集从第一个操作数中移除右侧成员。次数和 `lazy` 作用于整个块。`not` 遵循原生字符串结构限制；空并集不匹配任何内容。请选择 `v`；npm `0.1.0-dev.6` 已包含这些功能。[语法和示例](../LANGUAGE.md#nested-unicode-set-operations)。
 
 ## 🛠️ 本地开发
 
@@ -453,18 +453,18 @@ CI=1 npm run verify
 | [对比](../COMPETITOR_GAPS.md) | 来源和待补能力 |
 | [贡献](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | 环境和约定 |
 
-**2026年10月10日本地验证：** 320项 Node 测试、402项 Chromium 桌面/移动检查、172项 Firefox/WebKit、64项网站检查及干净消费者安装均通过；审计发现0个漏洞。19项图示、分组编辑和分析测试，以及单独安装的消费者检查，也在 Node 22.23.3 通过。这是该快照的证据，不保证未来所有浏览器。真人评估仍待完成。
+**2026年10月11日本地验证：** 1,138项测试通过：334项 Node 测试、478项 Chromium 桌面/移动检查、262项 Firefox/WebKit 检查和64项网站检查。构建及独立 JavaScript/TypeScript 项目中的包安装均通过，审计报告0个漏洞。另一个独立消费者检查也在 Node 22.23.3 通过。这些结果仅描述当前快照；真人易用性和屏幕阅读器评估仍待完成。
 
-## 结构风险检查 — 仅源码版本
+## 结构风险检查
 
 在本地工作台打开 **Review the pattern**，查看嵌套或相邻的可变重复、重叠分支、范围宽泛的通配符、行锚点和过大的正则表达式。悬停会关联规则、正则片段、说明和结构图，而不移动光标；选择提示会返回对应源码行。修改规则、标志、示例配方或分组后，检查结果会更新。
 
 共享 API `analyze(rules, { flags })` 返回规范顺序的标志、带源码位置及范围的类型化提示，以及分析限制。正向字符类和范围中的已知字符可揭示部分重叠；未知集合不会被视为已证明互不相交。这是启发式分析，可能遗漏开销较大的模式，也可能误报；**没有发现问题并不证明性能安全**。分析不执行匹配，也不测量回溯。示例匹配仍在隔离 worker 中运行，并受时间限制。
 
-这些新增功能尚未包含在 npm `0.1.0-dev.5` 或线上工作台中。参见[结构风险检查说明](../LANGUAGE.md#structural-risk-review)。
+参见[结构风险检查说明](../LANGUAGE.md#structural-risk-review)。
 
-## 结构图 — 仅源码版本
+## 结构图
 
-在本地工作台打开 **Explore the pattern**，查看根据 AST 绘制的铁路图：嵌套分组、有序分支、重复循环以及不消耗文本的断言。悬停或选择节点会关联规则、正则片段和说明；悬停不会移动源码光标。按 **Enter/Space** 返回对应源码行。移动源码光标或选择生成的正则文本也会定位结构。**Actual size** 保持标签可读并支持滚动；**Fit overview** 显示全图。**Export SVG** 导出独立文件，也可调用 `toSVG(rules, { flags })`。长标签的完整说明保留在提示中。此图表示结构，不是执行或回溯轨迹。此功能尚未包含在 npm `0.1.0-dev.5` 或线上工作台中。参见[结构图](../LANGUAGE.md#structural-diagrams)。
+在本地工作台打开 **Explore the pattern**，查看根据 AST 绘制的铁路图：嵌套分组、有序分支、重复循环以及不消耗文本的断言。悬停或选择节点会关联规则、正则片段和说明；悬停不会移动源码光标。按 **Enter/Space** 返回对应源码行。移动源码光标或选择生成的正则文本也会定位结构。**Actual size** 保持标签可读并支持滚动；**Fit overview** 显示全图。**Export SVG** 导出独立文件，也可调用 `toSVG(rules, { flags })`。长标签的完整说明保留在提示中。此图表示结构，不是执行或回溯轨迹。参见[结构图](../LANGUAGE.md#structural-diagrams)。
 
 [MIT 许可证](../../LICENSE) · [更新日志](../../CHANGELOG.md) · [返回英文版](../../README.md)。

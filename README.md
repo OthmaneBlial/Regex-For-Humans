@@ -8,7 +8,7 @@
 
 A few clear English rules become a JavaScript regex you can actually follow.
 
-### [🚀 Open the playground](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Visit the site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Learn the syntax](docs/LANGUAGE.md) · [📦 npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.5)
+### [🚀 Open the playground](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Visit the site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Learn the syntax](docs/LANGUAGE.md) · [📦 npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.6)
 
 🔒 **Runs locally** &nbsp; 🧩 **No runtime dependencies** &nbsp; ⚡ **One compiler, three ways to use it**
 
@@ -46,7 +46,7 @@ end
 
 A small, **fixed vocabulary**, with an exact meaning for every instruction. The library, CLI, and workshop use the same deterministic compiler. Unknown phrases get a line, column, and helpful diagnostic.
 
-> 🌱 **Development preview (`0.1.0-dev.5`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
+> 🌱 **Development preview (`0.1.0-dev.6`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
 
 | Start here | Continue with |
 | --- | --- |
@@ -58,7 +58,7 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 ## 🧰 What you can build today
 
-| Capability | Published npm `0.1.0-dev.5` |
+| Capability | npm `0.1.0-dev.6` API / hosted workshop |
 | --- | --- |
 | Readable rules → native JavaScript regex | ✅ |
 | Supported regex → editable rules | ✅ |
@@ -74,35 +74,35 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 | [Composable character classes](docs/LANGUAGE.md#composable-character-classes) | ✅ |
 | [Native Unicode string and nested set operations](docs/LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | All eight JavaScript flags | ✅ |
-| [Group editing and capture highlighting](docs/LANGUAGE.md#editing-groups) | — |
-| [Interactive structure and SVG export](docs/LANGUAGE.md#structural-diagrams) | — |
-| [Structural risk review](docs/LANGUAGE.md#structural-risk-review) | — |
-| [Engine-aware code exports](docs/LANGUAGE.md#engine-exports) | — |
+| [Group editing and capture highlighting](docs/LANGUAGE.md#editing-groups) | ✅ |
+| [Interactive structure and SVG export](docs/LANGUAGE.md#structural-diagrams) | ✅ |
+| [Structural risk review](docs/LANGUAGE.md#structural-risk-review) | ✅ |
+| [Engine-aware code exports](docs/LANGUAGE.md#engine-exports) | ✅ |
 | Free-form English | — |
 
-**Source checkout only:** the local workshop now offers **Edit groups and references**: rename captures, change named/numbered/noncapturing forms and jump to their references. Numeric references keep their original targets when numbering changes; removing a referenced capture is rejected without changing the rules. **Highlight** selects a capture's native input range, including empty captures and captures outside the consumed match. The shared `editGroup` API returns validated rules. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet; see [group editing](docs/LANGUAGE.md#editing-groups).
+The workshop now offers **Edit groups and references**: rename captures, change named/numbered/noncapturing forms and jump to their references. Numeric references keep their original targets when numbering changes; removing a referenced capture is rejected without changing the rules. **Highlight** selects a capture's native input range, including empty captures and captures outside the consumed match. The shared `editGroup` API returns validated rules. See [group editing](docs/LANGUAGE.md#editing-groups).
 
-**Source checkout only:** open **Explore the pattern** for an AST-driven railroad diagram. See nested groups, ordered alternatives, repetition loops and zero-width checks; hover or select to connect rules, regex fragments and explanations. **Actual size** keeps text readable; **Fit overview** shows the whole map. **Export SVG** saves a standalone file, also available through `toSVG(rules, { flags })`. This shows structure, not runtime backtracking. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet; read [structural diagrams](docs/LANGUAGE.md#structural-diagrams).
+Open **Explore the pattern** for an AST-driven railroad diagram. See nested groups, ordered alternatives, repetition loops and zero-width checks; hover or select to connect rules, regex fragments and explanations. **Actual size** keeps text readable; **Fit overview** shows the whole map. **Export SVG** saves a standalone file, also available through `toSVG(rules, { flags })`. This shows structure, not runtime backtracking. Read [structural diagrams](docs/LANGUAGE.md#structural-diagrams).
 
-With this preview, `lazy digits` generates `\d+?`: try one digit first, then expand if following rules need more. `lazy any text` generates `.*?`. Available in npm `0.1.0-dev.5`; see [greedy and lazy repetition](docs/LANGUAGE.md#repetition).
+With this preview, `lazy digits` generates `\d+?`: try one digit first, then expand if following rules need more. `lazy any text` generates `.*?`. Available in npm `0.1.0-dev.6`; see [greedy and lazy repetition](docs/LANGUAGE.md#repetition).
 
-The compiler also supports `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. They test surrounding text without consuming it. Captures keep native values and positions, which can lie outside the consumed match; lookbehind requires runtime support. Available in npm `0.1.0-dev.5`; see [lookaround assertions](docs/LANGUAGE.md#lookaround-assertions).
+The compiler also supports `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. They test surrounding text without consuming it. Captures keep native values and positions, which can lie outside the consumed match; lookbehind requires runtime support. Available in npm `0.1.0-dev.6`; see [lookaround assertions](docs/LANGUAGE.md#lookaround-assertions).
 
-The compiler supports `word boundary` (`\b`) and `not word boundary` (`\B`). These zero-width checks use native JavaScript word status: ASCII letters, digits and underscore, plus case-folding equivalents with `i`. They do not segment natural-language words. Available in npm `0.1.0-dev.5`; see [word boundaries](docs/LANGUAGE.md#word-boundaries).
+The compiler supports `word boundary` (`\b`) and `not word boundary` (`\B`). These zero-width checks use native JavaScript word status: ASCII letters, digits and underscore, plus case-folding equivalents with `i`. They do not segment natural-language words. Available in npm `0.1.0-dev.6`; see [word boundaries](docs/LANGUAGE.md#word-boundaries).
 
-The compiler also accepts `unicode property "L"` and `not unicode property "L"` for native `\p{L}` and `\P{L}`. `L` means Letter; aliases are case-sensitive and classification uses the runtime’s Unicode data. Counts and `lazy` work as usual. With `i`, the native `u` complement can include case-folded letters. Available in npm `0.1.0-dev.5`; see [Unicode properties](docs/LANGUAGE.md#unicode-properties).
+The compiler also accepts `unicode property "L"` and `not unicode property "L"` for native `\p{L}` and `\P{L}`. `L` means Letter; aliases are case-sensitive and classification uses the runtime’s Unicode data. Counts and `lazy` work as usual. With `i`, the native `u` complement can include case-folded letters. Available in npm `0.1.0-dev.6`; see [Unicode properties](docs/LANGUAGE.md#unicode-properties).
 
-The compiler supports `range "α" to "ω"` and `character class: digit, "_"`. Combine one-code-point literals, ranges, singular shorthands and Unicode properties in one class; `not character class:` negates the whole union. Counts and `lazy` apply to the class. Property complements keep their native `u`/`i` behavior. Available in npm `0.1.0-dev.5`; see [character classes](docs/LANGUAGE.md#composable-character-classes).
+The compiler supports `range "α" to "ω"` and `character class: digit, "_"`. Combine one-code-point literals, ranges, singular shorthands and Unicode properties in one class; `not character class:` negates the whole union. Counts and `lazy` apply to the class. Property complements keep their native `u`/`i` behavior. Available in npm `0.1.0-dev.6`; see [character classes](docs/LANGUAGE.md#composable-character-classes).
 
-The `0.1.0-dev.5` preview includes groups, captures, backward references and ordered alternatives in the library and CLI. The browser workshop adds capture inspection and multiple search matches. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
+The `0.1.0-dev.6` preview includes groups, captures, backward references and ordered alternatives in the library and CLI. The browser workshop adds capture inspection and multiple search matches. See [compatibility](docs/COMPATIBILITY.md) and [distribution records](docs/DISTRIBUTION.md) for the precise evidence.
 
 <a name="exports"></a>
 
 ## 🌍 Export to your language
 
-**Source checkout only:** open **Export to a programming language** in the local workshop, call `exportRegex(rules, { target: "python" })`, or run `node bin/regex-for-humans.js --target python --json rules.txt`. Nine formats cover JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP and Ruby. JavaScript/TypeScript retain the existing native pattern; other targets translate supported AST semantics before quoting source code.
+Open **Export to a programming language** in the local workshop, call `exportRegex(rules, { target: "python" })`, or run `node bin/regex-for-humans.js --target python --json rules.txt`. Nine formats cover JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP and Ruby. JavaScript/TypeScript retain the existing native pattern; other targets translate supported AST semantics before quoting source code.
 
-Six native engines have passed generated-code comparisons; **PHP runtime parity is unverified**. Keep the returned requirements and capture mapping: foreign captures use `gN` names, and inactive names can be absent. Foreign input must be well-formed Unicode. Unsupported flags (`d/g/i/y`), Unicode properties and incompatible assertions or capture/repetition behavior produce positioned diagnostics. Download code or the complete export JSON; browser examples still run in JavaScript. These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet. Read the [profiles and limits](docs/LANGUAGE.md#engine-exports).
+Six native engines have passed generated-code comparisons; **PHP runtime parity is unverified**. Keep the returned requirements and capture mapping: foreign captures use `gN` names, and inactive names can be absent. Foreign input must be well-formed Unicode. Unsupported flags (`d/g/i/y`), Unicode properties and incompatible assertions or capture/repetition behavior produce positioned diagnostics. Download code or the complete export JSON; browser examples still run in JavaScript. Read the [profiles and limits](docs/LANGUAGE.md#engine-exports).
 
 <a name="install"></a>
 
@@ -118,15 +118,15 @@ Use the CLI without a global install:
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1.0-dev.5`. There are no runtime dependencies or standalone OS executables.
+This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1.0-dev.6`. There are no runtime dependencies or standalone OS executables.
 
 <a name="playground"></a>
 
 ## 🎮 Play with a pattern
 
-**Source checkout only:** choose **Interface language** for English, Simplified Chinese, Spanish or French. Labels, recipes, match feedback and navigation controls update without changing your rules, examples, selections, open panels or generated code. The choice is remembered locally when storage is available. Rules still use controlled English; compiler explanations, diagram labels and exported technical requirements stay in English. This interface is not yet in the hosted dev.5 workshop. See [workshop localization](docs/ARCHITECTURE.md#workshop-localization).
+Choose **Interface language** for English, Simplified Chinese, Spanish or French. Labels, recipes, match feedback and navigation controls update without changing your rules, examples, selections, open panels or generated code. The choice is remembered locally when storage is available. Rules still use controlled English; compiler explanations, diagram labels and exported technical requirements stay in English. See [workshop localization](docs/ARCHITECTURE.md#workshop-localization).
 
-**Source checkout only:** use **Theme** to follow your system appearance or choose a light or dark workshop. The preference is saved locally when storage is available; changing appearance retains your rules, examples, selections and open panels. See [theme preference](docs/ARCHITECTURE.md#theme-preference).
+Use **Theme** to follow your system appearance or choose a light or dark workshop. The preference is saved locally when storage is available; changing appearance retains your rules, examples, selections and open panels. See [theme preference](docs/ARCHITECTURE.md#theme-preference).
 
 1. **Pick a recipe** or write one instruction per line.
 2. **Follow the fragments** to see what every rule means.
@@ -151,7 +151,7 @@ start
 end
 ```
 
-The workshop expects a slash-delimited literal with `u` or `v`; write line breaks as escapes such as `\n`. The reverse translator preserves supported flags. The published `0.1.0-dev.5` preview imports numbered/named captures, nested groups, ordered alternatives, backward references, lookaround and lazy quantifiers, preserving capture values and numbering. Forward/open references remain unsupported; see the [language guide](docs/LANGUAGE.md) for its limits.
+The workshop expects a slash-delimited literal with `u` or `v`; write line breaks as escapes such as `\n`. The reverse translator preserves supported flags. The published `0.1.0-dev.6` preview imports numbered/named captures, nested groups, ordered alternatives, backward references, lookaround and lazy quantifiers, preserving capture values and numbering. Forward/open references remain unsupported; see the [language guide](docs/LANGUAGE.md) for its limits.
 
 Reverse translation also handles JavaScript's empty negative class `[^]`, which includes line breaks. When ordinary `.` atoms appear beside it, their output rules explicitly exclude line terminators so matching stays the same.
 
@@ -305,13 +305,13 @@ end
 
 </details>
 
-**Captures in the preview:** numbered and named `capture` blocks, nested `group` blocks, repetition of whole blocks and [named/numbered references](docs/LANGUAGE.md#capture-references) are available in npm `0.1.0-dev.5`, including reverse translation of the supported subset. See the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures). The flat worked examples above validate shapes without extracting fields.
+**Captures in the preview:** numbered and named `capture` blocks, nested `group` blocks, repetition of whole blocks and [named/numbered references](docs/LANGUAGE.md#capture-references) are available in npm `0.1.0-dev.6`, including reverse translation of the supported subset. See the [group syntax and complete date example](docs/LANGUAGE.md#groups-and-captures). The flat worked examples above validate shapes without extracting fields.
 
 <a name="captures"></a>
 
 ## 🧲 Extract fields with named captures
 
-A date can become three useful fields. This example works with npm `0.1.0-dev.5` and in the hosted workshop.
+A date can become three useful fields. This example works with npm `0.1.0-dev.6` and in the hosted workshop.
 
 <!-- captures:date -->
 ```text
@@ -417,7 +417,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--flags` | Select native JavaScript flags; u/v are exclusive |
 | `--flags FLAGS` | Source only: select unique `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` flags |
 | `--help` | Show usage |
-| `--target` | Source checkout only: export supported semantics to the named language; see [profiles](docs/LANGUAGE.md#engine-exports) |
+| `--target` | export supported semantics to the named language; see [profiles](docs/LANGUAGE.md#engine-exports) |
 | `--version` | Show the package version |
 
 Read UTF-8 rules from a file or stdin. Use `--` before a filename starting with `-`.
@@ -435,7 +435,7 @@ Control characters and Unicode line separators from rules, arguments and filenam
 
 ### 🔄 Translate a regex back into rules
 
-The `0.1.0-dev.5` preview includes `--reverse`. Translate a slash-delimited JavaScript regex with `u` or `v`:
+The `0.1.0-dev.6` preview includes `--reverse`. Translate a slash-delimited JavaScript regex with `u` or `v`:
 
 ```sh
 printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse
@@ -493,11 +493,11 @@ Unicode escapes can include leading zeros: `/^\u{00000041}$/u` translates to `st
 | `y` | `{ flags: 'y' }` | Match at `lastIndex`; search stops at the first gap |
 | `v` | `{ flags: 'v' }` | Native Unicode-set class escaping and complement semantics |
 
-**In the preview:** all eight flags are accepted in any order and returned canonically as `dgimsuvy`. Duplicates and combining `u` with `v` are errors; omitting both selects `u`. For example, use `{ flags: 'dgiv' }` or `--flags dgiv`. Reverse translation preserves the options without changing the input regex's `lastIndex`. The workshop resets each example to position 0 and lists up to 100 search matches; copied g/y regexes remain stateful. Mixed input/line anchors work without weakening absolute input boundaries. Unsupported runtime capabilities fail explicitly. Available in npm `0.1.0-dev.5`.
+**In the preview:** all eight flags are accepted in any order and returned canonically as `dgimsuvy`. Duplicates and combining `u` with `v` are errors; omitting both selects `u`. For example, use `{ flags: 'dgiv' }` or `--flags dgiv`. Reverse translation preserves the options without changing the input regex's `lastIndex`. The workshop resets each example to position 0 and lists up to 100 search matches; copied g/y regexes remain stateful. Mixed input/line anchors work without weakening absolute input boundaries. Unsupported runtime capabilities fail explicitly. Available in npm `0.1.0-dev.6`.
 
-**In the preview:** select `v` for `one of strings: "a", "ab", ""` or `unicode property "RGI_Emoji"`. Native sets try longer members first, regardless of list order; later rules can require a shorter member. Empty strings are allowed. Use `string "ab"` inside a class. String properties and empty/multi-code-point members cannot be complemented. Available in npm `0.1.0-dev.5`.
+**In the preview:** select `v` for `one of strings: "a", "ab", ""` or `unicode property "RGI_Emoji"`. Native sets try longer members first, regardless of list order; later rules can require a shorter member. Empty strings are allowed. Use `string "ab"` inside a class. String properties and empty/multi-code-point members cannot be complemented. Available in npm `0.1.0-dev.6`.
 
-**In the preview:** native nested sets use `character set union {`, `character set intersection {` and `character set subtraction {`, closed by `}`. Each line is one character, range, class, property, string set or nested set. Intersection keeps shared members; subtraction removes right-hand members from the first operand. Counts and `lazy` apply to the whole block. `not` follows native structural string restrictions; an empty union matches nothing. Select `v`; Available in npm `0.1.0-dev.5`. [Set syntax and examples](docs/LANGUAGE.md#nested-unicode-set-operations).
+**In the preview:** native nested sets use `character set union {`, `character set intersection {` and `character set subtraction {`, closed by `}`. Each line is one character, range, class, property, string set or nested set. Intersection keeps shared members; subtraction removes right-hand members from the first operand. Counts and `lazy` apply to the whole block. `not` follows native structural string restrictions; an empty union matches nothing. Select `v`; Available in npm `0.1.0-dev.6`. [Set syntax and examples](docs/LANGUAGE.md#nested-unicode-set-operations).
 
 <a name="develop"></a>
 
@@ -571,17 +571,17 @@ Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; 
 | [Competitor gaps](docs/COMPETITOR_GAPS.md) | Source-backed comparison and remaining capability gaps |
 | [Contributing](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup, scope and contribution conventions |
 
-**Verified locally on 10 October 2026:** all verification components pass: 320 Node tests, 402 bundled Chromium desktop/mobile workshop checks, 172 Firefox/WebKit checks, 64 homepage checks, builds and a clean JavaScript/TypeScript package consumer. The audit reports zero vulnerabilities. All 19 focused diagram/group-editing/analysis checks and a separate clean consumer also pass on Node 22.23.3. These counts describe this snapshot, not every browser or future version. Human usability and screen reader review remain open.
+**Verified locally on 11 October 2026:** 1,138 tests pass: 334 Node tests, 478 Chromium desktop/mobile workshop checks, 262 Firefox/WebKit checks and 64 homepage checks. Builds and a clean JavaScript/TypeScript package consumer pass; the audit reports zero vulnerabilities. A separate clean consumer also passes on Node 22.23.3. These counts describe this snapshot, not every browser or future version. Human usability and screen reader reviews remain open.
 
-## Structural risk review — source checkout
+## Structural risk review
 
 Open **Review the pattern** in the local workshop for source-linked notes on nested/adjacent variable repetitions, overlapping alternatives, broad wildcards, line anchors and large generated patterns. Hover connects the rule, regex fragment, explanation and diagram without moving the caret; selecting a note returns to its source line. Source, flag, recipe and group edits refresh the review.
 
 The shared `analyze(rules, { flags })` API returns canonical flags, typed findings with source locations/spans and explicit limitations. Positive class/range witnesses cover selected overlaps; an unknown set is not treated as proven disjoint. This is heuristic analysis: it may miss expensive patterns or report false positives, and **no findings does not prove performance safety**. Analysis does not run matches or measure backtracking. Example matching keeps its isolated worker and deadline.
 
-These additions are not in npm `0.1.0-dev.5` or the hosted workshop yet. See the [structural risk review contract](docs/LANGUAGE.md#structural-risk-review).
+ See the [structural risk review contract](docs/LANGUAGE.md#structural-risk-review).
 
-## Structural diagrams — source checkout
+## Structural diagrams
 
 Move the source cursor or select generated regex to follow the structure; hover leaves the source caret and scroll position unchanged. Enter/Space on a diagram node returns to its rule. Long labels retain complete explanations in titles. Read the [structural diagram contract](docs/LANGUAGE.md#structural-diagrams) for the API, display rules and limits.
 

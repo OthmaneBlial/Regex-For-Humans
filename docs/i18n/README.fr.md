@@ -8,7 +8,7 @@
 
 Quelques règles claires en anglais deviennent une expression régulière JavaScript dont vous pouvez suivre chaque partie.
 
-[🚀 Atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Syntaxe](../LANGUAGE.md) · [📦 Aperçu npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.5)
+[🚀 Atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Syntaxe](../LANGUAGE.md) · [📦 Aperçu npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.6)
 
 🔒 Exécution locale · 🧩 Aucune dépendance à l’exécution · ⚡ Un compilateur, trois interfaces
 
@@ -38,11 +38,11 @@ end
 
 Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bibliothèque, le CLI et l’atelier utilisent le même compilateur déterministe. Une instruction inconnue produit un diagnostic avec ligne, colonne et conseil de correction. La syntaxe reste en anglais dans toutes les traductions.
 
-> 🌱 L’aperçu `0.1.0-dev.5` nécessite **Node.js 22+** pour la bibliothèque et le CLI. L’atelier en ligne fonctionne sans installation. Les évaluations humaines de l’utilisabilité et du lecteur d’écran restent à faire.
+> 🌱 L’aperçu `0.1.0-dev.6` nécessite **Node.js 22+** pour la bibliothèque et le CLI. L’atelier en ligne fonctionne sans installation. Les évaluations humaines de l’utilisabilité et du lecteur d’écran restent à faire.
 
 ## 🧰 Ce que vous pouvez construire aujourd’hui
 
-| Capacité | npm `0.1.0-dev.5` |
+| Capacité | npm `0.1.0-dev.6` / atelier hébergé |
 | --- | --- |
 | Règles lisibles → regex JavaScript | ✅ |
 | Regex pris en charge → règles modifiables | ✅ |
@@ -58,31 +58,31 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 | [Classes de caractères combinées](../LANGUAGE.md#composable-character-classes) | ✅ |
 | [Chaînes Unicode et ensembles imbriqués](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
 | Les huit flags JavaScript | ✅ |
-| [Édition des groupes et surlignage des captures](../LANGUAGE.md#editing-groups) | — |
-| [Structure interactive et export SVG](../LANGUAGE.md#structural-diagrams) | — |
-| [Revue des risques structurels](../LANGUAGE.md#structural-risk-review) | — |
-| [Export de code adapté au moteur](../LANGUAGE.md#engine-exports) | — |
+| [Édition des groupes et surlignage des captures](../LANGUAGE.md#editing-groups) | ✅ |
+| [Structure interactive et export SVG](../LANGUAGE.md#structural-diagrams) | ✅ |
+| [Revue des risques structurels](../LANGUAGE.md#structural-risk-review) | ✅ |
+| [Export de code adapté au moteur](../LANGUAGE.md#engine-exports) | ✅ |
 | Anglais libre | — |
 
-**Uniquement dans le dépôt source :** l’atelier local propose **Edit groups and references** pour renommer une capture, changer son type et accéder à ses références. Les références numériques conservent leur cible après une renumérotation ; supprimer une capture référencée est refusé sans modifier les règles. **Highlight** surligne la position native d’une capture, même vide ou hors du texte consommé. L’API `editGroup` renvoie des règles validées. Ces ajouts ne sont pas encore dans npm `0.1.0-dev.5` ni dans l’atelier hébergé. Voir l’[édition des groupes](../LANGUAGE.md#editing-groups).
+L’atelier propose **Edit groups and references** pour renommer une capture, changer son type et accéder à ses références. Les références numériques conservent leur cible après une renumérotation ; supprimer une capture référencée est refusé sans modifier les règles. **Highlight** surligne la position native d’une capture, même vide ou hors du texte consommé. L’API `editGroup` renvoie des règles validées. Voir l’[édition des groupes](../LANGUAGE.md#editing-groups).
 
-Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord, puis augmenter le nombre si les règles suivantes le demandent. Disponible dans npm `0.1.0-dev.5`. Voir les [règles de répétition](../LANGUAGE.md#repetition).
+Dans le code source, `lazy digits` produit `\d+?` : essayer un chiffre d’abord, puis augmenter le nombre si les règles suivantes le demandent. Disponible dans npm `0.1.0-dev.6`. Voir les [règles de répétition](../LANGUAGE.md#repetition).
 
-Le source accepte aussi `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Ces assertions vérifient le texte autour de la position courante sans le consommer. Les captures gardent leurs valeurs et positions natives, parfois hors du texte consommé ; les assertions arrière exigent un moteur compatible. Disponible dans npm `0.1.0-dev.5`. Voir les [assertions avant/arrière](../LANGUAGE.md#lookaround-assertions).
+Le source accepte aussi `followed by { … }`, `not followed by { … }`, `preceded by { … }`, `not preceded by { … }`. Ces assertions vérifient le texte autour de la position courante sans le consommer. Les captures gardent leurs valeurs et positions natives, parfois hors du texte consommé ; les assertions arrière exigent un moteur compatible. Disponible dans npm `0.1.0-dev.6`. Voir les [assertions avant/arrière](../LANGUAGE.md#lookaround-assertions).
 
-Le source accepte `word boundary` (`\b`) et `not word boundary` (`\B`). Ces assertions ne consomment aucun caractère. JavaScript considère comme caractères de mot les lettres ASCII, les chiffres et le tiret bas, ainsi que leurs équivalents de casse avec `i`. Il ne s’agit pas d’une segmentation linguistique. Disponible dans npm `0.1.0-dev.5`. Voir les [limites de mot](../LANGUAGE.md#word-boundaries).
+Le source accepte `word boundary` (`\b`) et `not word boundary` (`\B`). Ces assertions ne consomment aucun caractère. JavaScript considère comme caractères de mot les lettres ASCII, les chiffres et le tiret bas, ainsi que leurs équivalents de casse avec `i`. Il ne s’agit pas d’une segmentation linguistique. Disponible dans npm `0.1.0-dev.6`. Voir les [limites de mot](../LANGUAGE.md#word-boundaries).
 
-Le source accepte aussi `unicode property "L"` et `not unicode property "L"`, soit `\p{L}` et `\P{L}` natifs. `L` signifie Letter ; les alias sont sensibles à la casse et le classement dépend des données Unicode du moteur. Les comptes et `lazy` s’appliquent normalement. Avec `i`, le complément natif en mode `u` peut inclure des lettres équivalentes en casse. Disponible dans npm `0.1.0-dev.5`. Voir les [propriétés Unicode](../LANGUAGE.md#unicode-properties).
+Le source accepte aussi `unicode property "L"` et `not unicode property "L"`, soit `\p{L}` et `\P{L}` natifs. `L` signifie Letter ; les alias sont sensibles à la casse et le classement dépend des données Unicode du moteur. Les comptes et `lazy` s’appliquent normalement. Avec `i`, le complément natif en mode `u` peut inclure des lettres équivalentes en casse. Disponible dans npm `0.1.0-dev.6`. Voir les [propriétés Unicode](../LANGUAGE.md#unicode-properties).
 
-Le source accepte `range "α" to "ω"` et `character class: digit, "_"`. Une classe combine des littéraux d’un point Unicode, des plages, des raccourcis singuliers et des propriétés Unicode ; `not character class:` nie l’union entière. Les comptes et `lazy` s’appliquent à la classe. Les compléments de propriétés conservent le comportement natif `u`/`i`. Disponible dans npm `0.1.0-dev.5`; voir les [classes de caractères](../LANGUAGE.md#composable-character-classes).
+Le source accepte `range "α" to "ω"` et `character class: digit, "_"`. Une classe combine des littéraux d’un point Unicode, des plages, des raccourcis singuliers et des propriétés Unicode ; `not character class:` nie l’union entière. Les comptes et `lazy` s’appliquent à la classe. Les compléments de propriétés conservent le comportement natif `u`/`i`. Disponible dans npm `0.1.0-dev.6`; voir les [classes de caractères](../LANGUAGE.md#composable-character-classes).
 
-npm `0.1.0-dev.5` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
+npm `0.1.0-dev.6` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
 
 ## 🌍 Exporter dans votre langage
 
-**Depuis une copie du dépôt uniquement :** ouvrez **Export to a programming language** dans l’atelier local, appelez `exportRegex(rules, { target: "python" })`, ou lancez `node bin/regex-for-humans.js --target python --json rules.txt`. Neuf formats couvrent JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP et Ruby. JavaScript/TypeScript conservent le motif natif ; les autres cibles traduisent les comportements pris en charge depuis l’AST, puis produisent le code source correctement échappé.
+Ouvrez **Export to a programming language** dans l’atelier local, appelez `exportRegex(rules, { target: "python" })`, ou lancez `node bin/regex-for-humans.js --target python --json rules.txt`. Neuf formats couvrent JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP et Ruby. JavaScript/TypeScript conservent le motif natif ; les autres cibles traduisent les comportements pris en charge depuis l’AST, puis produisent le code source correctement échappé.
 
-Les comparaisons du code généré passent sur six moteurs natifs ; **PHP n’a pas de validation native**. Conservez les contraintes et la correspondance des captures : les cibles étrangères utilisent des noms `gN`, et une capture inactive peut être absente. Le texte doit être Unicode bien formé. Les options `d/g/i/y`, propriétés Unicode et comportements incompatibles d’assertion, capture ou répétition donnent un diagnostic situé. Téléchargez le code ou le résultat JSON complet ; les exemples du navigateur restent exécutés en JavaScript. Ces ajouts ne sont pas encore dans npm `0.1.0-dev.5` ni l’atelier publié. Consultez les [profils et limites](../LANGUAGE.md#engine-exports).
+Les comparaisons du code généré passent sur six moteurs natifs ; **PHP n’a pas de validation native**. Conservez les contraintes et la correspondance des captures : les cibles étrangères utilisent des noms `gN`, et une capture inactive peut être absente. Le texte doit être Unicode bien formé. Les options `d/g/i/y`, propriétés Unicode et comportements incompatibles d’assertion, capture ou répétition donnent un diagnostic situé. Téléchargez le code ou le résultat JSON complet ; les exemples du navigateur restent exécutés en JavaScript. Consultez les [profils et limites](../LANGUAGE.md#engine-exports).
 
 ## 📦 Installer l’aperçu
 
@@ -96,13 +96,13 @@ Utilisez le CLI sans installation globale :
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
 ```
 
-Résultat : `/^ABC\d{3}$/u`. Pour fixer la version, utilisez `regex-for-humans@0.1.0-dev.5`. Le projet n’a ni dépendance à l’exécution ni exécutable autonome par système.
+Résultat : `/^ABC\d{3}$/u`. Pour fixer la version, utilisez `regex-for-humans@0.1.0-dev.6`. Le projet n’a ni dépendance à l’exécution ni exécutable autonome par système.
 
 ## 🎮 Essayer un motif
 
-**Dans le dépôt source uniquement :** choisissez **Interface language** pour l’anglais, le chinois simplifié, l’espagnol ou le français. Les libellés, recettes, résultats des tests et commandes de navigation changent sans modifier vos règles, exemples, sélections, panneaux ouverts ou code généré. Le choix est mémorisé localement si le stockage est disponible. Les règles restent en anglais contrôlé ; les explications du compilateur, libellés du diagramme et exigences techniques exportées restent en anglais. Cette interface n’est pas encore dans l’atelier dev.5 hébergé. Voir [la traduction de l’atelier](../ARCHITECTURE.md#workshop-localization).
+Choisissez **Interface language** pour l’anglais, le chinois simplifié, l’espagnol ou le français. Les libellés, recettes, résultats des tests et commandes de navigation changent sans modifier vos règles, exemples, sélections, panneaux ouverts ou code généré. Le choix est mémorisé localement si le stockage est disponible. Les règles restent en anglais contrôlé ; les explications du compilateur, libellés du diagramme et exigences techniques exportées restent en anglais. Voir [la traduction de l’atelier](../ARCHITECTURE.md#workshop-localization).
 
-**Dans le dépôt source uniquement :** utilisez **Theme** pour suivre l’apparence du système ou choisir un atelier clair ou sombre. Le choix est mémorisé localement si le stockage est disponible ; changer l’apparence conserve vos règles, exemples, sélections et panneaux ouverts. Voir [la préférence de thème](../ARCHITECTURE.md#theme-preference).
+Utilisez **Theme** pour suivre l’apparence du système ou choisir un atelier clair ou sombre. Le choix est mémorisé localement si le stockage est disponible ; changer l’apparence conserve vos règles, exemples, sélections et panneaux ouverts. Voir [la préférence de thème](../ARCHITECTURE.md#theme-preference).
 
 1. Choisissez une recette ou écrivez une instruction par ligne.
 2. Suivez les fragments générés et leur explication.
@@ -234,7 +234,7 @@ Les retours à la ligne sont des caractères littéraux. La validation des monta
 
 ## 🧲 Extraire des champs avec des captures nommées
 
-Cet exemple fonctionne avec npm `0.1.0-dev.5` et dans l’atelier publié.
+Cet exemple fonctionne avec npm `0.1.0-dev.6` et dans l’atelier publié.
 
 ```text
 start
@@ -330,7 +330,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 | `--dot-all` | Active `s` |
 | `--flags` | Choisir les flags JavaScript natifs ; u/v sont exclusifs |
 | `--help` | Aide |
-| `--target` | Depuis le dépôt uniquement : exporter vers le langage demandé ; voir les [profils](../LANGUAGE.md#engine-exports) |
+| `--target` | exporter vers le langage demandé ; voir les [profils](../LANGUAGE.md#engine-exports) |
 | `--version` | Version du paquet |
 
 Lisez un fichier UTF-8 ou stdin. Utilisez `--` avant un nom de fichier commençant par `-`. Codes de sortie : `0` pour succès/aide/version, `1` pour règles invalides ou erreur d’entrée/sortie, `2` pour arguments invalides.
@@ -387,11 +387,11 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 | `y` | `{ flags: 'y' }` | Correspondance à `lastIndex`, arrêt au premier trou |
 | `v` | `{ flags: 'v' }` | Classes Unicode et compléments natifs en mode v |
 
-**Dans l’aperçu :** les huit flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` sont acceptés, avec `{ flags: 'dgiv' }` ou `--flags dgiv`. L’ordre de sortie est `dgimsuvy` ; doublons et combinaison u/v sont rejetés, et u reste le défaut. m peut être explicite ou ajouté par les ancres de ligne ; les ancres d’entrée restent absolues, même dans un mélange des deux modes. La traduction inverse conserve les options sans modifier `lastIndex`. Le workshop recommence chaque exemple à 0 et énumère au plus 100 correspondances ; les regex g/y copiés restent avec état. Les capacités natives manquantes sont signalées explicitement. Disponible dans npm `0.1.0-dev.5`.
+**Dans l’aperçu :** les huit flags `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y` sont acceptés, avec `{ flags: 'dgiv' }` ou `--flags dgiv`. L’ordre de sortie est `dgimsuvy` ; doublons et combinaison u/v sont rejetés, et u reste le défaut. m peut être explicite ou ajouté par les ancres de ligne ; les ancres d’entrée restent absolues, même dans un mélange des deux modes. La traduction inverse conserve les options sans modifier `lastIndex`. Le workshop recommence chaque exemple à 0 et énumère au plus 100 correspondances ; les regex g/y copiés restent avec état. Les capacités natives manquantes sont signalées explicitement. Disponible dans npm `0.1.0-dev.6`.
 
-**Dans le code source seulement :** choisissez `v` pour `one of strings: "a", "ab", ""` ou `unicode property "RGI_Emoji"`. Les ensembles natifs essaient les membres les plus longs en premier, quel que soit l’ordre de la liste ; les règles suivantes peuvent imposer un membre plus court. Les chaînes vides sont autorisées. Utilisez `string "ab"` dans une classe. Les propriétés de chaînes et les membres vides ou de plusieurs points de code ne peuvent pas être complémentés. Disponible dans npm `0.1.0-dev.5`.
+**Dans le code source seulement :** choisissez `v` pour `one of strings: "a", "ab", ""` ou `unicode property "RGI_Emoji"`. Les ensembles natifs essaient les membres les plus longs en premier, quel que soit l’ordre de la liste ; les règles suivantes peuvent imposer un membre plus court. Les chaînes vides sont autorisées. Utilisez `string "ab"` dans une classe. Les propriétés de chaînes et les membres vides ou de plusieurs points de code ne peuvent pas être complémentés. Disponible dans npm `0.1.0-dev.6`.
 
-**Dans le code source seulement :** les ensembles imbriqués utilisent `character set union {`, `character set intersection {` et `character set subtraction {`, puis `}`. Chaque ligne désigne un caractère, une plage, une classe, une propriété, un ensemble de chaînes ou un ensemble imbriqué. L’intersection garde les membres communs ; la soustraction retire les membres de droite du premier opérande. Les comptes et `lazy` portent sur tout le bloc. `not` respecte les restrictions natives sur les chaînes ; une union vide ne correspond à rien. Choisissez `v` ; Disponible dans npm `0.1.0-dev.5`. [Syntaxe et exemples](../LANGUAGE.md#nested-unicode-set-operations).
+**Dans le code source seulement :** les ensembles imbriqués utilisent `character set union {`, `character set intersection {` et `character set subtraction {`, puis `}`. Chaque ligne désigne un caractère, une plage, une classe, une propriété, un ensemble de chaînes ou un ensemble imbriqué. L’intersection garde les membres communs ; la soustraction retire les membres de droite du premier opérande. Les comptes et `lazy` portent sur tout le bloc. `not` respecte les restrictions natives sur les chaînes ; une union vide ne correspond à rien. Choisissez `v` ; Disponible dans npm `0.1.0-dev.6`. [Syntaxe et exemples](../LANGUAGE.md#nested-unicode-set-operations).
 
 ## 🛠️ Développer localement
 
@@ -457,18 +457,18 @@ La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’ang
 | [Comparaison](../COMPETITOR_GAPS.md) | Sources et capacités manquantes |
 | [Contribuer](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Installation et conventions |
 
-**Vérifié localement le 10 octobre 2026 :** 320 tests Node, 402 contrôles Chromium ordinateur/mobile, 172 Firefox/WebKit, 64 du site et installation du paquet réussis ; zéro vulnérabilité signalée. Les 19 tests dédiés aux diagrammes, à l’édition des groupes et à l’analyse, ainsi qu’un consommateur installé séparément, passent aussi sur Node 22.23.3. Ces chiffres décrivent cet instantané, pas tous les navigateurs ni les versions futures. Les revues humaines restent ouvertes.
+**Vérifié localement le 11 octobre 2026 :** 1 138 tests passent : 334 tests Node, 478 contrôles Chromium ordinateur/mobile, 262 contrôles Firefox/WebKit et 64 contrôles du site. Les builds et l’installation dans un projet JavaScript/TypeScript indépendant passent ; l’audit ne signale aucune vulnérabilité. Une installation indépendante passe également sur Node 22.23.3. Ces résultats décrivent cet instantané ; les revues humaines d’utilisation et de lecteur d’écran restent ouvertes.
 
-## Revue des risques structurels — dépôt source
+## Revue des risques structurels
 
 Ouvrez **Review the pattern** dans l’atelier local pour examiner les répétitions variables imbriquées ou voisines, les alternatives qui se chevauchent, les jokers larges, les ancres de ligne et les expressions volumineuses. Le survol relie règle, fragment regex, explication et diagramme sans déplacer le curseur ; sélectionner une remarque revient à sa ligne source. Les modifications des règles, des flags, de la recette et des groupes actualisent la revue.
 
 L’API partagée `analyze(rules, { flags })` renvoie les flags canoniques, des remarques typées avec positions et plages source, ainsi que ses limites. Des caractères témoins dans les classes et intervalles positifs détectent certains chevauchements ; un ensemble inconnu n’est pas considéré comme disjoint. Cette analyse heuristique peut manquer des motifs coûteux ou produire de faux positifs : **l’absence de remarques ne prouve pas la sûreté des performances**. Elle ne lance aucun test de correspondance et ne mesure pas le backtracking. Les exemples conservent leur worker isolé et leur délai maximal.
 
-Ces ajouts ne sont pas encore dans npm `0.1.0-dev.5` ni dans l’atelier hébergé. Voir le [contrat de revue structurelle](../LANGUAGE.md#structural-risk-review).
+ Voir le [contrat de revue structurelle](../LANGUAGE.md#structural-risk-review).
 
-## Diagramme de structure — dépôt source
+## Diagramme de structure
 
-Dans l’atelier local, ouvrez **Explore the pattern** pour voir le diagramme construit à partir de l’AST : groupes imbriqués, alternatives ordonnées, boucles de répétition et assertions qui ne consomment pas de texte. Survolez ou sélectionnez un élément pour relier les règles, les fragments de regex et les explications ; le survol ne déplace pas le curseur. **Entrée/Espace** revient à la ligne source. Le curseur source et la sélection dans la regex suivent aussi la structure. **Actual size** garde les libellés lisibles avec défilement ; **Fit overview** affiche l’ensemble. **Export SVG** enregistre un fichier autonome, aussi disponible avec `toSVG(rules, { flags })`. Les libellés longs gardent leur explication complète dans une infobulle. Ce diagramme montre la structure, pas une trace d’exécution ou de backtracking. Cette fonctionnalité n’est pas encore dans npm `0.1.0-dev.5` ni dans l’atelier hébergé. Voir les [diagrammes de structure](../LANGUAGE.md#structural-diagrams).
+Dans l’atelier local, ouvrez **Explore the pattern** pour voir le diagramme construit à partir de l’AST : groupes imbriqués, alternatives ordonnées, boucles de répétition et assertions qui ne consomment pas de texte. Survolez ou sélectionnez un élément pour relier les règles, les fragments de regex et les explications ; le survol ne déplace pas le curseur. **Entrée/Espace** revient à la ligne source. Le curseur source et la sélection dans la regex suivent aussi la structure. **Actual size** garde les libellés lisibles avec défilement ; **Fit overview** affiche l’ensemble. **Export SVG** enregistre un fichier autonome, aussi disponible avec `toSVG(rules, { flags })`. Les libellés longs gardent leur explication complète dans une infobulle. Ce diagramme montre la structure, pas une trace d’exécution ou de backtracking. Voir les [diagrammes de structure](../LANGUAGE.md#structural-diagrams).
 
 Licence [MIT](../../LICENSE) · [Changelog](../../CHANGELOG.md) · [Retour à l’anglais](../../README.md).

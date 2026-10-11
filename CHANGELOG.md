@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- Add source-only light/dark workshop themes and a system option with live OS appearance changes. Remember the choice locally when possible, recover from denied/invalid storage, and apply appearance before compiler startup. Preserve rules, examples, selections, scroll positions, open panels and generated code without recompilation; translate the native controls through the existing four-language catalog.
+## 0.1.0-dev.6 (11 October 2026)
+
+- Add light/dark workshop themes and a system option with live OS appearance changes. Remember the choice locally when possible, recover from denied/invalid storage, and apply appearance before compiler startup. Preserve rules, examples, selections, scroll positions, open panels and generated code without recompilation; translate the native controls through the existing four-language catalog.
 
 - Load shared frozen budgets directly in the match worker, avoiding parser/AST/diagnostic startup dependencies while preserving source limits, cancellation, validation and the 1,200 ms deadline.
 
@@ -10,17 +12,17 @@
 
 - Share plain-arrow scrolling between generated-regex and source-export regions, retaining modifier shortcuts and keyboard copy/navigation in desktop and mobile contexts.
 
-- Add a source-only four-language workshop interface (English, Simplified Chinese, Spanish and French), including recipes, status feedback, accessible labels and navigation. Change language in place while retaining rules, examples, selections, open panels, capture data and exported code. Remember the choice locally when storage is available and handle denied storage. Keep the controlled English grammar and English compiler/engine technical detail separate from translated UI.
+- Add a four-language workshop interface (English, Simplified Chinese, Spanish and French), including recipes, status feedback, accessible labels and navigation. Change language in place while retaining rules, examples, selections, open panels, capture data and exported code. Remember the choice locally when storage is available and handle denied storage. Keep the controlled English grammar and English compiler/engine technical detail separate from translated UI.
 
-- Add source-only `exportRegex`, typed export metadata, CLI `--target` and an on-demand workshop panel with code/JSON downloads for JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP and Ruby. Translate supported AST semantics separately from source-code quoting; expose mapped capture names and positioned diagnostics for unsupported flags, properties, assertions, repetition and capture lifetimes. Check generated code against six installed native runtimes; PHP parity remains unverified. Exported snippets do not inherit the workshop matching sandbox. npm and the hosted workshop remain at dev.5.
+- Add `exportRegex`, typed export metadata, CLI `--target` and an on-demand workshop panel with code/JSON downloads for JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP and Ruby. Translate supported AST semantics separately from source-code quoting; expose mapped capture names and positioned diagnostics for unsupported flags, properties, assertions, repetition and capture lifetimes. Check generated code against six installed native runtimes; PHP parity remains unverified. Exported snippets do not inherit the workshop matching sandbox.
 
-- Add source-only structural risk review through the typed public `analyze` API and an on-demand workshop panel. Inspect nested/adjacent variable repetition, overlapping alternatives and selected character witnesses; surface wildcard, line-anchor and generated-size notes with source navigation and explicit limitations. Unknown witness sets do not certify disjointness, and no findings does not prove performance safety. Preserve isolated matching, deadlines and compiler diagnostics.
+- Add structural risk review through the typed public `analyze` API and an on-demand workshop panel. Inspect nested/adjacent variable repetition, overlapping alternatives and selected character witnesses; surface wildcard, line-anchor and generated-size notes with source navigation and explicit limitations. Unknown witness sets do not certify disjointness, and no findings does not prove performance safety. Preserve isolated matching, deadlines and compiler diagnostics.
 
 - Add AST-driven structural railroad diagrams through the public `toSVG` API and an on-demand workshop panel. Show nested group boundaries, ordered alternatives, repetition bounds/lazy preference, anchors and separate zero-width lookaround checks. Keep set operations as semantic leaves instead of pretending they are ordered paths.
-- Synchronize diagram hover/keyboard selection, source cursor, generated-regex selection and explanation rows using compiler spans. Highlight native-wrapped source rows without moving the caret on hover; preserve selected generated text. Offer actual-size scrolling, an explicit fit overview and standalone escaped SVG export. These additions remain source-only alongside group editing.
+- Synchronize diagram hover/keyboard selection, source cursor, generated-regex selection and explanation rows using compiler spans. Highlight native-wrapped source rows without moving the caret on hover; preserve selected generated text. Offer actual-size scrolling, an explicit fit overview and standalone escaped SVG export.
 
-- Add source-only group editing through the shared AST and `editGroup` API. Rename named captures, change named/numbered/noncapturing forms, preserve resolved reference targets during renumbering, and reject removal of referenced captures without returning partial rules. Keep other literals, indentation, line endings and repetition modifiers intact; validate the whole edited document against the existing grammar and limits.
-- Add a keyboard-accessible workshop group editor with capture numbering, reference navigation and explicit rejected-edit feedback. Highlight native capture ranges, including empty captures and lookaround values outside the consumed match; absent captures and unavailable indices have no guessed highlight. npm and the hosted workshop remain at dev.5.
+- Add group editing through the shared AST and `editGroup` API. Rename named captures, change named/numbered/noncapturing forms, preserve resolved reference targets during renumbering, and reject removal of referenced captures without returning partial rules. Keep other literals, indentation, line endings and repetition modifiers intact; validate the whole edited document against the existing grammar and limits.
+- Add a keyboard-accessible workshop group editor with capture numbering, reference navigation and explicit rejected-edit feedback. Highlight native capture ranges, including empty captures and lookaround values outside the consumed match; absent captures and unavailable indices have no guessed highlight.
 
 ## 0.1.0-dev.5 (10 October 2026)
 
