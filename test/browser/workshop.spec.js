@@ -1157,11 +1157,11 @@ test("unsupported quote styles explain the required delimiters and recover after
     ["“", "”"],
     ["‘", "’"],
   ]) {
-    for (const [prefix, letter, source] of [
-      ["start ", "A", "^ABC\\d{3}$"],
-      ["start\none of: ", "A", "^[A]BC\\d{3}$"],
-      ["start\nnone of: ", "B", "^[^B]BC\\d{3}$"],
-      ["start\ntext without: ", "B", "^[^B]*BC\\d{3}$"],
+    for (const [prefix, letter, source, selectionLength] of [
+      ["start ", "A", "^ABC\\d{3}$", 1],
+      ["start\none of: ", "A", "^[A]BC\\d{3}$", 3],
+      ["start\nnone of: ", "B", "^[^B]BC\\d{3}$", 3],
+      ["start\ntext without: ", "B", "^[^B]*BC\\d{3}$", 3],
     ]) {
       const value = opening + letter + closing;
       const rules = `${prefix}${value}\n"BC"\n3 digits\nend`;
@@ -1177,7 +1177,7 @@ test("unsupported quote styles explain the required delimiters and recover after
       await expect(editor).toHaveValue(rules);
       expect(
         await editor.evaluate((element) => [element.selectionStart, element.selectionEnd]),
-      ).toEqual([rules.indexOf(value), rules.indexOf(value) + 1]);
+      ).toEqual([rules.indexOf(value), rules.indexOf(value) + selectionLength]);
       await editor.fill(rules.replace(value, JSON.stringify(letter)));
       await expect(page.locator("#regex-output")).toHaveText(`/${source}/u`);
       await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
