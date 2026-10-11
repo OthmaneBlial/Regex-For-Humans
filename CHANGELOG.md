@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add native `group with flags "im-s"` scopes with positioned validation, lexical options, backward imports and typed effective flags. Preserve input/line anchor intent, scope restoration, captures, reference-site folding and budgets. Carry local semantics into explanations, analysis, diagrams, failure proofs, group conversion and localized workshop notes; reject unsupported foreign profiles. Probe actual Unicode/cursor modes and guard the observed warmed Node/V8 defect instead of claiming syntax availability proves correct matching.
+
 - Reverse-translate compiler-generated wrappers around repeated literals and numeric capture references at the 64-level rule-block limit. Normalize reference-only noncapturing groups while preserving repetition, numeric-reference boundaries and original reference diagnostic positions. Keep structural groups and recursive parsing bounded.
 
 ## 0.1.0-dev.9 (11 October 2026)

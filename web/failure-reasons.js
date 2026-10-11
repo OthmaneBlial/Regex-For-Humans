@@ -1,4 +1,5 @@
 import { classMayContainStrings } from "../src/ast.js";
+import { applyModifiers } from "../src/flags.js";
 import { parse } from "../src/parser.js";
 
 /** @typedef {import('../src/ast.js').RuleNode} RuleNode */
@@ -17,9 +18,10 @@ function minimumCount(node) {
 }
 
 /** Necessary conditions only; this does not simulate the native engine.
- * @param {RuleNode[]} nodes @param {boolean} ignoreCase @returns {Requirements}
+ * @param {RuleNode[]} nodes @param {string} flags @returns {Requirements}
  */
-function requirements(nodes, ignoreCase) {
+function requirements(nodes, flags) {
+  const ignoreCase = flags.includes("i");
   let minimum = 0;
   const literals = new Set();
   for (const node of nodes) {
@@ -27,10 +29,13 @@ function requirements(nodes, ignoreCase) {
     if (!count) continue;
     let unit = { minimum: 0, literals: /** @type {string[]} */ ([]) };
     if (node.kind === "group" || (node.kind === "assertion" && !node.negative)) {
-      unit = requirements(node.nodes, ignoreCase);
+      unit = requirements(
+        node.nodes,
+        node.kind === "group" && node.modifiers ? applyModifiers(flags, node.modifiers) : flags,
+      );
       if (node.kind === "assertion") unit.minimum = 0;
     } else if (node.kind === "alternation") {
-      const branches = node.branches.map((branch) => requirements(branch, ignoreCase));
+      const branches = node.branches.map((branch) => requirements(branch, flags));
       unit.minimum = Math.min(...branches.map((branch) => branch.minimum));
       unit.literals = branches[0].literals.filter((literal) =>
         branches.every((branch) => branch.literals.includes(literal)),
@@ -56,10 +61,10 @@ function requirements(nodes, ignoreCase) {
 }
 
 /** A necessary literal edge and whether it describes all consumption in the sequence.
- * @param {RuleNode[]} nodes @param {boolean} backwards
+ * @param {RuleNode[]} nodes @param {boolean} backwards @param {string} flags
  * @returns {{value: string, exact: boolean}}
  */
-function literalEdge(nodes, backwards) {
+function literalEdge(nodes, backwards, flags) {
   let value = "";
   for (const node of backwards ? nodes.toReversed() : nodes) {
     if (node.kind === "anchor" || node.kind === "assertion" || node.kind === "boundary") continue;
@@ -71,9 +76,14 @@ function literalEdge(nodes, backwards) {
       (repetition.kind === "range" && repetition.min === repetition.max);
     if (!count && fixedCount) continue;
     let unit;
-    if (node.kind === "group") unit = literalEdge(node.nodes, backwards);
+    if (node.kind === "group")
+      unit = literalEdge(
+        node.nodes,
+        backwards,
+        node.modifiers ? applyModifiers(flags, node.modifiers) : flags,
+      );
     else if (node.kind === "alternation") {
-      const branches = node.branches.map((branch) => literalEdge(branch, backwards));
+      const branches = node.branches.map((branch) => literalEdge(branch, backwards, flags));
       const common = [...branches[0].value];
       if (backwards) common.reverse();
       for (const branch of branches.slice(1)) {
@@ -88,7 +98,7 @@ function literalEdge(nodes, backwards) {
         value: common.join(""),
         exact: branches.every((branch) => branch.exact && branch.value === branches[0].value),
       };
-    } else if (node.kind === "atom" && node.atomType === "literal")
+    } else if (node.kind === "atom" && node.atomType === "literal" && !flags.includes("i"))
       unit = { value: node.value, exact: true };
     else return { value, exact: false };
     if (unit.exact && !unit.value) continue;
@@ -108,17 +118,15 @@ function literalEdge(nodes, backwards) {
  */
 export function failureRequirements(rules, flags) {
   const { nodes } = parse(rules);
-  const ignoreCase = flags.includes("i");
-  const required = requirements(nodes, ignoreCase);
-  if (!ignoreCase)
-    for (const edge of ["start", "end"]) {
-      if (
-        !nodes.some((node) => node.kind === "anchor" && node.mode === "input" && node.edge === edge)
-      )
-        continue;
-      const { value } = literalEdge(nodes, edge === "end");
-      if (value) required[edge === "start" ? "startLiteral" : "endLiteral"] = value;
-    }
+  const required = requirements(nodes, flags);
+  for (const edge of ["start", "end"]) {
+    if (
+      !nodes.some((node) => node.kind === "anchor" && node.mode === "input" && node.edge === edge)
+    )
+      continue;
+    const { value } = literalEdge(nodes, edge === "end", flags);
+    if (value) required[edge === "start" ? "startLiteral" : "endLiteral"] = value;
+  }
   return required;
 }
 

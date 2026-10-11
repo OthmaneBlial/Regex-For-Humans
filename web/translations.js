@@ -34,6 +34,16 @@ export const translations = {
     "Referencia resuelta: captura #{index}.",
     "Référence résolue : capture n° {index}.",
   ],
+  "Effective flags here: {flags}.": [
+    "此处生效的标志：{flags}。",
+    "Indicadores efectivos aquí: {flags}.",
+    "Options effectives ici : {flags}.",
+  ],
+  "Local flags {modifiers} apply only to this group's rules.": [
+    "局部标志 {modifiers} 仅适用于此组中的规则。",
+    "Los indicadores locales {modifiers} solo se aplican a las reglas de este grupo.",
+    "Les options locales {modifiers} s’appliquent uniquement aux règles de ce groupe.",
+  ],
   "This closes the nested rules above; it does not itself match a closing brace.": [
     "这会关闭上面的嵌套规则；它本身不匹配右花括号。",
     "Esto cierra las reglas anidadas anteriores; no coincide por sí mismo con una llave de cierre.",

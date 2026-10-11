@@ -542,6 +542,7 @@ function parseItem(text, location, rawLine, inClass = false) {
     const capturing = group[1].toLowerCase() === "capture";
     let suffix = remaining.slice(group[0].length);
     let name = null;
+    let modifiers;
     const nameLocation = {
       line: location.line,
       column: location.column + offset + group[0].length,
@@ -556,6 +557,27 @@ function parseItem(text, location, rawLine, inClass = false) {
         });
       }
       suffix = suffix.slice(quoted.length).trim();
+    }
+    const flagPrefix = /^with flags\s+/iu.exec(suffix);
+    if (group[1].toLowerCase() === "group" && flagPrefix) {
+      const flagLocation = { ...nameLocation, column: nameLocation.column + flagPrefix[0].length };
+      const quoted = readQuoted(suffix.slice(flagPrefix[0].length), flagLocation);
+      modifiers = quoted.value;
+      const letters = modifiers.replace("-", "");
+      if (
+        !/^(?:[ims]+(?:-[ims]*)?|-[ims]+)$/u.test(modifiers) ||
+        new Set(letters).size !== letters.length
+      )
+        fail(
+          "INVALID_GROUP_FLAGS",
+          "Use unique local flags i, m and s, optionally disabling flags after `-`.",
+          {
+            ...flagLocation,
+            endColumn: flagLocation.column + quoted.length,
+          },
+          'For example, `group with flags "im-s" {`. A flag cannot be enabled and disabled together.',
+        );
+      suffix = suffix.slice(flagPrefix[0].length + quoted.length).trim();
     }
     if (suffix !== "{") {
       fail(
@@ -579,6 +601,7 @@ function parseItem(text, location, rawLine, inClass = false) {
       capturing,
       name,
       captureIndex: null,
+      ...(modifiers === undefined ? {} : { modifiers }),
       nodes: [],
       repetition,
       location,

@@ -4,7 +4,7 @@ import { explainNode } from "./explain.js";
 import { parse } from "./parser.js";
 
 /** @typedef {import('./ast.js').RuleNode} RuleNode */
-/** @typedef {{kind: string, width: number, height: number, entry: number, label: string, node: RuleNode|null, children: Box[], body?: Box, id?: string, start?: number, end?: number}} Box */
+/** @typedef {{kind: string, width: number, height: number, entry: number, label: string, node: RuleNode|null, children: Box[], body?: Box, id?: string, start?: number, end?: number, flags?: string}} Box */
 const GAP = 28;
 const PAD = 20;
 
@@ -105,7 +105,7 @@ export function toSVG(source, options = {}) {
         : opening;
     if (!closing) throw new Error("A diagram block is missing its closing compiler segment.");
     const unit = node.kind === "anchor" ? node : { ...node, repetition: null };
-    const label = caption(explainNode(unit, compiled.flags));
+    const label = caption(explainNode(unit, opening.flags ?? compiled.flags));
     /** @type {Box} */
     let box = {
       kind: node.kind,
@@ -114,6 +114,7 @@ export function toSVG(source, options = {}) {
       entry: 24,
       label,
       node,
+      flags: opening.flags ?? compiled.flags,
       children: [],
       id: `rule-${nextId++}`,
       start: opening.sourceStart,
@@ -253,7 +254,7 @@ export function toSVG(source, options = {}) {
       return;
     }
     if (!box.node) throw new Error("A diagram node is missing its rule.");
-    const explanation = explainNode(box.node, compiled.flags);
+    const explanation = explainNode(box.node, box.flags ?? compiled.flags);
     if (box.kind === "group" || box.kind === "alternation" || box.kind === "assertion") {
       const style =
         box.kind === "assertion"

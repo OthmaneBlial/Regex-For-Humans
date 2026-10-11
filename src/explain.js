@@ -77,7 +77,7 @@ function describeNode(node, flags, hasFollowingRule) {
 
   if (node.kind === "backreference") {
     return (
-      `Same text as capture #${node.captureIndex}${typeof node.reference === "string" ? ` named ${quoteText(node.reference)}` : ""}. A nonparticipating capture matches empty text.` +
+      `Same text as capture #${node.captureIndex}${typeof node.reference === "string" ? ` named ${quoteText(node.reference)}` : ""}${caseNote}. A nonparticipating capture matches empty text.` +
       repetitionText(node.repetition, optional)
     );
   }
@@ -86,7 +86,13 @@ function describeNode(node, flags, hasFollowingRule) {
     const label = node.capturing
       ? `Capture #${node.captureIndex}${node.name === null ? "" : ` named ${quoteText(node.name)}`}.`
       : "Group without capturing.";
-    return label + repetitionText(node.repetition, optional);
+    return (
+      label +
+      (node.modifiers
+        ? ` Local flags ${quoteText(node.modifiers)} apply only inside this group; enclosing options resume after it.`
+        : "") +
+      repetitionText(node.repetition, optional)
+    );
   }
 
   if (node.kind === "alternation")

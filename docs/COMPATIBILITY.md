@@ -26,6 +26,12 @@ Groups are numbered in opening order, including named groups. Names are Unicode 
 
 Assertions consume no characters; their native captures can lie before or after the consumed match. JavaScript evaluates lookbehind contents backwards, including variable-length supported subpatterns. Compilation probes lookbehind and reports `UNSUPPORTED_TARGET_FEATURE` instead of approximating it when unavailable. Direct assertion repetition is rejected; repeat its contents or a containing group instead. Assertion blocks share the 64-level nesting and translated source/line budgets.
 
+## Scoped flags on unreleased main
+
+`group with flags "im-s" {` preserves native local `i/m/s`, including nested scopes, captures, reference-site case folding, line anchors and dot-all behavior. It leaves the enclosing `d/g/u/v/y` options unchanged. JavaScript and TypeScript exports retain the native group; foreign profiles report `EXPORT_SCOPED_FLAGS` until their scoped behavior is verified. This addition is not in the frozen dev.9 package or hosted workshop.
+
+The runtime guard checks actual Unicode/cursor-mode behavior rather than syntax alone. Node 22.23.3 lacks the syntax. Node 25.9.0 and Node 26.11.1 accept it but fail a native word-boundary witness after the corpus warms their regexp cache; those runtimes receive `UNSUPPORTED_TARGET_FEATURE`. The Node-only guard also checks a legacy-mode regression fingerprint. That extra probe is not imposed on browsers: Firefox's required `u/v` modes pass the actual corpus despite a legacy-mode failure. Native acceptance or a finite probe does not certify every possible pattern or engine version. See [the language guide](LANGUAGE.md#scoped-flags-unreleased) and [testing evidence](TESTING.md).
+
 ## Engine export evidence
 
 The [engine export contract](LANGUAGE.md#engine-exports) is separate from the existing JavaScript compiler. Nine source formats cover eight engine families: JavaScript and TypeScript share ECMAScript. Foreign targets translate supported AST semantics and expose compatibility errors rather than substitute native defaults for Unicode classes, flags or capture behavior. These additions are included in npm `0.1.0-dev.9` and the hosted workshop.

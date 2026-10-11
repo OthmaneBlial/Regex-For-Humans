@@ -1,5 +1,6 @@
 import { PATH_SEGMENT_SOURCE } from "./ast.js";
 import { compileAst } from "./compiler.js";
+import { applyModifiers } from "./flags.js";
 import { parse } from "./parser.js";
 
 /** @typedef {import("./ast.js").RuleNode} RuleNode */
@@ -144,7 +145,12 @@ function setWitness(set, flags) {
 function characterWitness(node, flags) {
   if (node.kind === "group" && node.nodes.length === 1) {
     const [min, max] = bounds(node.nodes[0]);
-    return min <= 1 && max >= 1 ? characterWitness(node.nodes[0], flags) : [];
+    return min <= 1 && max >= 1
+      ? characterWitness(
+          node.nodes[0],
+          node.modifiers ? applyModifiers(flags, node.modifiers) : flags,
+        )
+      : [];
   }
   if (node.kind !== "atom") return [];
   switch (node.atomType) {
@@ -193,7 +199,10 @@ function bounds(node) {
  * @param {RuleNode} node @returns {string|null}
  */
 function unitKey(node) {
-  if (node.kind === "group" && node.nodes.length === 1) return unitKey(node.nodes[0]);
+  if (node.kind === "group" && node.nodes.length === 1) {
+    const key = unitKey(node.nodes[0]);
+    return key === null ? null : node.modifiers ? `${node.modifiers}:${key}` : key;
+  }
   if (node.kind !== "atom") return null;
   return JSON.stringify(node, (key, value) =>
     ["location", "propertyLocation", "endLocation", "text", "repetition"].includes(key)
@@ -219,6 +228,7 @@ function literalSequence(nodes) {
     if (node.kind === "anchor" || node.repetition) return null;
     if (node.kind === "atom" && node.atomType === "literal") text += node.value;
     else if (node.kind === "group") {
+      if (node.modifiers) return null;
       const nested = literalSequence(node.nodes);
       if (nested === null) return null;
       text += nested;
@@ -273,8 +283,8 @@ export function analyze(source, options = {}) {
     return finding;
   }
 
-  /** @param {RuleNode[]} nodes @param {boolean} [repeatedParent] */
-  function visit(nodes, repeatedParent = false) {
+  /** @param {RuleNode[]} nodes @param {boolean} [repeatedParent] @param {string} [flags] */
+  function visit(nodes, repeatedParent = false, flags = compiled.flags) {
     for (const [index, node] of nodes.entries()) {
       const [, max] = bounds(node);
       if (max === 0) continue;
@@ -292,12 +302,12 @@ export function analyze(source, options = {}) {
               "Review ways to divide input between iterations. Consider one repetition or a disjoint delimiter; preserve required capture and reference behavior.",
             );
         }
-        visit(node.nodes, repeated);
+        visit(node.nodes, repeated, node.modifiers ? applyModifiers(flags, node.modifiers) : flags);
       } else if (node.kind === "alternation") {
         const literals = node.branches.map(literalSequence);
         const witnesses = node.branches.map((branch) =>
           branch.length === 1 && bounds(branch[0])[0] <= 1 && bounds(branch[0])[1] >= 1
-            ? characterWitness(branch[0], compiled.flags)
+            ? characterWitness(branch[0], flags)
             : [],
         );
         const overlap = literals.some((first, left) =>
@@ -320,8 +330,8 @@ export function analyze(source, options = {}) {
               : "Choices have an overlapping prefix; earlier choices can take that prefix.",
             "Review branch order and common prefixes. Factor shared text or use disjoint tokens when their matching and capture behavior fits your intent.",
           );
-        for (const branch of node.branches) visit(branch, repeated);
-      } else if (node.kind === "assertion") visit(node.nodes, repeatedParent);
+        for (const branch of node.branches) visit(branch, repeated, flags);
+      } else if (node.kind === "assertion") visit(node.nodes, repeatedParent, flags);
       else if (node.kind === "anchor" && node.mode === "line")
         add(
           node,
@@ -339,7 +349,7 @@ export function analyze(source, options = {}) {
             "An unbounded wildcard can consume a broad portion of the input.",
             "Use the intended character class, delimiter or length bound when a narrower format is required.",
           );
-        if (compiled.flags.includes("s"))
+        if (flags.includes("s"))
           add(
             node,
             "DOT_ALL_WILDCARD",
@@ -356,10 +366,8 @@ export function analyze(source, options = {}) {
         if (
           previousMax > previousMin &&
           ((key !== null && key === unitKey(previous)) ||
-            intersection(
-              characterWitness(node, compiled.flags),
-              characterWitness(previous, compiled.flags),
-            ).length > 0)
+            intersection(characterWitness(node, flags), characterWitness(previous, flags)).length >
+              0)
         )
           add(
             node,

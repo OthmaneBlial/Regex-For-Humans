@@ -12,6 +12,8 @@ export type Repetition = (
 ) & { lazy?: boolean };
 
 interface SegmentBase {
+  /** Effective native flags inside a local group; absent for ordinary global scopes. */
+  flags?: string;
   sourceStart: number;
   sourceEnd: number;
   source: string;
@@ -101,6 +103,7 @@ export interface GroupSegment extends SegmentBase {
   captureIndex: number | null;
   name: string | null;
   repetition: Repetition | null;
+  modifiers?: string;
 }
 
 export interface BackreferenceSegment extends SegmentBase {

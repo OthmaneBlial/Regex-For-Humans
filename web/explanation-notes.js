@@ -32,6 +32,8 @@ export function explanationNotes(segment, mode) {
         key: "Resolved reference: capture #{index}.",
         values: { index: segment.captureIndex },
       });
+    if (segment.flags)
+      notes.push({ key: "Effective flags here: {flags}.", values: { flags: segment.flags } });
     return notes;
   }
   if (mode !== "beginner") return [];
@@ -49,6 +51,11 @@ export function explanationNotes(segment, mode) {
         ? "A capture remembers the text matched by its inner rules. Its number or name lets you read that text later."
         : "A noncapturing group keeps inner rules together without storing a separate captured value.",
     });
+    if (segment.modifiers)
+      notes.push({
+        key: "Local flags {modifiers} apply only to this group's rules.",
+        values: { modifiers: segment.modifiers },
+      });
   } else if (segment.kind === "assertion") {
     notes.push({
       key: "An assertion checks a condition at the current position without advancing the match. Lookahead checks forward; lookbehind checks backward.",

@@ -10,7 +10,7 @@ const pieces = new RegExp(
   "iyu",
 );
 const keywords = new Set(
-  "word character characters not digit digits letter letters uppercase lowercase hex space spaces path segment any text except one of none unicode property range to class string strings set union intersection subtraction code point sequence".split(
+  "word character characters not digit digits letter letters uppercase lowercase hex space spaces path segment any text except one of none unicode property range to class string strings set union intersection subtraction code point sequence with flags".split(
     " ",
   ),
 );

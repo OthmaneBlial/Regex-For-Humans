@@ -249,12 +249,21 @@ export function exportRegex(rules, options = {}) {
   }
   const parsed = parse(rules);
   const compiled = compileAst(parsed, { flags: options.flags });
+  let hasScopedFlags = false;
   /** @type {import('../index.d.ts').RegexExport['captures']} */
   const captures = [];
   /** @param {Node[]} nodes */
   function collect(nodes) {
     for (const node of nodes) {
       if (node.kind === "group") {
+        if (node.modifiers) hasScopedFlags = true;
+        if (node.modifiers && target !== "javascript" && target !== "typescript")
+          fail(
+            "EXPORT_SCOPED_FLAGS",
+            "Scoped i/m/s options require a verified target-specific translation.",
+            node.location,
+            "Use JavaScript or TypeScript output to preserve the native local flag group.",
+          );
         if (node.capturing && node.captureIndex !== null)
           captures.push({
             index: node.captureIndex,
@@ -282,6 +291,11 @@ export function exportRegex(rules, options = {}) {
       captures,
       requirements: [
         "Requires native ECMAScript support for the emitted pattern and flags.",
+        ...(hasScopedFlags
+          ? [
+              "Requires correct native scoped i/m/s behavior; syntax acceptance alone does not prove support.",
+            ]
+          : []),
         "This snippet constructs a RegExp; it does not isolate or time-limit matching.",
       ],
     };
