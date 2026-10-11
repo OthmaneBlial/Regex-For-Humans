@@ -16,6 +16,7 @@ test("both match modes report zero-based UTF-16 positions for complete, partial 
   const field = page.locator("#test-list textarea").first();
   const expected = page.locator("#test-list select").first();
   const result = page.locator("#test-list .test-result").first();
+  const limits = await page.locator("#example-limits").textContent();
   await editor.fill('"A"');
   for (const [text, index] of [
     ["😀A", 2],
@@ -28,9 +29,10 @@ test("both match modes report zero-based UTF-16 positions for complete, partial 
     await mode.selectOption("full");
     await field.fill(text);
     const feedback = `! Found "A" at ${index}, not the entire string`;
+    const reason = `The native match covers [${index}, ${index + 1}); full-input mode requires [0, ${text.length}).`;
     await expect(result).toHaveText(feedback);
-    await expect(field).toHaveAccessibleDescription(new RegExp(feedback));
-    await expect(expected).toHaveAccessibleDescription(feedback);
+    await expect(field).toHaveAccessibleDescription(`${limits} ${feedback} ${reason}`);
+    await expect(expected).toHaveAccessibleDescription(`${feedback} ${reason}`);
     await mode.selectOption("search");
     await expect(result).toHaveText(`✓ Matched "A" at ${index}`);
   }

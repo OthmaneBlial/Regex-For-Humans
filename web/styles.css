@@ -604,11 +604,18 @@ a {
     visibility: hidden;
   }
 }
+.rule-focus-slot {
+  height: 25px;
+  padding-top: 8px;
+  min-width: 0;
+}
 .rule-focus {
-  margin: 8px 0 0;
+  margin: 0;
   color: var(--ink-deep);
   font: 11px / 1.5 var(--mono);
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .regex-focus {
   background: #ffe49a;

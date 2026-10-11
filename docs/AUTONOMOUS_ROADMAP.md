@@ -4,6 +4,13 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
 
+## Release verification regression repair
+
+- Found: the full release command passed 365 Node checks and 566 of 576 Chromium checks before stopping. Eight old exact descriptions omitted intentional failure explanations; two real layout regressions affected returning to the top and clicking the mobile ignore-case control.
+- Fixed: specific expected failure reasons are now asserted alongside the original accessibility and matching behavior. A native reproduction showed the source preview appearing and disappearing as its height changed pointer targets and scroll anchoring. Its reserved one-line slot keeps layout stable while retaining accessible preview text and the complete editable source.
+- Verified: all 22 selected Chromium desktop/mobile checks and 22 Firefox/WebKit syntax, diagram and match-feedback checks pass. Existing scroll assertions, native clicks and deadlines remain intact. Lint/types and 639 local documentation links pass.
+- Next: rerun the full command, prepare dev.7 and synchronize npm, Pages, the ten guides and the Reddit draft after verified publication. Public distribution is still dev.6. Preserve the frozen archives and disabled source CI; the complete original mission remains active.
+
 ## Explanation levels and developer-experience source milestone
 
 - Implemented: beginner definitions, unchanged intermediate meanings and expert source/capture/reference/flag metadata enrich the compiler's typed segments. The level is a presentation choice: rules, examples, flags, source selection and worker state remain unchanged. Notes and controls use all four UI languages and are associated with the existing source buttons for assistive technology.

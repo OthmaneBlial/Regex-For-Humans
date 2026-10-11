@@ -628,7 +628,7 @@ test("example length limits are visible and described for loaded, added and renu
     "Up to 100 examples; 2,048 UTF-16 code units per string. Longer input is kept but cannot be tested. Leave a field blank to test an empty string.";
   await expect(page.locator("#example-limits")).toBeVisible();
   await expect(page.locator("#example-limits")).toHaveText(limits);
-  for (const count of [4, 5, 4]) {
+  for (const [stage, count] of [4, 5, 4].entries()) {
     if (count === 5) await page.locator("#add-example").press("Enter");
     else if ((await page.locator("#test-list textarea").count()) === 5)
       await page.getByRole("button", { name: "Remove example 2", exact: true }).press("Enter");
@@ -637,7 +637,12 @@ test("example length limits are visible and described for loaded, added and renu
     await expect(page.locator('#test-list .test-row[data-result="pending"]')).toHaveCount(0);
     for (let index = 0; index < count; index += 1) {
       const feedback = await page.locator("#test-list .test-result").nth(index).textContent();
-      await expect(fields.nth(index)).toHaveAccessibleDescription(`${limits} ${feedback}`);
+      const reason =
+        stage > 0 && index === count - 1
+          ? " Any match needs at least 6 UTF-16 units; this input has 0."
+          : "";
+      if (reason) await expect(fields.nth(index)).toHaveValue("");
+      await expect(fields.nth(index)).toHaveAccessibleDescription(`${limits} ${feedback}${reason}`);
       await expect(fields.nth(index)).toHaveJSProperty("maxLength", -1);
       await expect(fields.nth(index)).toHaveAttribute("aria-invalid", "false");
     }
@@ -656,8 +661,9 @@ test("example descriptions follow matching results and rule repairs", async ({ p
   await expect(page.locator("#test-summary")).toHaveText(
     "3 of 4 examples behave as expected. Example 1 does not match the expected result.",
   );
-  await expect(field).toHaveAccessibleDescription(`${limits} ! No match`);
-  await expect(expected).toHaveAccessibleDescription("! No match");
+  const shortInput = "! No match Any match needs at least 6 UTF-16 units; this input has 5.";
+  await expect(field).toHaveAccessibleDescription(`${limits} ${shortInput}`);
+  await expect(expected).toHaveAccessibleDescription(shortInput);
   await expected.focus();
   await expected.selectOption("false");
   await expect(expected).toHaveValue("false");
@@ -674,8 +680,10 @@ test("example descriptions follow matching results and rule repairs", async ({ p
   );
   await expect(expected).toHaveAccessibleDescription('✓ Found "ABC" at 0, not the entire string');
   await page.locator("#match-mode").selectOption("search");
-  await expect(field).toHaveAccessibleDescription(`${limits} ! Matched "ABC" at 0`);
-  await expect(expected).toHaveAccessibleDescription('! Matched "ABC" at 0');
+  const unexpectedMatch =
+    '! Matched "ABC" at 0 The native engine matched [0, 3); this example expects no match.';
+  await expect(field).toHaveAccessibleDescription(`${limits} ${unexpectedMatch}`);
+  await expect(expected).toHaveAccessibleDescription(unexpectedMatch);
   await editor.fill("unsupported words");
   await expect(field).toHaveAccessibleDescription(`${limits} Fix the rules to run this example`);
   await expect(expected).toHaveAccessibleDescription("Fix the rules to run this example");
