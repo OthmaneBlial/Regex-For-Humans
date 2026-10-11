@@ -42,6 +42,8 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 
 **Completar reglas:** usa **Completar una regla** o **Ctrl + Espacio** para completar clases de caracteres integradas, incluso después de una cantidad (por ejemplo, `between 2 and 5 di`), o referencias a capturas anteriores ya cerradas (`same as ca`). Se ofrecen referencias por número y por nombre; una vista previa muestra la regla seleccionada completa. Cada sugerencia debe compilar con todo el documento. Se conservan los textos entre comillas, los comentarios y las selecciones. Consulta [el funcionamiento y los límites](../EDITOR_COMPLETIONS.md).
 
+**Cambios en el código fuente posteriores a dev.12:** la compleción también ofrece ocho plantillas de grupos y aserciones con sus llaves de cierre. La vista previa muestra todo el documento propuesto, incluidas las referencias actualizadas si una nueva captura cambia la numeración; el cursor queda en la primera regla del bloque. Esta mejora espera la próxima publicación verificada del taller.
+
 | Capacidad | npm `0.1.0-dev.12` / taller alojado |
 | --- | --- |
 | Reglas → regex JavaScript | ✅ |

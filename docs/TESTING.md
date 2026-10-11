@@ -1,5 +1,15 @@
 # Testing and compatibility
 
+## Balanced block completion source checks (12 October 2026)
+
+The source follow-up after published dev.12 offers eight balanced group/assertion templates through the existing builder. Five new unit tests compare native captures/spans and assertion behavior, preserve existing numbered/named reference targets across all five line separators, and cover comments, nesting, indentation, UTF-16 caret positions, invalid contexts, flags and budgets. The complete Node 25.9.0 and direct Node 22.23.3 suites each finish with 429 cases: 425 passes, four existing explicit scoped-native skips and no failures.
+
+The first full Node runs exposed a pre-existing isolated Pages-build fixture missing its real screenshot dependency. Correction `559f857` adds that dependency and verifies screenshot URL/dimension changes plus stable app/CSS versions; both complete suites pass after the fix. No release archive is repacked.
+
+The affected Chrome desktop/mobile gate covers 136 cases: its first run finishes with 135 passes and one existing mobile screenshot deadline under concurrent full-suite load. The complete 18-case completion suite then passes without changing deadlines or assertions. All 98 affected Firefox/WebKit cases pass. After the final translated block-help paragraph, both complete completion suites pass again: 18 Chrome and 18 Firefox/WebKit checks. These verify full-document preview, capture-target remapping, fixture/expectation and draft preservation, native results, stale-context recovery, four locales, both themes, keyboard controls, Axe and 320px overflow checks. All eight final French light/dark 320px screenshots are visually inspected.
+
+Quality/types/documentation links and 16 focused README/localization checks pass after the final help text; all ten guides preserve their 20 identical canonical code blocks. The final Pages build validates 823 built links, the source check validates 837 links, and all 64 homepage checks pass. Compiler semantics, public API/declarations and runtime dependencies are unchanged. This is source-component evidence; it is not a new complete package/native-engine/distribution gate. The published dev.12 workshop remains frozen until a separately verified release. Independent human review remains open. See [completion scope](EDITOR_COMPLETIONS.md) and the [agent handoff](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/ROADMAP.md).
+
 ## Dev.12 candidate verification (11 October 2026)
 
 **Published final-copy receipts:** the final 421,523-byte, 52-file archive passes complete clean installed JavaScript/strict TypeScript/API/CLI consumers on Node 25.9.0 and direct Node 22.23.3 without repacking. Every payload matches frozen source/tag `c17f968c4bc484599e9f50c1becceb4a6d23e1d1`. Retained, anonymous npm and downloaded GitHub bytes agree, including the checksum asset, and both public registry tags select dev.12. The prototype remains separate. See [the publication record](DISTRIBUTION.md#published-dev12-11-october-2026).

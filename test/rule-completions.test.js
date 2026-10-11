@@ -94,7 +94,7 @@ test("quoted text, capture names, unfinished quotes and comments never get sugge
 });
 
 test("empty rules accept atoms, while invalid surrounding rules and budgets reject every proposal", () => {
-  assert.equal(ruleCompletions("", 0).length, SHORTHAND_RULES.length);
+  assert.equal(ruleCompletions("", 0).length, SHORTHAND_RULES.length + 8);
   for (const source of [
     "start\nunknown\ndi\nend",
     "capture {\ndi",

@@ -46,6 +46,8 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 
 **Complétion des règles :** utilisez **Compléter une règle** ou **Ctrl + Espace** pour terminer les classes de caractères intégrées, y compris après une quantité (par exemple, `between 2 and 5 di`), ou les références aux captures précédentes déjà fermées (`same as ca`). Les références sont proposées par numéro et par nom ; un aperçu affiche la règle sélectionnée complète. Chaque suggestion doit compiler avec tout le document. Les textes entre guillemets, commentaires et sélections sont préservés. Voir [le fonctionnement et les limites](../EDITOR_COMPLETIONS.md).
 
+**Évolution du code source après dev.12 :** la complétion propose aussi huit modèles de groupes et d’assertions avec leurs accolades de fermeture. L’aperçu montre tout le document proposé, y compris les références mises à jour lorsqu’une nouvelle capture change la numérotation ; le curseur rejoint la première règle du bloc. Cet ajout attend la prochaine publication vérifiée de l’atelier.
+
 | Capacité | npm `0.1.0-dev.12` / atelier hébergé |
 | --- | --- |
 | Règles lisibles → regex JavaScript | ✅ |

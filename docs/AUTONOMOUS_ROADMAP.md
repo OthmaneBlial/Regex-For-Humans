@@ -1,5 +1,11 @@
 # Autonomous implementation progress
 
+## Final source increment and agent handoff (12 October 2026)
+
+- Source adds eight balanced group/assertion completions by reusing the validated builder. Capture insertion retains resolved reference targets; preview shows the entire proposed document before application. The cursor lands in the first body rule, and existing flags, examples, exact expectations and opted-in drafts retain their behavior. No compiler/API/declaration/runtime-dependency change is introduced. See [completion scope](EDITOR_COMPLETIONS.md).
+- Verification: both complete Node 25/22 suites pass 425 cases with four existing scoped-native skips (429 total), after correcting the Pages fixture dependency in pushed commit `559f857`. The initial affected Chrome gate has 135 passes and one screenshot deadline; the full 18-case rerun passes unchanged. All 98 affected Firefox/WebKit cases pass. Final translated-help replays pass 18 Chrome and 18 Firefox/WebKit cases; all eight final French light/dark 320px captures are inspected. Quality/type/link and 16 README/localization checks pass. See [the component receipt](TESTING.md#balanced-block-completion-source-checks-12-october-2026).
+- Handoff: [root ROADMAP.md](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/ROADMAP.md) records actual publication state, evidence, remaining gaps, resume order and operating rules. The maintainer requested completion of this increment and handoff within one hour. Further feature work stops after this pass; the larger mission and independent human reviews remain unfinished. Published dev.12, immutable archives/tags, owner Pages and disabled source Actions retain their verified boundaries. The new source feature awaits the next complete release gate.
+
 ## Published dev.12 distribution
 
 - Delivery: npm `latest`/`preview` and the GitHub prerelease select immutable tag `v0.1.0-dev.12` at `c17f968c4bc484599e9f50c1becceb4a6d23e1d1`. The retained final archive and anonymous npm/GitHub downloads agree: 421,523 bytes, 52 files, SHA-256 `990e5a067bbe7c270a60cf70e5892bab31d00b8182782ca601da8e75947972ea`. Every payload agrees with the tag and exact-archive consumers pass on Node 25/22. The prototype and earlier releases remain separate and unchanged. See [distribution](DISTRIBUTION.md#published-dev12-11-october-2026).

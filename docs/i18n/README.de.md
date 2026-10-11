@@ -42,6 +42,8 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 
 **Regeln vervollständigen:** Mit **Complete a rule** oder **Strg + Leertaste** lassen sich eingebaute Zeichenklassen vervollständigen, auch nach einer Anzahl (zum Beispiel `between 2 and 5 di`), sowie Referenzen auf zuvor geschlossene Capture-Gruppen (`same as ca`). Referenzen werden nach Nummer und Namen angeboten; eine Vorschau zeigt die vollständige ausgewählte Regel. Jeder Vorschlag muss mit dem gesamten Dokument kompilierbar sein. Text in Anführungszeichen, Kommentare und markierter Text bleiben erhalten. Siehe [Bedienung und Grenzen](../EDITOR_COMPLETIONS.md).
 
+**Quellcode-Erweiterung nach dev.12:** Die Vervollständigung bietet außerdem acht Gruppen- und Assertion-Vorlagen mit passenden schließenden Klammern. Die Vorschau zeigt das gesamte vorgeschlagene Dokument, einschließlich aktualisierter Referenzen, wenn ein neuer Capture die Nummerierung ändert; der Cursor springt zur ersten Regel im Block. Diese Erweiterung wird mit der nächsten verifizierten Workshop-Version veröffentlicht.
+
 | Fähigkeit | npm `0.1.0-dev.12` / gehosteter Workshop |
 | --- | --- |
 | Regeln → JavaScript-Regex | ✅ |

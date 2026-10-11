@@ -42,6 +42,8 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 
 **Completar regras:** use **Complete a rule** ou **Ctrl + Espaço** para completar classes de caracteres integradas, inclusive após uma quantidade (por exemplo, `between 2 and 5 di`), ou referências a capturas anteriores já fechadas (`same as ca`). As referências são oferecidas por número e nome; uma prévia mostra a regra selecionada completa. Cada sugestão precisa compilar com o documento inteiro. Textos entre aspas, comentários e seleções são preservados. Veja [os controles e limites](../EDITOR_COMPLETIONS.md).
 
+**Evolução do código-fonte após dev.12:** o preenchimento também oferece oito modelos de grupos e asserções com suas chaves de fechamento. A prévia mostra todo o documento proposto, incluindo referências atualizadas quando uma nova captura altera a numeração; o cursor vai para a primeira regra do bloco. Essa adição aguarda a próxima publicação verificada do workshop.
+
 | Recurso | npm `0.1.0-dev.12` / workshop hospedado |
 | --- | --- |
 | Regras → regex JavaScript | ✅ |

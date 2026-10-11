@@ -4,6 +4,13 @@ export const translations = {
   "Complete a rule": ["补全规则", "Completar una regla", "Compléter une règle"],
   "Rule suggestions": ["规则建议", "Sugerencias de reglas", "Suggestions de règles"],
   "Suggested rule:": ["建议规则：", "Regla sugerida:", "Règle proposée :"],
+  "Proposed rules:": ["拟议规则：", "Reglas propuestas:", "Règles proposées :"],
+  "Group and assertion templates are also available on a standalone rule line. Review the whole proposed document and any updated references before applying.":
+    [
+      "在独立的规则行上，也可使用分组和断言模板。应用前请检查建议的整个文档及其中更新的引用。",
+      "Las plantillas de grupos y aserciones también están disponibles en una línea de regla independiente. Revisa todo el documento propuesto y las referencias actualizadas antes de aplicarlo.",
+      "Les modèles de groupes et d’assertions sont aussi disponibles sur une ligne de règle indépendante. Vérifiez tout le document proposé et les références mises à jour avant de l’appliquer.",
+    ],
   "1 validated suggestion.": [
     "1 条已验证的建议。",
     "1 sugerencia validada.",

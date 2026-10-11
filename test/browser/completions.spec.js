@@ -9,6 +9,118 @@ async function ready(page) {
   return page.locator("#rules-input");
 }
 
+test("balanced capture proposals preview reference remapping and preserve fixtures and saved drafts", async ({
+  page,
+}) => {
+  const editor = await ready(page);
+  const original =
+    '# <img src=x onerror="window.injected=1">\nstart\ncapture "original" {\n  "A"\n}\nsame as capture 1\nsame as capture "original"\nend';
+  const expectation = { spans: [[0, 4]], captures: [["1", "A"]] };
+  await page.locator("#test-fixtures > summary").click();
+  await page.locator("#fixture-file").setInputFiles({
+    name: "block.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(
+      JSON.stringify({
+        format: "regex-for-humans-tests",
+        version: 1,
+        rules: original,
+        flags: "du",
+        mode: "full",
+        cases: [{ text: "1AAA", expected: true, expect: expectation }],
+      }),
+    ),
+  });
+  await expect(page.locator("#fixture-status")).toContainText("Imported 1 examples.");
+  const source = original.replace("start\n", "start\ncap\n");
+  await editor.fill(source);
+  await page.locator("#draft-save").check();
+  await expect
+    .poll(
+      async () =>
+        JSON.parse(await page.evaluate((key) => localStorage.getItem(key), draftStorageKey))?.rules,
+    )
+    .toBe(source);
+  const draft = await page.evaluate((key) => localStorage.getItem(key), draftStorageKey);
+  const details = await page.locator(".expectation-input").inputValue();
+  await editor.evaluate((el, at) => el.setSelectionRange(at, at), source.indexOf("\ncap\n") + 4);
+  await editor.press("Control+Space");
+  await page.locator("#completion-choice").selectOption({ label: "capture {" });
+  await expect(page.locator("#completion-preview-field > span")).toHaveText("Proposed rules:");
+  await expect(page.locator("#completion-preview")).toContainText("same as capture 2");
+  await expect(editor).toHaveValue(source);
+  expect(await page.evaluate((key) => localStorage.getItem(key), draftStorageKey)).toBe(draft);
+  expect(await page.locator(".expectation-input").inputValue()).toBe(details);
+  expect(await page.locator("#completion-preview img").count()).toBe(0);
+  expect(await page.evaluate(() => window.injected)).toBeUndefined();
+  const proposal = await page.locator("#completion-preview").textContent();
+  await page.locator("#completion-choice").press("Enter");
+  await expect(editor).toHaveValue(proposal);
+  expect(
+    await editor.evaluate((el) => el.value.slice(el.selectionStart, el.selectionStart + 5)),
+  ).toBe("digit");
+  await expect(page.locator("#indices-flag")).toBeChecked();
+  await expect(page.locator("#unicode-mode")).toHaveValue("u");
+  expect(await page.locator(".expectation-input").inputValue()).toBe(details);
+  await expect(page.locator(".test-row")).toHaveAttribute("data-result", "pass");
+  await page.locator(".capture-explorer > summary").click();
+  await page.locator(".capture-match summary").click();
+  await expect(page.locator(".capture-value")).toHaveText(['"1AAA"', '"1"', '"A"']);
+  await expect
+    .poll(
+      async () =>
+        JSON.parse(await page.evaluate((key) => localStorage.getItem(key), draftStorageKey))?.rules,
+    )
+    .toBe(proposal);
+  await page.reload();
+  await expect(editor).toHaveValue(proposal);
+  await expect(page.locator(".test-row")).toHaveAttribute("data-result", "pass");
+});
+
+test("balanced assertion and group previews keep four locales, both themes and 320px keyboard access", async ({
+  page,
+}, testInfo) => {
+  const editor = await ready(page);
+  await page.setViewportSize({ width: 320, height: 720 });
+  for (const locale of ["en", "zh-CN", "es", "fr"]) {
+    await page.locator("#interface-language").selectOption(locale);
+    for (const theme of ["light", "dark"]) {
+      await page.locator("#interface-theme").selectOption(theme);
+      await editor.fill("not pre");
+      await page.locator("#complete-rule").click();
+      await page.locator("#completion-choice").selectOption({ label: "not preceded by {" });
+      await expect(page.locator("#completion-preview-field > span")).toHaveText(
+        translate(locale, "Proposed rules:"),
+      );
+      const proposal = await page.locator("#completion-preview").textContent();
+      expect(proposal).toContain("not preceded by {\n  digit\n}");
+      expect(
+        await page.locator("#completion-preview").evaluate((el) => el.scrollWidth > el.clientWidth),
+      ).toBe(false);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(
+        false,
+      );
+      const audit = await new AxeBuilder({ page })
+        .include("#rule-completions")
+        .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+        .analyze();
+      expect(audit.violations).toEqual([]);
+      if (locale === "fr")
+        await page.locator("#rule-completions").screenshot({
+          path: testInfo.outputPath(`block-completions-${theme}-320.png`),
+        });
+      await page.locator("#completion-choice").press("Enter");
+      await expect(editor).toHaveValue(proposal);
+      await expect(editor).toBeFocused();
+      await editor.fill("gro");
+      await page.locator("#complete-rule").click();
+      await expect(page.locator("#completion-choice option")).toHaveText(["group {"]);
+      await page.locator("#completion-choice").press("Escape");
+      await expect(editor).toHaveValue("gro");
+    }
+  }
+});
+
 test("keyboard completion preserves flags, examples and capture references with native results", async ({
   page,
 }) => {

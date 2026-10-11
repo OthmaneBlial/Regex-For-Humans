@@ -1654,7 +1654,9 @@ function closeCompletions(restoreFocus = false) {
 function showCompletionPreview() {
   const choice = completion?.choices[ui.completionChoice.selectedIndex];
   ui.completionPreviewField.hidden = !choice;
-  ui.completionPreview.textContent = choice?.text ?? "";
+  ui.completionPreview.textContent = choice?.preview ?? choice?.text ?? "";
+  const label = ui.completionPreviewField.querySelector("span");
+  if (label) setText(label, message(choice?.preview ? "Proposed rules:" : "Suggested rule:"));
 }
 
 function showCompletions() {

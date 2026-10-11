@@ -50,6 +50,8 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 **Complete a rule:** use **Complete a rule** or **Ctrl + Space** to finish built-in character classes, including after a count (for example, `between 2 and 5 di`), or references to earlier closed captures (`same as ca`). References are offered by number and by name; a preview displays the complete selected rule. Every suggestion must compile with the entire document. Quoted text, comments and selected text are preserved. See [completion scope and controls](docs/EDITOR_COMPLETIONS.md).
 
+**Source follow-up after dev.12:** completion also offers eight balanced group/assertion templates. The preview shows the proposed document, including reference updates when a new capture changes numbering; the cursor lands in the first body rule. This addition awaits the next verified workshop release.
+
 | Start here | Continue with |
 | --- | --- |
 | [Install](#install) · [Playground](#playground) | [Recipes](#recipes) · [Complex examples](#examples) |

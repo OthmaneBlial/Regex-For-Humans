@@ -104,7 +104,8 @@
           <section id="rule-completions" class="rule-completions" aria-labelledby="completion-label" hidden>
             <label id="completion-label" for="completion-choice">Rule suggestions</label>
             <p id="completion-help" class="field-hint">Complete a built-in character class or a reference to an earlier closed capture, including after a count. Suggestions use English syntax and must compile with the entire document. Ctrl + Space opens the list; Enter applies a choice; Escape closes it.</p>
-            <select id="completion-choice" size="5" dir="ltr" aria-describedby="completion-help completion-status"></select>
+            <p id="completion-block-help" class="field-hint">Group and assertion templates are also available on a standalone rule line. Review the whole proposed document and any updated references before applying.</p>
+            <select id="completion-choice" size="5" dir="ltr" aria-describedby="completion-help completion-block-help completion-status"></select>
             <p id="completion-preview-field" class="completion-preview" hidden><span>Suggested rule:</span><code id="completion-preview" dir="ltr"></code></p>
             <p id="completion-status" role="status"></p>
             <div class="completion-actions"><button id="completion-apply" class="secondary-button" type="button">Apply suggestion</button><button id="completion-close" class="secondary-button" type="button">Close suggestions</button></div>

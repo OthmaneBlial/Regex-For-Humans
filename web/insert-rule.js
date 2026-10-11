@@ -5,12 +5,16 @@ import { parse, splitLines } from "../src/parser.js";
 
 /** @type {Record<string, string[]>} */
 const templates = {
+  group: ["group {", "  digit", "}"],
   capture: ["group {", "  digit", "}"],
   optional: ["optional group {", '  "A"', "}"],
   alternative: ["either {", '  "A"', '  "B"', "}"],
   repetition: ["between 1 and 3 digits"],
   class: ['one of: "A", "B"'],
   assertion: ["followed by {", "  digit", "}"],
+  negativeAhead: ["not followed by {", "  digit", "}"],
+  behind: ["preceded by {", "  digit", "}"],
+  negativeBehind: ["not preceded by {", "  digit", "}"],
 };
 
 /** Insert a validated template without changing existing reference targets.

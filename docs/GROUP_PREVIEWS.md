@@ -1,6 +1,6 @@
 # Preview group transformations
 
-This workshop workflow is prepared for the dev.11 preview, following its verified source milestone on `main`. It adds no library API or dependency. [Distribution receipts](DISTRIBUTION.md) distinguish candidate preparation from actual npm/site publication.
+This workshop workflow shipped in dev.11 and is included in published dev.12. It adds no library API or dependency. [Distribution receipts](DISTRIBUTION.md) record actual npm/site publication separately from subsequent source improvements.
 
 Open **Edit groups and references**, choose a group, set its type or name, then select **Preview group edit**. The preview shows the current and proposed readable rules and JavaScript regex, including their flags. Renamed references and renumbered captures use the same validated `editGroup` transformation as **Apply group edit**.
 
