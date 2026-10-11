@@ -111,7 +111,13 @@ function validate(target, selected, output) {
 try {
   for (const target of FOREIGN_TARGETS) {
     const versionArgs =
-      target === "go" ? ["version"] : target === "java" ? ["-version"] : ["--version"];
+      target === "php"
+        ? ["-n", "-r", "echo 'PHP ', PHP_VERSION, ' / PCRE2 ', PCRE_VERSION, PHP_EOL;"]
+        : target === "go"
+          ? ["version"]
+          : target === "java"
+            ? ["-version"]
+            : ["--version"];
     const probe = spawnSync(commands[target], versionArgs, {
       env,
       encoding: "utf8",
@@ -154,7 +160,7 @@ try {
         file,
         `<?php\nfunction u16($s) { return preg_match_all('~.~us', $s) + preg_match_all('~[\\x{10000}-\\x{10ffff}]~u', $s); }\n$inputs = json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR);\n${exports.map((result, i) => `${result.code.replace(/^<\?php\s*/u, "")}\nforeach ($inputs[${i}] as $text) {\n  $ok = preg_match($regex, $text, $m, PREG_UNMATCHED_AS_NULL | PREG_OFFSET_CAPTURE);\n  if ($ok === false) throw new RuntimeException(preg_last_error_msg());\n  if ($ok === 0) { echo "N\\n"; continue; }\n  $values = [bin2hex($m[0][0])];\n  foreach (${JSON.stringify(result.captures.map((c) => c.targetName))} as $name) $values[] = ($m[$name][0] ?? null) === null ? "-" : bin2hex($m[$name][0]);\n  echo "M\\t" . u16(substr($text, 0, $m[0][1])) . "\\t" . u16(substr($text, 0, $m[0][1] + strlen($m[0][0]))) . "\\t" . implode("\\t", $values) . "\\n";\n}`).join("\n")}\n`,
       );
-      output = run("php", [file, dataPath], directory);
+      output = run("php", ["-n", file, dataPath], directory);
     } else if (target === "java") {
       const files = [];
       for (const [i, result] of exports.entries()) {

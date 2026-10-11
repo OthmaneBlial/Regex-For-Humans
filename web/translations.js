@@ -590,11 +590,6 @@ export const translations = {
     "Exporter vers un langage de programmation",
   ],
   "Target language": ["目标语言", "Lenguaje de destino", "Langage cible"],
-  "PHP — runtime unverified": [
-    "PHP — 运行时未经验证",
-    "PHP — ejecución sin verificar",
-    "PHP — exécution non vérifiée",
-  ],
   "Code generation translates supported regex semantics through the shared compiler. Unsupported flags or constructs explain why export is unavailable. Example tests below still use JavaScript.":
     [
       "代码生成通过共享编译器转换受支持的正则语义。不支持的标志或结构会说明导出不可用的原因。下方示例测试仍使用 JavaScript。",

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Verify generated PHP code natively on PHP 8.5.11 / PCRE2 10.44, closing the unavailable-runtime gate. Require all seven foreign runtimes for the recorded 8,782 span/capture comparisons, add literal template-data coverage and report the actual PHP/PCRE2 editions without loading user INI files. Update the API requirement, workshop label, homepage and all ten README guides with the tested editions and corpus limits; preserve generated regex semantics and explicit unsupported-profile diagnostics.
+
 - Bound complete native worker result batches to 1,000 match records, 20,000 capture records and 1,048,576 UTF-16 units across values, escaped details and replacements. Reserve before building match/capture records, revalidate in the controller, reject oversized output atomically and retain fresh-worker recovery. Translate the actionable error in all four workshop languages without changing native matching, original replacement flags or the existing deadline.
 
 - Keep requested instant scrolling stable by removing document-wide smooth scrolling, which could resume a pending native scroll after returning to the top. Retain explicit source navigation and verify the position across three rendered frames in both themes without changing browser assertions or deadlines.

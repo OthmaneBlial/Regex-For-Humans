@@ -719,7 +719,7 @@ export function exportRegex(rules, options = {}) {
     );
   if (target === "php")
     requirements.push(
-      "PHP/PCRE2 runtime parity has not been verified by this project yet; verify the actual PHP and PCRE2 editions before use.",
+      "The generated-code corpus is verified on PHP 8.5.11 / PCRE2 10.44; validate other PHP/PCRE2 editions and application limits before use.",
     );
   return {
     target,

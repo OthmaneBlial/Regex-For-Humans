@@ -102,7 +102,7 @@ The `0.1.0-dev.7` preview includes groups, captures, backward references and ord
 
 Open **Export to a programming language** in the local workshop, call `exportRegex(rules, { target: "python" })`, or run `node bin/regex-for-humans.js --target python --json rules.txt`. Nine formats cover JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP and Ruby. JavaScript/TypeScript retain the existing native pattern; other targets translate supported AST semantics before quoting source code.
 
-Six native engines have passed generated-code comparisons; **PHP runtime parity is unverified**. Keep the returned requirements and capture mapping: foreign captures use `gN` names, and inactive names can be absent. Foreign input must be well-formed Unicode. Unsupported flags (`d/g/i/y`), Unicode properties and incompatible assertions or capture/repetition behavior produce positioned diagnostics. Download code or the complete export JSON; browser examples still run in JavaScript. Read the [profiles and limits](docs/LANGUAGE.md#engine-exports).
+Seven native engines have passed generated-code comparisons; **PHP is verified on PHP 8.5.11 / PCRE2 10.44**. See the tested editions and corpus limits in the [compatibility guide](docs/COMPATIBILITY.md#engine-exports). Keep the returned requirements and capture mapping: foreign captures use `gN` names, and inactive names can be absent. Foreign input must be well-formed Unicode. Unsupported flags (`d/g/i/y`), Unicode properties and incompatible assertions or capture/repetition behavior produce positioned diagnostics. Download code or the complete export JSON; browser examples still run in JavaScript. Read the [profiles and limits](docs/LANGUAGE.md#engine-exports).
 
 <a name="install"></a>
 

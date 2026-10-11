@@ -34,17 +34,19 @@ The native verification script compiles and executes the generated snippets in i
 
 | Installed runtime | Patterns | Successful span/capture comparisons |
 | --- | ---: | ---: |
-| Python 3.14.7 | 27 | 1,359 |
-| Rust `regex` 1.13.1, Cargo 1.95.0 | 20 | 1,005 |
-| Go 1.22.0 | 20 | 1,005 |
-| OpenJDK 17.0.19 | 26 | 1,301 |
-| .NET SDK 10.0.400 | 29 | 1,475 |
-| Ruby 2.6.10 | 25 | 1,243 |
-| PHP / PCRE2 | — | **Unavailable; no native parity claim** |
+| Python 3.14.7 | 28 | 1,364 |
+| Rust `regex` 1.13.1, Cargo 1.95.0 | 21 | 1,010 |
+| Go 1.22.0 | 21 | 1,010 |
+| OpenJDK 17.0.19 | 27 | 1,306 |
+| .NET SDK 10.0.400 | 30 | 1,480 |
+| Ruby 2.6.10 | 26 | 1,248 |
+| PHP 8.5.11 / PCRE2 10.44 (2024-06-07), JIT available | 28 | 1,364 |
 
-The six installed engines pass **7,388** comparisons. Java 17 supplementary lookbehind uses literal code points in the regex and Unicode escapes in Java source; hex-escaped supplementary lookbehind failed the comparison gate before this lowering was corrected. Rust can omit inactive `{0}` capture names, so original group indices remain identity metadata and target values are read by `gN` names. Nullable non-word-boundary searches with a possible surrogate-interior zero-width position fail explicitly instead of claiming scalar-position equivalence.
+The seven tested engines pass **8,782** comparisons with every runtime required by the command. The added literal-template case retains PHP/Ruby interpolation-like data, quotes, backslashes, Arabic, Urdu and an emoji as exact input. Native PHP spans begin as UTF-8 byte offsets and are converted to UTF-16 for comparison; `PREG_UNMATCHED_AS_NULL` preserves absent versus participating empty captures. Java 17 supplementary lookbehind uses literal code points in the regex and Unicode escapes in Java source; hex-escaped supplementary lookbehind failed the comparison gate before this lowering was corrected. Rust can omit inactive `{0}` capture names, so original group indices remain identity metadata and target values are read by `gN` names. Nullable non-word-boundary searches with a possible surrogate-interior zero-width position fail explicitly instead of claiming scalar-position equivalence.
 
-Foreign profiles require well-formed Unicode, reject `d/g/i/y` and native Unicode properties, and diagnose unsupported assertion widths, capture resets and nullable repetition. The browser generates code and downloads metadata; its examples still run in the isolated JavaScript worker. Native snippets need the receiving application's own compilation limits and matching safeguards. PHP generation remains an unverified fixed-lookbehind profile, visibly identified in API requirements and the language selector.
+PHP was built as a temporary CLI from the official PHP 8.5.11 source archive, with SHA-256 `d9be75c08e8c316f4c8f4194d8fbe1750a15f6a6d9d4e3fe72082abeeb800360`, using `--disable-all --enable-cli --disable-cgi --disable-phpdbg --without-pear`. The verifier uses `php -n` for both the edition probe and generated programs, recording the actual `PHP_VERSION` and `PCRE_VERSION`. It passes all 28 selected patterns. Before updating the source requirement wording, their complete exported results were identical to the installed public dev.7 package, so the native corpus also verifies that published generated code. Current source updates the API requirement and workshop label; public dev.7 still carries its earlier unverified label until the next distribution milestone. These receipts cover the listed corpus and editions, not other PHP builds or every possible pattern. See the official [PHP release metadata](https://www.php.net/releases/?json&version=8.5.11), [PCRE constants](https://www.php.net/manual/en/pcre.constants.php) and [match-offset contract](https://www.php.net/manual/en/function.preg-match.php).
+
+Foreign profiles require well-formed Unicode, reject `d/g/i/y` and native Unicode properties, and diagnose unsupported assertion widths, capture resets and nullable repetition. The browser generates code and downloads metadata; its examples still run in the isolated JavaScript worker. Native snippets need the receiving application's own compilation limits and matching safeguards. The PHP fixed-lookbehind profile is tested on PHP 8.5.11 / PCRE2 10.44; other editions require application-specific validation.
 
 ## Structural review compatibility
 

@@ -78,7 +78,7 @@ npm `0.1.0-dev.7` की लाइब्रेरी और CLI में groups
 
 स्थानीय वर्कशॉप में **Export to a programming language** खोलें, `exportRegex(rules, { target: "python" })` कॉल करें या `node bin/regex-for-humans.js --target python --json rules.txt` चलाएँ। नौ प्रारूप हैं: JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP और Ruby। JavaScript/TypeScript मौजूदा native pattern रखते हैं; अन्य लक्ष्य AST से समर्थित regex व्यवहार बदलने के बाद सही escaping वाला source code बनाते हैं।
 
-छह native engines पर generated-code comparisons सफल हैं; **PHP का native runtime सत्यापित नहीं है**। आवश्यकताएँ और capture mapping सुरक्षित रखें: अन्य engines में नाम `gN` होते हैं और निष्क्रिय capture का नाम अनुपस्थित हो सकता है। इनपुट वैध Unicode होना चाहिए। असमर्थित flags (`d/g/i/y`), Unicode properties और असंगत assertion, capture या repetition व्यवहार स्थान सहित diagnostic देते हैं। कोड या पूरा JSON डाउनलोड करें; ब्राउज़र के उदाहरण अभी भी JavaScript में चलते हैं। [इंजन प्रोफ़ाइल और सीमाएँ](../LANGUAGE.md#engine-exports) देखें।
+सात native engines पर generated-code comparisons सफल हैं; **PHP को PHP 8.5.11 / PCRE2 10.44 पर सत्यापित किया गया है**। परीक्षण किए गए संस्करण और corpus की सीमाएँ [compatibility guide](../COMPATIBILITY.md#engine-exports) में हैं। आवश्यकताएँ और capture mapping सुरक्षित रखें: अन्य engines में नाम `gN` होते हैं और निष्क्रिय capture का नाम अनुपस्थित हो सकता है। इनपुट वैध Unicode होना चाहिए। असमर्थित flags (`d/g/i/y`), Unicode properties और असंगत assertion, capture या repetition व्यवहार स्थान सहित diagnostic देते हैं। कोड या पूरा JSON डाउनलोड करें; ब्राउज़र के उदाहरण अभी भी JavaScript में चलते हैं। [इंजन प्रोफ़ाइल और सीमाएँ](../LANGUAGE.md#engine-exports) देखें।
 
 ## 📦 प्रीव्यू इंस्टॉल करें
 

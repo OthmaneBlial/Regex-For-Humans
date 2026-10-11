@@ -58,7 +58,9 @@ test("all target profiles translate the shared corpus and preserve capture ident
   ]);
   assert.match(exportRegex('"a"', { target: "csharp" }).code, /FromMilliseconds\(1200\)/u);
   assert.ok(
-    exportRegex('"a"', { target: "php" }).requirements.some((s) => /not been verified/u.test(s)),
+    exportRegex('"a"', { target: "php" }).requirements.some((s) =>
+      /PHP 8\.5\.11 \/ PCRE2 10\.44/u.test(s),
+    ),
   );
 });
 

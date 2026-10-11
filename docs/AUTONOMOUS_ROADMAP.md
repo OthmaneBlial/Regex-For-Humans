@@ -4,6 +4,14 @@ Mission source: the maintainer's 2026-10-10 autonomous mission. Implement, verif
 
 Milestones record their verification-time state. The first entry and next-priority list describe current remaining work.
 
+## Native PHP/PCRE2 verification source milestone
+
+- Verified: all seven foreign runtimes are required and pass 8,782 generated-code UTF-16 span/mapped-capture comparisons. PHP 8.5.11 / PCRE2 10.44 passes 1,364 comparisons over 28 selected patterns, including absent/empty captures, supported lookarounds/references, Unicode/RTL/astral data and the original difficult manifest. A new template-data fixture preserves dollars, braces, Ruby interpolation-like syntax, quotes and backslashes across all targets.
+- Reproducible runtime: compile a temporary minimal CLI from the official PHP 8.5.11 archive with verified SHA-256 `d9be75c08e8c316f4c8f4194d8fbe1750a15f6a6d9d4e3fe72082abeeb800360`. The actual CLI reports PHP 8.5.11 / PCRE2 10.44 (2024-06-07), JIT available. The verifier probes both editions and runs generated PHP with `-n`. No PHP service or global runtime was installed. In this workspace the verified CLI is `/tmp/regex-native-php-8.5.11.BRsfw0/php-8.5.11/sapi/cli/php`; reuse it while it exists or rebuild from the documented source. Native commands require this CLI directory in their child-process search path.
+- Source changes: replace the obsolete unverified requirement and workshop label with the tested-edition contract; update the homepage, compatibility/language guides and all ten README guides. Arabic/Urdu isolate the new version string in explicit LTR code. Successful emitted patterns and source snippets remain unchanged: before requirement wording changed, every selected PHP export equaled the installed public dev.7 result. The public dev.7 package/site still have their historical unverified label until the next distribution milestone.
+- Component gates: all 377 Node tests, 22 focused Node 22 checks, clean installed consumers on Node 25 and Node 22, six Chromium desktop/mobile exports, six Firefox/WebKit exports, four final explicit PHP-label/requirement checks and all 64 homepage checks pass. The ten guides retain all 20 canonical blocks. The Downloads draft reflects the PHP proof and preserves the exact original manifest/regex. Retained archive hashes are unchanged and source Actions is disabled; complete release verification is next.
+- Next: complete the full next distribution gate and synchronize the next npm/Pages release, then extend diagnostics and native debugger/explanation workflows. The full original mission remains active. Other PHP/PCRE2 editions, independent human translation/usability/screen-reader reviews and any exact runtime backtracking trace remain unproved. Current deterministic point diagnostics also identify concrete range candidates: quoted Unicode aliases, character-list items, character-range endpoints and invalid JSON escapes.
+
 ## Aggregate native worker output source milestone
 
 - Implemented: one private shared budget caps the complete result batch at 1,000 matches, 20,000 captures and 1,048,576 UTF-16 units across values, escaped details and replacement output. Worker reservations precede match/capture record construction and transfer; controller validation precedes resolving results for rendering. Error text is bounded too. Oversized batches return an atomic actionable error, translated into all four workshop interface languages, while inputs remain editable and a fresh normal check recovers.
@@ -164,9 +172,9 @@ Published `0.1.0-dev.5` from tag/source `0f1b19b`: npm preview/latest, the exact
 
 ## Next priorities
 
-1. Extend precise diagnostics to further parser families where actual source ranges and reliable repairs are available. Preserve original token positions, successful AST shapes and point-only compatibility; prove each new range before implementation.
-2. Continue native debugger/explanation and developer-adoption workflows from the original mission using actual failing cases. Keep execution traces and engine compatibility claims tied to evidence; aggregate worker output is now bounded in unreleased source.
-3. Run the complete distribution gate before the next source milestone is released. Synchronize npm, owner Pages and all ten guides with that verified release while preserving frozen archives and explicit PHP/human-review limits.
+1. Run the complete distribution gate for the diagnostic-range, native-scroll, aggregate-output and PHP-verification source milestones. Synchronize the next npm/owner Pages release and all ten guides while preserving frozen archives, disabled source Actions and explicit human/other-edition review limits. Reuse the verified temporary PHP CLI if available and require all seven native targets for the separate export gate.
+2. Extend precise diagnostics to the demonstrated quoted Unicode-alias, character-list/range-endpoint and invalid-JSON-escape families. Preserve original token positions, successful AST shapes and point-only compatibility; prove each new range before implementation.
+3. Continue native debugger/explanation and developer-adoption workflows from the original mission using actual failing cases. Keep execution traces and engine compatibility claims tied to evidence; aggregate worker output is now bounded in unreleased source.
 
 ## Site and README milestone
 

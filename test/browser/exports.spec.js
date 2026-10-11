@@ -35,6 +35,10 @@ test("all target formats show their generated code, capture mapping and requirem
     await expect(page.locator("#export-code")).toHaveText(result.code);
     await expect(page.locator("#export-status")).toContainText(result.engine);
     await expect(page.locator("#export-requirements li")).toHaveText(result.requirements);
+    if (target === "php") {
+      await expect(page.locator("#export-target option:checked")).toHaveText("PHP / PCRE2");
+      await expect(page.locator("#export-requirements")).toContainText("PHP 8.5.11 / PCRE2 10.44");
+    }
     await expect(page.locator("#export-captures")).toContainText(
       `#1 "اسم" → ${target === "javascript" || target === "typescript" ? "اسم" : "g1"}`,
     );

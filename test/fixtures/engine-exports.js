@@ -63,6 +63,8 @@ export const INPUTS = [
   "e\u0301",
 ];
 const literal = 'a\0\t\r\n\u2028\u2029"\\/#{}~$😀مرحبا اردو\u202e';
+// biome-ignore lint/suspicious/noTemplateCurlyInString: These are literal PHP/Ruby template inputs.
+const templateLiteral = "$USER ${name} {$name} #{1 + 2} \"quotes\" 'apostrophe' \\ ~ مرحبا اردو 😀";
 const manifest = [
   "start",
   '"incoming/"',
@@ -104,6 +106,17 @@ export const EXPORT_CASES = [
     name: "literal-controls-and-source-quoting",
     rules: `start\n${JSON.stringify(literal)}\nend`,
     inputs: [literal, `${literal}\n`, "", literal.replace("😀", "a")],
+  },
+  {
+    name: "literal-template-data",
+    rules: `start\n${JSON.stringify(templateLiteral)}\nend`,
+    inputs: [
+      templateLiteral,
+      `${templateLiteral}\n`,
+      templateLiteral.replace("$USER", "alice"),
+      templateLiteral.replace("#{1 + 2}", "3"),
+      "",
+    ],
   },
   {
     name: "mixed-named-captures",

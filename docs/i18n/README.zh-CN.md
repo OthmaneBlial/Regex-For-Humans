@@ -78,7 +78,7 @@ npm `0.1.0-dev.7` 包含分组、捕获、后向引用和有序分支，库和 C
 
 在本地工作台打开 **Export to a programming language**，调用 `exportRegex(rules, { target: "python" })`，或运行 `node bin/regex-for-humans.js --target python --json rules.txt`。九种格式包括 JavaScript、TypeScript、Python、Rust、Go、Java、C#、PHP 和 Ruby。JavaScript/TypeScript 保留现有原生模式；其他目标先从 AST 转换支持的正则语义，再生成正确转义的源代码。
 
-生成代码已通过六个原生引擎的对比检查；**PHP 尚未经过原生运行验证**。请保留要求和捕获映射：其他引擎使用 `gN` 名称，未参与的捕获可能不存在。输入必须是格式正确的 Unicode。不支持的标志（`d/g/i/y`）、Unicode 属性，以及不兼容的断言、捕获或重复行为会返回带位置的诊断。可下载代码或完整 JSON；浏览器示例仍由 JavaScript 执行。详见[引擎配置与限制](../LANGUAGE.md#engine-exports)。
+生成代码已通过七个原生引擎的对比检查；**PHP 已在 PHP 8.5.11 / PCRE2 10.44 上验证**。已测试的版本和语料范围见[兼容性指南](../COMPATIBILITY.md#engine-exports)。请保留要求和捕获映射：其他引擎使用 `gN` 名称，未参与的捕获可能不存在。输入必须是格式正确的 Unicode。不支持的标志（`d/g/i/y`）、Unicode 属性，以及不兼容的断言、捕获或重复行为会返回带位置的诊断。可下载代码或完整 JSON；浏览器示例仍由 JavaScript 执行。详见[引擎配置与限制](../LANGUAGE.md#engine-exports)。
 
 ## 📦 安装预览版
 

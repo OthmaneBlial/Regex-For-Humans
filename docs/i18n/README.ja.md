@@ -78,7 +78,7 @@ npm `0.1.0-dev.7` のライブラリと CLI は、グループ、キャプチャ
 
 ローカルのワークショップで **Export to a programming language** を開くか、`exportRegex(rules, { target: "python" })` を呼び出すか、`node bin/regex-for-humans.js --target python --json rules.txt` を実行します。JavaScript、TypeScript、Python、Rust、Go、Java、C#、PHP、Ruby の9形式があります。JavaScript/TypeScript は既存のネイティブパターンを保持し、それ以外の対象は AST から対応する正規表現の意味を変換した後、正しくエスケープしたソースコードを生成します。
 
-生成コードの比較は6つのネイティブエンジンで通過しています。**PHP のネイティブ実行は未検証です。**要件とキャプチャ対応表を保存してください。他のエンジンでは `gN` という名前を使い、未参加のキャプチャ名が存在しない場合もあります。入力は正しい Unicode である必要があります。非対応のフラグ（`d/g/i/y`）、Unicode プロパティ、互換性のないアサーション・キャプチャ・繰り返しには位置付き診断を返します。コードまたは完全な JSON をダウンロードできますが、ブラウザの例は引き続き JavaScript で実行します。[エンジンと制限](../LANGUAGE.md#engine-exports)を確認してください。
+生成コードの比較は7つのネイティブエンジンで通過しています。**PHP は PHP 8.5.11 / PCRE2 10.44 で検証済みです。**テストしたバージョンとコーパスの範囲は[互換性ガイド](../COMPATIBILITY.md#engine-exports)に記載しています。要件とキャプチャ対応表を保存してください。他のエンジンでは `gN` という名前を使い、未参加のキャプチャ名が存在しない場合もあります。入力は正しい Unicode である必要があります。非対応のフラグ（`d/g/i/y`）、Unicode プロパティ、互換性のないアサーション・キャプチャ・繰り返しには位置付き診断を返します。コードまたは完全な JSON をダウンロードできますが、ブラウザの例は引き続き JavaScript で実行します。[エンジンと制限](../LANGUAGE.md#engine-exports)を確認してください。
 
 ## 📦 プレビューをインストールする
 
