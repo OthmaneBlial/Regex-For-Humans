@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Retain existing exact/ranged/minimum/optional/sequence repetition and lazy prefixes when completing groups, captures, alternatives and native sets. Preserve prefix spelling, complete reference remapping and first-body cursor placement; deduplicate optional-group aliases and leave invalid counts, repeated assertions and nested set operands to shared parser/compiler rejection.
+
 - Complete all six positive/negated Unicode v union, intersection and subtraction block templates, with editable operands, full-document previews and localized mode guidance. Validate the replacement before enclosing arity so nested set operands and alternative branches can complete correctly. Retain capture-reference targets, logical separators, comments, caret positions, native history and opted-in drafts; reject unsupported modes and invalid whole proposals.
 
 - Correct CLI export guidance and native-verification reproduction instructions to agree with the recorded PHP/PCRE2 corpus evidence. Keep target-specific syntax/flag limits visible and require all seven SDKs when reproducing that gate.

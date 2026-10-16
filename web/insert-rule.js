@@ -49,9 +49,10 @@ const templates = {
  * @param {number} end
  * @param {string} kind
  * @param {{flags?: string}} [options]
- * @returns {{rules: string, caret: number}}
+ * @param {string} [modifier] Existing single-line repetition prefix at the start of the replacement.
+ * @returns {{rules: string, caret: number, header: string}}
  */
-export function completeBlock(source, start, end, kind, options = {}) {
+export function completeBlock(source, start, end, kind, options = {}, modifier = "") {
   if (typeof source !== "string") throw new TypeError("Rules must be a string.");
   if (
     !Number.isSafeInteger(start) ||
@@ -64,6 +65,13 @@ export function completeBlock(source, start, end, kind, options = {}) {
   if (!Object.hasOwn(templates, kind) || templates[kind].length < 2)
     throw new TypeError("Choose a supported block type.");
   validateSourceLength(source);
+  if (
+    typeof modifier !== "string" ||
+    modifier.length > end - start ||
+    /[\r\n\u2028\u2029]/u.test(modifier) ||
+    !source.startsWith(modifier, start)
+  )
+    throw new TypeError("Keep the existing repetition prefix within the completion range.");
   const before = source.slice(0, start);
   const lines = splitLines(before);
   const indent = lines.at(-1) ?? "";
@@ -73,9 +81,16 @@ export function completeBlock(source, start, end, kind, options = {}) {
     ? "\r\n"
     : (source[firstLineEnd] ?? "\n");
   const template = templates[kind];
+  const optional =
+    kind === "optional"
+      ? /^(optional)([\t ]+|$)/iu.exec(source.slice(start + modifier.length, end))
+      : null;
+  const opener = optional
+    ? `${optional[1]}${optional[2] || " "}${templates.group[0]}`
+    : template[0];
   let rules =
     before +
-    template.map((text, index) => (index ? indent + text : text)).join(separator) +
+    template.map((text, index) => (index ? indent + text : modifier + opener)).join(separator) +
     separator +
     indent +
     source.slice(end).replace(/^[\t ]+/u, "");
@@ -89,7 +104,11 @@ export function completeBlock(source, start, end, kind, options = {}) {
   } else compileAst(parse(rules), options);
   const header = splitLines(rules)[lines.length - 1];
   const bodyIndent = template[1].length - template[1].trimStart().length;
-  return { rules, caret: start + header.length + separator.length + bodyIndent };
+  return {
+    rules,
+    caret: start + header.length + separator.length + bodyIndent,
+    header: header.slice(indent.length),
+  };
 }
 
 /** Insert a validated template without changing existing reference targets.

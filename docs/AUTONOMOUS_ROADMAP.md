@@ -1,5 +1,10 @@
 # Autonomous implementation progress
 
+## Quantified block completion source milestone (16 October 2026)
+
+- Retain existing exact counts, ranges, minimums, optional/sequence repetitions and lazy preference on group, capture, alternative and set completions. Preserve the source prefix, capture-reference targets, logical separators and first-body caret; deduplicate equivalent optional-group headers without changing their sample body. Existing parser/compiler validation controls acceptance and budgets. See [completion scope](EDITOR_COMPLETIONS.md) and [component checks](TESTING.md#quantified-block-completion-source-checks-16-october-2026).
+- Five new model checks pass 995,328 full native match-array/cursor comparisons, alongside existing completion and localization checks. Both complete Node 25.9.0/22.23.3 suites finish with 435 passes/four existing skips (439 cases each). All 192 affected browser checks pass, including actual repeated capture values/spans, reference targets, saved fixtures/options, Undo/Redo, drafts, invalid contexts and four-language narrow-screen previews. The static optional-group alias preserves typed case/tabs and its established body. All eight final French light/dark 320px PNGs match the visually inspected captures byte for byte. Quality/types/docs/build/package/homepage/audit checks pass. Quoted names, Unicode property names and local flags remain editor follow-up; complete release/publication and human gates retain their separate requirements.
+
 ## Unicode set completion source milestone (16 October 2026)
 
 - Complete all six positive/negated Unicode v union, intersection and subtraction blocks through shared builder templates. Validate the whole replacement before checking enclosing branch/operand counts, preserve capture targets and quote-aware logical separators, preview the complete proposal and place the cursor in its first operand. Current flags are never switched implicitly. See [completion scope](EDITOR_COMPLETIONS.md).

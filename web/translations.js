@@ -11,11 +11,11 @@ export const translations = {
       "Las plantillas de unión, intersección y diferencia, incluidas sus negaciones, requieren Unicode v.",
       "Les modèles d’union, d’intersection et de soustraction, y compris leurs formes négatives, nécessitent Unicode v.",
     ],
-  "Group and assertion templates are also available on a standalone rule line. Review the whole proposed document and any updated references before applying.":
+  "Complete groups and assertions on standalone lines. Groups, captures, alternatives and sets also accept repetition modifiers. Review the whole document and updated references before applying.":
     [
-      "在独立的规则行上，也可使用分组和断言模板。应用前请检查建议的整个文档及其中更新的引用。",
-      "Las plantillas de grupos y aserciones también están disponibles en una línea de regla independiente. Revisa todo el documento propuesto y las referencias actualizadas antes de aplicarlo.",
-      "Les modèles de groupes et d’assertions sont aussi disponibles sur une ligne de règle indépendante. Vérifiez tout le document proposé et les références mises à jour avant de l’appliquer.",
+      "在独立行补全分组和断言。分组、捕获、分支和集合也支持重复修饰符。应用前请检查整个文档及更新后的引用。",
+      "Completa grupos y aserciones en una línea independiente. Grupos, capturas, alternativas y conjuntos también admiten repetición. Revisa todo el documento y las referencias actualizadas antes de aplicar.",
+      "Complétez les groupes et assertions sur une ligne indépendante. Groupes, captures, alternatives et ensembles acceptent aussi la répétition. Vérifiez tout le document et les références mises à jour avant d’appliquer.",
     ],
   "1 validated suggestion.": [
     "1 条已验证的建议。",

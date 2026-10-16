@@ -105,7 +105,7 @@ test("set proposals require v and retain grammar, quote, depth, size and line bo
   for (const source of [
     '"character se"',
     "# character se",
-    "2 character se",
+    "2 optional character se",
     "character class: character se",
     "unknown\ncharacter se",
     "end\ncharacter se",

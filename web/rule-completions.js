@@ -75,6 +75,7 @@ export function ruleCompletions(source, caret, options = {}) {
   const cursor = { line: logicalLines.length, column: (logicalLines.at(-1)?.length ?? 0) + 1 };
   const results = [];
   const seen = new Set();
+  const blockHeaders = new Set();
   for (const prefix of prefixes) {
     const candidates = [...SHORTHAND_RULES];
     if (
@@ -121,20 +122,39 @@ export function ruleCompletions(source, caret, options = {}) {
       seen.add(rules);
       results.push({ text, rules, caret: prefix.start + text.length });
     }
+    if (!/^[\t ]*(?:#.*)?$/u.test(suffix)) continue;
+    const leading = source.slice(lineStart, prefix.start);
+    const indent = /^[\t ]*/u.exec(leading)?.[0] ?? "";
+    const modifier = leading.slice(indent.length);
+    const modifierTokens = tokenizeRules(modifier);
     if (
-      !/^[\t ]*$/u.test(source.slice(lineStart, prefix.start)) ||
-      !/^[\t ]*(?:#.*)?$/u.test(suffix)
+      !modifierTokens ||
+      modifierTokens.some(
+        (token) =>
+          token.kind !== "quantifier" && !/^[\t ]*$/u.test(modifier.slice(token.start, token.end)),
+      )
     )
       continue;
     for (const [text, kind] of blocks) {
       if (!text.startsWith(prefix.text)) continue;
+      const header = modifier + text;
+      const headerKey = header.toLowerCase().replace(/[\t ]+/gu, " ");
+      if (blockHeaders.has(headerKey)) continue;
       try {
-        const added = completeBlock(source, prefix.start, end, kind, options);
+        const added = completeBlock(
+          source,
+          lineStart + indent.length,
+          end,
+          kind,
+          options,
+          modifier,
+        );
         if (seen.has(added.rules)) continue;
         seen.add(added.rules);
+        blockHeaders.add(headerKey);
         // Capturing templates remap existing numbered references; preview the whole proposed document.
         results.push({
-          text,
+          text: added.header,
           rules: added.rules,
           caret: added.caret,
           preview: added.rules,

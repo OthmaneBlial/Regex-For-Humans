@@ -84,7 +84,7 @@ test("nested block completion preserves outer captures, whitespace and trailing 
 test("block proposals reject non-line contexts, open surroundings, invalid options and compiler budgets", () => {
   for (const source of [
     'capture "name"',
-    "3 cap",
+    "3 optional cap",
     "character class: cap",
     "capture {\ncap",
     "unknown\ncap",
