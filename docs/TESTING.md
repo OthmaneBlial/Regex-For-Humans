@@ -12,6 +12,8 @@ The complete Node 25.9.0 suite passes 429 cases: 425 passes, four existing scope
 
 **CLI and lint follow-ups:** corrected help guidance passes both existing first-use/help tests. Equivalent test-literal cleanup removes the five pre-existing lint warnings; 15 focused diagnostic/roundtrip cases pass on each of Node 25.9.0 and Node 22.23.3, and all 28 Chromium/Firefox/WebKit syntax, selection, layout and accessibility checks pass. Six informational style suggestions remain. The lint cleanup changes no compiler or workshop runtime code.
 
+**Pages cache-key follow-up:** regenerate the homepage module key from the current workshop build. The isolated build-stability test and all four selected desktop/mobile homepage compiler-cache and real-recipe checks pass. This updates source build metadata without publishing a Pages release.
+
 ## Balanced block completion source checks (12 October 2026)
 
 The source follow-up after published dev.12 offers eight balanced group/assertion templates through the existing builder. Five new unit tests compare native captures/spans and assertion behavior, preserve existing numbered/named reference targets across all five line separators, and cover comments, nesting, indentation, UTF-16 caret positions, invalid contexts, flags and budgets. The complete Node 25.9.0 and direct Node 22.23.3 suites each finish with 429 cases: 425 passes, four existing explicit scoped-native skips and no failures.
