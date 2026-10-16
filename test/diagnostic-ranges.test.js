@@ -41,7 +41,7 @@ test("repetition diagnostics retain complete numeric source tokens and original 
         `between 2 and ${token} digits`,
         `at least ${token} digits`,
       ])
-        diagnosed(`# ignored 😀 \"${separator}${rule}`, "INVALID_REPETITION", token, 2);
+        diagnosed(`# ignored 😀 "${separator}${rule}`, "INVALID_REPETITION", token, 2);
     }
     diagnosed(`digit${separator}  between 25 and 12 digits`, "INVALID_RANGE", "12", 2);
     diagnosed(`digit${separator}  1001 digits`, "REPETITION_LIMIT", "1001", 2);
@@ -119,7 +119,7 @@ test("quoted diagnostics select invalid escapes without cutting Unicode pairs or
   ];
   for (const separator of ["\n", "\r", "\r\n", "\u2028", "\u2029"])
     for (const [source, token] of cases)
-      diagnosed(`# ignored 😀 \"${separator}${source}`, "INVALID_QUOTE", token, 2);
+      diagnosed(`# ignored 😀 "${separator}${source}`, "INVALID_QUOTE", token, 2);
   for (const consumer of [compile, analyze, toSVG, (s) => exportRegex(s, { target: "python" })])
     diagnosed(String.raw`"😀\q"`, "INVALID_QUOTE", String.raw`\q`, 1, consumer);
   assert.throws(

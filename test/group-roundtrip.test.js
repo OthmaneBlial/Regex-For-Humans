@@ -97,7 +97,7 @@ test("generated group/reference combinations round-trip against native matches a
 });
 
 test("reference-only groups retain Unicode names and nested repetition semantics", () => {
-  check(new RegExp(String.raw`(?<\u{1D49C}>a)(?:\k<\u{1D49C}>)2`, "u"), ["aa2", "AA2", "a2"]);
+  check(/(?<\u{1D49C}>a)(?:\k<\u{1D49C}>)2/u, ["aa2", "AA2", "a2"]);
   check(/(a)(?:\1+){2}/u, ["a", "aa", "aaa", "aaaa", "aaab", "baaa"]);
 });
 

@@ -13,7 +13,7 @@ async function ready(page) {
 test("diagnosed source ranges are highlighted and selected completely", async ({ page }) => {
   await ready(page);
   const editor = page.locator("#rules-input");
-  const source = '# ignored 😀 \"\nstart\n  same as capture "\\u006dissing"\nend';
+  const source = '# ignored 😀 "\nstart\n  same as capture "\\u006dissing"\nend';
   const token = '"\\u006dissing"';
   for (const locale of ["en", "zh-CN", "es", "fr"]) {
     await page.locator("#interface-language").selectOption(locale);
@@ -68,7 +68,7 @@ test("quoted escapes retain exact highlighting and error selection in every inte
         [String.raw`"\u000😀"`, String.raw`\u000😀`],
         [String.raw`"\u12`, String.raw`\u12`],
       ]) {
-        const source = `# ignored 😀 \"\n${line}`;
+        const source = `# ignored 😀 "\n${line}`;
         await editor.fill(source);
         await expect(editor).toHaveAttribute("aria-invalid", "true");
         await expect(page.locator("#rules-syntax .syntax-source")).toHaveText(source, {
