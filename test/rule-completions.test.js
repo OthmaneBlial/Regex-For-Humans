@@ -76,7 +76,7 @@ test("completion replaces the remaining word at the cursor without changing surr
   for (const item of ruleCompletions("not wo", 6)) toRegExp(compile(item.rules));
 });
 
-test("quoted text, capture names, unfinished quotes and comments never get suggestions", () => {
+test("literal values, capture declarations, unfinished literals and comments never get suggestions", () => {
   for (const source of [
     '"digits"',
     '"di',

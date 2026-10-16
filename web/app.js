@@ -1728,7 +1728,7 @@ function showCompletions() {
         ? choices.length === 1
           ? "1 validated suggestion."
           : "{count} validated suggestions."
-        : "No validated suggestions. Use a single cursor outside quoted text and comments, and fix other rule errors first.",
+        : "No validated suggestions. Use one cursor in a supported rule or quoted reference, outside comments, and fix other rule errors first.",
       { count: choices.length },
     ),
   );
