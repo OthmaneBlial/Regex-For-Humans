@@ -44,6 +44,8 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 
 **Cambios en el código fuente posteriores a dev.12:** la compleción también ofrece ocho plantillas de grupos y aserciones con sus llaves de cierre. La vista previa muestra todo el documento propuesto, incluidas las referencias actualizadas si una nueva captura cambia la numeración; el cursor queda en la primera regla del bloque. Esta mejora espera la próxima publicación verificada del taller.
 
+**Plantillas de conjuntos solo en el código fuente:** elige Unicode `v` para completar bloques de unión, intersección y diferencia, incluidas sus formas negadas. Los operandos anidados se validan con todo el documento y conservan capturas y referencias. Esta mejora también espera la próxima publicación verificada del taller. Consulta [los controles y límites](../EDITOR_COMPLETIONS.md).
+
 | Capacidad | npm `0.1.0-dev.12` / taller alojado |
 | --- | --- |
 | Reglas → regex JavaScript | ✅ |

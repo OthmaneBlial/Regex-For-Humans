@@ -2,9 +2,11 @@
 
 ## Unreleased
 
+- Complete all six positive/negated Unicode v union, intersection and subtraction block templates, with editable operands, full-document previews and localized mode guidance. Validate the replacement before enclosing arity so nested set operands and alternative branches can complete correctly. Retain capture-reference targets, logical separators, comments, caret positions, native history and opted-in drafts; reject unsupported modes and invalid whole proposals.
+
 - Correct CLI export guidance and native-verification reproduction instructions to agree with the recorded PHP/PCRE2 corpus evidence. Keep target-specific syntax/flag limits visible and require all seven SDKs when reproducing that gate.
 
-- Retain native rule-editor Undo/Redo across completions, builder templates, group/reference transformations, regex and fixture imports and recipe changes. Compile after each complete action; history edits refresh the regular syntax, diagnostics, matching and opted-in draft path. Keep flags/examples current and fall back to editable text when native insertion is unavailable.
+- Retain native rule-editor Undo/Redo across completions, builder templates, group/reference transformations, regex and fixture imports and recipe changes. Compile after each complete action; history edits refresh the regular syntax, diagnostics, matching and opted-in draft path. Suppress intermediate history notifications from other fields so recipe changes cannot retain orphaned expectation errors. Keep flags/examples current and fall back to editable text when native insertion is unavailable.
 
 ## 0.1.0-dev.12 (11 October 2026)
 

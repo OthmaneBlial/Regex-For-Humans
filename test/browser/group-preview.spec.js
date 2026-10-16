@@ -187,6 +187,8 @@ test("selecting another group or replacing the workspace clears temporary compar
   await ready(page, twoGroups);
   const preview = page.locator("#group-preview");
   const show = async () => {
+    const capture = page.locator("#group-select option").filter({ hasText: "Capture #" }).first();
+    await page.locator("#group-select").selectOption(await capture.getAttribute("value"));
     await page.locator("#group-name").fill("changed");
     await page.locator("#group-preview-button").click();
     await expect(preview).toBeVisible();

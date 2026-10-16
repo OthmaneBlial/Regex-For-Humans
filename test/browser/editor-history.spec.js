@@ -130,6 +130,45 @@ test("regex and fixture imports and recipe changes preserve rule history without
   await history(editor, "redo", recipe);
 });
 
+test("rule transformations do not replay input handlers in other edited fields", async ({
+  page,
+}) => {
+  const editor = await ready(page);
+  await editor.fill("digit");
+  await page.locator(".expectation-editor > summary").first().click();
+  const expectation = page.locator(".expectation-input").first();
+  await expectation.fill("");
+  await expectation.pressSequentially("{");
+  await expect(expectation).toHaveAttribute("aria-invalid", "true");
+  await page.evaluate(() => {
+    document.body.dataset.foreignInput = "0";
+    document.addEventListener("input", (event) => {
+      if (event.target !== document.querySelector("#rules-input"))
+        document.body.dataset.foreignInput = String(Number(document.body.dataset.foreignInput) + 1);
+    });
+  });
+  await page.locator("#example-list button").first().click();
+  await expect(page.locator("#test-summary")).toHaveText("4 of 4 examples behave as expected");
+  await expect(page.locator(".expectation-input[aria-invalid=true]")).toHaveCount(0);
+  await expect(page.locator("body")).toHaveAttribute("data-foreign-input", "0");
+
+  const example = page.locator("#test-list textarea").first();
+  await example.fill("12");
+  await example.press("3");
+  const rules = await editor.inputValue();
+  await page.locator("#rule-builder > summary").click();
+  await page.locator("#builder-kind").selectOption("optional");
+  await page.locator("body").evaluate((body) => {
+    body.dataset.foreignInput = "0";
+  });
+  await page.locator("#builder-insert").click();
+  await expect(page.locator("#builder-feedback")).toHaveAttribute("data-state", "success");
+  await expect(example).toHaveValue("123");
+  await expect(page.locator("body")).toHaveAttribute("data-foreign-input", "0");
+  await history(editor, "undo", rules);
+  await expect(example).toHaveValue("123");
+});
+
 test("unchanged edits keep history and unavailable native editing still applies exact plain text", async ({
   page,
 }) => {

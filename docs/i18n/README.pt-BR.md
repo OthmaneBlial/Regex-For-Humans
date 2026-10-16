@@ -44,6 +44,8 @@ O vocabulário é **fixo**, com significado exato para cada instrução. Bibliot
 
 **Evolução do código-fonte após dev.12:** o preenchimento também oferece oito modelos de grupos e asserções com suas chaves de fechamento. A prévia mostra todo o documento proposto, incluindo referências atualizadas quando uma nova captura altera a numeração; o cursor vai para a primeira regra do bloco. Essa adição aguarda a próxima publicação verificada do workshop.
 
+**Modelos de conjuntos apenas no código-fonte:** selecione Unicode `v` para completar blocos de união, interseção e subtração, incluindo suas formas negadas. Os operandos aninhados são validados com o documento inteiro, preservando capturas e referências. Esta melhoria também aguarda a próxima publicação verificada da oficina. Consulte [os controles e limites](../EDITOR_COMPLETIONS.md).
+
 | Recurso | npm `0.1.0-dev.12` / workshop hospedado |
 | --- | --- |
 | Regras → regex JavaScript | ✅ |

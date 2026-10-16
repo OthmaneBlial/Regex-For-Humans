@@ -44,6 +44,8 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 
 **Quellcode-Erweiterung nach dev.12:** Die Vervollständigung bietet außerdem acht Gruppen- und Assertion-Vorlagen mit passenden schließenden Klammern. Die Vorschau zeigt das gesamte vorgeschlagene Dokument, einschließlich aktualisierter Referenzen, wenn ein neuer Capture die Nummerierung ändert; der Cursor springt zur ersten Regel im Block. Diese Erweiterung wird mit der nächsten verifizierten Workshop-Version veröffentlicht.
 
+**Mengenvorlagen im Quellcode:** Wähle Unicode `v`, um Blöcke für Vereinigung, Schnittmenge und Differenz einschließlich ihrer negierten Formen zu vervollständigen. Verschachtelte Operanden werden mit dem gesamten Dokument geprüft; Captures und Referenzen bleiben erhalten. Diese Erweiterung wartet ebenfalls auf die nächste verifizierte Workshop-Version. Siehe [Bedienung und Grenzen](../EDITOR_COMPLETIONS.md).
+
 | Fähigkeit | npm `0.1.0-dev.12` / gehosteter Workshop |
 | --- | --- |
 | Regeln → JavaScript-Regex | ✅ |

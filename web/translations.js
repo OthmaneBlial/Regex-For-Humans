@@ -5,6 +5,12 @@ export const translations = {
   "Rule suggestions": ["规则建议", "Sugerencias de reglas", "Suggestions de règles"],
   "Suggested rule:": ["建议规则：", "Regla sugerida:", "Règle proposée :"],
   "Proposed rules:": ["拟议规则：", "Reglas propuestas:", "Règles proposées :"],
+  "Choose Unicode v for set union, intersection and subtraction templates, including negated forms.":
+    [
+      "集合的并集、交集和差集模板及其取反形式需要 Unicode v。",
+      "Las plantillas de unión, intersección y diferencia, incluidas sus negaciones, requieren Unicode v.",
+      "Les modèles d’union, d’intersection et de soustraction, y compris leurs formes négatives, nécessitent Unicode v.",
+    ],
   "Group and assertion templates are also available on a standalone rule line. Review the whole proposed document and any updated references before applying.":
     [
       "在独立的规则行上，也可使用分组和断言模板。应用前请检查建议的整个文档及其中更新的引用。",

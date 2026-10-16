@@ -1,5 +1,10 @@
 # Autonomous implementation progress
 
+## Unicode set completion source milestone (16 October 2026)
+
+- Complete all six positive/negated Unicode v union, intersection and subtraction blocks through shared builder templates. Validate the whole replacement before checking enclosing branch/operand counts, preserve capture targets and quote-aware logical separators, preview the complete proposal and place the cursor in its first operand. Current flags are never switched implicitly. See [completion scope](EDITOR_COMPLETIONS.md).
+- Broader regression checks exposed native history replaying another field's input handlers. Suppress intermediate notifications before they reach those handlers, retaining ordinary input and actual Undo/Redo afterward. Recipe changes clear invalid expectation drafts correctly, and builder transformations preserve edited examples. [Verification](TESTING.md#unicode-set-completion-source-checks-16-october-2026) records component results separately from frozen dev.12, future publication and independent human reviews. Quoted names, Unicode property names, local flags and quantified block openers remain editor follow-up.
+
 ## Native editor history source milestone (16 October 2026)
 
 - Preserve native rule-field Undo/Redo through all programmatic source replacements, including complete reference transformations. Keep typing steps separate in WebKit, no-op Redo intact, focus restored and startup state outside editing history. Real history input follows the existing compiler, syntax, matcher and opted-in draft path. [Scope and fallback](EDITOR_HISTORY.md) describe current options/examples and browser behavior.

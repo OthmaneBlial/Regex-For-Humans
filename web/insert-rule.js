@@ -1,7 +1,7 @@
 import { compileAst } from "../src/compiler.js";
 import { CompileError } from "../src/diagnostics.js";
 import { editGroup } from "../src/edit-group.js";
-import { parse, splitLines } from "../src/parser.js";
+import { parse, splitLines, validateSourceLength } from "../src/parser.js";
 
 /** @type {Record<string, string[]>} */
 const templates = {
@@ -15,7 +15,82 @@ const templates = {
   negativeAhead: ["not followed by {", "  digit", "}"],
   behind: ["preceded by {", "  digit", "}"],
   negativeBehind: ["not preceded by {", "  digit", "}"],
+  setUnion: ["character set union {", '  "A"', '  "B"', "}"],
+  negativeSetUnion: ["not character set union {", '  "A"', '  "B"', "}"],
+  setIntersection: [
+    "character set intersection {",
+    '  range "A" to "Z"',
+    '  one of: "A", "E", "I", "O", "U"',
+    "}",
+  ],
+  negativeSetIntersection: [
+    "not character set intersection {",
+    '  range "A" to "Z"',
+    '  one of: "A", "E", "I", "O", "U"',
+    "}",
+  ],
+  setSubtraction: [
+    "character set subtraction {",
+    '  range "A" to "Z"',
+    '  one of: "A", "E", "I", "O", "U"',
+    "}",
+  ],
+  negativeSetSubtraction: [
+    "not character set subtraction {",
+    '  range "A" to "Z"',
+    '  one of: "A", "E", "I", "O", "U"',
+    "}",
+  ],
 };
+
+/** Replace a partial block opener before validating the enclosing block's arity.
+ * @param {string} source
+ * @param {number} start
+ * @param {number} end
+ * @param {string} kind
+ * @param {{flags?: string}} [options]
+ * @returns {{rules: string, caret: number}}
+ */
+export function completeBlock(source, start, end, kind, options = {}) {
+  if (typeof source !== "string") throw new TypeError("Rules must be a string.");
+  if (
+    !Number.isSafeInteger(start) ||
+    !Number.isSafeInteger(end) ||
+    start < 0 ||
+    end < start ||
+    end > source.length
+  )
+    throw new TypeError("The completion range must be within the rules.");
+  if (!Object.hasOwn(templates, kind) || templates[kind].length < 2)
+    throw new TypeError("Choose a supported block type.");
+  validateSourceLength(source);
+  const before = source.slice(0, start);
+  const lines = splitLines(before);
+  const indent = lines.at(-1) ?? "";
+  if (!/^[\t ]*$/u.test(indent)) throw new TypeError("Complete a standalone rule prefix.");
+  const firstLineEnd = splitLines(source)[0].length;
+  const separator = source.startsWith("\r\n", firstLineEnd)
+    ? "\r\n"
+    : (source[firstLineEnd] ?? "\n");
+  const template = templates[kind];
+  let rules =
+    before +
+    template.map((text, index) => (index ? indent + text : text)).join(separator) +
+    separator +
+    indent +
+    source.slice(end).replace(/^[\t ]+/u, "");
+  if (kind === "capture") {
+    rules = editGroup(
+      rules,
+      { line: lines.length, column: indent.length + 1 },
+      { capturing: true, name: null },
+      options,
+    );
+  } else compileAst(parse(rules), options);
+  const header = splitLines(rules)[lines.length - 1];
+  const bodyIndent = template[1].length - template[1].trimStart().length;
+  return { rules, caret: start + header.length + separator.length + bodyIndent };
+}
 
 /** Insert a validated template without changing existing reference targets.
  * @param {string} source

@@ -52,6 +52,8 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 **Source follow-up after dev.12:** completion also offers eight balanced group/assertion templates. The preview shows the proposed document, including reference updates when a new capture changes numbering; the cursor lands in the first body rule. This addition awaits the next verified workshop release.
 
+**Source-only set templates:** choose Unicode `v` to complete union, intersection and subtraction blocks, including their negated forms. Nested operands use whole-document validation and retain captures/references. This addition also awaits the next verified workshop release. See [completion controls and limits](docs/EDITOR_COMPLETIONS.md).
+
 | Start here | Continue with |
 | --- | --- |
 | [Install](#install) · [Playground](#playground) | [Recipes](#recipes) · [Complex examples](#examples) |

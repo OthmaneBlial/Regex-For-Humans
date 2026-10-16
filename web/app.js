@@ -236,6 +236,9 @@ function replaceRules(rules) {
   }
   const focused = document.activeElement;
   const { selectionStart, selectionEnd, selectionDirection, scrollTop, scrollLeft } = ui.rules;
+  // Native history can replay the last edited field even after focus moves to the rules.
+  const ignoreInput = (/** @type {Event} */ event) => event.stopImmediatePropagation();
+  document.addEventListener("input", ignoreInput, true);
   replacingRules = true;
   try {
     ui.rules.focus({ preventScroll: true });
@@ -261,6 +264,7 @@ function replaceRules(rules) {
     if (focused instanceof HTMLElement) focused.focus({ preventScroll: true });
     if (focused !== ui.rules && document.activeElement === ui.rules) ui.rules.blur();
   } finally {
+    document.removeEventListener("input", ignoreInput, true);
     replacingRules = false;
   }
 }

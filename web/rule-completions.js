@@ -2,7 +2,7 @@ import { compileAst } from "../src/compiler.js";
 import { CompileError } from "../src/diagnostics.js";
 import { quoteText } from "../src/display.js";
 import { BACKREFERENCE_RULE, parse, SHORTHAND_RULES, splitLines } from "../src/parser.js";
-import { insertRule } from "./insert-rule.js";
+import { completeBlock } from "./insert-rule.js";
 import { tokenizeRules } from "./syntax.js";
 
 const blocks = [
@@ -14,6 +14,12 @@ const blocks = [
   ["not followed by {", "negativeAhead"],
   ["preceded by {", "behind"],
   ["not preceded by {", "negativeBehind"],
+  ["character set union {", "setUnion"],
+  ["not character set union {", "negativeSetUnion"],
+  ["character set intersection {", "setIntersection"],
+  ["not character set intersection {", "negativeSetIntersection"],
+  ["character set subtraction {", "setSubtraction"],
+  ["not character set subtraction {", "negativeSetSubtraction"],
 ];
 
 const maxWords = Math.max(
@@ -123,21 +129,14 @@ export function ruleCompletions(source, caret, options = {}) {
     for (const [text, kind] of blocks) {
       if (!text.startsWith(prefix.text)) continue;
       try {
-        const added = insertRule(
-          source.slice(0, prefix.start) + source.slice(end).replace(/^[\t ]+/u, ""),
-          prefix.start,
-          kind,
-          options,
-        );
+        const added = completeBlock(source, prefix.start, end, kind, options);
         if (seen.has(added.rules)) continue;
-        const edge = [...added.rules.matchAll(/\r\n|[\r\n\u2028\u2029]/gu)][added.line - 1];
-        const bodyStart = edge.index + edge[0].length;
         seen.add(added.rules);
         // Capturing templates remap existing numbered references; preview the whole proposed document.
         results.push({
           text,
           rules: added.rules,
-          caret: bodyStart + added.column + 1,
+          caret: added.caret,
           preview: added.rules,
         });
       } catch (error) {

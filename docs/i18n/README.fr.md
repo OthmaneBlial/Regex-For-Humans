@@ -20,6 +20,8 @@ Quelques règles claires en anglais deviennent une expression régulière JavaSc
 
 Une expression régulière devient plus facile à lire quand vous voyez les règles qui l’ont produite.
 
+**Modèles d’ensembles dans le code source :** choisissez Unicode `v` pour compléter les blocs d’union, d’intersection et de soustraction, ainsi que leurs formes négatives. Les opérandes imbriqués sont validés avec tout le document ; les captures et références sont conservées. Cet ajout attend aussi la prochaine publication vérifiée de l’atelier. Voir [les commandes et limites](../EDITOR_COMPLETIONS.md).
+
 | Vos règles | Le résultat JavaScript |
 | --- | --- |
 | `start "#"`, `6 hex digits`, `end` | `/^#[0-9A-Fa-f]{6}$/u` |
