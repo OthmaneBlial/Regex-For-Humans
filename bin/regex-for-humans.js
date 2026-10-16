@@ -26,8 +26,7 @@ Options:
   --dot-all      Add the JavaScript s flag
   --flags FLAGS  Select unique JavaScript d, g, i, m, s, u, v, y flags
   --target NAME  Export source code: javascript, typescript, python, rust,
-                 go, java, csharp, php or ruby (target-specific limits;
-                 PHP runtime parity is unverified)
+                 go, java, csharp, php or ruby (target-specific syntax and flag limits)
   --             Treat the next argument as the input path
   --help         Show this help
   --version      Show the package version
