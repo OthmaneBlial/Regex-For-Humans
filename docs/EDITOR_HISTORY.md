@@ -1,0 +1,13 @@
+# Undo and redo rule edits
+
+This is an unreleased workshop source improvement after dev.12. The published npm package and hosted workshop keep their separately verified release state.
+
+Focus **Write your rules** and use your browser's normal Undo or Redo shortcut. Applying a completion, inserting a builder template, editing a group, translating a regex, importing/restoring a fixture or choosing a recipe retains the rule field's native editing history. A transformation, including renamed or renumbered references, is one edit. Ordinary typing before and after it remains in the same browser history. Unchanged proposals do not add an edit or clear Redo.
+
+Undo and Redo apply to **rule text**. Current regex flags, Unicode mode, match mode, examples, exact expectations and pasted regex input remain as they are. After importing a suite or choosing a recipe, Undo restores the preceding rules alongside the newly selected options and examples; it does not restore the entire previous workspace. Review the resulting regex and examples. Existing compiler diagnostics, syntax highlighting, group tools and the isolated matcher refresh after a history edit. Opted-in draft recovery saves the resulting current rules.
+
+Initial page loading and recovered startup state establish the initial text rather than an Undo step back to an empty editor. History belongs to the open browser page and is not serialized into fixtures or drafts. Reloading starts a new history. Browser limits and native grouping of ordinary typing still apply.
+
+The editor uses the browser's native text-insertion command, preserving focus and the rule field's selection/scroll position until an action deliberately navigates to its inserted rule. A native Undo/Redo round trip before and after insertion closes WebKit's typing transaction, keeping the transformation separate from adjacent typing. Native input notifications during a transformation do not compile a partially updated workspace. Real Undo/Redo notifications follow the normal input path. This uses the older [editing command API](https://w3c.github.io/editing/docs/execCommand/); browser tests exercise actual keyboard history in Chromium, Firefox and WebKit. If the command is unavailable or fails to insert the exact plain text, the editor falls back to assigning the text so editing remains usable, but that fallback cannot retain native history.
+
+See [completions](EDITOR_COMPLETIONS.md), [group comparisons](GROUP_PREVIEWS.md), [test fixtures and drafts](TEST_FIXTURES.md) and [verification records](TESTING.md).

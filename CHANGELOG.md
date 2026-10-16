@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Retain native rule-editor Undo/Redo across completions, builder templates, group/reference transformations, regex and fixture imports and recipe changes. Compile after each complete action; history edits refresh the regular syntax, diagnostics, matching and opted-in draft path. Keep flags/examples current and fall back to editable text when native insertion is unavailable.
+
 ## 0.1.0-dev.12 (11 October 2026)
 
 - Add a local Markdown report download with build metadata, rules, exact JavaScript regex/flags, match mode, intended tests and a lossless reimportable fixture. Validate the complete snapshot without running matching or inventing test results; retain source and both saved stores. Fence user data with adaptive delimiters and expose controls in JSON. Translate controls/help/status in all four interface languages.

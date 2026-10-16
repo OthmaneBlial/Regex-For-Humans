@@ -1,5 +1,10 @@
 # Autonomous implementation progress
 
+## Native editor history source milestone (16 October 2026)
+
+- Preserve native rule-field Undo/Redo through all programmatic source replacements, including complete reference transformations. Keep typing steps separate in WebKit, no-op Redo intact, focus restored and startup state outside editing history. Real history input follows the existing compiler, syntax, matcher and opted-in draft path. [Scope and fallback](EDITOR_HISTORY.md) describe current options/examples and browser behavior.
+- The [component verification record](TESTING.md#native-editor-history-source-checks-16-october-2026) covers the full Node suite, new and existing affected browser flows, static checks/builds, a clean package consumer and dependency auditing. This remains source-only work; frozen release artifacts and independent human reviews retain their existing boundaries. Broader grammar completion is the next editor priority.
+
 ## Final source increment and agent handoff (12 October 2026)
 
 - Source adds eight balanced group/assertion completions by reusing the validated builder. Capture insertion retains resolved reference targets; preview shows the entire proposed document before application. The cursor lands in the first body rule, and existing flags, examples, exact expectations and opted-in drafts retain their behavior. No compiler/API/declaration/runtime-dependency change is introduced. See [completion scope](EDITOR_COMPLETIONS.md).

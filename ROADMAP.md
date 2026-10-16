@@ -1,5 +1,11 @@
 # Roadmap — Regex For Humans
 
+## Source progress — 16 October 2026
+
+- The workshop now retains native rule-field Undo/Redo across completions, builder/group transformations, imports and recipes. WebKit typing boundaries, no-op Redo, fallback editing, recovered startup state, drafts and body-focus restoration have dedicated checks. Current flags and examples remain in place during text history edits. See [the contract](docs/EDITOR_HISTORY.md) and [verification record](docs/TESTING.md#native-editor-history-source-checks-16-october-2026).
+- This is an unreleased source improvement. The publication receipts in the 12 October handoff below retain their separate frozen npm/GitHub/Pages scope. Source Actions remains disabled; local checks and independent human-review gates retain their existing requirements.
+- Next priorities: broader compiler-backed completion for quoted capture names, Unicode properties, local flags and repeated/set-operation blocks; accessible capture palettes; an explicit offline cache/update contract; and a separately verified next preview release.
+
 ## Agent handoff — 12 October 2026 (Europe/Paris)
 
 Read this section first. It supersedes the dev.3/dev.5 release summaries below, which remain historical evidence. The maintainer requested a clean handoff within one hour; the wider autonomous mission is unfinished. Independent human reviews stay unchecked.

@@ -1,5 +1,15 @@
 # Testing and compatibility
 
+## Native editor history source checks (16 October 2026)
+
+The source workshop retains native rule-field Undo/Redo through completions, builder templates, group/reference edits, regex and fixture imports and recipe changes. Six shared browser flows cover separate typing/transformation steps, reference remapping, current flags/examples, opted-in draft updates, CRLF normalization, unchanged edits preserving Redo, unavailable editing commands, startup/recovered state and body-focus restoration. See [the history contract](EDITOR_HISTORY.md).
+
+Component checks pass all 24 new case/profile combinations and 24 existing affected combinations across bundled Chromium desktop/mobile, Firefox and WebKit. Existing flows exercise all six builder actions, keyboard completion, group previews, lossless fixture exports, stale native file reads and recovered draft captures/line endings. An initial mobile draft-startup check remained pending at its five-second assertion; two isolated unchanged repetitions subsequently pass. No matching assertion or worker deadline was changed.
+
+WebKit initially merged scripted replacements with surrounding typing. A standalone native reproduction confirms that an Undo/Redo round trip closes the typing transaction; the application suppresses its intermediate input notifications and compiles the completed action once. History tests establish initial text without treating Playwright's `fill` as a separate native typing transaction. The new integration flows allow 90 seconds for engine startup and complete keyboard sequences; the affected legacy run uses the same observation budget. An isolated Firefox launch/load observation took 56 seconds under concurrent host load. This is not an application startup benchmark; the product matching deadline remains 1,200 ms.
+
+The complete Node 25.9.0 suite passes 429 cases: 425 passes, four existing scoped-native skips and no failures. Quality/types/documentation checks, the Pages build, a clean packaged JavaScript/strict TypeScript/API/CLI consumer and the zero-vulnerability dependency audit pass. This is source-component evidence, without a new complete `npm run verify`, Node 22/native-export matrix, npm/Pages publication or independent screen-reader/usability review. Existing release archives and tags remain intact.
+
 ## Balanced block completion source checks (12 October 2026)
 
 The source follow-up after published dev.12 offers eight balanced group/assertion templates through the existing builder. Five new unit tests compare native captures/spans and assertion behavior, preserve existing numbered/named reference targets across all five line separators, and cover comments, nesting, indentation, UTF-16 caret positions, invalid contexts, flags and budgets. The complete Node 25.9.0 and direct Node 22.23.3 suites each finish with 429 cases: 425 passes, four existing explicit scoped-native skips and no failures.

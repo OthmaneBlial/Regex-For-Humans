@@ -189,6 +189,7 @@ let reverseErrorPosition = null;
 let compiled = null;
 /** @type {string | null} */
 let renderedRules = null;
+let replacingRules = false;
 /** @type {ReturnType<typeof exportRegex> | null} */
 let exported = null;
 /** @type {import('../index.d.ts').GroupSegment[]} */
@@ -223,6 +224,45 @@ function make(tag, className = "", text) {
   if (className) node.className = className;
   if (text !== undefined) setText(node, text);
   return node;
+}
+
+/** @param {string} rules */
+function replaceRules(rules) {
+  const value = rules.replace(/\r\n?/gu, "\n");
+  if (value === ui.rules.value) return;
+  if (renderedRules === null) {
+    ui.rules.value = value;
+    return;
+  }
+  const focused = document.activeElement;
+  const { selectionStart, selectionEnd, selectionDirection, scrollTop, scrollLeft } = ui.rules;
+  replacingRules = true;
+  try {
+    ui.rules.focus({ preventScroll: true });
+    try {
+      // WebKit keeps typing open across scripted selections; a native round trip closes it.
+      const closeTyping = () => {
+        if (document.queryCommandEnabled("undo") && document.execCommand("undo"))
+          document.execCommand("redo");
+      };
+      closeTyping();
+      ui.rules.select();
+      // Native editing retains the browser's Undo stack; assigning value clears it.
+      document.execCommand("insertText", false, value);
+      closeTyping();
+    } catch {
+      /* Fall back below when native editing is unavailable. */
+    }
+    // shortcut: fallback clears Undo, replace when a supported textarea history API is available.
+    if (ui.rules.value !== value) ui.rules.value = value;
+    ui.rules.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+    ui.rules.scrollTop = scrollTop;
+    ui.rules.scrollLeft = scrollLeft;
+    if (focused instanceof HTMLElement) focused.focus({ preventScroll: true });
+    if (focused !== ui.rules && document.activeElement === ui.rules) ui.rules.blur();
+  } finally {
+    replacingRules = false;
+  }
 }
 
 /** @param {string} label @param {CompileState} state */
@@ -1490,7 +1530,7 @@ function applyExpectationDraft(sample, text) {
 /** @param {import('./fixtures.js').TestFixture|import('./fixtures.js').WorkshopDraft} fixture */
 function applyFixture(fixture) {
   hasEdits = true;
-  ui.rules.value = fixture.rules;
+  replaceRules(fixture.rules);
   for (const [flag, input] of Object.entries(flagInputs))
     input.checked = fixture.flags.includes(flag);
   ui.unicodeMode.value = fixture.flags.includes("v") ? "v" : "u";
@@ -1706,7 +1746,7 @@ function applyCompletion() {
     closeCompletions(true);
     return;
   }
-  ui.rules.value = choice.rules;
+  replaceRules(choice.rules);
   ui.rules.setSelectionRange(choice.caret, choice.caret);
   hasEdits = true;
   fixtureRevision++;
@@ -1814,7 +1854,7 @@ function useScenario(scenario) {
   expectationErrors.clear();
   exactCaseText.clear();
   setScenarioSelection(scenario.id);
-  ui.rules.value = scenario.rules;
+  replaceRules(scenario.rules);
   ui.rules.setSelectionRange(0, 0);
   ui.rules.scrollTop = 0;
   for (const input of Object.values(flagInputs)) input.checked = false;
@@ -1904,6 +1944,7 @@ ui.recipeClear.addEventListener("click", () => {
 });
 
 document.addEventListener("input", (event) => {
+  if (replacingRules) return;
   if (
     event.target !== ui.language &&
     event.target !== ui.theme &&
@@ -2088,7 +2129,7 @@ window.addEventListener("storage", (event) => {
 });
 ui.rules.addEventListener("input", () => {
   // A multiline paste can repeat input events for the same completed value.
-  if (ui.rules.value === renderedRules) return;
+  if (replacingRules || ui.rules.value === renderedRules) return;
   setScenarioSelection(scenarios.find(({ rules }) => rules === ui.rules.value)?.id ?? null);
   compileRules();
 });
@@ -2278,7 +2319,7 @@ ui.builderForm.addEventListener("submit", (event) => {
     const added = insertRule(ui.rules.value, ui.rules.selectionStart, ui.builderKind.value, {
       flags: currentFlags(),
     });
-    ui.rules.value = added.rules;
+    replaceRules(added.rules);
     hasEdits = true;
     setScenarioSelection(null);
     compileRules();
@@ -2374,7 +2415,7 @@ function changeGroup(preview) {
       ui.groupFeedback.dataset.state = "success";
       return;
     }
-    ui.rules.value = rules;
+    replaceRules(rules);
     hasEdits = true;
     setScenarioSelection(null);
     compileRules();
@@ -2446,7 +2487,7 @@ ui.reverseButton.addEventListener("click", () => {
   reverseErrorPosition = null;
   try {
     const translated = regexToRules(parseRegexLiteral(ui.reverseRegex.value));
-    ui.rules.value = translated.rules;
+    replaceRules(translated.rules);
     for (const [flag, input] of Object.entries(flagInputs))
       input.checked = translated.flags.includes(flag);
     ui.unicodeMode.value = translated.flags.includes("v") ? "v" : "u";
