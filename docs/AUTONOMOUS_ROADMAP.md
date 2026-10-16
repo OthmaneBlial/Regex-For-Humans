@@ -1,11 +1,17 @@
 # Autonomous implementation progress
 
+## Exact-archive verification source milestone (16 October 2026)
+
+- Accept an existing tarball without repacking, retain the complete installed-consumer checks and report its unchanged SHA-256/size. Pack new candidates in private scratch storage; retain only successful consumers with an exclusive copy. Four regression checks protect read-only arguments, archive collisions and failed consumers. See [commands](DISTRIBUTION.md#verify-a-retained-archive).
+- Both complete Node 25/22 suites pass with 445 passes/four existing skips (449 cases each), alongside quality/types/docs and static/Pages builds. The same 436,865-byte source prototype passes full read-only consumers on both Node versions with an identical hash. A real npm collision attempt preserves its bytes; frozen published dev.12 is unchanged. [The receipt](TESTING.md#exact-archive-verifier-source-checks-16-october-2026) distinguishes prototype, browser, release and human-review evidence.
+- Next prepare a separate synchronized preview candidate: inspect current registry/tags, align versions and all ten canonical README guides, refresh screenshots, run the complete local/native-export gates and verify its exact final archive before publication. Do not repack over dev.12 or the retained prototype. Source Actions remains disabled.
+
 ## Quoted-reference completion source milestone (16 October 2026)
 
 - Complete known earlier closed capture names inside reference quotes, with native JSON decoding and partial Unicode/surrogate escape matching. Preserve counts, command spelling and other reference targets; bound changes to the value and retain following rules/comments. Canonical visible JSON quoting and whole-document validation control every proposal. Ordinary literals, declarations and property/flag values retain their quote guards. See [scope](EDITOR_COMPLETIONS.md) and [checks](TESTING.md#quoted-reference-completion-source-checks-16-october-2026).
 - Six new model checks cover 774,144 native match-array/cursor comparisons, case-sensitive names, normalization boundaries, absent/empty/lookaround captures, all separators, 99 eligible names and per-candidate budgets. New browser flows exercise actual Unicode spans, nondefault options, previews, saved fixtures, native history, drafts, stale/selection/composition guards and localized 320px controls. Unicode property names and local flags remain follow-up; release/publication and independent human gates stay separate.
 - Both complete Node 25.9.0/22.23.3 suites pass with 441 passes/four existing skips (445 cases each). All 204 affected browser checks and 42 focused model/localization cases pass. The eight final French light/dark 320px PNGs match visually inspected captures byte for byte. Quality/types/docs/build/package/homepage/audit checks pass; source Actions remains disabled. These source-component results do not replace the complete release gate or independent human reviews.
-- The next operational priority is a verified preview release. The existing package consumer always runs `npm pack`; first add a path for consuming an already retained archive so Node 25/22 can verify identical sealed bytes without repacking. Preserve frozen dev.12, then synchronize the candidate versions/guides/screenshots and run the complete release gates before publication.
+- The next operational priority is a verified preview release. The exact-archive verifier milestone above supplies the reusable consumer path. Preserve frozen dev.12, then synchronize the candidate versions/guides/screenshots and run the complete release gates before publication.
 
 ## Quantified block completion source milestone (16 October 2026)
 

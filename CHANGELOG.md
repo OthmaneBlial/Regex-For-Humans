@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Verify an existing package tarball without repacking, report its SHA-256 and retain new packs only after a successful clean consumer. Refuse overwriting a retained archive, including concurrent destination creation.
+
 - Complete earlier closed capture names inside quoted references, including JSON escape prefixes, surrogate pairs and missing closing quotes. Preserve command/count spelling and following text, validate each whole candidate, retain case-sensitive name binding and omit literal/declaration/property/flag contexts. Show the complete proposed document and keep native history, exact expectations, fixtures and drafts intact.
 
 - Retain existing exact/ranged/minimum/optional/sequence repetition and lazy prefixes when completing groups, captures, alternatives and native sets. Preserve prefix spelling, complete reference remapping and first-body cursor placement; deduplicate optional-group aliases and leave invalid counts, repeated assertions and nested set operands to shared parser/compiler rejection.

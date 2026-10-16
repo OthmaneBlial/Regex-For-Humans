@@ -1,7 +1,18 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import {
+  constants,
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { basename, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REGEX_LITERAL_INPUT_LIMIT } from "../src/regex-literal.js";
 import { flagSets } from "../test/fixtures/advanced-flags-corpus.js";
@@ -9,6 +20,17 @@ import { flagSets } from "../test/fixtures/advanced-flags-corpus.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const npmCli = process.env.npm_execpath;
 if (!npmCli) throw new Error("Run this script with npm run test:package.");
+const args = process.argv.slice(2);
+if (args.length !== 0 && (args.length !== 2 || args[0] !== "--tarball" || !args[1])) {
+  throw new Error("Usage: npm run test:package -- [--tarball path/to/package.tgz]");
+}
+const retained = args.length ? resolve(args[1]) : null;
+if (retained && process.env.PACK_OUTPUT_DIR) {
+  throw new Error("Use --tarball without PACK_OUTPUT_DIR; an existing archive is read-only.");
+}
+if (retained && !statSync(retained).isFile()) {
+  throw new Error("--tarball must identify an existing archive file.");
+}
 
 function run(args, options = {}) {
   const result = spawnSync(process.execPath, args, {
@@ -24,16 +46,25 @@ function run(args, options = {}) {
 }
 
 const scratch = mkdtempSync(join(tmpdir(), "regex-for-humans-package-"));
-const output = process.env.PACK_OUTPUT_DIR ? resolve(process.env.PACK_OUTPUT_DIR) : scratch;
+const output = process.env.PACK_OUTPUT_DIR ? resolve(process.env.PACK_OUTPUT_DIR) : null;
 const consumer = join(scratch, "consumer");
-mkdirSync(output, { recursive: true });
 mkdirSync(consumer);
 
 try {
-  const packJson = run([npmCli, "pack", "--json", "--pack-destination", output]);
-  const packageInfo = JSON.parse(packJson)[0];
-  const tarball = join(output, packageInfo.filename);
+  const packageInfo = retained
+    ? {
+        name: JSON.parse(readFileSync(join(root, "package.json"), "utf8")).name,
+        filename: basename(retained),
+        size: statSync(retained).size,
+      }
+    : JSON.parse(run([npmCli, "pack", "--json", "--pack-destination", scratch]))[0];
+  const tarball = retained ?? join(scratch, packageInfo.filename);
   if (!existsSync(tarball)) throw new Error("npm pack did not create its reported tarball.");
+  const destination = output ? join(output, packageInfo.filename) : null;
+  if (destination && existsSync(destination)) {
+    throw new Error(`Refusing to overwrite retained archive: ${destination}`);
+  }
+  const archiveHash = createHash("sha256").update(readFileSync(tarball)).digest("hex");
   run([
     npmCli,
     "install",
@@ -854,8 +885,15 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
   ) {
     throw new Error("Installed CLI did not expose terminal controls or preserve matching data.");
   }
+  if (createHash("sha256").update(readFileSync(tarball)).digest("hex") !== archiveHash) {
+    throw new Error("The archive changed during consumer verification.");
+  }
+  if (destination) {
+    mkdirSync(output, { recursive: true });
+    copyFileSync(tarball, destination, constants.COPYFILE_EXCL);
+  }
   process.stdout.write(
-    `Verified ${packageInfo.filename} (${packageInfo.size} bytes) in a clean consumer.\n`,
+    `Verified ${packageInfo.filename} (${packageInfo.size} bytes, SHA-256 ${archiveHash}) in a clean consumer.\n`,
   );
 } finally {
   rmSync(scratch, { recursive: true, force: true });

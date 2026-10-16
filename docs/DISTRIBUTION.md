@@ -1,5 +1,17 @@
 # Distribution decision record
 
+## Verify a retained archive
+
+The source verifier accepts an already packed archive without running `npm pack`:
+
+```sh
+env -u PACK_OUTPUT_DIR npm run test:package -- --tarball ./artifacts/candidate/regex-for-humans-0.1.0-dev.12.tgz
+```
+
+The path is relative to the verifier's working directory (the project root for a normal `npm run` invocation) and may contain spaces when quoted. The archive is read-only: installation uses `--ignore-scripts` in a fresh temporary consumer, followed by the existing README, JavaScript/API, strict TypeScript and CLI checks. SHA-256 is checked before and after the consumer and printed with its byte size. The current consumer contract is checked; this does not establish historical-version compatibility, tag/payload equality, provider delivery or foreign-runtime support. Run the same archive on each required Node version rather than repacking it.
+
+Without `--tarball`, `npm run test:package` still packs and verifies the current source in temporary storage. Set `PACK_OUTPUT_DIR` only when retaining a new candidate: packing stays in private scratch space, a successful consumer is required before retention, and exclusive copying refuses to overwrite an existing filename. Choose a new directory for a new prototype; never replace a frozen release archive or tag. `--tarball` and `PACK_OUTPUT_DIR` are mutually exclusive. The stable-tag publication guard and disabled source Actions are unchanged.
+
 ## Published dev.12 (11 October 2026)
 
 [npm `0.1.0-dev.12`](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12), both anonymous registry tags (`latest` and `preview`), and the [GitHub prerelease](https://github.com/OthmaneBlial/Regex-For-Humans/releases/tag/v0.1.0-dev.12) select frozen source `c17f968c4bc484599e9f50c1becceb4a6d23e1d1`. The annotated tag object is `45c40d3fb019c00184e8f5dafaf7b68e76201fc0`. The retained final archive, anonymous registry download and downloaded GitHub asset agree byte for byte: 421,523 bytes, 52 files, SHA-256 `990e5a067bbe7c270a60cf70e5892bab31d00b8182782ca601da8e75947972ea`, integrity `sha512-DEuorTTicWapv8oNV942huiPB8HMPTehrgsUA0+Cdgy7bUvOKfk7YfNr8pc7G75ezkE4S9C6NzNksNAYRIXXOg==`. Every payload file matches the frozen source/tag. The downloaded GitHub checksum asset also agrees, with SHA-256 `674e3e7c30cde5627d843f70c70e1c24f9c183143a9e9cb4f6b530464d22a2dd`. Initial anonymous version reads return 404 during processing; the upload is not repeated.

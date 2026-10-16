@@ -1,5 +1,13 @@
 # Testing and compatibility
 
+## Exact-archive verifier source checks (16 October 2026)
+
+The source package verifier now accepts `--tarball` without packing, checks the archive's SHA-256 before/after its complete installed consumer and reports its size/hash. Newly packed candidates remain in private scratch storage until the consumer succeeds; retention uses an exclusive copy and cannot overwrite an existing archive. Four regression checks cover argument validation, read-only input routing, collision refusal before installation and failed-consumer retention. See [the commands and scope](DISTRIBUTION.md#verify-a-retained-archive).
+
+Both complete Node 25.9.0 and Node 22.23.3 suites pass: 449 cases each, 445 passes, four existing scoped-native skips and no failures. Quality/types/documentation checks and static/Pages builds pass. A new source prototype passes the default pack/retain consumer, then complete read-only README/JavaScript/API/strict TypeScript/CLI consumers on both Node versions: 436,865 bytes, SHA-256 `bf6dcb7e6007a785528c9746e7b57812dfad65a1c56f64ffb0723ef149ace8b8`. Both reports and the retained bytes agree. An actual npm duplicate-retention attempt fails with the explicit refusal and preserves those bytes. Frozen published dev.12 remains 421,523 bytes with SHA-256 `990e5a067bbe7c270a60cf70e5892bab31d00b8182782ca601da8e75947972ea`.
+
+This is source tooling and prototype-consumer evidence. It changes no compiler/API, workshop runtime, dependencies, package version, published archive/tag or hosting. The preceding quoted-reference increment's browser results retain their own scope; no additional browser or native-export run is claimed for this tooling change. A final synchronized release candidate still needs the complete release gate, exact final-archive consumers, provider/tag/payload proof and hosted verification. Human reviews remain open and source Actions stays disabled.
+
 ## Quoted reference completion source checks (16 October 2026)
 
 Six new model checks cover 774,144 full native match-array/cursor comparisons across u/v flag combinations, quoted/unclosed names, JSON escape prefixes, astral/surrogate identifiers and lazy repeated references. Additional cases distinguish case and Unicode normalization, preserve absent/empty/alternative/lookaround captures and native spans outside consumed text, retain all five logical separators and following literals/comments, reject open/forward targets and unsafe ranges, expose 99 eligible names and keep short proposals when a longer name exceeds the budget. See [scope and controls](EDITOR_COMPLETIONS.md).
