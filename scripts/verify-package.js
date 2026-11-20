@@ -79,13 +79,11 @@ try {
   const installed = join(consumer, "node_modules", ...packageInfo.name.split("/"));
   run([join(root, "scripts", "check-doc-links.js"), installed], { cwd: consumer });
   const readme = readFileSync(join(installed, "README.md"), "utf8");
-  const libraryExample = /## 📦 Use the JavaScript library[\s\S]*?```js\n([\s\S]*?)\n```/u.exec(
-    readme,
-  );
+  const libraryExample = /^## Install$[\s\S]*?```js\n([\s\S]*?)\n```/mu.exec(readme);
   if (!libraryExample) throw new Error("The installed README is missing its library example.");
   const readmeSmoke = join(consumer, "readme-smoke.mjs");
   writeFileSync(readmeSmoke, libraryExample[1]);
-  if (!run([readmeSmoke], { cwd: consumer }).startsWith("^\\d{3}$\ntrue\n")) {
+  if (run([readmeSmoke], { cwd: consumer }) !== "^\\d{3}$\ntrue") {
     throw new Error("The installed README library example did not produce its documented result.");
   }
   const manifest = JSON.parse(readFileSync(join(installed, "package.json"), "utf8"));
@@ -114,7 +112,7 @@ try {
   const boundedRules = "start between 2 and 4 digits\nend";
   const boundedSource = "^\\d{2,4}$";
   const pathRules = "start\nbetween 1 and 32 path segment characters\nend";
-  const pathSource = String.raw`^[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}$`;
+  const pathSource = String.raw`^[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}$`;
   const reorderedPathSource = String.raw`^[^\u2029\r\x00\/\u2028\n\\/]{1,32}$`;
   const directionText = `A${String.fromCodePoint(0x202e)}B`;
   const directionRules = JSON.stringify(directionText);
@@ -420,7 +418,7 @@ if (bounded.segments[1].repetition?.kind !== "range" || bounded.segments[1].repe
 const optional = compile("start\\noptional \\"-\\"\\nend");
 const optionalPattern = toRegExp(optional);
 if (
-  optional.source !== "^-{0,1}$" ||
+  optional.source !== "^-?$" ||
   !optionalPattern.test("") ||
   !optionalPattern.test("-") ||
   optionalPattern.test("--")
@@ -733,18 +731,19 @@ void [regex, cachedRegex, pairRegex, fullRegex, segment, source, line, max];
   );
   if (flaggedReverse.flags !== "dgimsvy" || flaggedReverse.rules !== '"a"')
     throw new Error("Installed CLI reverse lost flag options.");
+  const cliGuide = readFileSync(join(installed, "docs", "CLI.md"), "utf8");
   const reverseExample =
     /^printf '%s\\n' '([^']+)' \| npx --yes --package=regex-for-humans@preview regex-for-humans --reverse$/mu.exec(
-      readme,
+      cliGuide,
     );
-  if (!reverseExample) throw new Error("The installed README is missing its CLI reverse example.");
+  if (!reverseExample) throw new Error("The installed CLI guide is missing its reverse example.");
   const reverseRules = run([...cliArgs, "--reverse", "-"], {
     cwd: consumer,
     input: reverseExample[1],
   });
   if (reverseRules !== 'start\n2 uppercase letter\n"-"\n4 digit\nend') {
     throw new Error(
-      "The installed README CLI reverse example did not produce its documented rules.",
+      "The installed CLI guide reverse example did not produce its documented rules.",
     );
   }
   const reverseCli = JSON.parse(

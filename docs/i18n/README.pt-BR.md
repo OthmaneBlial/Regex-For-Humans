@@ -6,7 +6,7 @@
 
 Regras curtas em inglês viram um `RegExp` nativo de JavaScript, com um fragmento visível por regra. Cole uma regex e receba as regras de volta.
 
-**[Experimentar a oficina](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Site](https://othmaneblial.github.io/Regex-For-Humans/) · [Prévia no npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [Sintaxe](../LANGUAGE.md)**
+**[Experimentar a oficina](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Site](https://othmaneblial.github.io/Regex-For-Humans/) · [Prévia no npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [Sintaxe](../LANGUAGE.md)**
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · **Português do Brasil** · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
@@ -92,11 +92,19 @@ Capturas são grupos nativos de JavaScript. Escreva `same as capture "year"` par
 npm install regex-for-humans@preview
 ```
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
-Node.js 22+, sem dependências em tempo de execução, ESM com declarações TypeScript. A biblioteca, a [linha de comando](../CLI.md) e a oficina usam o mesmo compilador. É uma prévia (`0.1.0-dev.12`); a [oficina](https://othmaneblial.github.io/Regex-For-Humans/workshop/) não precisa de instalação.
+Node.js 22+, sem dependências em tempo de execução, ESM com declarações TypeScript. A biblioteca, a [linha de comando](../CLI.md) e a oficina usam o mesmo compilador. É uma prévia (`0.1.0-dev.13`); a [oficina](https://othmaneblial.github.io/Regex-For-Humans/workshop/) não precisa de instalação.
 
 ## O vocabulário num relance
 

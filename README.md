@@ -6,7 +6,7 @@
 
 Short English rules compile to a native JavaScript `RegExp`, one visible fragment per rule. Paste a regex and get the rules back.
 
-**[Try the workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Website](https://othmaneblial.github.io/Regex-For-Humans/) · [npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [Syntax](docs/LANGUAGE.md)**
+**[Try the workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Website](https://othmaneblial.github.io/Regex-For-Humans/) · [npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [Syntax](docs/LANGUAGE.md)**
 
 [English](README.md) · [简体中文](docs/i18n/README.zh-CN.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Português do Brasil](docs/i18n/README.pt-BR.md) · [日本語](docs/i18n/README.ja.md) · [Deutsch](docs/i18n/README.de.md) · [हिन्दी](docs/i18n/README.hi.md) · [العربية](docs/i18n/README.ar.md) · [اردو](docs/i18n/README.ur.md)
 
@@ -92,11 +92,19 @@ Captures are native JavaScript groups. Write `same as capture "year"` to require
 npm install regex-for-humans@preview
 ```
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
-Node.js 22+, no runtime dependencies, ESM with TypeScript declarations. The library, the [command line](docs/CLI.md) and the workshop share one compiler. This is a preview (`0.1.0-dev.12`); the [workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) needs no install.
+Node.js 22+, no runtime dependencies, ESM with TypeScript declarations. The library, the [command line](docs/CLI.md) and the workshop share one compiler. This is a preview (`0.1.0-dev.13`); the [workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) needs no install.
 
 ## The vocabulary at a glance
 

@@ -6,7 +6,7 @@
 
 De courtes règles en anglais deviennent un `RegExp` JavaScript natif, un fragment visible par règle. Collez un regex et récupérez les règles.
 
-**[Essayer l’atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Site](https://othmaneblial.github.io/Regex-For-Humans/) · [Aperçu npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [Syntaxe](../LANGUAGE.md)**
+**[Essayer l’atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Site](https://othmaneblial.github.io/Regex-For-Humans/) · [Aperçu npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [Syntaxe](../LANGUAGE.md)**
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · **Français** · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
@@ -92,11 +92,19 @@ Les captures sont des groupes JavaScript natifs. Écrivez `same as capture "year
 npm install regex-for-humans@preview
 ```
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
-Node.js 22+, aucune dépendance à l’exécution, ESM avec déclarations TypeScript. La bibliothèque, la [ligne de commande](../CLI.md) et l’atelier partagent le même compilateur. Version préliminaire (`0.1.0-dev.12`) ; l’[atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) ne demande aucune installation.
+Node.js 22+, aucune dépendance à l’exécution, ESM avec déclarations TypeScript. La bibliothèque, la [ligne de commande](../CLI.md) et l’atelier partagent le même compilateur. Version préliminaire (`0.1.0-dev.13`) ; l’[atelier](https://othmaneblial.github.io/Regex-For-Humans/workshop/) ne demande aucune installation.
 
 ## Le vocabulaire en un coup d’œil
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-dev.13 (21 November 2026)
 
 - Emit a numbered reference as `\1` instead of `(?:\1)` when nothing that could be a digit follows it, as in `(\w+)\s\1`. The `(?:\1)` boundary stays where a digit may follow, because `\10` would be a different reference.
 
@@ -8,7 +8,7 @@
 
 - Rewrite the README to fit on a few screens: one example, reading a regex back, named captures, install, a vocabulary table (each row is compiled by the tests) and six recipes. The full recipe table and the CLI reference move to `docs/RECIPES.md` and `docs/CLI.md`. A new banner, social card and an animated reel of six recipes are drawn from real compiler output by `scripts/build-readme-art.js`. All nine translations follow.
 
-- Redesign the homepage as an interlinear gloss: each fragment of the compiled regex has its meaning, its groups and the characters it took printed underneath. Six examples cycle until the visitor interacts (never with reduced motion). This replaces the transit-map design, which is withdrawn along with its four-colour bar. Source Serif 4 and JetBrains Mono are self-hosted for the homepage and the workshop, which takes the same ink-and-blue palette.
+- Redesign the homepage as an interlinear gloss: each fragment of the compiled regex has its meaning, its groups and the characters it took printed underneath. Six examples cycle until the visitor interacts (never with reduced motion). Source Serif 4 and JetBrains Mono are self-hosted for the homepage and the workshop, which takes the same ink-and-blue palette.
 
 - Generate the regex a person would write. `optional` now emits `?` (not `{0,1}`), `at least 0`/`1` emit `*`/`+`, tab, newline and carriage return appear as `\t`, `\n` and `\r`, a plain `group { }` adds no parentheses, and a choice that is the only content of a capture or group reuses its parentheses: `^(?<month>0[1-9]|1[0-2])$` instead of `^(?<month>(?:(?:0[1-9])|(?:1[0-2])))$`. Matching is unchanged; a round-trip check over 45 common regexes and 3,000 strings each finds no difference. The workshop trace shows `—` for a rule that adds no regex of its own.
 
@@ -16,19 +16,13 @@
 
 - Accept every HTTP token character in the header recipe's field name, so `X-B3-TraceId` and `X_Trace` match; it previously allowed only letters and hyphens.
 
-- Explain an existing regex on the homepage: paste `/source/flags` or a bare pattern to draw it as rules on the line, test text against it and open it in the workshop. A pattern without `u` or `v` is read with `u` when it stays valid, and the page says so; captures, groups and choices appear as brackets and `or` stops. The demo now tests text without `g`/`y` state.
+- Explain an existing regex on the homepage: paste `/source/flags` or a bare pattern to gloss it fragment by fragment, show it as rules, test text against it and open it in the workshop. A pattern without `u` or `v` is read with `u` when it stays valid, and the page says so; captures, groups and choices appear as brackets and `or`. The demo now tests text without `g`/`y` state.
 
 - Remove repeated homepage sections (feature cards, the three-step journey, trust badges and the closing call to action) and slogan headings; the hero now names both directions. Compact the workshop hero, drop the decorative `{3}` and `[a]` glyphs, give every workshop hint the same 13-pixel style and keep labels at 11 pixels or more.
 
 - Keep the workshop sidebar at its top on a normal load; a linked recipe still scrolls into view only when it is hidden.
 
 - Run local workshop and homepage browser checks on half the CPU cores (764 checks in about 11 minutes instead of about two hours) and split the CLI checks across four files (about 44 to 17 seconds). CI keeps one browser worker.
-
-- Tidy the README in all ten languages: plain headings without emoji, no internal release notes in the introduction, a redrawn banner, social card and workshop screenshot. Correct the version named in the compatibility guide.
-
-- Carry the transit-map style into the workshop in both themes: neutral ink greys instead of teal, line colours for syntax highlighting and the header rule, station discs for the four steps, a blue focus ring, and status shown by the whole example border. Remove the offset panel shadows, coloured left stripes, uppercase eyebrow labels and decorative emoji. Document the design system in `DESIGN.md`.
-
-- Redesign the homepage as a transit map: the selected recipe is drawn as one line whose stations are its rules, each with its exact regex fragment. Typing a test string marks the characters each station takes and, for anchored patterns, where the line stops and why. Replace the cream boxes and offset shadows with a white sign-plate style, line colours for literals, sets, repetition, captures, choices and anchors, and route maps for the 31 recipes.
 
 - Open the homepage's architecture, compatibility, complex-example and language-guide links as rendered GitHub documents instead of raw Markdown text, and correct the scoped-flags anchor.
 

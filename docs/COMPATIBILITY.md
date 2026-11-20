@@ -1,6 +1,6 @@
 # Regex compatibility
 
-Preview `0.1.0-dev.12` targets native JavaScript `RegExp` in u or v mode. It includes groups, references, ordered alternatives, lazy repetition, lookaround, boundaries, Unicode properties/classes, finite string sets, nested v-set operations and all eight flags. The verified runtimes and limits below apply to this preview; stable support and human reviews remain open.
+Preview `0.1.0-dev.13` targets native JavaScript `RegExp` in u or v mode. It includes groups, references, ordered alternatives, lazy repetition, lookaround, boundaries, Unicode properties/classes, finite string sets, nested v-set operations and all eight flags. The verified runtimes and limits below apply to this preview; stable support and human reviews remain open.
 
 | Construct | Rules → regex | Regex → rules |
 | --- | --- | --- |

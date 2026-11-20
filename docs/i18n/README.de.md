@@ -6,7 +6,7 @@
 
 Kurze englische Regeln werden zu einem nativen JavaScript-`RegExp`, ein sichtbares Fragment pro Regel. Einen Regex einfügen und die Regeln zurückbekommen.
 
-**[Werkstatt ausprobieren](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Website](https://othmaneblial.github.io/Regex-For-Humans/) · [npm-Vorschau](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [Syntax](../LANGUAGE.md)**
+**[Werkstatt ausprobieren](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Website](https://othmaneblial.github.io/Regex-For-Humans/) · [npm-Vorschau](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [Syntax](../LANGUAGE.md)**
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · **Deutsch** · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
@@ -92,11 +92,19 @@ Erfassungen sind native JavaScript-Gruppen. Mit `same as capture "year"` wird de
 npm install regex-for-humans@preview
 ```
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
-Node.js 22+, keine Laufzeitabhängigkeiten, ESM mit TypeScript-Deklarationen. Bibliothek, [Kommandozeile](../CLI.md) und Werkstatt nutzen denselben Compiler. Dies ist eine Vorschau (`0.1.0-dev.12`); die [Werkstatt](https://othmaneblial.github.io/Regex-For-Humans/workshop/) braucht keine Installation.
+Node.js 22+, keine Laufzeitabhängigkeiten, ESM mit TypeScript-Deklarationen. Bibliothek, [Kommandozeile](../CLI.md) und Werkstatt nutzen denselben Compiler. Dies ist eine Vorschau (`0.1.0-dev.13`); die [Werkstatt](https://othmaneblial.github.io/Regex-For-Humans/workshop/) braucht keine Installation.
 
 ## Das Vokabular auf einen Blick
 

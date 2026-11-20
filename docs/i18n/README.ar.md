@@ -8,7 +8,7 @@
 
 تتحول قواعد إنجليزية قصيرة إلى <code dir="ltr">RegExp</code> أصلي في JavaScript، لكل قاعدة جزء ظاهر. الصق تعبيرًا منتظمًا واستعد قواعده.
 
-**[جرّب الورشة](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [الموقع](https://othmaneblial.github.io/Regex-For-Humans/) · [النسخة التجريبية على npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [الصياغة](../LANGUAGE.md)**
+**[جرّب الورشة](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [الموقع](https://othmaneblial.github.io/Regex-For-Humans/) · [النسخة التجريبية على npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [الصياغة](../LANGUAGE.md)**
 
 <div dir="ltr" align="center">
 
@@ -128,13 +128,25 @@ npm install regex-for-humans@preview
 
 <div dir="ltr" align="left">
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
+</div>
+
+<div dir="ltr" align="left">
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
 </div>
 
-يتطلب Node.js 22+، دون اعتماديات وقت التشغيل، بصيغة ESM مع تعريفات TypeScript. تشترك المكتبة و[سطر الأوامر](../CLI.md) والورشة في مترجم واحد. هذه نسخة تجريبية (<code dir="ltr">0.1.0-dev.12</code>)، و[الورشة](https://othmaneblial.github.io/Regex-For-Humans/workshop/) لا تحتاج إلى تثبيت.
+يتطلب Node.js 22+، دون اعتماديات وقت التشغيل، بصيغة ESM مع تعريفات TypeScript. تشترك المكتبة و[سطر الأوامر](../CLI.md) والورشة في مترجم واحد. هذه نسخة تجريبية (<code dir="ltr">0.1.0-dev.13</code>)، و[الورشة](https://othmaneblial.github.io/Regex-For-Humans/workshop/) لا تحتاج إلى تثبيت.
 
 ## المفردات في لمحة
 

@@ -6,7 +6,7 @@
 
 छोटे अंग्रेज़ी नियम नेटिव JavaScript `RegExp` में कंपाइल होते हैं, हर नियम का एक दिखने वाला टुकड़ा। कोई regex पेस्ट करें और नियम वापस पाएँ।
 
-**[वर्कशॉप आज़माएँ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [वेबसाइट](https://othmaneblial.github.io/Regex-For-Humans/) · [npm प्रीव्यू](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [सिंटैक्स](../LANGUAGE.md)**
+**[वर्कशॉप आज़माएँ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [वेबसाइट](https://othmaneblial.github.io/Regex-For-Humans/) · [npm प्रीव्यू](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [सिंटैक्स](../LANGUAGE.md)**
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · **हिन्दी** · [العربية](README.ar.md) · [اردو](README.ur.md)
 
@@ -92,11 +92,19 @@ toRegExp(compile(rules)).exec('2026-10-10').groups;
 npm install regex-for-humans@preview
 ```
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
-Node.js 22+, कोई रनटाइम निर्भरता नहीं, TypeScript घोषणाओं के साथ ESM। लाइब्रेरी, [कमांड लाइन](../CLI.md) और वर्कशॉप एक ही कंपाइलर साझा करते हैं। यह प्रीव्यू है (`0.1.0-dev.12`); [वर्कशॉप](https://othmaneblial.github.io/Regex-For-Humans/workshop/) को इंस्टॉल की ज़रूरत नहीं।
+Node.js 22+, कोई रनटाइम निर्भरता नहीं, TypeScript घोषणाओं के साथ ESM। लाइब्रेरी, [कमांड लाइन](../CLI.md) और वर्कशॉप एक ही कंपाइलर साझा करते हैं। यह प्रीव्यू है (`0.1.0-dev.13`); [वर्कशॉप](https://othmaneblial.github.io/Regex-For-Humans/workshop/) को इंस्टॉल की ज़रूरत नहीं।
 
 ## शब्दावली एक नज़र में
 

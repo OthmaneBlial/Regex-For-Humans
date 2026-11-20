@@ -6,7 +6,7 @@
 
 Reglas cortas en inglés se compilan en un `RegExp` nativo de JavaScript, con un fragmento visible por regla. Pega una regex y recupera las reglas.
 
-**[Probar el taller](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Sitio web](https://othmaneblial.github.io/Regex-For-Humans/) · [Versión preliminar en npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [Sintaxis](../LANGUAGE.md)**
+**[Probar el taller](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Sitio web](https://othmaneblial.github.io/Regex-For-Humans/) · [Versión preliminar en npm](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [Sintaxis](../LANGUAGE.md)**
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · **Español** · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
@@ -92,11 +92,19 @@ Las capturas son grupos nativos de JavaScript. Escribe `same as capture "year"` 
 npm install regex-for-humans@preview
 ```
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
-Node.js 22+, sin dependencias en tiempo de ejecución, ESM con declaraciones de TypeScript. La biblioteca, la [línea de comandos](../CLI.md) y el taller comparten un único compilador. Es una versión preliminar (`0.1.0-dev.12`); el [taller](https://othmaneblial.github.io/Regex-For-Humans/workshop/) no necesita instalación.
+Node.js 22+, sin dependencias en tiempo de ejecución, ESM con declaraciones de TypeScript. La biblioteca, la [línea de comandos](../CLI.md) y el taller comparten un único compilador. Es una versión preliminar (`0.1.0-dev.13`); el [taller](https://othmaneblial.github.io/Regex-For-Humans/workshop/) no necesita instalación.
 
 ## El vocabulario de un vistazo
 

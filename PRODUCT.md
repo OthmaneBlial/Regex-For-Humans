@@ -29,7 +29,7 @@ Used in an editor, a terminal (`npx regex-for-humans`), or the browser workshop 
 - Library `compile()`, `toRegExp()`, `regexToRules()`, `analyze()`, `exportRegex()`, `toSVG()`; CLI with `--explain`, `--from-regex`, `--test`; workshop with recipes, tests, captures, replacement and four interface languages.
 - Reverse translation needs the `u` or `v` flag; the homepage explainer retries common regexes with `u` added.
 - 34 recipes. Several are deliberately *shape* checks (IPv4 shape accepts `999.999.999.999`); validating versions exist for IPv4, 24-hour time and calendar dates.
-- npm preview only (`0.1.0-dev.12`); no stable release yet. GitHub Pages site is published from the `OthmaneBlial.github.io` repository under `Regex-For-Humans/`.
+- npm preview only (`0.1.0-dev.13`); no stable release yet. GitHub Pages site is published from the `OthmaneBlial.github.io` repository under `Regex-For-Humans/`.
 
 ## Brand Commitments
 

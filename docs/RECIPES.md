@@ -1,6 +1,6 @@
 # Recipes
 
-Every recipe opens in the [workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) with its rules, the generated regex and examples that must and must not match. The rules and cases live in [`test/fixtures/product-scenarios.json`](../test/fixtures/product-scenarios.json); the test suite recompiles each one.
+Every recipe opens in the [workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) with its rules, the generated regex and examples that must and must not match. The rules and cases live in [`test/fixtures/product-scenarios.json`](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/test/fixtures/product-scenarios.json); the test suite recompiles each one.
 
 Recipes named *shape* check a layout, not the meaning: IPv4 shape accepts `999.999.999.999`. Where a validating version exists (IPv4, 24-hour time, calendar date), it is listed next to the shape.
 

@@ -8,7 +8,7 @@
 
 مختصر انگریزی اصول مقامی JavaScript <code dir="ltr">RegExp</code> میں کمپائل ہوتے ہیں، ہر اصول کا ایک نظر آنے والا ٹکڑا۔ کوئی ریگیکس چسپاں کریں اور اصول واپس پائیں۔
 
-**[ورکشاپ آزمائیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [ویب سائٹ](https://othmaneblial.github.io/Regex-For-Humans/) · [npm پیش نظارہ](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [نحو](../LANGUAGE.md)**
+**[ورکشاپ آزمائیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [ویب سائٹ](https://othmaneblial.github.io/Regex-For-Humans/) · [npm پیش نظارہ](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [نحو](../LANGUAGE.md)**
 
 <div dir="ltr" align="center">
 
@@ -128,13 +128,25 @@ npm install regex-for-humans@preview
 
 <div dir="ltr" align="left">
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
+</div>
+
+<div dir="ltr" align="left">
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
 </div>
 
-Node.js 22+، رن ٹائم انحصار کوئی نہیں، TypeScript اعلانات کے ساتھ ESM۔ لائبریری، [کمانڈ لائن](../CLI.md) اور ورکشاپ ایک ہی کمپائلر استعمال کرتے ہیں۔ یہ پیش نظارہ ہے (<code dir="ltr">0.1.0-dev.12</code>)؛ [ورکشاپ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) کو انسٹال کی ضرورت نہیں۔
+Node.js 22+، رن ٹائم انحصار کوئی نہیں، TypeScript اعلانات کے ساتھ ESM۔ لائبریری، [کمانڈ لائن](../CLI.md) اور ورکشاپ ایک ہی کمپائلر استعمال کرتے ہیں۔ یہ پیش نظارہ ہے (<code dir="ltr">0.1.0-dev.13</code>)؛ [ورکشاپ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) کو انسٹال کی ضرورت نہیں۔
 
 ## ذخیرۂ الفاظ ایک نظر میں
 

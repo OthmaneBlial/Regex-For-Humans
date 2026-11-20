@@ -51,7 +51,7 @@ Control characters and Unicode line separators from rules, arguments and filenam
 
 ## Translate a regex back into rules
 
-The `0.1.0-dev.12` preview includes `--reverse`. Translate a slash-delimited JavaScript regex with `u` or `v`:
+The `0.1.0-dev.13` preview includes `--reverse`. Translate a slash-delimited JavaScript regex with `u` or `v`:
 
 ```sh
 printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse

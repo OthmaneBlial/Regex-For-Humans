@@ -6,7 +6,7 @@
 
 简短的英语规则会编译成原生 JavaScript `RegExp`，每条规则对应一个可见片段。粘贴一个正则，也能拿回规则。
 
-**[试用工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [网站](https://othmaneblial.github.io/Regex-For-Humans/) · [npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [语法](../LANGUAGE.md)**
+**[试用工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [网站](https://othmaneblial.github.io/Regex-For-Humans/) · [npm 预览版](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [语法](../LANGUAGE.md)**
 
 [English](../../README.md) · **简体中文** · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
@@ -92,11 +92,19 @@ toRegExp(compile(rules)).exec('2026-10-10').groups;
 npm install regex-for-humans@preview
 ```
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
-需要 Node.js 22+，没有运行时依赖，ESM 并附带 TypeScript 声明。库、[命令行](../CLI.md)和工作台共用同一个编译器。这是预览版（`0.1.0-dev.12`）；[工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/)无需安装。
+需要 Node.js 22+，没有运行时依赖，ESM 并附带 TypeScript 声明。库、[命令行](../CLI.md)和工作台共用同一个编译器。这是预览版（`0.1.0-dev.13`）；[工作台](https://othmaneblial.github.io/Regex-For-Humans/workshop/)无需安装。
 
 ## 词汇一览
 

@@ -6,7 +6,7 @@
 
 短い英語のルールが、ルールごとに見える断片を持つネイティブな JavaScript の `RegExp` にコンパイルされます。正規表現を貼り付ければ、ルールに戻せます。
 
-**[ワークショップを試す](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Web サイト](https://othmaneblial.github.io/Regex-For-Humans/) · [npm プレビュー](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [構文](../LANGUAGE.md)**
+**[ワークショップを試す](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Web サイト](https://othmaneblial.github.io/Regex-For-Humans/) · [npm プレビュー](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13) · [構文](../LANGUAGE.md)**
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português do Brasil](README.pt-BR.md) · **日本語** · [Deutsch](README.de.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [اردو](README.ur.md)
 
@@ -92,11 +92,19 @@ toRegExp(compile(rules)).exec('2026-10-10').groups;
 npm install regex-for-humans@preview
 ```
 
+```js
+import { compile, toRegExp } from 'regex-for-humans';
+
+const result = compile('start\n3 digits\nend');
+console.log(result.source);                 // ^\d{3}$
+console.log(toRegExp(result).test('123'));  // true
+```
+
 ```sh
 printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
-Node.js 22+、実行時依存なし、TypeScript 宣言付きの ESM。ライブラリ、[コマンドライン](../CLI.md)、ワークショップは同じコンパイラを使います。これはプレビュー版（`0.1.0-dev.12`）です。[ワークショップ](https://othmaneblial.github.io/Regex-For-Humans/workshop/)はインストール不要です。
+Node.js 22+、実行時依存なし、TypeScript 宣言付きの ESM。ライブラリ、[コマンドライン](../CLI.md)、ワークショップは同じコンパイラを使います。これはプレビュー版（`0.1.0-dev.13`）です。[ワークショップ](https://othmaneblial.github.io/Regex-For-Humans/workshop/)はインストール不要です。
 
 ## 語彙早見表
 
