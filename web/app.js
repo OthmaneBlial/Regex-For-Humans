@@ -2700,6 +2700,18 @@ try {
   const scenario = scenarios.find((item) => item.id === requested) ?? scenarios[0];
   if (!scenario) throw new Error("No example recipes are available.");
   if (!hasEdits) useScenario(scenario);
+  // A linked recipe may sit below the sidebar fold or past the mobile carousel edge.
+  const current = ui.examples.querySelector('[aria-current="true"]');
+  for (let box = current?.parentElement; current && box && box !== document.body; ) {
+    const item = current.getBoundingClientRect();
+    const view = box.getBoundingClientRect();
+    const { overflowX, overflowY } = getComputedStyle(box);
+    if (/auto|scroll/u.test(overflowX))
+      box.scrollLeft += item.left - view.left - (view.width - item.width) / 2;
+    if (/auto|scroll/u.test(overflowY))
+      box.scrollTop += item.top - view.top - (view.height - item.height) / 2;
+    box = box.parentElement;
+  }
 } catch (error) {
   const notice = make(
     "p",
