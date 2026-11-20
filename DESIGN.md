@@ -1,127 +1,126 @@
 ---
 name: Regex For Humans
-description: Regex drawn as a transit map. Every readable rule is a station on one line.
+description: An interlinear gloss. Every regex fragment carries its plain-English meaning underneath, like a translation printed under a line of text.
 colors:
   paper: "#ffffff"
-  plate: "#f1f3f6"
-  plate-strong: "#e4e8ee"
-  ink: "#121820"
-  ink-soft: "#48505d"
-  rule: "#cfd5dd"
-  line-literal: "#d0291c"
-  line-set: "#0a5bb5"
-  line-repeat: "#18803f"
-  line-capture: "#f0a500"
-  line-choice: "#6a3fa6"
-  board: "#121820"
-  board-text: "#ffc23d"
+  paper-2: "#f5f6f8"
+  ink: "#15171c"
+  ink-2: "#4b505b"
+  ink-3: "#6b707b"
+  rule: "#dcdee3"
+  blue: "#2337c6"
+  blue-ink: "#1a2a9c"
+  wash: "#eceffd"
+  wash-2: "#d9defb"
+  miss: "#b0261b"
+  miss-wash: "#fbeceb"
+  dark-paper: "#111317"
+  dark-paper-2: "#181b21"
+  dark-ink: "#eceef2"
+  dark-ink-2: "#b4b9c4"
+  dark-ink-3: "#9096a2"
+  dark-rule: "#2c3039"
+  dark-blue: "#93a3ff"
+  dark-blue-ink: "#b7c2ff"
+  dark-wash: "#1c2142"
+  dark-wash-2: "#283063"
+  dark-miss: "#ff8a7e"
   workshop-paper: "#f4f5f7"
-  workshop-focus: "#0a5bb5"
-  workshop-dark-paper: "#121820"
-  workshop-dark-focus: "#8fc0ff"
+  workshop-shell: "#15171c"
+  workshop-accent: "#b9c3ff"
+  workshop-rule-mark: "#e3e7fc"
 typography:
   display:
-    fontFamily: "Bricolage Grotesque, Avenir Next, Segoe UI, sans-serif"
-    fontSize: "clamp(46px, 6.2vw, 88px)"
-    fontWeight: 800
-    lineHeight: 0.95
-    letterSpacing: "-0.035em"
-  heading:
-    fontFamily: "Bricolage Grotesque, Avenir Next, Segoe UI, sans-serif"
-    fontWeight: 800
+    fontFamily: "Source Serif 4, Charter, Iowan Old Style, Georgia, serif"
+    fontSize: "clamp(40px, 5.4vw, 76px)"
+    fontWeight: 600
     lineHeight: 1.02
     letterSpacing: "-0.025em"
+  display-second-line:
+    fontFamily: "Source Serif 4, Charter, Iowan Old Style, Georgia, serif"
+    fontStyle: italic
+    fontWeight: 400
   body:
-    fontFamily: "Bricolage Grotesque, Avenir Next, Segoe UI, sans-serif"
-    fontSize: "17px"
+    fontFamily: "Source Serif 4, Charter, Iowan Old Style, Georgia, serif"
+    fontSize: "18px"
     fontWeight: 400
     lineHeight: 1.55
+  label:
+    fontFamily: "Source Serif 4, Charter, Iowan Old Style, Georgia, serif"
+    fontSize: "13-15px"
+    fontVariantCaps: all-small-caps
+    letterSpacing: "0.06em"
   code:
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, Liberation Mono, monospace"
+    fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
 rounded:
-  sm: "6px"
-  md: "12px"
-  plate: "18px"
-  pill: "999px"
+  hairline: "2px"
+  chip: "3px"
+  control: "4px"
+  card: "6px"
 spacing:
-  track: "8px"
-  stop: "22px"
-  gutter: "clamp(16px, 4vw, 48px)"
+  gutter: "clamp(16px, 4.5vw, 64px)"
+  measure: "64ch"
 components:
   button:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.pill}"
-    padding: "12px 22px"
-    height: "48px"
+    rounded: "{rounded.control}"
+    padding: "10px 20px"
+    height: "46px"
   button-primary:
     backgroundColor: "{colors.ink}"
     textColor: "{colors.paper}"
-    rounded: "{rounded.pill}"
-  regex-board:
-    backgroundColor: "{colors.board}"
-    textColor: "{colors.board-text}"
-    rounded: "{rounded.md}"
-  rules-plate:
-    backgroundColor: "{colors.plate}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.md}"
+    rounded: "{rounded.control}"
+  take-chip:
+    backgroundColor: "{colors.wash}"
+    textColor: "{colors.blue-ink}"
+    rounded: "{rounded.chip}"
 ---
 
 # Regex For Humans design
 
 ## Overview
 
-Regex already has a native drawing: the railroad diagram. This project draws every pattern as one transit line. Each readable rule is a station with its regex fragment printed below it. A test string rides the line, and each station shows the characters it takes. The homepage persuades with that live line. The workshop is a tool and carries the same world with more restraint.
+The world is the interlinear gloss: the way a scholarly edition prints a line of foreign text and, under each word, its translation. Here the foreign text is a real compiled regex. Under each fragment sits a brace, its meaning in plain English, the groups it belongs to and the characters it took from a sample. The homepage persuades by doing this live for six examples and for any regex the visitor pastes. The workshop is a tool and carries the same type and colour with more restraint.
 
-Signage, not dashboards: white enamel ground, near-black ink, thick rounded line strokes, white station discs with black rings, and a black departure board with amber text for the compiled regex.
+Print, not dashboard: white paper, near-black ink, one blue, a serif for language and a monospace for regex. The rejected directions are a transit or metro map and a cream-paper look (see PRODUCT.md).
 
 ## Colors
 
-Line colours each do one job. Use them only for that job:
+One accent, used for one job: **blue `#2337c6`** marks what the compiler produced or matched. It draws the braces under fragments, the taken characters (on the `wash` tint), links and the compiled regex. Everything else is ink on paper in three greys (`ink`, `ink-2`, `ink-3`) with `rule` hairlines. `miss` (red) appears only where a test stops or fails.
 
-- **Red `#d0291c`**: literal text.
-- **Blue `#0a5bb5`**: character sets. Also the workshop focus ring.
-- **Green `#18803f`**: repetition. Loops under a station.
-- **Amber `#f0a500`**: captures. Never used for body text on white, because its contrast is too low.
-- **Violet `#6a3fa6`**: choices and alternation.
-- **Ink `#121820`**: anchors (terminus bars), text and borders.
-
-The departure board (`#121820` ground, `#ffc23d` text) holds the compiled regex. Plates (`#f1f3f6`) hold readable rules. The workshop uses `#f4f5f7` as its page ground so its white panels separate, and has a full dark theme whose tokens live in `web/styles.css` under `:root[data-theme="dark"]`. Workshop syntax colours map onto the line colours (keywords blue, strings red, quantifiers green, captures dark amber `#8a5a00`, alternation violet).
+Dark mode inverts paper and ink and lifts the blue to `#93a3ff`; tokens live in `site/styles.css` under `prefers-color-scheme: dark`. The workshop has its own token set in `web/styles.css` (light and `:root[data-theme="dark"]`): a grey page ground so its white panels separate, an ink sidebar (`workshop-shell`) with a pale-blue accent, and an editor line highlight (`workshop-rule-mark`) chosen so every syntax colour stays at 4.5:1.
 
 ## Typography
 
-Bricolage Grotesque (self-hosted, variable 400–800) is the signage voice: tight, heavy headings with negative tracking. Code, regex fragments and taken characters use the system monospace stack. Body copy stays at 16–17px. Nothing functional goes below 11px.
+Source Serif 4 (self-hosted, variable, with its italic) carries the language: headings at weight 600 with slight negative tracking, the second line of the hero in italic 400, body at 18px. Grammatical words in a gloss (START, END, OR, CAPTURE, ONE OF) and row labels use all-small-caps with 0.06em tracking. JetBrains Mono (self-hosted) is for regex, rules and taken characters; regex is never set in the serif. Both fonts are OFL; their licences sit next to the files.
+
+README and social art are SVG images, where web fonts cannot load: they use Charter/Cambria for the serif (lining figures, so `0` never reads as `o`) and the system monospace stack.
 
 ## Layout
 
-The homepage hero is a 5fr/7fr grid: the headline and actions sit on the left, the live line plate on the right. Below 1040px it becomes one column. Below 760px the line turns vertical (a strip map), with stations stacked down a left-hand track. Recipes are grouped into four routes, each a vertical line with its recipes as stops. The workshop keeps its sidebar plus workbench layout.
+A single column on a 64ch measure, centred in a `gutter`. The hero splits headline and summary on wide screens. The gloss is a `<table>`: row 1 regex fragments, row 2 meanings, then one row per group depth, then what each fragment took. Long glosses shrink in two tiers (more than 10 and more than 18 columns) and then scroll sideways; the scroller takes keyboard focus only when it overflows. Code blocks wrap instead of scrolling. Below 640px the alignment diagram switches to a stacked version.
 
 ## Elevation & Depth
 
-Flat. There are no drop shadows and no offset shadows. Separation comes from 2px ink borders, plate tints and the line strokes themselves. The only glow is the red halo on a station where a ride stops.
+Flat. No shadows. Separation comes from hairline rules and the `wash` tint.
 
 ## Shapes
 
-- **Stations**: circles with a 5–6px ink ring.
-- **Termini (anchors)**: rounded black bars.
-- **Track**: an 8–10px rounded stroke.
-- **Loops**: an open green arc under a repeated station.
-- **Buttons and recipe selectors**: pills.
-- **Plates**: radius 12–18px with a 2px ink border.
+Small radii only: 2–6px. Braces are drawn as open brackets under fragments; group spans are thinner grey brackets with a small-caps label.
 
 ## Components
 
-- **Line** (`#demo-line`): one `li.station` per compiled segment, with rule, stop, fragment and take. Its `data-state` is `taken`, `stop` or `idle`. The trace sentence under the input explains where a ride stops.
-- **Header bar**: a 4px rule split into red, blue, green and amber segments, under the site and workshop headers.
-- **Step discs** (workshop 01–04): station discs that mark the workflow order (input, output, structure, proof).
-- **Route list**: a vertical line with recipe cards as stops.
+- **Gloss** (`#demo-line`): built by `drawGloss()` in `site/app.js` from compiler segments. Regex cells carry `data-state` `taken`, `stop` or `idle`; the trace sentence explains where a test stops.
+- **Example reel**: six `data-recipe` buttons; the gloss cycles every 6.5s until the visitor hovers, focuses or clicks, and never under reduced motion.
+- **Alignment diagram** (`#how`): rules joined by lines to the fragments they compile to, with `compile()` and `regexToRules()` as the two directions.
+- **Recipe list**: numbered `(n)` entries with title, regex, example and the limit note.
+- **README art**: `scripts/build-readme-art.js` draws the banner, social card and animated reel from real compiler output in the same gloss style.
 
 ## Do's and Don'ts
 
-- Do give a new rule kind its line colour, never a decorative one.
-- Do keep regex fragments `dir="ltr"` in RTL contexts.
-- Do keep the line legible at 320px; it switches to the vertical strip map.
-- Don't add eyebrow labels above headings, emoji used as icons, offset or drop shadows, gradient text, or coloured left-border accents.
-- Don't use amber for text on white.
-- Don't animate when `prefers-reduced-motion` is set: the line draw and hero settle are both disabled.
+- Do show real compiler output; never a hand-typed regex in a visual.
+- Do keep regex `dir="ltr"` in RTL contexts.
+- Do write limits next to claims ("shape only", "does not check").
+- Don't add a second accent colour, gradients, shadows, emoji as icons, eyebrow labels or numbered section labels on the homepage.
+- Don't animate under `prefers-reduced-motion`: the gloss entrance, the reel and the diagram lines all stop.

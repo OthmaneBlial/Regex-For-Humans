@@ -157,6 +157,10 @@ kbd {
   top: 12px;
 }
 
+.skip-link:hover {
+  color: var(--paper);
+}
+
 /* Page frame */
 
 .site-header,
@@ -242,7 +246,7 @@ main > section,
 .button.primary:hover {
   background: var(--blue-ink);
   border-color: var(--blue-ink);
-  color: #ffffff;
+  color: var(--paper);
 }
 
 .button.small {
