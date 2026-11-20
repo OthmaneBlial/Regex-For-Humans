@@ -360,8 +360,31 @@ export function compileAst(parsed, options = {}) {
       );
   }
 
-  /** @param {import('./ast.js').RuleNode[]} nodes @param {string} [effectiveFlags] @param {boolean} [scoped] @param {boolean} [enclosed] */
-  function emit(nodes, effectiveFlags = flags, scoped = false, enclosed = false) {
+  /**
+   * Whether the source after a numbered reference could start with a digit (`\\1` then `0`
+   * reads as `\\10`). Unknown followers, such as the end of a plain group, count as digits.
+   * @param {import('./ast.js').RuleNode | undefined} node
+   * @returns {boolean}
+   */
+  function startsWithDigit(node) {
+    if (!node) return true;
+    if (node.kind === "atom") return /^\d/u.test(atomSource(node, unicodeSets));
+    if (node.kind === "group" && !node.capturing && !node.modifiers && !node.repetition)
+      return startsWithDigit(node.nodes[0]);
+    return false;
+  }
+
+  /**
+   * @param {import('./ast.js').RuleNode[]} nodes @param {string} [effectiveFlags] @param {boolean} [scoped]
+   * @param {boolean} [enclosed] @param {boolean} [closed] Nothing that could be a digit follows the last node.
+   */
+  function emit(
+    nodes,
+    effectiveFlags = flags,
+    scoped = false,
+    enclosed = false,
+    closed = enclosed,
+  ) {
     const firstSegment = segments.length;
     for (const [index, node] of nodes.entries()) {
       if (node.kind === "atom" && node.atomType === "unicodeProperty")
@@ -435,7 +458,7 @@ export function compileAst(parsed, options = {}) {
               ...first.location,
             });
           }
-          emit(branch, effectiveFlags, scoped);
+          emit(branch, effectiveFlags, scoped, false, true);
         }
         const endStart = source.length;
         const close = open ? `)${repetitionSource(node.repetition)}` : "";
@@ -521,7 +544,6 @@ export function compileAst(parsed, options = {}) {
         });
         continue;
       }
-      // A numeric reference needs a boundary so a following digit cannot change its number.
       if (
         node.kind === "anchor" &&
         node.mode === "input" &&
@@ -548,7 +570,10 @@ export function compileAst(parsed, options = {}) {
             : node.kind === "backreference"
               ? (typeof node.reference === "string"
                   ? `\\k<${node.reference}>`
-                  : `(?:\\${node.captureIndex})`) + repetitionSource(node.repetition)
+                  : node.repetition ||
+                      (index + 1 < nodes.length ? !startsWithDigit(nodes[index + 1]) : closed)
+                    ? `\\${node.captureIndex}`
+                    : `(?:\\${node.captureIndex})`) + repetitionSource(node.repetition)
               : atomSource(node, unicodeSets);
       const sourceStart = source.length;
       source += fragment;
@@ -621,7 +646,7 @@ export function compileAst(parsed, options = {}) {
       for (let index = firstSegment; index < segments.length; index += 1)
         segments[index].flags ??= effectiveFlags;
   }
-  emit(parsed.nodes);
+  emit(parsed.nodes, flags, false, false, true);
 
   try {
     new RegExp(source, flags);

@@ -144,7 +144,7 @@ test("keyboard completion preserves flags, examples and capture references with 
   await page.locator("#completion-choice").press("Enter");
   await expect(editor).toBeFocused();
   await expect(editor).toHaveValue(source.replace("5 di\n", "5 digits\n"));
-  await expect(page.locator("#regex-output")).toHaveText("/^(?<item>\\d)\\d{2,5}(?:\\1)$/div");
+  await expect(page.locator("#regex-output")).toHaveText("/^(?<item>\\d)\\d{2,5}\\1$/div");
   await expect(page.locator("#rule-completions")).toBeHidden();
   expect(
     await page.locator("#test-list textarea").evaluateAll((fields) => fields.map((el) => el.value)),

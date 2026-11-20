@@ -351,6 +351,19 @@ test("lone surrogates survive UTF-8 transport in literals and character sets", (
   }
 });
 
+test("invisible characters are escaped in rules and regex without changing matching", () => {
+  for (const codePoint of [0xa0, 0xad, 0x200b, 0x2060, 0x3000, 0xfeff, 0xe000]) {
+    const character = String.fromCodePoint(codePoint);
+    const escaped = `\\u${codePoint.toString(16).padStart(4, "0")}`;
+    const result = compile(JSON.stringify(character));
+    assert.equal(result.source, escaped);
+    assert.equal(toRegExp(result).test(character), true);
+    const reverse = regexToRules(new RegExp(character, "u"));
+    assert.equal(reverse.rules, `"${escaped}"`);
+    assert.equal(compile(reverse.rules).source, escaped);
+  }
+});
+
 test("direction and C1 controls have visible escapes without changing literal or class matching", () => {
   for (const codePoint of [
     ...Array.from({ length: 32 }, (_, index) => index + 0x80),

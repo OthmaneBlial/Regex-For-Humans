@@ -62,7 +62,7 @@ test("builder and group edits undo complete reference changes and update opted-i
   const inserted = await editor.inputValue();
   expect(inserted).toContain("same as capture 2");
   await history(editor, "undo", original);
-  await expect(page.locator("#regex-output")).toHaveText("/^(?<word>A)(?:\\1)$/iu");
+  await expect(page.locator("#regex-output")).toHaveText("/^(?<word>A)\\1$/iu");
   await history(editor, "redo", inserted);
   await page.locator("#group-editor > summary").click();
   await page.locator("#group-select").selectOption("5:1");

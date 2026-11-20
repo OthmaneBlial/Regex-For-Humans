@@ -74,9 +74,7 @@ test("regex imports preserve nested captures and references in editable rules", 
   ).toBe("\\");
 });
 
-test("regex imports retain compiler reference wrappers at the maximum group depth", async ({
-  page,
-}) => {
+test("regex imports at the maximum group depth keep their reference", async ({ page }) => {
   const depth = 64;
   const source = `(?<prefix>A)${"(".repeat(depth)}(?:\\1)${")".repeat(depth)}`;
   const rules = `capture "prefix" {\n"A"\n}\n${"capture {\n".repeat(depth)}same as capture 1\n${"}\n".repeat(depth).trimEnd()}`;
@@ -88,7 +86,8 @@ test("regex imports retain compiler reference wrappers at the maximum group dept
   await reverse.press("Control+Enter");
   await expect(reverse).toHaveAttribute("aria-invalid", "false");
   await expect(page.locator("#rules-input")).toHaveValue(rules);
-  await expect(page.locator("#regex-output")).toHaveText(`/${source}/du`);
+  // Nothing follows the reference inside its capture, so it needs no (?:) wrapper.
+  await expect(page.locator("#regex-output")).toHaveText(`/${source.replace("(?:\\1)", "\\1")}/du`);
   await page.locator("#test-list .test-row textarea").first().fill("AA");
   await expect(page.locator("#test-list .test-row").first()).toHaveAttribute("data-result", "pass");
 });

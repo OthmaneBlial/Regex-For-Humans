@@ -224,7 +224,7 @@ same as capture "word"
 end
 ```
 
-This produces `^(?<word>[A-Za-z]+)\s\k<word>$` with `u`: `cat cat` matches and `cat dog` does not. The `i` option changes comparison according to native JavaScript case folding. Numbered references are emitted inside a noncapturing boundary such as `(?:\1)` so following literal digits cannot accidentally turn reference 1 into reference 12. A reference to an absent optional capture matches empty text, and references to repeated captures use the final captured value.
+This produces `^(?<word>[A-Za-z]+)\s\k<word>$` with `u`: `cat cat` matches and `cat dog` does not. The `i` option changes comparison according to native JavaScript case folding. A numbered reference is emitted as `\1`; when a digit could follow it, it gets a noncapturing boundary, `(?:\1)`, so the following digit cannot turn reference 1 into reference 12. A reference to an absent optional capture matches empty text, and references to repeated captures use the final captured value.
 
 Missing targets report `MISSING_CAPTURE_REFERENCE`; references before their target report `FORWARD_CAPTURE_REFERENCE`; references inside that target (including an enclosing capture) report `SELF_CAPTURE_REFERENCE`. Diagnostics point to the name or number. Forward and open/self references are valid in some JavaScript patterns and may match empty text; this language intentionally rejects them to make the dependency explicit. Duplicate names remain rejected. These are rule-language policies, not claims that JavaScript forbids those constructs.
 

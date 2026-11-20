@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Emit a numbered reference as `\1` instead of `(?:\1)` when nothing that could be a digit follows it, as in `(\w+)\s\1`. The `(?:\1)` boundary stays where a digit may follow, because `\10` would be a different reference.
+
+- Show invisible characters as escapes in rules, regexes and explanations: zero-width spaces, byte-order marks, soft hyphens, no-break and other non-ASCII spaces, private-use and unassigned code points now read `\u200b`, `\ufeff`, `\u00ad`, `\u00a0`. Before, only controls and direction marks were escaped, so these were invisible in the output. Joiners stay as they are, so emoji sequences and Persian or Indic text still read normally. Matching is unchanged.
+
+- Rewrite the README to fit on a few screens: one example, reading a regex back, named captures, install, a vocabulary table (each row is compiled by the tests) and six recipes. The full recipe table and the CLI reference move to `docs/RECIPES.md` and `docs/CLI.md`. A new banner, social card and an animated reel of six recipes are drawn from real compiler output by `scripts/build-readme-art.js`. All nine translations follow.
+
+- Redesign the homepage as an interlinear gloss: each fragment of the compiled regex has its meaning, its groups and the characters it took printed underneath. Six examples cycle until the visitor interacts (never with reduced motion). This replaces the transit-map design, which is withdrawn along with its four-colour bar. Source Serif 4 and JetBrains Mono are self-hosted for the homepage and the workshop, which takes the same ink-and-blue palette.
+
 - Generate the regex a person would write. `optional` now emits `?` (not `{0,1}`), `at least 0`/`1` emit `*`/`+`, tab, newline and carriage return appear as `\t`, `\n` and `\r`, a plain `group { }` adds no parentheses, and a choice that is the only content of a capture or group reuses its parentheses: `^(?<month>0[1-9]|1[0-2])$` instead of `^(?<month>(?:(?:0[1-9])|(?:1[0-2])))$`. Matching is unchanged; a round-trip check over 45 common regexes and 3,000 strings each finds no difference. The workshop trace shows `—` for a rule that adds no regex of its own.
 
 - Add three recipes that validate values instead of shapes: IPv4 addresses with each number from 0 to 255, 24-hour times from `00:00` to `23:59`, and calendar dates with month 01–12 and day 01–31. The library now has 34 recipes.
