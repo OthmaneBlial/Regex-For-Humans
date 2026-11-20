@@ -16,7 +16,7 @@ Klare englische Regeln werden zu einem JavaScript-Regex, dessen einzelne Teile n
 
 </div>
 
-## 🪄 Weniger Zeichen entschlüsseln
+## Weniger Zeichen entschlüsseln
 
 Ein Regex wird verständlicher, wenn seine zugrunde liegenden Regeln sichtbar sind.
 
@@ -36,7 +36,7 @@ Der Wortschatz ist **fest definiert**. Bibliothek, CLI und Workshop verwenden de
 
 > 🌱 Die Vorschau `0.1.0-dev.12` benötigt für Bibliothek und CLI **Node.js 22+**. Der Workshop läuft ohne Installation. Menschliche Tests zur Bedienbarkeit und mit Screenreadern stehen noch aus.
 
-## 🧰 Was heute möglich ist
+## Was heute möglich ist
 
 **Markdown-Berichte:** Ein [Markdown-Bericht](../MARKDOWN_REPORTS.md) enthält Build-Kennung, Regeln, exakten JavaScript-Regex, Optionen, beabsichtigte Tests und wieder importierbares JSON. Der Export führt die Tests nicht aus und bestätigt nicht ihren Erfolg.
 
@@ -82,13 +82,13 @@ Der Quellcode unterstützt `range "α" to "ω"` und `character class: digit, "_"
 
 npm `0.1.0-dev.12` enthält Gruppen, Captures, Rückreferenzen und geordnete Alternativen in Bibliothek und CLI. Der Workshop ergänzt Capture-Ansichten und mehrere Suchtreffer. Siehe [Kompatibilität](../COMPATIBILITY.md) und [Veröffentlichungsnachweise](../DISTRIBUTION.md).
 
-## 🌍 In deine Sprache exportieren
+## In deine Sprache exportieren
 
 Öffne **Export to a programming language** im lokalen Workshop, rufe `exportRegex(rules, { target: "python" })` auf oder führe `node bin/regex-for-humans.js --target python --json rules.txt` aus. Die neun Formate sind JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP und Ruby. JavaScript/TypeScript behalten das native Muster; andere Ziele übersetzen unterstützte Verhaltensweisen aus dem AST und erzeugen danach korrekt maskierten Quellcode.
 
 Die Vergleiche mit generiertem Code bestehen für sieben native Engines; **PHP ist mit PHP 8.5.11 / PCRE2 10.44 geprüft**. Getestete Versionen und Grenzen des Korpus stehen im [Kompatibilitätsleitfaden](../COMPATIBILITY.md#engine-exports). Bewahre Anforderungen und Capture-Zuordnung auf: andere Engines verwenden Namen wie `gN`, und inaktive Captures können fehlen. Die Eingabe muss wohlgeformtes Unicode sein. Nicht unterstützte Flags (`d/g/i/y`), Unicode-Eigenschaften sowie inkompatible Assertions, Capture- oder Wiederholungsregeln liefern Diagnosen mit Position. Lade Code oder das vollständige JSON herunter; Browserbeispiele laufen weiterhin in JavaScript. Siehe [Profile und Grenzen](../LANGUAGE.md#engine-exports).
 
-## 📦 Vorschau installieren
+## Vorschau installieren
 
 ```sh
 npm install regex-for-humans@preview
@@ -102,7 +102,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 Ausgabe: `/^ABC\d{3}$/u`. Für eine feste Version verwende `regex-for-humans@0.1.0-dev.12`. Es gibt keine Laufzeitabhängigkeiten oder eigenständigen Betriebssystem-Binärdateien.
 
-## 🎮 Mit einem Muster arbeiten
+## Mit einem Muster arbeiten
 
 Mit **Interface language** wählst du Englisch, vereinfachtes Chinesisch, Spanisch oder Französisch. Beschriftungen, Beispiele, Testergebnisse und Navigation wechseln, ohne Regeln, Eingaben, Auswahlbereiche, offene Bereiche oder erzeugten Code zu ändern. Die Auswahl wird lokal gespeichert, wenn Speicher verfügbar ist. Regeln bleiben in kontrolliertem Englisch; Compilererklärungen, Diagrammbeschriftungen und exportierte technische Anforderungen bleiben Englisch. Siehe [Workshop-Lokalisierung](../ARCHITECTURE.md#workshop-localization).
 
@@ -137,7 +137,7 @@ Teiltreffer zeigen einen maskierten Kontext mit Hervorhebung; leere Treffer erha
 
 [Mobile Ansicht und Prüfsummen](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md).
 
-## 🔄 Schon einen Regex vorhanden?
+## Schon einen Regex vorhanden?
 
 Ein unterstütztes JavaScript-Literal unter **Already have a regex?** einfügen. Ctrl/Cmd + Enter oder **Translate to rules** wandelt `/^[A-Z]{2}-\d{4}$/u` um:
 
@@ -155,7 +155,7 @@ Das Literal benötigt `/` und `u` oder `v`; Zeilenumbrüche als `\n` schreiben. 
 
 Unbekannte Syntax wird weder entfernt noch angenähert. **Go to regex error** markiert die Quellposition; vorhandene Regeln und Optionen bleiben erhalten. Vorwärtsverweise und Referenzen auf offene Gruppen werden abgelehnt. Eine leere nicht erfassende Gruppe wird zu `0 any character`: leerer Suchtreffer, im Ganztextmodus nur leere Eingabe.
 
-## 🍱 Rezepte für den Einstieg
+## Rezepte für den Einstieg
 
 | Rezept | Beispiel | Prüfung |
 | --- | --- | --- |
@@ -199,11 +199,11 @@ Wähle [Erklärungen für Anfänger, Fortgeschrittene oder Experten](../EXPLANAT
 
 Es sind **Formprüfungen**. Ungültige Daten und `25:99` können passen; Kalender und Wertebereiche separat prüfen. IPv4 begrenzt Oktette nicht auf 255. UUID prüft weder Version, Variante noch Eindeutigkeit. Benutzerverfügbarkeit, Rechnungsregister und Telefonnummerngültigkeit bleiben extern. Die Versionsform ist kein vollständiges SemVer; Farben erfordern `#RRGGBB`. Dateisystemregeln sind separat.
 
-## 🏗️ Größere Muster, weiterhin lesbare Regeln
+## Größere Muster, weiterhin lesbare Regeln
 
 Der [ausführliche Leitfaden](../COMPLEX-EXAMPLES.md) erklärt Zugriffslog, Telemetrie, Manifest und mehrzeilige Bestellung: 35 positive/negative Fälle und jedes generierte Fragment.
 
-### 📦 Artefaktmanifest
+### Artefaktmanifest
 
 Optionales `nightly/`, begrenzter Unicode-Pfad, Version, Archiv, Hash und Größe, mit Tabulatoren getrennt:
 
@@ -235,7 +235,7 @@ end
 
 Dateiexistenz und tatsächliche Integrität werden nicht geprüft.
 
-### 🧾 Mehrzeilige Bestellung
+### Mehrzeilige Bestellung
 
 ID, Unicode-Käufer, Telefon, Menge, Betrag, Referenz, optionale Freigabe und vollständig optionale Prioritätszeile:
 
@@ -271,7 +271,7 @@ end
 
 Zeilenumbrüche sind wörtliche Zeichen. Die Anwendung validiert Beträge, Telefonnummern und Bestellungen. Die vier flachen Beispiele extrahieren keine Felder.
 
-## 🧲 Felder mit benannten Captures extrahieren
+## Felder mit benannten Captures extrahieren
 
 Dieses Beispiel funktioniert mit npm `0.1.0-dev.12` und im veröffentlichten Workshop.
 
@@ -316,7 +316,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 Nach der schließenden Klammer fordert `same as capture "word"` oder `same as capture 1` denselben Text. Das [Beispiel](../LANGUAGE.md#capture-references) akzeptiert `cat cat`, nicht `cat dog`. Vorwärtsverweise und Verweise innerhalb ihres Ziels erhalten eine Diagnose. Die Rückübersetzung erhält unterstützte Capture-Werte; ein extrahiertes Datum braucht weiterhin Kalenderprüfung.
 
-## 🧩 Spickzettel
+## Spickzettel
 
 Eine Anweisung pro Zeile; wörtlicher Text in Anführungszeichen.
 
@@ -340,7 +340,7 @@ Eine Anweisung pro Zeile; wörtlicher Text in Anführungszeichen.
 
 `word character` / `word characters` und `word` / `not word` folgen `\w` / `\W`: `_` gehört dazu, `é` nicht. `letter` schließt Ziffern und Unterstrich aus. Mit `i` kommen native JavaScript-Äquivalente wie `K` und `ſ` hinzu. `u` ist Standard; der Quellcode akzeptiert auch `v`. Beide machen ASCII-Klassen nicht zu universellen Unicode-Kategorien.
 
-## 💻 Im Terminal verwenden
+## Im Terminal verwenden
 
 ```sh
 npm install --global regex-for-humans@preview
@@ -378,7 +378,7 @@ Fehlerhaftes UTF-8 wird ohne stillen Ersatz abgelehnt. JSON erhält Diagnosecode
 
 JSON-Diagnosen können `endColumn` enthalten: die exklusive Endspalte derselben Zeile, ab 1 in UTF-16-Einheiten gezählt. Die Werkstatt hebt den gesamten bekannten Fehlerbereich hervor und wählt ihn aus. Ohne Bereich bleibt die Navigation zur Anfangsposition erhalten.
 
-### 🔄 Rückübersetzung im CLI
+### Rückübersetzung im CLI
 
 ```sh
 printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse
@@ -394,7 +394,7 @@ end
 
 Mit `--reverse --json` erhältst du `{ rules, flags }` wie bei `regexToRules()`. Übergib `flags` an `compile(rules, { flags })`, damit native Optionen und Cursorverhalten erhalten bleiben. Alle acht Flags werden unterstützt; Regexe mit g/y behalten ihren Zustand.
 
-## 📦 JavaScript-Bibliothek
+## JavaScript-Bibliothek
 
 ESM verwenden (`.mjs` oder `"type": "module"`). TypeScript-Deklarationen sind enthalten. Im Clone `./index.js` importieren.
 
@@ -415,7 +415,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 `regexToRules()` akzeptiert echte Regex aus anderen Kontexten, verändert `lastIndex` nicht und liest native Metadaten, ohne Matchingmethoden oder Instanzüberschreibungen aufzurufen. Escapes wie `\u{00000041}` bleiben innerhalb des Quelllimits unterstützt.
 
-## 🎛️ Flags mit klarer Wirkung
+## Flags mit klarer Wirkung
 
 | Flag | Aktivierung | Wirkung |
 | --- | --- | --- |
@@ -438,7 +438,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **Prüfe die ausführende Laufzeit.** Syntaxunterstützung allein reicht nicht: die geprüften Unicode-Modi von Chrome, Firefox und WebKit bestehen die Tests. Node 22 kennt die Syntax nicht; die geprüften Node-Versionen 25/26 zeigen native Fehler beim Matching. Die Kompilierung meldet deshalb `UNSUPPORTED_TARGET_FEATURE`. Auch `toRegExp({ source, flags })` prüft bei zwischengespeicherten Daten das lokale Verhalten im angegebenen Modus nach der nativen Konstruktion; ungültige native Syntax behält `SyntaxError`. Nicht unterstützte Gruppen werden nicht angenähert. Die veröffentlichte Version steht im [Distributionsbericht](../DISTRIBUTION.md).
 
-## 🛠️ Lokal entwickeln
+## Lokal entwickeln
 
 ```sh
 npm ci
@@ -465,13 +465,13 @@ CI=1 npm run verify
 
 Enthalten sind Formatierung, Lint, Typen, Links, Node, Pages-Build, saubere Paketinstallation, Browser und Audit. `CI=1` wählt nur den lokalen Browser. GitHub Actions bleibt deaktiviert.
 
-## 🧭 Grenzen kennen
+## Grenzen kennen
 
 Alternativen werden zu bearbeitbaren `either { … }`-Blöcken: Jeder Eintrag ist eine Auswahl, die in Reihenfolge ausprobiert wird. Ein `group { … }`-Block bildet eine Auswahl aus mehreren Regeln oder eine leere Auswahl.
 
 Ziel ist **JavaScript `RegExp`**. Roher Regex als Regel und freie englische Sätze werden nicht akzeptiert. Rückübersetzung ist auf den dokumentierten Teilumfang begrenzt. Freies Englisch, leere Zeichenklassen im u-Modus sowie Vorwärtsreferenzen und Referenzen auf noch offene Gruppen bleiben nicht unterstützt. Der Workshop hat einen Worker-Zeitrahmen; kopierte Regex brauchen die Schutzmaßnahmen ihrer Anwendung. Siehe [Sicherheitsmodell](../SECURITY_MODEL.md).
 
-## 💬 Häufige Fragen
+## Häufige Fragen
 
 **Ist das KI?** Nein: deterministischer Parser, AST, Compiler und strukturierte Erklärungen.
 
@@ -489,7 +489,7 @@ Auch ganze Ergebnisbatches sind begrenzt: 1.000 Treffer, 20.000 Erfassungen und 
 
 **Fehler melden?** Über [GitHub issues](https://github.com/OthmaneBlial/Regex-For-Humans/issues), mit Regeln, Flags, Eingabe, Erwartung und Engine-Version. Sicherheit privat über [SECURITY.md](../../SECURITY.md).
 
-## 🗺️ Projekt erkunden
+## Projekt erkunden
 
 | Leitfaden | Inhalt |
 | --- | --- |

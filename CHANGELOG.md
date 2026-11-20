@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Explain an existing regex on the homepage: paste `/source/flags` or a bare pattern to draw it as rules on the line, test text against it and open it in the workshop. A pattern without `u` or `v` is read with `u` when it stays valid, and the page says so; captures, groups and choices appear as brackets and `or` stops. The demo now tests text without `g`/`y` state.
+
+- Remove repeated homepage sections (feature cards, the three-step journey, trust badges and the closing call to action) and slogan headings; the hero now names both directions. Compact the workshop hero, drop the decorative `{3}` and `[a]` glyphs, give every workshop hint the same 13-pixel style and keep labels at 11 pixels or more.
+
+- Keep the workshop sidebar at its top on a normal load; a linked recipe still scrolls into view only when it is hidden.
+
+- Run local workshop and homepage browser checks on half the CPU cores (764 checks in about 11 minutes instead of about two hours) and split the CLI checks across four files (about 44 to 17 seconds). CI keeps one browser worker.
+
+- Tidy the README in all ten languages: plain headings without emoji, no internal release notes in the introduction, a redrawn banner, social card and workshop screenshot. Correct the version named in the compatibility guide.
+
+- Carry the transit-map style into the workshop in both themes: neutral ink greys instead of teal, line colours for syntax highlighting and the header rule, station discs for the four steps, a blue focus ring, and status shown by the whole example border. Remove the offset panel shadows, coloured left stripes, uppercase eyebrow labels and decorative emoji. Document the design system in `DESIGN.md`.
+
 - Redesign the homepage as a transit map: the selected recipe is drawn as one line whose stations are its rules, each with its exact regex fragment. Typing a test string marks the characters each station takes and, for anchored patterns, where the line stops and why. Replace the cream boxes and offset shadows with a white sign-plate style, line colours for literals, sets, repetition, captures, choices and anchors, and route maps for the 31 recipes.
 
 - Open the homepage's architecture, compatibility, complex-example and language-guide links as rendered GitHub documents instead of raw Markdown text, and correct the scoped-flags anchor.

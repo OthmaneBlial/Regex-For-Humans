@@ -16,7 +16,7 @@ Quelques règles claires en anglais deviennent une expression régulière JavaSc
 
 </div>
 
-## 🪄 Moins de ponctuation à déchiffrer
+## Moins de ponctuation à déchiffrer
 
 Une expression régulière devient plus facile à lire quand vous voyez les règles qui l’ont produite.
 
@@ -42,7 +42,7 @@ Le vocabulaire est **fixe** : chaque instruction possède un sens précis. La bi
 
 > 🌱 L’aperçu `0.1.0-dev.12` nécessite **Node.js 22+** pour la bibliothèque et le CLI. L’atelier en ligne fonctionne sans installation. Les évaluations humaines de l’utilisabilité et du lecteur d’écran restent à faire.
 
-## 🧰 Ce que vous pouvez construire aujourd’hui
+## Ce que vous pouvez construire aujourd’hui
 
 **Rapports Markdown :** exportez un [rapport Markdown](../MARKDOWN_REPORTS.md) avec le build, les règles, le regex JavaScript exact, les options, les tests prévus et le JSON réimportable. L’export ne lance pas les tests et ne certifie pas leur réussite.
 
@@ -86,13 +86,13 @@ Le source accepte `range "α" to "ω"` et `character class: digit, "_"`. Une cla
 
 npm `0.1.0-dev.12` inclut les groupes, captures, références précédentes et alternatives ordonnées dans la bibliothèque et le CLI. L’atelier ajoute l’inspection des captures et les correspondances multiples en recherche. Consultez la [compatibilité](../COMPATIBILITY.md) et les [preuves de publication](../DISTRIBUTION.md).
 
-## 🌍 Exporter dans votre langage
+## Exporter dans votre langage
 
 Ouvrez **Export to a programming language** dans l’atelier local, appelez `exportRegex(rules, { target: "python" })`, ou lancez `node bin/regex-for-humans.js --target python --json rules.txt`. Neuf formats couvrent JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP et Ruby. JavaScript/TypeScript conservent le motif natif ; les autres cibles traduisent les comportements pris en charge depuis l’AST, puis produisent le code source correctement échappé.
 
 Les comparaisons du code généré passent sur sept moteurs natifs ; **PHP est vérifié avec PHP 8.5.11 / PCRE2 10.44**. Les versions testées et les limites du corpus figurent dans le [guide de compatibilité](../COMPATIBILITY.md#engine-exports). Conservez les contraintes et la correspondance des captures : les cibles étrangères utilisent des noms `gN`, et une capture inactive peut être absente. Le texte doit être Unicode bien formé. Les options `d/g/i/y`, propriétés Unicode et comportements incompatibles d’assertion, capture ou répétition donnent un diagnostic situé. Téléchargez le code ou le résultat JSON complet ; les exemples du navigateur restent exécutés en JavaScript. Consultez les [profils et limites](../LANGUAGE.md#engine-exports).
 
-## 📦 Installer l’aperçu
+## Installer l’aperçu
 
 ```sh
 npm install regex-for-humans@preview
@@ -106,7 +106,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 Résultat : `/^ABC\d{3}$/u`. Pour fixer la version, utilisez `regex-for-humans@0.1.0-dev.12`. Le projet n’a ni dépendance à l’exécution ni exécutable autonome par système.
 
-## 🎮 Essayer un motif
+## Essayer un motif
 
 Choisissez **Interface language** pour l’anglais, le chinois simplifié, l’espagnol ou le français. Les libellés, recettes, résultats des tests et commandes de navigation changent sans modifier vos règles, exemples, sélections, panneaux ouverts ou code généré. Le choix est mémorisé localement si le stockage est disponible. Les règles restent en anglais contrôlé ; les explications du compilateur, libellés du diagramme et exigences techniques exportées restent en anglais. Voir [la traduction de l’atelier](../ARCHITECTURE.md#workshop-localization).
 
@@ -141,7 +141,7 @@ Dans l’atelier actuel, ouvrez une correspondance pour voir les captures et leu
 
 [Vue mobile et sommes de contrôle](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md).
 
-## 🔄 Vous avez déjà un regex ?
+## Vous avez déjà un regex ?
 
 Dans **Already have a regex?**, collez un littéral JavaScript pris en charge, puis utilisez **Translate to rules** ou Ctrl/Cmd + Entrée. `/^[A-Z]{2}-\d{4}$/u` devient :
 
@@ -159,7 +159,7 @@ Le littéral doit être entouré de `/` et porter `u` ou `v`. Écrivez les retou
 
 Les constructions inconnues sont refusées, jamais supprimées ni approximées. **Go to regex error** sélectionne leur position dans la source ; un échec conserve les règles et options. Les références vers une capture future ou encore ouverte sont refusées. Un groupe non capturant vide devient `0 any character` : il trouve une correspondance vide en recherche, mais exige une entrée vide en mode chaîne entière.
 
-## 🍱 Des recettes pour commencer
+## Des recettes pour commencer
 
 | Recette | Exemple | Vérification |
 | --- | --- | --- |
@@ -203,11 +203,11 @@ Choisissez des [explications débutant, intermédiaire ou expert](../EXPLANATION
 
 Ces recettes vérifient des **formes**. Une date impossible ou `25:99` peut correspondre ; validez le calendrier et les plages séparément. IPv4 ne borne pas les octets à 255. UUID ne garantit ni version, ni variante, ni unicité. Les téléphones et factures ne vérifient aucun registre ; les noms d’utilisateur ne vérifient pas la disponibilité. La recette de forme de version n’est pas un validateur SemVer complet. La couleur exige `#RRGGBB`. Les règles du système de fichiers restent distinctes.
 
-## 🏗️ Des motifs plus grands, toujours lisibles
+## Des motifs plus grands, toujours lisibles
 
 Le [guide complet](../COMPLEX-EXAMPLES.md) présente quatre formats, 35 cas acceptés/refusés et l’explication de chaque règle : journal d’accès, télémétrie, manifeste d’artefacts et commande multiligne.
 
-### 📦 Un manifeste d’artefacts
+### Un manifeste d’artefacts
 
 Répertoire `nightly/` facultatif, chemin Unicode borné, version, nom d’archive, somme de contrôle et taille, séparés par des tabulations :
 
@@ -239,7 +239,7 @@ end
 
 Il vérifie la forme du chemin et du hash, pas l’existence du fichier ni l’intégrité de son contenu. Les limites Unicode et les tabulations restent explicites.
 
-### 🧾 Une commande multiligne
+### Une commande multiligne
 
 Identifiant, acheteur Unicode, téléphone, quantité, montant, référence, approbation facultative et ligne de priorité entière facultative :
 
@@ -275,7 +275,7 @@ end
 
 Les retours à la ligne sont des caractères littéraux. La validation des montants, numéros et commandes relève de l’application. Les quatre exemples simples du guide ne font pas d’extraction de champs.
 
-## 🧲 Extraire des champs avec des captures nommées
+## Extraire des champs avec des captures nommées
 
 Cet exemple fonctionne avec npm `0.1.0-dev.12` et dans l’atelier publié.
 
@@ -320,7 +320,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 Après la fermeture du groupe, `same as capture "word"` ou `same as capture 1` exige le même texte. [L’exemple](../LANGUAGE.md#capture-references) accepte `cat cat` et refuse `cat dog`. Les références futures ou internes au groupe ciblé produisent un diagnostic. La traduction inverse conserve les noms, numéros et valeurs pris en charge. Une date extraite doit toujours être validée avec un calendrier.
 
-## 🧩 L’aide-mémoire
+## L’aide-mémoire
 
 Une instruction par ligne ; les textes littéraux sont entre guillemets.
 
@@ -344,7 +344,7 @@ Une instruction par ligne ; les textes littéraux sont entre guillemets.
 
 `word character` / `word characters` et `word` / `not word` suivent `\w` / `\W`. `\w` inclut `_`, mais pas `é`. `letter` exclut chiffres et soulignement. Avec `i`, les équivalences natives JavaScript peuvent inclure `K` et `ſ`. `u` est le défaut ; le source accepte aussi `v`. Aucun des deux ne transforme les classes ASCII en catégories Unicode universelles.
 
-## 💻 Dans votre terminal
+## Dans votre terminal
 
 ```sh
 npm install --global regex-for-humans@preview
@@ -382,7 +382,7 @@ Un UTF-8 mal formé est refusé, jamais remplacé silencieusement. Les diagnosti
 
 Les diagnostics JSON peuvent inclure `endColumn`, une colonne de fin exclusive sur la même ligne, comptée à partir de 1 en unités UTF-16. L’atelier surligne et sélectionne tout le fragment identifié ; les erreurs sans plage conservent la navigation vers leur position de départ.
 
-### 🔄 Traduction inverse en ligne de commande
+### Traduction inverse en ligne de commande
 
 ```sh
 printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse
@@ -398,7 +398,7 @@ end
 
 `--reverse --json` renvoie `{ rules, flags }`, comme `regexToRules()`. Passez `flags` à `compile(rules, { flags })` pour conserver les options natives et le comportement du curseur. Les huit flags sont pris en charge ; les regex g/y conservent leur état.
 
-## 📦 Bibliothèque JavaScript
+## Bibliothèque JavaScript
 
 Après l’installation npm, utilisez un module ESM (`.mjs` ou `"type": "module"`). Les déclarations TypeScript sont incluses. Dans le clone, importez `./index.js`.
 
@@ -419,7 +419,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 `regexToRules()` accepte les vrais regex d’autres contextes JavaScript, conserve `lastIndex` et lit les métadonnées natives sans appeler les méthodes de correspondance ni les surcharges de l’instance. Les échappements tels que `\u{00000041}` restent pris en charge dans la limite de source.
 
-## 🎛️ Des flags aux effets précis
+## Des flags aux effets précis
 
 | Flag | Activation | Effet |
 | --- | --- | --- |
@@ -442,7 +442,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **Vérifiez le moteur destinataire.** La prise en charge de la syntaxe ne suffit pas : les modes Unicode vérifiés de Chrome, Firefox et WebKit passent ; Node 22 ne reconnaît pas la syntaxe et les versions testées de Node 25/26 présentent des défauts natifs de correspondance. La compilation signale donc `UNSUPPORTED_TARGET_FEATURE`. Avec des métadonnées en cache, `toRegExp({ source, flags })` vérifie aussi le comportement local dans le mode fourni, après la construction native ; une syntaxe native invalide conserve `SyntaxError`. Aucune approximation n’est utilisée. La version publiée est indiquée dans le [suivi de distribution](../DISTRIBUTION.md).
 
-## 🛠️ Développer localement
+## Développer localement
 
 ```sh
 npm ci
@@ -469,13 +469,13 @@ CI=1 npm run verify
 
 La vérification comprend formatage, lint, types, liens, tests Node, construction Pages, installation du paquet dans un consommateur vierge, navigateurs et audit. `CI=1` sélectionne le navigateur local ; il n’active pas GitHub Actions, qui reste désactivé.
 
-## 🧭 Connaître les limites
+## Connaître les limites
 
 Les alternatives deviennent des blocs modifiables `either { … }` : chaque entrée est un choix, essayé dans l’ordre. Utilisez `group { … }` pour un choix composé de plusieurs règles ou un choix vide.
 
 La cible est **JavaScript `RegExp`**. Le langage refuse le regex brut et l’anglais libre. La traduction inverse traite seulement le sous-ensemble documenté. L’anglais libre, les classes de caractères vides en mode u et les références avant leur définition ou encore ouvertes restent non pris en charge. L’atelier utilise un worker avec délai ; un regex copié nécessite les protections de sa propre application. Consultez le [modèle de sécurité](../SECURITY_MODEL.md).
 
-## 💬 Questions fréquentes
+## Questions fréquentes
 
 **Est-ce une IA ?** Non : parseur déterministe, AST, compilateur et explications structurées.
 
@@ -493,7 +493,7 @@ Chaque lot de résultats est aussi limité : 1 000 correspondances, 20 000 captu
 
 **Signaler un problème ?** [Issues GitHub](https://github.com/OthmaneBlial/Regex-For-Humans/issues), avec règles, flags, entrée, résultat attendu et version du moteur. Pour la sécurité, suivez [SECURITY.md](../../SECURITY.md) en privé.
 
-## 🗺️ Explorer le projet
+## Explorer le projet
 
 | Guide | Contenu |
 | --- | --- |

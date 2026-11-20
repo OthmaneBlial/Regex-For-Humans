@@ -22,7 +22,7 @@
 
 </div>
 
-## 🪄 علامتیں سلجھانے کے بجائے قواعد پڑھیں
+## علامتیں سلجھانے کے بجائے قواعد پڑھیں
 
 ریگولر ایکسپریشن کو پڑھنا اس وقت آسان ہو جاتا ہے جب آپ اس کے پیچھے موجود قواعد دیکھ سکیں۔
 
@@ -60,7 +60,7 @@ end
 <p dir="rtl">لائبریری اور کمانڈ لائن کے لیے <strong>Node.js 22 یا جدید تر</strong> درکار ہے۔ آن لائن ورکشاپ بغیر انسٹال کیے چلتی ہے۔ استعمال میں آسانی اور اسکرین ریڈر کے انسانی جائزے ابھی باقی ہیں۔</p>
 </blockquote>
 
-## 🧰 آج کیا بنایا جا سکتا ہے؟
+## آج کیا بنایا جا سکتا ہے؟
 
 <p dir="rtl"><strong>ورکشاپ کی رپورٹیں:</strong> <a href="../MARKDOWN_REPORTS.md"><code dir="ltr">Markdown</code> رپورٹ</a> ڈاؤن لوڈ کریں جس میں بلڈ کی معلومات، قواعد، درست ریگولر ایکسپریشن، اختیارات، متوقع ٹیسٹ اور دوبارہ درآمد کیا جا سکنے والا <code dir="ltr">JSON</code> شامل ہو۔ برآمد ٹیسٹ نہیں چلاتی اور ان کی کامیابی ثابت نہیں کرتی۔</p>
 
@@ -148,7 +148,7 @@ end
 
 لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.12</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
 
-## 🌍 اپنی پروگرامنگ زبان میں ایکسپورٹ کریں
+## اپنی پروگرامنگ زبان میں ایکسپورٹ کریں
 
 مقامی ورکشاپ میں ایکسپورٹ پینل کھولیں، یا درج ذیل API کال اور ٹرمینل کمانڈ استعمال کریں:
 
@@ -166,7 +166,7 @@ end
 
 تفصیل [انجن پروفائلز اور حدود](../LANGUAGE.md#engine-exports) میں ہے۔
 
-## 📦 آزمائشی نسخہ انسٹال کریں
+## آزمائشی نسخہ انسٹال کریں
 
 <div dir="ltr" align="left">
 
@@ -188,7 +188,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 نتیجہ: <code dir="ltr">/^ABC\d{3}$/u</code>۔ کسی خاص ورژن کے لیے <code dir="ltr">regex-for-humans@0.1.0-dev.12</code> استعمال کریں۔ رن ٹائم کی اضافی dependencies یا ہر نظام کے لیے الگ executable فراہم نہیں کیا گیا۔
 
-## 🎮 کوئی pattern آزمائیں
+## کوئی pattern آزمائیں
 
 انٹرفیس کی زبان کے انتخاب سے انگریزی، آسان چینی، ہسپانوی یا فرانسیسی منتخب کریں۔ لیبل، مثالوں کی وضاحتیں، ٹیسٹ کے نتائج اور نیویگیشن بدلتے ہیں، لیکن قواعد، ان پٹ، منتخب حصے، کھلے پینل اور تیار شدہ کوڈ برقرار رہتے ہیں۔ اسٹوریج دستیاب ہو تو انتخاب مقامی طور پر محفوظ ہوتا ہے۔ قواعد کنٹرول شدہ انگریزی میں رہتے ہیں؛ کمپائلر کی وضاحتیں، خاکے کے لیبل اور برآمد کی تکنیکی شرائط بھی انگریزی میں رہتی ہیں۔ [ورکشاپ کی مقامی زبانوں](../ARCHITECTURE.md#workshop-localization) کی تفصیل دیکھیں۔
 
@@ -229,7 +229,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 [موبائل منظر اور checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)۔
 
-## 🔄 پہلے سے regex موجود ہے؟
+## پہلے سے regex موجود ہے؟
 
 ورکشاپ کے **Already have a regex?** حصے میں معاونت یافتہ JavaScript regex literal پیسٹ کریں۔ **Translate to rules** دبائیں یا Ctrl/Cmd + Enter استعمال کریں۔ <code dir="ltr">/^[A-Z]{2}-\d{4}$/u</code> اس طرح بدلتا ہے:
 
@@ -251,7 +251,7 @@ Literal کے دونوں طرف <code dir="ltr">/</code> اور اس میں <code
 
 غیر معاونت یافتہ ساخت مسترد ہوتی ہے؛ اسے حذف یا تقریباً تبدیل نہیں کیا جاتا۔ **Go to regex error** مسئلے کا مقام منتخب کرتا ہے، اور ناکامی پر موجودہ قواعد اور options محفوظ رہتے ہیں۔ آگے آنے والے یا ابھی کھلے capture کے references مسترد ہوتے ہیں۔ خالی noncapturing گروپ <code dir="ltr">0 any character</code> بنتا ہے: search میں خالی match ملتا ہے، مگر پوری string کے mode میں خالی input درکار ہے۔
 
-## 🍱 شروع کرنے کے لیے تیار مثالیں
+## شروع کرنے کے لیے تیار مثالیں
 
 | مثال | نمونہ | کیا جانچتی ہے |
 | ---: | ---: | ---: |
@@ -295,11 +295,11 @@ Literal کے دونوں طرف <code dir="ltr">/</code> اور اس میں <code
 
 یہ مثالیں **شکل** جانچتی ہیں۔ ناممکن تاریخ یا <code dir="ltr">25:99</code> بھی match ہو سکتا ہے؛ کیلنڈر اور عددی حدود الگ جانچیں۔ IPv4 ہر حصے کو 255 تک محدود نہیں کرتا۔ UUID ورژن، variant یا یکتا ہونے کی ضمانت نہیں۔ فون اور انوائس کا کوئی رجسٹر نہیں دیکھا جاتا، اور صارف نام کی دستیابی بھی نہیں جانچی جاتی۔ سادہ ورژن کی شکل والی مثال <code dir="ltr">SemVer</code> کی مکمل توثیق نہیں کرتی۔ رنگ کے لیے <code dir="ltr">#RRGGBB</code> درکار ہے؛ فائل سسٹم کے قواعد الگ ہیں۔
 
-## 🏗️ بڑے patterns بھی واضح رہیں
+## بڑے patterns بھی واضح رہیں
 
 [پیچیدہ مثالوں کی رہنمائی](../COMPLEX-EXAMPLES.md) میں چار formats، 35 قبول یا رد ہونے والے cases، اور ہر قاعدے کی وضاحت ہے: access log، telemetry event، artifact manifest اور کئی سطروں کا order۔
 
-### 📦 Artifact manifest
+### Artifact manifest
 
 اختیاری <code dir="ltr">nightly/</code> directory، محدود Unicode path، ورژن، archive کا نام، checksum اور حجم؛ سب tabs سے الگ:
 
@@ -339,7 +339,7 @@ end
 
 یہ path اور hash کی شکل جانچتا ہے؛ فائل کے موجود ہونے یا مواد کی صحت کی ضمانت نہیں۔ Unicode کی حدود اور tabs واضح ہیں۔
 
-### 🧾 کئی سطروں کا order
+### کئی سطروں کا order
 
 اس میں identifier، Unicode خریدار، فون، تعداد، رقم، reference، اختیاری approval اور اختیاری مکمل priority سطر:
 
@@ -383,7 +383,7 @@ end
 
 نئی سطر کے محارف literal ہیں۔ رقم، نمبر اور order کی کاروباری جانچ application کی ذمہ داری ہے۔ رہنمائی کی چار سادہ مثالیں fields extract نہیں کرتیں۔
 
-## 🧲 نام والے captures سے fields نکالیں
+## نام والے captures سے fields نکالیں
 
 یہ مثال npm نسخے <code dir="ltr">0.1.0-dev.12</code> اور شائع شدہ ورکشاپ میں کام کرتی ہے۔
 
@@ -436,7 +436,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 گروپ بند ہونے کے بعد <code dir="ltr">same as capture "word"</code> یا <code dir="ltr">same as capture 1</code> اسی متن کو دوبارہ لازم کرتا ہے۔ [مثال](../LANGUAGE.md#capture-references) <code dir="ltr">cat cat</code> قبول اور <code dir="ltr">cat dog</code> مسترد کرتی ہے۔ مستقبل کے capture یا اپنے کھلے گروپ کا reference واضح error دیتا ہے۔ Reverse translation معاونت یافتہ نام، نمبر اور قدریں محفوظ رکھتی ہے۔ نکالی گئی تاریخ کی calendar validation پھر بھی ضروری ہے۔
 
-## 🧩 مختصر حوالہ
+## مختصر حوالہ
 
 ہر سطر پر ایک ہدایت؛ literal متن quotation marks کے اندر۔
 
@@ -460,7 +460,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 قواعد <code dir="ltr">word character</code>، <code dir="ltr">word characters</code>، <code dir="ltr">word</code> اور <code dir="ltr">not word</code> میں <code dir="ltr">\w</code> اور <code dir="ltr">\W</code> کا مطلب استعمال ہوتا ہے۔ فہرست <code dir="ltr">\w</code> میں <code dir="ltr">_</code> ہے، مگر <code dir="ltr">é</code> نہیں۔ <code dir="ltr">letter</code> ہندسے اور underscore شامل نہیں کرتا۔ JavaScript کی native case matching میں <code dir="ltr">i</code> کے ساتھ <code dir="ltr">K</code> اور <code dir="ltr">ſ</code> بھی آ سکتے ہیں۔ فلیگ <code dir="ltr">u</code> ڈیفالٹ ہے اور سورس میں <code dir="ltr">v</code> بھی دستیاب ہے؛ دونوں ASCII classes کو تمام Unicode categories نہیں بناتے۔
 
-## 💻 ٹرمینل میں استعمال
+## ٹرمینل میں استعمال
 
 <div dir="ltr" align="left">
 
@@ -534,7 +534,7 @@ end
 
 منظم نتیجے کے لیے <code dir="ltr">--reverse --json</code> بھی ہے۔ خالی یا غیر معاونت یافتہ input پر مقام کے ساتھ diagnostic آتا ہے، جزوی ترجمہ نہیں۔
 
-## 🧪 جاوا اسکرپٹ اور ٹائپ اسکرپٹ میں استعمال
+## جاوا اسکرپٹ اور ٹائپ اسکرپٹ میں استعمال
 
 <div dir="ltr" align="left">
 
@@ -557,7 +557,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 فنکشن <code dir="ltr">regexToRules()</code> دوسرے JavaScript contexts کے حقیقی regex قبول کرتا ہے، <code dir="ltr">lastIndex</code> محفوظ رکھتا ہے، اور matching methods یا instance کے overridden methods چلائے بغیر native metadata پڑھتا ہے۔ <code dir="ltr">\u{00000041}</code> جیسے escapes source limit کے اندر معاونت یافتہ ہیں۔
 
-## 🎛️ واضح اثر والے flags
+## واضح اثر والے flags
 
 | Flag | کیسے فعال ہوتا ہے | اثر |
 | ---: | ---: | ---: |
@@ -592,7 +592,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **اصل اجرا کی runtime جانچیں۔** صرف نحو قبول کرنا کافی نہیں۔ Chrome، Firefox اور WebKit کے جانچے گئے Unicode modes ٹیسٹ پاس کرتے ہیں۔ <code dir="ltr">Node 22</code> اس نحو کو نہیں سمجھتا، اور جانچے گئے <code dir="ltr">Node 25/26</code> میں native matching کی خرابیاں ہیں، اس لیے compilation <code dir="ltr">UNSUPPORTED_TARGET_FEATURE</code> بتاتی ہے۔ Cached metadata کے ساتھ <code dir="ltr">toRegExp({ source, flags })</code> بھی native construction کے بعد دیے گئے mode میں مقامی رویہ جانچتا ہے؛ غلط native نحو پر <code dir="ltr">SyntaxError</code> برقرار رہتا ہے۔ غیر معاون گروپس کا تخمینی بدل نہیں بنایا جاتا۔ شائع شدہ version کے لیے [تقسیم کا ریکارڈ](../DISTRIBUTION.md) دیکھیں۔
 
-## 🛠️ مقامی development
+## مقامی development
 
 <div dir="ltr" align="left">
 
@@ -631,13 +631,13 @@ CI=1 npm run verify
 
 تصدیق میں formatting، lint، types، links، Node tests، Pages build، صاف consumer project میں package installation، browsers اور audit شامل ہیں۔ <code dir="ltr">CI=1</code> مقامی browser منتخب کرتا ہے؛ یہ GitHub Actions فعال نہیں کرتا، جو بند رہتا ہے۔
 
-## 🧭 حدود کو سمجھیں
+## حدود کو سمجھیں
 
 متبادل قابلِ تدوین <code dir="ltr">either { … }</code> بلاک بنتے ہیں؛ ہر براہِ راست entry ایک انتخاب ہے جو ترتیب سے آزمایا جاتا ہے۔ کئی قواعد والے یا خالی انتخاب کے لیے <code dir="ltr">group { … }</code> استعمال کریں۔
 
 ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ آزاد انگریزی، <code dir="ltr">u</code> موڈ کی خالی character classes اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
 
-## 💬 عام سوالات
+## عام سوالات
 
 **کیا یہ AI استعمال کرتا ہے؟** نہیں۔ ایک deterministic parser، AST، compiler اور structured explanations ہیں۔
 
@@ -655,7 +655,7 @@ CI=1 npm run verify
 
 **مسئلہ کیسے رپورٹ کریں؟** [GitHub Issues](https://github.com/OthmaneBlial/Regex-For-Humans/issues) میں قواعد، flags، input، مطلوبہ نتیجہ اور engine version دیں۔ Security مسئلے کے لیے [SECURITY.md](../../SECURITY.md) کی نجی رپورٹنگ ہدایات استعمال کریں۔
 
-## 🗺️ منصوبہ مزید سمجھیں
+## منصوبہ مزید سمجھیں
 
 | رہنمائی | موضوع |
 | ---: | ---: |

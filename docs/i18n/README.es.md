@@ -16,7 +16,7 @@ Convierte reglas claras en inglés en una expresión regular JavaScript cuyas pa
 
 </div>
 
-## 🪄 Menos signos por descifrar
+## Menos signos por descifrar
 
 Un regex se entiende mejor cuando ves las reglas que lo generaron.
 
@@ -36,7 +36,7 @@ El vocabulario es **fijo**: cada instrucción tiene un significado exacto. Bibli
 
 > 🌱 La versión preliminar `0.1.0-dev.12` requiere **Node.js 22+** para la biblioteca y el CLI. El taller funciona sin instalación. Las revisiones humanas de usabilidad y lectores de pantalla siguen pendientes.
 
-## 🧰 Qué puedes construir hoy
+## Qué puedes construir hoy
 
 **Informes Markdown:** exporta un [informe Markdown](../MARKDOWN_REPORTS.md) con la versión, las reglas, la expresión JavaScript exacta, las opciones, las pruebas previstas y el JSON reimportable. Exportar no ejecuta ni certifica las pruebas.
 
@@ -82,13 +82,13 @@ El código fuente admite `range "α" to "ω"` y `character class: digit, "_"`. U
 
 npm `0.1.0-dev.12` incluye grupos, capturas, referencias anteriores y alternativas ordenadas en la biblioteca y el CLI. El taller añade inspección de capturas y múltiples coincidencias de búsqueda. Consulta [compatibilidad](../COMPATIBILITY.md) y [publicación](../DISTRIBUTION.md).
 
-## 🌍 Exportar a tu lenguaje
+## Exportar a tu lenguaje
 
 Abre **Export to a programming language** en el taller local, llama a `exportRegex(rules, { target: "python" })` o ejecuta `node bin/regex-for-humans.js --target python --json rules.txt`. Los nueve formatos son JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP y Ruby. JavaScript/TypeScript conservan el patrón nativo; los demás destinos traducen los comportamientos compatibles desde el AST antes de generar el código fuente con el escapado correcto.
 
 Las comparaciones del código generado pasan en siete motores nativos; **PHP está verificado con PHP 8.5.11 / PCRE2 10.44**. Las versiones probadas y los límites del corpus figuran en la [guía de compatibilidad](../COMPATIBILITY.md#engine-exports). Conserva los requisitos y el mapa de capturas: los destinos externos usan nombres `gN`, y una captura inactiva puede estar ausente. La entrada debe ser Unicode bien formado. Las opciones `d/g/i/y`, propiedades Unicode y comportamientos incompatibles de aserción, captura o repetición producen diagnósticos con ubicación. Descarga el código o el resultado JSON completo; los ejemplos del navegador siguen ejecutándose en JavaScript. Consulta los [perfiles y límites](../LANGUAGE.md#engine-exports).
 
-## 📦 Instalar la versión preliminar
+## Instalar la versión preliminar
 
 ```sh
 npm install regex-for-humans@preview
@@ -102,7 +102,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 Imprime `/^ABC\d{3}$/u`. Para fijar la versión, usa `regex-for-humans@0.1.0-dev.12`. No hay dependencias de ejecución ni ejecutables independientes por sistema operativo.
 
-## 🎮 Experimentar con un patrón
+## Experimentar con un patrón
 
 Elige **Interface language** para usar inglés, chino simplificado, español o francés. Las etiquetas, ejemplos, resultados y controles de navegación cambian sin modificar reglas, entradas, selecciones, paneles abiertos ni código generado. La elección se guarda localmente si el almacenamiento está disponible. Las reglas siguen en inglés controlado; las explicaciones del compilador, etiquetas del diagrama y requisitos técnicos exportados siguen en inglés. Consulta [la localización del taller](../ARCHITECTURE.md#workshop-localization).
 
@@ -137,7 +137,7 @@ En el taller actual, abre una coincidencia para ver las capturas y sus posicione
 
 [Vista móvil y sumas de comprobación](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md).
 
-## 🔄 ¿Ya tienes un regex?
+## ¿Ya tienes un regex?
 
 Pega un literal JavaScript compatible en **Already have a regex?**. Pulsa Ctrl/Cmd + Enter o **Translate to rules**. `/^[A-Z]{2}-\d{4}$/u` se convierte en:
 
@@ -155,7 +155,7 @@ Usa delimitadores `/`, el flag `u` o `v` y saltos escapados como `\n`. La conver
 
 La sintaxis no compatible falla, sin eliminación ni aproximación. **Go to regex error** selecciona el origen; el fallo conserva reglas y opciones. Se rechazan referencias futuras o a capturas abiertas. Un grupo vacío no capturante se convierte en `0 any character`: encuentra vacío en búsqueda y solo acepta una entrada vacía en modo de cadena completa.
 
-## 🍱 Recetas para empezar
+## Recetas para empezar
 
 | Receta | Ejemplo | Qué comprueba |
 | --- | --- | --- |
@@ -199,11 +199,11 @@ Elige [explicaciones de nivel principiante, intermedio o experto](../EXPLANATION
 
 Son comprobaciones de **forma**: una fecha imposible o `25:99` puede coincidir. Valida calendario y rangos aparte. IPv4 no limita octetos a 255; UUID no verifica versión, variante ni unicidad. No se consulta disponibilidad de usuarios, registros de facturas ni validez telefónica. La receta de forma de versión no valida toda la sintaxis SemVer; el color exige `#RRGGBB`. Las reglas del sistema de archivos son independientes.
 
-## 🏗️ Patrones más grandes, reglas igual de claras
+## Patrones más grandes, reglas igual de claras
 
 La [guía completa](../COMPLEX-EXAMPLES.md) cubre registros de acceso, telemetría, manifiestos y pedidos multilínea: 35 casos aceptados/rechazados y todas las explicaciones.
 
-### 📦 Manifiesto de artefactos
+### Manifiesto de artefactos
 
 Directorio `nightly/` opcional, ruta Unicode acotada, versión, archivo, hash y tamaño separados por tabulaciones:
 
@@ -235,7 +235,7 @@ end
 
 Comprueba formas, no existencia del archivo ni integridad de su contenido.
 
-### 🧾 Pedido multilínea
+### Pedido multilínea
 
 ID, comprador Unicode, teléfono, cantidad, importe, referencia, aprobación opcional y línea de prioridad opcional:
 
@@ -271,7 +271,7 @@ end
 
 Los saltos de línea son literales. La aplicación debe validar importes, números y pedidos. Los cuatro ejemplos planos no extraen campos.
 
-## 🧲 Extraer campos con capturas con nombre
+## Extraer campos con capturas con nombre
 
 Este ejemplo funciona con npm `0.1.0-dev.12` y en el taller publicado.
 
@@ -316,7 +316,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 Después del cierre, `same as capture "word"` o `same as capture 1` exige el mismo texto. El [ejemplo](../LANGUAGE.md#capture-references) acepta `cat cat` y rechaza `cat dog`. Las referencias futuras o dentro de su propio destino producen un diagnóstico. La traducción inversa conserva las capturas compatibles; una fecha extraída aún necesita validación de calendario.
 
-## 🧩 Guía rápida
+## Guía rápida
 
 Una instrucción por línea. Pon el texto literal entre comillas.
 
@@ -340,7 +340,7 @@ Una instrucción por línea. Pon el texto literal entre comillas.
 
 `word character` / `word characters` y `word` / `not word` siguen `\w` / `\W`. `\w` incluye `_`, excluye `é`; `letter` excluye dígitos y guion bajo. Con `i`, JavaScript añade equivalencias como `K` y `ſ`. `u` es el valor predeterminado; el código fuente también acepta `v`. Ninguno convierte las clases ASCII en categorías Unicode universales.
 
-## 💻 Llevarlo al terminal
+## Llevarlo al terminal
 
 ```sh
 npm install --global regex-for-humans@preview
@@ -378,7 +378,7 @@ El UTF-8 mal formado se rechaza sin sustitución silenciosa. Los códigos JSON s
 
 Los diagnósticos JSON pueden incluir `endColumn`, una columna final exclusiva de la misma línea, contada desde 1 en unidades UTF-16. El taller resalta y selecciona el fragmento completo identificado; los errores sin rango conservan la navegación al punto inicial.
 
-### 🔄 Traducción inversa en el CLI
+### Traducción inversa en el CLI
 
 ```sh
 printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse
@@ -394,7 +394,7 @@ end
 
 `--reverse --json` devuelve `{ rules, flags }`, igual que `regexToRules()`. Pasa `flags` a `compile(rules, { flags })` para conservar las opciones nativas y el comportamiento del cursor. Se admiten los ocho flags; las regex con g/y conservan su estado.
 
-## 📦 Biblioteca JavaScript
+## Biblioteca JavaScript
 
 Usa ESM (`.mjs` o `"type": "module"`). TypeScript está incluido. Desde el código fuente, importa `./index.js`.
 
@@ -415,7 +415,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 `regexToRules()` acepta regex auténticos de otros contextos, conserva `lastIndex` y lee los metadatos nativos sin llamar a métodos de coincidencia ni sobreescrituras de la instancia. Escapes como `\u{00000041}` respetan el límite de fuente.
 
-## 🎛️ Flags con efectos concretos
+## Flags con efectos concretos
 
 | Flag | Cómo activarlo | Efecto |
 | --- | --- | --- |
@@ -438,7 +438,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **Comprueba el motor que ejecutará el patrón.** Aceptar la sintaxis no basta: los modos Unicode verificados de Chrome, Firefox y WebKit pasan; Node 22 no reconoce la sintaxis y las versiones probadas de Node 25/26 tienen defectos nativos de coincidencia. La compilación informa `UNSUPPORTED_TARGET_FEATURE`. Con datos en caché, `toRegExp({ source, flags })` también comprueba el comportamiento local en el modo indicado después de la construcción nativa; una sintaxis nativa inválida conserva `SyntaxError`. No se aproximan grupos incompatibles. Consulta la versión publicada en el [registro de distribución](../DISTRIBUTION.md).
 
-## 🛠️ Desarrollar localmente
+## Desarrollar localmente
 
 ```sh
 npm ci
@@ -465,13 +465,13 @@ CI=1 npm run verify
 
 Incluye formato, lint, tipos, enlaces, Node, construcción Pages, consumidor limpio, navegadores y auditoría. `CI=1` selecciona el navegador local; no activa GitHub Actions, que sigue deshabilitado.
 
-## 🧭 Conocer los límites
+## Conocer los límites
 
 Las alternativas se convierten en bloques editables `either { … }`: cada entrada es una opción, probada en orden. Usa `group { … }` para una opción con varias reglas o una opción vacía.
 
 La salida apunta a **JavaScript `RegExp`**. No admite regex bruto como reglas ni inglés libre. La conversión inversa acepta solo el subconjunto documentado. El inglés libre, las clases de caracteres vacías en modo u y las referencias adelantadas o a grupos abiertos siguen sin admitirse. El taller usa un worker con plazo; un regex copiado necesita las protecciones de su aplicación. Consulta el [modelo de seguridad](../SECURITY_MODEL.md).
 
-## 💬 Preguntas frecuentes
+## Preguntas frecuentes
 
 **¿Usa IA?** No: parser determinista, AST, compilador y explicaciones estructuradas.
 
@@ -489,7 +489,7 @@ Cada lote de resultados también tiene límites: 1000 coincidencias, 20 000 capt
 
 **¿Dónde informar errores?** En [GitHub issues](https://github.com/OthmaneBlial/Regex-For-Humans/issues), con reglas, flags, entrada, expectativa y versión del motor. Para seguridad, usa [SECURITY.md](../../SECURITY.md) en privado.
 
-## 🗺️ Explorar el proyecto
+## Explorar el proyecto
 
 | Guía | Contenido |
 | --- | --- |

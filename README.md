@@ -1,16 +1,12 @@
 <div align="center">
 
-# 🧠 Regex For Humans
+# Regex For Humans
 
-[![Regex For Humans: little rules, big aha moments](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/site/assets/readme-banner.svg)](https://othmaneblial.github.io/Regex-For-Humans/)
+[![Regex For Humans: rules drawn as stations on one line, each with its regex fragment](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/site/assets/readme-banner.svg)](https://othmaneblial.github.io/Regex-For-Humans/)
 
-**Write it. Understand it. Test it.**
+Write plain English rules and get a native JavaScript regex. Paste a regex and get it back as rules. Every rule shows the exact fragment it adds.
 
-A few clear English rules become a JavaScript regex you can actually follow.
-
-### [🚀 Open the playground](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 Visit the site](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 Learn the syntax](docs/LANGUAGE.md) · [📦 npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12)
-
-🔒 **Runs locally** &nbsp; 🧩 **No runtime dependencies** &nbsp; ⚡ **One compiler, three ways to use it**
+**[Open the workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [Website](https://othmaneblial.github.io/Regex-For-Humans/) · [Syntax guide](docs/LANGUAGE.md) · [npm preview](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12)**
 
 [English](README.md) · [简体中文](docs/i18n/README.zh-CN.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Português do Brasil](docs/i18n/README.pt-BR.md) · [日本語](docs/i18n/README.ja.md) · [Deutsch](docs/i18n/README.de.md) · [हिन्दी](docs/i18n/README.hi.md) · [العربية](docs/i18n/README.ar.md) · [اردو](docs/i18n/README.ur.md)
 
@@ -18,12 +14,12 @@ A few clear English rules become a JavaScript regex you can actually follow.
 
 ---
 
-## 🪄 Less squinting. More matching.
+## Rules in, regex out
 
-Regex punctuation gets easier to read when you can see where it came from.
+Each rule is one line with one documented meaning:
 
 <table>
-<tr><th>✍️ Your rules</th><th>✨ Your JavaScript regex</th></tr>
+<tr><th>Rules</th><th>JavaScript regex</th></tr>
 <tr><td>
 
 ```text
@@ -46,13 +42,11 @@ end
 
 A small, **fixed vocabulary**, with an exact meaning for every instruction. The library, CLI, and workshop use the same deterministic compiler. Unknown phrases get a line, column, and helpful diagnostic.
 
-> 🌱 **Development preview (`0.1.0-dev.12`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation. Human usability and screen reader reviews are still pending.
+> **Development preview (`0.1.0-dev.12`):** the library and CLI need **Node.js 22+**. The [hosted workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) works without installation.
 
 **Complete a rule:** use **Complete a rule** or **Ctrl + Space** to finish built-in character classes, including after a count (for example, `between 2 and 5 di`), or references to earlier closed captures (`same as ca`). References are offered by number and by name; a preview displays the complete selected rule. Every suggestion must compile with the entire document. Quoted text, comments and selected text are preserved. See [completion scope and controls](docs/EDITOR_COMPLETIONS.md).
 
-**Source follow-up after dev.12:** completion also offers eight balanced group/assertion templates. The preview shows the proposed document, including reference updates when a new capture changes numbering; the cursor lands in the first body rule. This addition awaits the next verified workshop release.
 
-**Source-only set templates:** choose Unicode `v` to complete union, intersection and subtraction blocks, including their negated forms. Nested operands use whole-document validation and retain captures/references. This addition also awaits the next verified workshop release. See [completion controls and limits](docs/EDITOR_COMPLETIONS.md).
 
 | Start here | Continue with |
 | --- | --- |
@@ -62,7 +56,7 @@ A small, **fixed vocabulary**, with an exact meaning for every instruction. The 
 
 <a name="capabilities"></a>
 
-## 🧰 What you can build today
+## What you can build today
 
 **Markdown reports:** export a [Markdown report](docs/MARKDOWN_REPORTS.md) with the build label, rules, exact JavaScript regex, options, intended tests and reimportable JSON. Exporting does not run or certify the tests.
 
@@ -106,7 +100,7 @@ The `0.1.0-dev.12` preview includes groups, captures, backward references and or
 
 <a name="exports"></a>
 
-## 🌍 Export to your language
+## Export to your language
 
 Open **Export to a programming language** in the local workshop, call `exportRegex(rules, { target: "python" })`, or run `node bin/regex-for-humans.js --target python --json rules.txt`. Nine formats cover JavaScript, TypeScript, Python, Rust, Go, Java, C#, PHP and Ruby. JavaScript/TypeScript retain the existing native pattern; other targets translate supported AST semantics before quoting source code.
 
@@ -114,7 +108,7 @@ Seven native engines have passed generated-code comparisons; **PHP is verified o
 
 <a name="install"></a>
 
-## 📦 Install the preview
+## Install the preview
 
 ```sh
 npm install regex-for-humans@preview
@@ -130,7 +124,7 @@ This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1
 
 <a name="playground"></a>
 
-## 🎮 Play with a pattern
+## Play with a pattern
 
 [![The Regex For Humans workshop: recipes, readable rules, the generated JavaScript regex with a rule-by-rule explanation, and four examples that behave as expected](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/site/assets/workshop-preview.png)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
@@ -165,9 +159,9 @@ Open a match in the current workshop to inspect capture values and native spans.
 
 Your rules and examples stay in the browser. No account, AI interpretation, or application backend.
 
-## 🔄 Already have a regex?
+## Already have a regex?
 
-Paste a supported JavaScript regex literal into **Already have a regex?** in the workshop and turn it into editable rules. Press **Ctrl/Cmd + Enter** in the regex field or choose **Translate to rules**. For example, `/^[A-Z]{2}-\d{4}$/u` becomes:
+Paste a regex into the box on the [homepage](https://othmaneblial.github.io/Regex-For-Humans/) to see it drawn as rules, or into **Already have a regex?** in the workshop to turn it into editable rules. Press **Ctrl/Cmd + Enter** in the regex field or choose **Translate to rules**. For example, `/^[A-Z]{2}-\d{4}$/u` becomes:
 
 ```text
 start
@@ -177,7 +171,7 @@ start
 end
 ```
 
-The workshop expects a slash-delimited literal with `u` or `v`; write line breaks as escapes such as `\n`. The reverse translator preserves supported flags. The `0.1.0-dev.12` preview imports numbered/named captures, nested groups, ordered alternatives, backward references, lookaround and lazy quantifiers, preserving capture values and numbering. Forward/open references remain unsupported; see the [language guide](docs/LANGUAGE.md) for its limits.
+The homepage also accepts a bare pattern and, when the pattern is still valid in Unicode mode, reads it with `u` and says so. The workshop and `regexToRules()` expect a regex with `u` or `v`; write line breaks as escapes such as `\n`. The reverse translator preserves supported flags. The `0.1.0-dev.12` preview imports numbered/named captures, nested groups, ordered alternatives, backward references, lookaround and lazy quantifiers, preserving capture values and numbering. Forward/open references remain unsupported; see the [language guide](docs/LANGUAGE.md) for its limits.
 
 Reverse translation also handles JavaScript's empty negative class `[^]`, which includes line breaks. When ordinary `.` atoms appear beside it, their output rules explicitly exclude line terminators so matching stays the same.
 
@@ -208,7 +202,7 @@ Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. S
 
 <a name="recipes"></a>
 
-## 🍱 Recipes to start with
+## Recipes to start with
 
 | Try this | Example | What it checks |
 | --- | --- | --- |
@@ -254,7 +248,7 @@ Choose [beginner, intermediate or expert explanations](docs/EXPLANATION_LEVELS.m
 
 <a name="examples"></a>
 
-## 🏗️ Bigger patterns, same readable rules
+## Bigger patterns, same readable rules
 
 A three-digit ID is only the starting point. The [full complex-examples guide](docs/COMPLEX-EXAMPLES.md) walks through four substantial formats, with **35 accepted/rejected cases** and the compiler's **complete explanation for every rule**:
 
@@ -267,7 +261,7 @@ A three-digit ID is only the starting point. The [full complex-examples guide](d
 
 <!-- complex:artifact-manifest -->
 
-### 📦 Example: an artifact manifest
+### Example: an artifact manifest
 
 **Readable rules**
 
@@ -308,7 +302,7 @@ This synthetic schema accepts a path such as `incoming/nightly/WidgetKit/v2.15.3
 
 <!-- complex:multiline-order -->
 
-### 🧾 Example: a multiline order
+### Example: a multiline order
 
 **Readable rules**
 
@@ -354,7 +348,7 @@ end
 
 <a name="captures"></a>
 
-## 🧲 Extract fields with named captures
+## Extract fields with named captures
 
 A date can become three useful fields. This example works with npm `0.1.0-dev.12` and in the hosted workshop.
 
@@ -404,7 +398,7 @@ This pattern validates `YYYY-MM-DD`, including impossible dates. Use calendar va
 
 <a name="cheat-sheet"></a>
 
-## 🧩 Your pocket cheat sheet
+## Your pocket cheat sheet
 
 Put one instruction on each line. Quote literal text. Add anchors to check the whole string.
 
@@ -430,7 +424,7 @@ Put one instruction on each line. Quote literal text. Add anchors to check the w
 
 <a name="cli"></a>
 
-## 💻 Bring it to your terminal
+## Bring it to your terminal
 
 With Node.js 22+, install the preview globally if you want the command on your PATH:
 
@@ -480,7 +474,7 @@ Control characters and Unicode line separators from rules, arguments and filenam
 
 </details>
 
-### 🔄 Translate a regex back into rules
+### Translate a regex back into rules
 
 The `0.1.0-dev.12` preview includes `--reverse`. Translate a slash-delimited JavaScript regex with `u` or `v`:
 
@@ -500,7 +494,7 @@ Use `--reverse --json` for `{ rules, flags }`, matching `regexToRules()`. Pass t
 
 <a name="api"></a>
 
-## 📦 Use the JavaScript library
+## Use the JavaScript library
 
 After `npm install regex-for-humans@preview`, import the package in an ES module (`.mjs`, or a project with `"type": "module"`). TypeScript declarations are included. From a source checkout, use `./index.js` instead.
 
@@ -527,7 +521,7 @@ Unicode escapes can include leading zeros: `/^\u{00000041}$/u` translates to `st
 
 <a name="flags"></a>
 
-## 🎛️ Flags with a purpose
+## Flags with a purpose
 
 | Flag | How to enable it | What changes |
 | --- | --- | --- |
@@ -552,7 +546,7 @@ Unicode escapes can include leading zeros: `/^\u{00000041}$/u` translates to `st
 
 <a name="develop"></a>
 
-## 🛠️ Make yourself at home
+## Make yourself at home
 
 Run the workshop locally:
 
@@ -585,13 +579,13 @@ CI=1 npm run verify
 
 `CI=1` selects the bundled browser locally; it does not enable GitHub Actions.
 
-## 🧭 Know the boundaries
+## Know the boundaries
 
-Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, u-mode empty character classes and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md).
+Output targets **JavaScript `RegExp`**. Raw regex is not accepted as rule text; `regexToRules()` translates only the documented supported subset back into rules. Free-form English, u-mode empty character classes and forward/open references remain unsupported. The workshop tests examples in a time-limited worker; a copied regex needs its own execution safeguards. Read the [security model](docs/SECURITY_MODEL.md). Independent usability and screen-reader reviews have not been done yet.
 
 <a name="faq"></a>
 
-## 💬 Questions you might have
+## Questions you might have
 
 **Is this an AI regex generator?** No. A deterministic parser maps a documented vocabulary to an AST, then emits native regex and explanations. The same rules and options give the same result. Unknown syntax fails explicitly.
 
@@ -609,7 +603,7 @@ Result batches also have limits: 1,000 matches, 20,000 captures and 1,048,576 UT
 
 **Where should I report a problem?** Use [GitHub issues](https://github.com/OthmaneBlial/Regex-For-Humans/issues) for reproducible bugs and syntax requests. Include rules, flags, input, expected behavior and runtime version. Report security issues privately using [SECURITY.md](SECURITY.md).
 
-## 🗺️ Explore the project
+## Explore the project
 
 | Guide | What you will find |
 | --- | --- |
@@ -642,11 +636,9 @@ Move the source cursor or select generated regex to follow the structure; hover 
 
 <div align="center">
 
-**Small language. Clear meaning. Happy matching.** 🥳
-
 If a rule here saved you some squinting, a ⭐ on [GitHub](https://github.com/OthmaneBlial/Regex-For-Humans) helps other developers find it.
 
-[📖 Language](docs/LANGUAGE.md) · [🧪 Testing](docs/TESTING.md) · [🤝 Contributing](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) · [📝 Changelog](CHANGELOG.md) · [⚖️ MIT](LICENSE)
+[Language](docs/LANGUAGE.md) · [Testing](docs/TESTING.md) · [Contributing](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [MIT](LICENSE)
 
 Security issue? Use the private process in [SECURITY.md](SECURITY.md).
 

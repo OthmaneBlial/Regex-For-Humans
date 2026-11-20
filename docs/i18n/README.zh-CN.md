@@ -16,7 +16,7 @@
 
 </div>
 
-## 🪄 少猜符号，多懂匹配
+## 少猜符号，多懂匹配
 
 看到生成正则的规则，表达式就更容易读懂。
 
@@ -36,7 +36,7 @@ end
 
 > 🌱 预览版 `0.1.0-dev.12` 的库和 CLI 需要 **Node.js 22+**。在线工作台无需安装。真人可用性评估和屏幕阅读器测试仍未完成。
 
-## 🧰 现在可以做什么
+## 现在可以做什么
 
 **Markdown 报告：**导出 [Markdown 报告](../MARKDOWN_REPORTS.md)，包含构建标识、规则、精确的 JavaScript 正则、选项、预期测试和可重新导入的 JSON。导出不会运行测试，也不会证明测试通过。
 
@@ -82,13 +82,13 @@ end
 
 npm `0.1.0-dev.12` 包含分组、捕获、后向引用和有序分支，库和 CLI 均可使用。工作台还提供捕获检查和多次搜索匹配。详见[兼容性](../COMPATIBILITY.md)和[发布记录](../DISTRIBUTION.md)。
 
-## 🌍 导出到你的编程语言
+## 导出到你的编程语言
 
 在本地工作台打开 **Export to a programming language**，调用 `exportRegex(rules, { target: "python" })`，或运行 `node bin/regex-for-humans.js --target python --json rules.txt`。九种格式包括 JavaScript、TypeScript、Python、Rust、Go、Java、C#、PHP 和 Ruby。JavaScript/TypeScript 保留现有原生模式；其他目标先从 AST 转换支持的正则语义，再生成正确转义的源代码。
 
 生成代码已通过七个原生引擎的对比检查；**PHP 已在 PHP 8.5.11 / PCRE2 10.44 上验证**。已测试的版本和语料范围见[兼容性指南](../COMPATIBILITY.md#engine-exports)。请保留要求和捕获映射：其他引擎使用 `gN` 名称，未参与的捕获可能不存在。输入必须是格式正确的 Unicode。不支持的标志（`d/g/i/y`）、Unicode 属性，以及不兼容的断言、捕获或重复行为会返回带位置的诊断。可下载代码或完整 JSON；浏览器示例仍由 JavaScript 执行。详见[引擎配置与限制](../LANGUAGE.md#engine-exports)。
 
-## 📦 安装预览版
+## 安装预览版
 
 ```sh
 npm install regex-for-humans@preview
@@ -102,7 +102,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 输出 `/^ABC\d{3}$/u`。固定版本可用 `regex-for-humans@0.1.0-dev.12`。没有运行时依赖，也不提供独立的各操作系统可执行文件。
 
-## 🎮 试一个模式
+## 试一个模式
 
 通过 **Interface language** 选择英语、简体中文、西班牙语或法语。界面标签、示例说明、匹配反馈和导航控件会更新，但不会改变规则、测试字符串、选择范围、已展开的面板或生成的代码。存储可用时，语言选择会保留在本机。规则仍使用受控英语；编译器解释、图表标签和导出的技术要求仍使用英语。参见[工作台本地化](../ARCHITECTURE.md#workshop-localization)。
 
@@ -137,7 +137,7 @@ printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@pre
 
 [移动端截图及校验和](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)。
 
-## 🔄 已经有正则了？
+## 已经有正则了？
 
 在 **Already have a regex?** 中粘贴支持的 JavaScript 字面量，按 Ctrl/Cmd + Enter，或选择 **Translate to rules**。`/^[A-Z]{2}-\d{4}$/u` 会变成：
 
@@ -155,7 +155,7 @@ end
 
 不支持的语法不会被删除或近似转换。**Go to regex error** 可定位源字符；失败不会覆盖当前规则和选项。前向引用及对尚未闭合捕获的引用会被拒绝。空的非捕获分组变为 `0 any character`：搜索模式可找到空匹配，整串模式只接受空输入。
 
-## 🍱 入门配方
+## 入门配方
 
 | 配方 | 示例 | 检查内容 |
 | --- | --- | --- |
@@ -199,11 +199,11 @@ end
 
 这些是**形状检查**。不存在的日期和 `25:99` 仍可匹配。IPv4 不限制每段为0–255；UUID 不验证版本、变体或唯一性。用户名可用性、发票记录、电话号码有效性、日历和文件系统约束需另行验证。简单版本形状配方不是完整 SemVer；颜色只接受 `#RRGGBB`。
 
-## 🏗️ 更大模式，同样清晰
+## 更大模式，同样清晰
 
 [完整示例指南](../COMPLEX-EXAMPLES.md)包含访问日志、遥测、产物清单和多行订单，共35个正反示例，并解释每个生成片段。
 
-### 📦 产物清单
+### 产物清单
 
 可选 `nightly/` 目录、长度受限的 Unicode 路径、版本、归档名、哈希和大小，以制表符分隔：
 
@@ -235,7 +235,7 @@ end
 
 仅检查格式，不检查文件是否存在或内容是否完整。
 
-### 🧾 多行订单
+### 多行订单
 
 ID、Unicode 买家、电话、数量、金额、引用、可选审批值及完整的可选优先级行：
 
@@ -271,7 +271,7 @@ end
 
 换行是字面字符。金额、号码和订单有效性由应用验证。指南的四个平坦示例不提取字段。
 
-## 🧲 用命名捕获提取字段
+## 用命名捕获提取字段
 
 此示例可使用 npm `0.1.0-dev.12` 或在线工作台运行。
 
@@ -316,7 +316,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 组闭合后，`same as capture "word"` 或 `same as capture 1` 要求相同文本。[示例](../LANGUAGE.md#capture-references)接受 `cat cat`，拒绝 `cat dog`。前向引用或目标内部引用会返回诊断。逆向转换也保留支持的捕获；提取日期后仍需日历校验。
 
-## 🧩 语法速查
+## 语法速查
 
 每行一条指令，字面文本加引号。
 
@@ -340,7 +340,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 
 `word character` / `word characters` 和 `word` / `not word` 遵循 `\w` / `\W`：包括 `_`，不包括 `é`。`letter` 排除数字和下划线。启用 `i` 后，JavaScript 的大小写折叠会纳入 `K`、`ſ` 等等价字符。默认使用 `u`，源码版也接受 `v`；两者都不会把 ASCII 类变成通用 Unicode 类别。
 
-## 💻 在终端使用
+## 在终端使用
 
 ```sh
 npm install --global regex-for-humans@preview
@@ -378,7 +378,7 @@ printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
 
 JSON 诊断可能包含 `endColumn`：同一行内从 1 开始计数、右端不包含的 UTF-16 列号。工作坊会高亮并选中完整的已知问题片段；没有范围信息的错误仍可定位到起始位置。
 
-### 🔄 CLI 逆向转换
+### CLI 逆向转换
 
 ```sh
 printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse
@@ -394,7 +394,7 @@ end
 
 `--reverse --json` 与 `regexToRules()` 一样返回 `{ rules, flags }`。将返回的 `flags` 传给 `compile(rules, { flags })`，保留原生选项和游标行为。支持全部八个 flags；带 g/y 的正则仍具有状态。
 
-## 📦 JavaScript 库
+## JavaScript 库
 
 使用 ESM（`.mjs` 或 `"type": "module"`）。包中包含 TypeScript 声明。源码中使用 `./index.js`。
 
@@ -415,7 +415,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 `regexToRules()` 接受其他 JavaScript 上下文中的真实正则，保持 `lastIndex`，读取原生元数据，不调用匹配方法或实例覆盖属性。`\u{00000041}` 等转义仍受源长度限制。
 
-## 🎛️ 明确的 flags
+## 明确的 flags
 
 | Flag | 启用方式 | 作用 |
 | --- | --- | --- |
@@ -438,7 +438,7 @@ console.log(reverse.flags);                 // Flags to pass back to compile()
 
 **请检查实际执行环境。** 能解析语法并不代表匹配正确：已验证的 Chrome、Firefox 和 WebKit Unicode 模式通过测试；Node 22 不支持该语法，已测试的 Node 25/26 存在原生匹配缺陷，因此编译报告 `UNSUPPORTED_TARGET_FEATURE`。对于缓存元数据，`toRegExp({ source, flags })` 在原生构造之后也会检查指定模式下的局部行为；无效原生语法仍产生 `SyntaxError`。不支持的组不会被近似改写。已发布版本请查看[发布记录](../DISTRIBUTION.md)。
 
-## 🛠️ 本地开发
+## 本地开发
 
 ```sh
 npm ci
@@ -465,13 +465,13 @@ CI=1 npm run verify
 
 包括格式、lint、类型、链接、Node、Pages 构建、干净消费者安装、浏览器与依赖审计。`CI=1` 仅选择本地浏览器，不会开启已禁用的 GitHub Actions。
 
-## 🧭 了解边界
+## 了解边界
 
 分支会转换为可编辑的 `either { … }` 块：每个直接条目是一个选择，按顺序尝试。使用 `group { … }` 可以将多条规则组成一个选择，也可以表示空选择。
 
 目标是 **JavaScript `RegExp`**。不接受把原始正则当规则，也不理解自由英文。逆向转换仅限文档中的子集。自由英语、u 模式下的空字符类、前向引用及对尚未闭合组的引用仍不支持。工作台的 worker 有执行期限；复制出去的正则需由使用它的应用自行防护。参阅[安全模型](../SECURITY_MODEL.md)。
 
-## 💬 常见问题
+## 常见问题
 
 **这是 AI 生成器吗？** 不是。使用确定性解析器、AST、编译器和结构化解释。
 
@@ -489,7 +489,7 @@ CI=1 npm run verify
 
 **如何报告问题？** 到 [GitHub issues](https://github.com/OthmaneBlial/Regex-For-Humans/issues)提供规则、flags、输入、预期行为和引擎版本。安全问题请按 [SECURITY.md](../../SECURITY.md) 私密报告。
 
-## 🗺️ 项目导航
+## 项目导航
 
 | 文档 | 内容 |
 | --- | --- |
