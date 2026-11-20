@@ -68,7 +68,7 @@ test("homepage requests its current stylesheet and bypasses an obsolete cached s
   await expect(page.locator("#demo-input")).toBeEnabled();
   expect(stylesheets).toHaveLength(1);
   expect(stylesheets[0].searchParams.get("v")).toBe(stylesheetVersion);
-  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(255, 253, 245)");
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(255, 255, 255)");
 });
 
 test("homepage removes decorative motion when reduced motion is requested", async ({ page }) => {

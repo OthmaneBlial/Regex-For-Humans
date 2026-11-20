@@ -66,9 +66,109 @@ for (const control of copyControls) {
   button.disabled = false;
 }
 
+const line = document.getElementById("demo-line");
+const trace = document.getElementById("demo-trace");
+let stations = [];
+let probe = null;
+
+function part(className, text) {
+  const element = document.createElement("span");
+  element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+/** Draw one station per compiled rule segment. */
+function drawLine(compiled) {
+  line.replaceChildren();
+  stations = compiled.segments.map((segment, index) => {
+    const item = document.createElement("li");
+    const kind =
+      segment.kind === "anchor"
+        ? "terminus"
+        : segment.atomType === "literal"
+          ? "line-literal"
+          : "line-set";
+    item.className = `station ${kind}${segment.repetition ? " loop" : ""}`;
+    item.style.setProperty("--i", String(index));
+    const stop = part("station-stop");
+    stop.setAttribute("aria-hidden", "true");
+    const fragment = part("station-fragment");
+    const code = document.createElement("code");
+    code.textContent = segment.source;
+    fragment.append(part("sr-only", "regex "), code);
+    const take = part("station-take");
+    take.hidden = true;
+    item.append(part("station-rule", segment.text), stop, fragment, take);
+    line.append(item);
+    return { item, take, segment };
+  });
+  line.classList.remove("drawing");
+  void line.offsetWidth;
+  line.classList.add("drawing");
+  // Per-station spans need one capture per segment; patterns with their own groups keep whole-match feedback only.
+  const sources = compiled.segments.map((segment) => segment.source);
+  probe =
+    sources.join("") === compiled.source &&
+    !sources.some((source) => /\(|\\k|\\[1-9]/u.test(source))
+      ? {
+          parts: compiled.segments.map((segment) =>
+            segment.kind === "anchor" ? segment.source : `(${segment.source})`,
+          ),
+          flags: compiled.flags.includes("d") ? compiled.flags : `${compiled.flags}d`,
+          anchored: sources[0] === "^",
+        }
+      : null;
+}
+
+/** Show which characters each station takes, or where an anchored line stops. */
+function ride(text) {
+  for (const { item, take } of stations) {
+    item.dataset.state = "idle";
+    take.hidden = true;
+    take.replaceChildren();
+  }
+  trace.textContent = "";
+  if (!probe || text === null) return;
+  const run = (count) => new RegExp(probe.parts.slice(0, count).join(""), probe.flags).exec(text);
+  let reached = stations.length;
+  let found = run(reached);
+  if (!found) {
+    if (!probe.anchored) return;
+    do found = run(--reached);
+    while (!found && reached > 1);
+    if (!found) return;
+  }
+  let group = 1;
+  stations.slice(0, reached).forEach(({ item, take, segment }) => {
+    item.dataset.state = "taken";
+    if (segment.kind === "anchor") return;
+    const span = found.indices?.[group++];
+    if (!span) return;
+    const value = document.createElement("code");
+    value.textContent = text.slice(span[0], span[1]) || "(empty)";
+    take.append(part("sr-only", "takes "), value);
+    take.hidden = false;
+  });
+  if (reached === stations.length) return;
+  const { item, take, segment } = stations[reached];
+  item.dataset.state = "stop";
+  take.textContent = "stops here";
+  take.hidden = false;
+  const before = found[0] ? `take “${found[0]}”` : "take nothing";
+  // Literal rules already carry their own quotes ("ABC").
+  const name = segment.text.startsWith('"') ? segment.text : `“${segment.text}”`;
+  trace.textContent =
+    segment.source === "$"
+      ? `Stops at “end”: the rules before it ${before}, but the text does not end there.`
+      : `Stops at ${name}: the rules before it ${before}, then this rule cannot continue.`;
+}
+
 try {
   const { compile, toRegExp } = await import(`./workshop/index.js${assetSearch}`);
-  pattern = toRegExp(compile(document.getElementById("rules-code").textContent));
+  const initial = compile(document.getElementById("rules-code").textContent);
+  pattern = toRegExp(initial);
+  drawLine(initial);
   function testSample() {
     const tooLong = input.value.length > 80;
     input.setAttribute("aria-invalid", String(tooLong));
@@ -76,12 +176,14 @@ try {
       result.textContent = "Too long";
       result.setAttribute("aria-label", result.textContent);
       result.dataset.match = "invalid";
+      ride(null);
       return;
     }
     const matches = pattern.test(input.value);
     result.textContent = matches ? "✓ Match" : "× No match";
     result.setAttribute("aria-label", result.textContent);
     result.dataset.match = String(matches);
+    ride(input.value);
   }
   input.addEventListener("input", testSample);
   input.disabled = false;
@@ -110,6 +212,7 @@ try {
       button.disabled = false;
       button.addEventListener("click", () => {
         pattern = toRegExp(compiled);
+        drawLine(compiled);
         copySequence += 1;
         window.clearTimeout(statusResetTimer);
         copyStatus.textContent = "";

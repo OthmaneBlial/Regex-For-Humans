@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Redesign the homepage as a transit map: the selected recipe is drawn as one line whose stations are its rules, each with its exact regex fragment. Typing a test string marks the characters each station takes and, for anchored patterns, where the line stops and why. Replace the cream boxes and offset shadows with a white sign-plate style, line colours for literals, sets, repetition, captures, choices and anchors, and route maps for the 31 recipes.
+
 - Open the homepage's architecture, compatibility, complex-example and language-guide links as rendered GitHub documents instead of raw Markdown text, and correct the scoped-flags anchor.
 
 - Raise the homepage copy buttons and the narrow-screen cheat sheet from 10 to 11 pixels for easier reading.
