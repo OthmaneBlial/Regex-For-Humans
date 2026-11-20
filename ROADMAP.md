@@ -19,10 +19,10 @@ Read this section first. It supersedes the dev.3/dev.5 release summaries below, 
 
 ### Published state
 
-- **npm:** [`0.1.0-dev.12`](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12), with both `latest` and `preview` selecting that version. Node.js 22+; zero runtime dependencies. This is a development preview.
-- **GitHub:** [prerelease `v0.1.0-dev.12`](https://github.com/OthmaneBlial/Regex-For-Humans/releases/tag/v0.1.0-dev.12), frozen source `c17f968c4bc484599e9f50c1becceb4a6d23e1d1`. The retained final tarball and anonymous npm/GitHub downloads agree: 421,523 bytes, 52 files, SHA-256 `990e5a067bbe7c270a60cf70e5892bab31d00b8182782ca601da8e75947972ea`. Never repack over this archive or rewrite its tag.
-- **Website:** [homepage](https://othmaneblial.github.io/Regex-For-Humans/) and [workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) serve verified dev.12. Owner Pages runtime commit `625f696d05cba4c04665577f67445ffd7b411e29` and receipt commit `2b6cfb6b9c7fd65f1441f949b77ce1e9453aeeec` deploy successfully; all 87 served files match the released build. The owner repository uses `master`; the project source uses `main`.
-- **README:** ten synchronized guides, 20 identical canonical code blocks, genuine desktop/mobile screenshots, Arabic/Urdu RTL prose and explicitly LTR code. Independent native-speaker review remains open. The Downloads Reddit draft is updated to dev.12, tested against a fresh public installation, and remains unposted.
+- **npm:** [`0.1.0-dev.13`](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13), with both `latest` and `preview` selecting that version. Node.js 22+; zero runtime dependencies. This is a development preview.
+- **GitHub:** [prerelease `v0.1.0-dev.13`](https://github.com/OthmaneBlial/Regex-For-Humans/releases/tag/v0.1.0-dev.13), source `c955b315d8ec76621ea8f48d5065d5c865c4b722`. The retained tarball and the npm/GitHub downloads agree: 307,671 bytes, 55 files, SHA-256 `0c982ef40b24bf7f7c7b2a2cea7f00c7d6f1ab370ca466ee04a6d9bf5346dd8b`. Never repack over this archive or rewrite the tag.
+- **Website:** [homepage](https://othmaneblial.github.io/Regex-For-Humans/) and [workshop](https://othmaneblial.github.io/Regex-For-Humans/workshop/) serve dev.13 (interlinear-gloss homepage). Owner Pages commit `7d72f1841206f5752f392bdc7bf6a719f69441ea` changes only the 82 project-folder files and its build succeeded; live desktop and 375px views were checked.
+- **README:** short README with banner and reel drawn from compiler output; full recipes in docs/RECIPES.md and CLI reference in docs/CLI.md. Ten synchronized editions with identical code blocks; Arabic/Urdu keep RTL prose and LTR code. Independent native-speaker review remains open.
 
 See [distribution](docs/DISTRIBUTION.md) for exact integrity/tag/deployment evidence and [testing](docs/TESTING.md) for results and runtime restrictions.
 

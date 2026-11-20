@@ -36,6 +36,10 @@
 - Handoff: [root ROADMAP.md](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/ROADMAP.md) records actual publication state, evidence, remaining gaps, resume order and operating rules. The maintainer requested completion of this increment and handoff within one hour. Further feature work stops after this pass; the larger mission and independent human reviews remain unfinished. Published dev.12, immutable archives/tags, owner Pages and disabled source Actions retain their verified boundaries. The new source feature awaits the next complete release gate.
 - Source publication: `c2eca5eedf57459abdd1902aca66fd8cea7f864f` is pushed directly to `main`. Actual GitHub Arabic/Urdu rendering passes at 1280/390/320px, including the new RTL source paragraphs, canonical LTR code and intact command/version labels without overflow. All six screenshots are inspected. npm `latest`/`preview` remain dev.12, old final archive hashes are unchanged, the owner checkout is clean at `2b6cfb6`, and source Actions remains disabled.
 
+## Published dev.13 distribution
+
+- Delivery: npm `latest`/`preview` and the GitHub prerelease select tag `v0.1.0-dev.13` at `c955b315d8ec76621ea8f48d5065d5c865c4b722`; retained, npm and GitHub bytes agree (307,671 bytes, SHA-256 `0c982ef40b24bf7f7c7b2a2cea7f00c7d6f1ab370ca466ee04a6d9bf5346dd8b`). Owner Pages commit `7d72f18` publishes the gloss homepage and workshop. Firefox/WebKit and Node 22 were not rerun for this release. [Evidence](DISTRIBUTION.md#published-dev13-21-november-2026)
+
 ## Published dev.12 distribution
 
 - Delivery: npm `latest`/`preview` and the GitHub prerelease select immutable tag `v0.1.0-dev.12` at `c17f968c4bc484599e9f50c1becceb4a6d23e1d1`. The retained final archive and anonymous npm/GitHub downloads agree: 421,523 bytes, 52 files, SHA-256 `990e5a067bbe7c270a60cf70e5892bab31d00b8182782ca601da8e75947972ea`. Every payload agrees with the tag and exact-archive consumers pass on Node 25/22. The prototype and earlier releases remain separate and unchanged. See [distribution](DISTRIBUTION.md#published-dev12-11-october-2026).

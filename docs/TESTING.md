@@ -1,5 +1,9 @@
 # Testing and compatibility
 
+## dev.13 release gate (21 November 2026)
+
+447 Node 25.9.0 tests (4 scoped skips), 772 Chromium workshop checks, 66 homepage checks, Biome, types, documentation links and a zero-vulnerability audit; the exact archive passes clean installed consumers on Node 25.9.0 and 24.21.0. Not rerun for dev.13: the Firefox/WebKit compatibility suite (its Playwright 1.63 browsers are not installed on the release machine; the maintainer chose to publish without them) and Node 22. Registry and GitHub downloads match the retained archive.
+
 ## Exact-archive verifier source checks (16 October 2026)
 
 The source package verifier now accepts `--tarball` without packing, checks the archive's SHA-256 before/after its complete installed consumer and reports its size/hash. Newly packed candidates remain in private scratch storage until the consumer succeeds; retention uses an exclusive copy and cannot overwrite an existing archive. Four regression checks cover argument validation, read-only input routing, collision refusal before installation and failed-consumer retention. See [the commands and scope](DISTRIBUTION.md#verify-a-retained-archive).

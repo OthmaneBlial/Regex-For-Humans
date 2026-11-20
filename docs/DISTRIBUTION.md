@@ -5,12 +5,20 @@
 The source verifier accepts an already packed archive without running `npm pack`:
 
 ```sh
-env -u PACK_OUTPUT_DIR npm run test:package -- --tarball ./artifacts/candidate/regex-for-humans-0.1.0-dev.12.tgz
+env -u PACK_OUTPUT_DIR npm run test:package -- --tarball ./artifacts/dev13/regex-for-humans-0.1.0-dev.13.tgz
 ```
 
 The path is relative to the verifier's working directory (the project root for a normal `npm run` invocation) and may contain spaces when quoted. The archive is read-only: installation uses `--ignore-scripts` in a fresh temporary consumer, followed by the existing README, JavaScript/API, strict TypeScript and CLI checks. SHA-256 is checked before and after the consumer and printed with its byte size. The current consumer contract is checked; this does not establish historical-version compatibility, tag/payload equality, provider delivery or foreign-runtime support. Run the same archive on each required Node version rather than repacking it.
 
 Without `--tarball`, `npm run test:package` still packs and verifies the current source in temporary storage. Set `PACK_OUTPUT_DIR` only when retaining a new candidate: packing stays in private scratch space, a successful consumer is required before retention, and exclusive copying refuses to overwrite an existing filename. Choose a new directory for a new prototype; never replace a frozen release archive or tag. `--tarball` and `PACK_OUTPUT_DIR` are mutually exclusive. The stable-tag publication guard and disabled source Actions are unchanged.
+
+## Published dev.13 (21 November 2026)
+
+[npm `0.1.0-dev.13`](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.13), both registry tags (`latest` and `preview`), and the [GitHub prerelease](https://github.com/OthmaneBlial/Regex-For-Humans/releases/tag/v0.1.0-dev.13) select annotated tag `v0.1.0-dev.13` at `c955b315d8ec76621ea8f48d5065d5c865c4b722`. The archive retained in `artifacts/dev13/`, the registry download and the GitHub asset are byte-identical: 307,671 bytes, 55 files, SHA-256 `0c982ef40b24bf7f7c7b2a2cea7f00c7d6f1ab370ca466ee04a6d9bf5346dd8b` (also published as a `.sha256` asset). A fresh `npm install regex-for-humans@preview` reports 0.1.0-dev.13 and runs the README library and CLI reverse examples.
+
+The owner Pages commit `7d72f1841206f5752f392bdc7bf6a719f69441ea` touches only `Regex-For-Humans/` (82 files) on `master`; its Pages build succeeded. The live homepage serves dev.13 with self-hosted fonts and no horizontal overflow at desktop and 375px; the live workshop compiles the calendar-date recipe to the dev.13 form `(?<month>0[1-9]|1[0-2])`.
+
+Checked before publication: 447 Node 25.9.0 tests (4 scoped skips), 772 Chromium workshop checks, 66 homepage checks, Biome, types, documentation links and a zero-vulnerability audit; the exact archive passes clean installed consumers on Node 25.9.0 and 24.21.0. Not rerun for dev.13: the Firefox/WebKit compatibility suite (its Playwright 1.63 browsers are not installed on the release machine; the maintainer chose to publish without them) and Node 22.
 
 ## Published dev.12 (11 October 2026)
 
