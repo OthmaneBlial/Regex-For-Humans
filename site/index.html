@@ -16,64 +16,128 @@
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="A colorful Regex For Humans card showing clear English rules turning into an explained JavaScript regex.">
+  <meta property="og:image:alt" content="A JavaScript regex with a plain-English gloss under each fragment.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Regex For Humans — write and explain JavaScript regex in plain English">
   <meta name="twitter:description" content="Write clear English rules or translate a supported JavaScript regex back into editable rules. Then inspect and test it.">
   <meta name="twitter:image" content="https://othmaneblial.github.io/Regex-For-Humans/assets/social-card.png">
-  <meta name="twitter:image:alt" content="A colorful Regex For Humans card showing clear English rules turning into an explained JavaScript regex.">
+  <meta name="twitter:image:alt" content="A JavaScript regex with a plain-English gloss under each fragment.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
   <title>Regex For Humans — write and explain JavaScript regex in plain English</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./styles.css?v=b93bc164cc3d">
-  <link rel="preload" href="./assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <script type="module" src="./app.js?v=2126e5a43e00"></script>
+  <link rel="stylesheet" href="./styles.css?v=0f946d8d0c46">
+  <link rel="preload" href="./assets/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <script type="module" src="./app.js?v=0dacde91bcaa"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" id="top">
-    <a class="brand" href="#top" aria-label="Regex For Humans home"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">Regex <strong>For Humans</strong></span></a>
-    <nav aria-label="Main navigation"><a href="#captures">Captures</a><a href="#recipes">Recipes</a><a href="#develop">API &amp; CLI</a><a href="#read">Languages</a><a class="button small" href="./workshop/">Open the workshop</a></nav>
+    <a class="brand" href="#top" aria-label="Regex For Humans home">Regex <i>for</i> Humans</a>
+    <nav aria-label="Main navigation"><a href="#recipes">Examples</a><a href="#develop">Install</a><a href="./workshop/web/language.html">Syntax</a><a href="https://github.com/OthmaneBlial/Regex-For-Humans">GitHub</a><a class="button small" href="./workshop/">Open the workshop</a></nav>
   </header>
   <main id="main">
     <section class="hero" aria-labelledby="page-title">
-      <div class="hero-copy">
-        <h1 id="page-title">Regex you can read like a&nbsp;map.</h1>
-        <p class="hero-summary">Write plain English rules and get a native JavaScript regex, or paste a regex and read it back as rules. Every rule shows the exact fragment it adds and the characters it takes.</p>
+      <h1 id="page-title">Write regex in plain English. <span>Read any regex the same&nbsp;way.</span></h1>
+      <div class="hero-side">
+        <p class="hero-summary">Regex For Humans compiles short English rules into a native JavaScript regex, and translates a regex back into rules. Every fragment carries its meaning, so you see exactly what a pattern does before you ship it.</p>
         <div class="hero-actions"><a class="button primary" href="./workshop/">Open the workshop</a><a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans">Source on GitHub ↗</a></div>
-        <p class="npm-install"><a class="text-link" href="https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12">Get the npm preview ↗</a><code>npm install regex-for-humans@preview</code><span>Library + CLI · Node.js 22+</span></p>
+        <p class="npm-install"><code>npm install regex-for-humans@preview</code><span>Library + CLI · Node.js 22+</span><a class="text-link" href="https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12">Get the npm preview ↗</a></p>
       </div>
-      <section class="demo" aria-labelledby="demo-title">
-        <div class="demo-heading"><h2 id="demo-title">Words in. Regex out.</h2><fieldset class="demo-recipes"><legend class="sr-only">Demo recipes</legend><button type="button" data-recipe="hex-color" aria-pressed="true" disabled>Hex color</button><button type="button" data-recipe="prefixed-identifier" aria-pressed="false" disabled>ID</button><button type="button" data-recipe="version-shape" aria-pressed="false" disabled>Version</button></fieldset></div>
-        <form id="explain-form" class="explain-form"><label for="explain-input">Have a regex already? Paste it to read it as rules.</label><div class="try-row"><input id="explain-input" type="text" placeholder="/^\d{3}-\d{4}$/" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" dir="ltr" aria-invalid="false" aria-describedby="explain-status" disabled><button type="submit" class="button" disabled>Explain</button></div><p id="explain-status" class="explain-status" role="status"></p></form>
-        <ol id="demo-line" class="line" aria-label="Each rule as a station, with its regex fragment and the characters it takes">
-          <li class="station terminus"><span class="station-rule">start</span><span class="station-stop" aria-hidden="true"></span><span class="station-fragment"><span class="sr-only">regex </span><code>^</code></span><span class="station-take" hidden></span></li>
-          <li class="station line-literal"><span class="station-rule">"#"</span><span class="station-stop" aria-hidden="true"></span><span class="station-fragment"><span class="sr-only">regex </span><code>#</code></span><span class="station-take" hidden></span></li>
-          <li class="station line-set loop"><span class="station-rule">6 hex digits</span><span class="station-stop" aria-hidden="true"></span><span class="station-fragment"><span class="sr-only">regex </span><code>[0-9A-Fa-f]{6}</code></span><span class="station-take" hidden></span></li>
-          <li class="station terminus"><span class="station-rule">end</span><span class="station-stop" aria-hidden="true"></span><span class="station-fragment"><span class="sr-only">regex </span><code>$</code></span><span class="station-take" hidden></span></li>
-        </ol>
-        <div class="try-sample"><label for="demo-input">Test it with your own text</label><div class="try-row"><input id="demo-input" type="text" value="#ff6b6b" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-invalid="false" aria-describedby="demo-limits demo-result demo-trace" disabled><output id="demo-result" for="demo-input" aria-live="polite">Not checked</output></div><p id="demo-trace" class="demo-trace"></p><p id="demo-limits">Demo limit: 80 UTF-16 code units. Longer input is kept but cannot be tested. The workshop accepts up to 2,048.</p></div>
-        <div class="boards">
-          <div class="code-block rules-block"><div class="code-label"><span>Rules</span><button type="button" data-copy="rules-code" disabled>Copy rules</button></div><pre><code id="rules-code">start "#"
+    </section>
+
+    <section class="demo" aria-labelledby="demo-title">
+      <div class="demo-head">
+        <h2 id="demo-title">Example</h2>
+        <fieldset class="demo-recipes"><legend class="sr-only">Examples to gloss</legend><button type="button" data-recipe="hex-color" aria-pressed="true" disabled>hex colour</button><button type="button" data-recipe="calendar-date" aria-pressed="false" disabled>calendar date</button><button type="button" data-recipe="ipv4-address" aria-pressed="false" disabled>IPv4 address</button><button type="button" data-recipe="log-fields" aria-pressed="false" disabled>log fields</button><button type="button" data-recipe="prefixed-identifier" aria-pressed="false" disabled>ID</button><button type="button" data-recipe="version-shape" aria-pressed="false" disabled>version</button></fieldset>
+        <button type="button" id="demo-play" class="play" aria-pressed="false" hidden>Pause</button>
+      </div>
+      <figure class="gloss-figure">
+        <div class="gloss-scroll" id="gloss-scroll">
+          <table id="demo-line" class="gloss" aria-label="The regex, fragment by fragment, with the meaning and the text each fragment takes">
+            <tbody>
+              <tr class="row-regex"><th scope="row">regex</th><td><code>^</code></td><td><code>#</code></td><td><code>[0-9A-Fa-f]{6}</code></td><td><code>$</code></td></tr>
+              <tr class="row-meaning"><th scope="row">means</th><td><span class="sc">start</span></td><td>"#"</td><td>6 hex digits</td><td><span class="sc">end</span></td></tr>
+              <tr class="row-take"><th scope="row">takes</th><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="demo-note">Six hex digits after #, in either letter case. Only #RRGGBB; no shorthand, alpha or other CSS color forms.</figcaption>
+      </figure>
+
+      <div class="demo-work">
+        <form id="explain-form" class="explain-form"><label for="explain-input">Paste a regex to read it as rules</label><div class="try-row"><input id="explain-input" type="text" placeholder="/^\d{3}-\d{4}$/" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" dir="ltr" aria-invalid="false" aria-describedby="explain-status" disabled><button type="submit" class="button" disabled>Explain</button></div><p id="explain-status" class="explain-status" role="status"></p></form>
+        <div class="try-sample"><label for="demo-input">Test it with your own text</label><div class="try-row"><input id="demo-input" type="text" value="#ff6b6b" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" dir="ltr" aria-invalid="false" aria-describedby="demo-limits demo-result demo-trace" disabled><output id="demo-result" for="demo-input" aria-live="polite">Not checked</output></div><p id="demo-trace" class="demo-trace"></p><div id="demo-samples" class="sample-chips"><span>matches <code>#12aBcF</code></span><span class="no-match">no match <code>#123</code></span></div><p id="demo-limits" class="fine">Demo limit: 80 UTF-16 code units. Longer input is kept but cannot be tested. The workshop accepts up to 2,048.</p></div>
+      </div>
+      <div class="boards">
+        <div class="code-block rules-block"><div class="code-label"><span>Rules</span><button type="button" data-copy="rules-code" disabled>Copy rules</button></div><pre><code id="rules-code">start "#"
 6 hex digits
 end</code></pre></div>
-          <div class="code-block regex-block"><div class="code-label"><span>JavaScript regex</span><button type="button" data-copy="regex-code" disabled>Copy regex</button></div><pre><code id="regex-code">/^#[0-9A-Fa-f]{6}$/u</code></pre></div>
-        </div>
-        <div id="demo-samples" class="sample-chips"><span>✓ <code>#12aBcF</code></span><span class="no-match">× <code>#123</code></span></div>
-        <noscript><p>The demo needs JavaScript. You can still read the patterns and copy them manually.</p></noscript>
-        <p id="demo-note">Six hex digits after #, in either letter case. Only #RRGGBB; no shorthand, alpha or other CSS color forms.</p>
-        <a id="demo-open" class="demo-open" href="./workshop/?example=hex-color">Edit this in the workshop ↗</a>
-      </section>
+        <div class="code-block regex-block"><div class="code-label"><span>JavaScript regex</span><button type="button" data-copy="regex-code" disabled>Copy regex</button></div><pre><code id="regex-code">/^#[0-9A-Fa-f]{6}$/u</code></pre></div>
+      </div>
+      <noscript><p>The demo needs JavaScript. You can still read the patterns and copy them manually.</p></noscript>
+      <a id="demo-open" class="demo-open text-link" href="./workshop/?example=hex-color">Edit this in the workshop ↗</a>
     </section>
 
-    <section class="legend-section section" aria-labelledby="legend-title">
-      <h2 id="legend-title" class="sr-only">How to read the line</h2>
-      <ul class="legend"><li class="line-literal">Literal text</li><li class="line-set">Character sets</li><li class="line-loop">Repetition</li><li class="line-capture">Captures</li><li class="line-choice">Choices</li><li class="terminus">Anchors</li></ul>
+    <section class="how-section section" id="how" aria-labelledby="how-title">
+      <div class="section-heading"><h2 id="how-title">One rule, one fragment. In both directions.</h2><p>Each rule line compiles to one piece of the regex, in order, with nothing hidden. Read the other way, a supported regex comes back as the same kind of rules, ready to edit.</p></div>
+      <figure class="alignment">
+        <svg class="align-wide" viewBox="0 0 1120 330" role="img" aria-labelledby="align-title align-desc">
+          <title id="align-title">Rules and regex, aligned</title>
+          <desc id="align-desc">Four rules, start, the text INV-, between 2 and 6 digits, and end, each joined by a line to the regex fragment it compiles to: caret, INV-, backslash d with 2 to 6, and dollar. compile turns rules into the regex; regexToRules reads it back.</desc>
+          <g class="al-words" font-size="22">
+            <text x="110" y="62" text-anchor="middle"><tspan class="sc-svg">start</tspan></text>
+            <text x="330" y="62" text-anchor="middle">"INV-"</text>
+            <text x="640" y="62" text-anchor="middle">between 2 and 6 digits</text>
+            <text x="960" y="62" text-anchor="middle"><tspan class="sc-svg">end</tspan></text>
+          </g>
+          <g class="al-links">
+            <path d="M110 80 C110 160 416 160 416 238"/>
+            <path d="M330 80 C330 160 476 160 476 238"/>
+            <path d="M640 80 C640 160 608 160 608 238"/>
+            <path d="M960 80 C960 160 704 160 704 238"/>
+          </g>
+          <text class="al-code" x="404" y="282" font-size="40">^INV-\d{2,6}$</text>
+          <g class="al-verbs" font-size="17">
+            <text x="1120" y="150" text-anchor="end">compile() ↓</text>
+            <text x="1120" y="182" text-anchor="end">↑ regexToRules()</text>
+          </g>
+        </svg>
+        <svg class="align-narrow" viewBox="0 0 340 262" role="img" aria-labelledby="align-title-n">
+          <title id="align-title-n">Rules and regex, aligned: start is caret, "INV-" is INV-, between 2 and 6 digits is backslash d 2 to 6, end is dollar.</title>
+          <g class="al-words" font-size="16">
+            <text x="0" y="46"><tspan class="sc-svg">start</tspan></text>
+            <text x="0" y="96">"INV-"</text>
+            <text x="0" y="146">between 2 and 6 digits</text>
+            <text x="0" y="196"><tspan class="sc-svg">end</tspan></text>
+          </g>
+          <g class="al-links">
+            <path d="M74 40 H252"/>
+            <path d="M74 90 H252"/>
+            <path d="M196 140 H252"/>
+            <path d="M74 190 H252"/>
+          </g>
+          <g class="al-code-n" font-size="20">
+            <text x="262" y="47">^</text>
+            <text x="262" y="97">INV-</text>
+            <text x="262" y="147">\d{2,6}</text>
+            <text x="262" y="197">$</text>
+          </g>
+          <g class="al-verbs" font-size="13">
+            <text x="0" y="236">compile() →</text>
+            <text x="0" y="256">← regexToRules()</text>
+          </g>
+        </svg>
+      </figure>
+      <ol class="facts">
+        <li><strong>Deterministic.</strong> The same rules always give the same regex. There is no AI and no network call.</li>
+        <li><strong>Native.</strong> The output is an ordinary <code>RegExp</code> with the <code>u</code> flag. Nothing runs at match time but the engine.</li>
+        <li><strong>Honest about limits.</strong> Syntax outside the supported subset is refused with a line, a column and a fix, never dropped quietly.</li>
+      </ol>
     </section>
-
 
     <section class="capture-section section" id="captures" aria-labelledby="captures-title">
-      <div class="section-heading split"><h2 id="captures-title">Name the parts you capture.</h2><p>Named captures are native JavaScript groups, written as readable rules you can edit.</p></div>
+      <div class="section-heading"><h2 id="captures-title">Name the parts you capture.</h2><p>A named capture is a native JavaScript group. Write it as a rule, then read the field by name.</p></div>
       <div class="capture-layout">
         <div class="code-block rules-block"><div class="code-label"><span>Rules</span><button type="button" data-copy="capture-rules" disabled>Copy capture rules</button></div><pre><code id="capture-rules">start
 capture "year" {
@@ -89,90 +153,91 @@ capture "day" {
 }
 end</code></pre></div>
         <div class="capture-result">
-          <p class="capture-input"><span>Input</span><code>2026-10-10</code></p>
-          <dl class="capture-fields"><div><dt>year</dt><dd>2026</dd></div><div><dt>month</dt><dd>10</dd></div><div><dt>day</dt><dd>10</dd></div></dl>
-          <p>A named group gives you a field. A numbered capture keeps its position. A noncapturing group keeps a block together.</p>
           <div class="code-block regex-block"><div class="code-label"><span>JavaScript regex</span><button type="button" data-copy="capture-regex" disabled>Copy capture regex</button></div><pre><code id="capture-regex">/^(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})-(?&lt;day&gt;\d{2})$/u</code></pre></div>
-          <p class="scope-note">This checks a date shape, including impossible dates. Validate calendar values separately. Groups, captures, backward references and ordered alternatives are included in npm 0.1.0-dev.12.</p>
-          <a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/LANGUAGE.md#groups-and-captures">Explore nested groups and references ↗</a>
+          <p class="capture-input"><span>Input</span> <code>2026-10-10</code></p>
+          <dl class="capture-fields"><div><dt>year</dt><dd>2026</dd></div><div><dt>month</dt><dd>10</dd></div><div><dt>day</dt><dd>10</dd></div></dl>
+          <p class="scope-note">This checks the date's shape. For real months and days, use the <a class="text-link" href="./workshop/?example=calendar-date">calendar date example</a>. <a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/LANGUAGE.md#groups-and-captures">Nested groups and references ↗</a></p>
         </div>
       </div>
     </section>
 
-
     <section class="recipes-section section" id="recipes" aria-labelledby="recipes-title">
-      <div class="section-heading split"><h2 id="recipes-title">34 recipes on four lines.</h2><p>Each one opens in the workshop with its rules, regex, notes and ready-made examples. Every note says what the shape does not check.</p></div>
-      <div class="network">
-        <section class="route line-literal" aria-labelledby="route-ids"><h3 id="route-ids">IDs and codes</h3><ul>
-          <li><a class="recipe-card" href="./workshop/?example=prefixed-identifier"><strong>Give IDs a shape</strong><code dir="ltr">ABC123</code><span>A prefix + exactly three digits.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=invoice-number"><strong>Shape an invoice ID</strong><code dir="ltr">INV-1234</code><span>INV- + 2–6 digits. Verify records separately.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=username-shape"><strong>Shape a username</strong><code dir="ltr">Alice_7</code><span>3–16 characters; ASCII letter first.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=product-code-shape"><strong>Shape a product code</strong><code dir="ltr">AB-rgb-0420</code><span>2 uppercase + 3 lowercase letters + 4 digits.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=hex-color"><strong>Find your color</strong><code dir="ltr">#12aBcF</code><span>Six hexadecimal digits after #.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=mac-address-shape"><strong>Shape a MAC address</strong><code dir="ltr">00:1A:2B:3C:4D:5E</code><span>Six colon-separated hex pairs. Check allocation separately.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=uuid-shape"><strong>Shape a UUID</strong><code dir="ltr">8–4–4–4–12 hex digits</code><span>Either letter case. Check version, variant and uniqueness separately.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=git-object-hash"><strong>Match a Git object hash shape</strong><code dir="ltr">40 / 64 hex digits</code><span>Hex shape only. Verify repository object existence separately.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=phone-shape"><strong>Try an optional prefix</strong><code dir="ltr">+33123456789</code><span>Optional + and 7–15 digits. Check number validity separately.</span></a></li>
-        </ul></section>
-        <section class="route line-set" aria-labelledby="route-dates"><h3 id="route-dates">Dates, times and versions</h3><ul>
-          <li><a class="recipe-card" href="./workshop/?example=date-shape"><strong>Check a date shape</strong><code dir="ltr">2026-09-30</code><span>YYYY-MM-DD. Calendar checks are separate.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=calendar-date"><strong>Validate a calendar date</strong><code dir="ltr">2026-09-30</code><span>Month 01–12, day 01–31. Month lengths are not checked.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=time-shape"><strong>Check a time shape</strong><code dir="ltr">09:30</code><span>HH:MM. Check hour and minute ranges separately.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=clock-time"><strong>Validate a 24-hour time</strong><code dir="ltr">23:59</code><span>00:00 to 23:59. Rejects 24:00.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=iso8601-shape"><strong>Match a UTC timestamp shape</strong><code dir="ltr">2026-10-11T09:30:00Z</code><span>Optional fractions and Z. Calendar and range checks stay separate.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=version-shape"><strong>Spot a version shape</strong><code dir="ltr">1.2.3</code><span>Three numeric parts. Not full SemVer.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=semantic-version"><strong>Validate SemVer 2.0 syntax</strong><code dir="ltr">1.2.3-alpha.1+001</code><span>Core, prerelease and build syntax; no precedence comparison.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=ipv4-shape"><strong>Shape an IPv4 address</strong><code dir="ltr">192.0.2.42</code><span>Four 1–3 digit groups. Not a 0–255 range check.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=ipv4-address"><strong>Validate an IPv4 address</strong><code dir="ltr">192.168.1.1</code><span>Each number 0–255, no leading zeros.</span></a></li>
-        </ul></section>
-        <section class="route line-loop" aria-labelledby="route-text"><h3 id="route-text">Text, files and web</h3><ul>
-          <li><a class="recipe-card" href="./workshop/?example=slug"><strong>Match a lowercase slug</strong><code dir="ltr">hello-world</code><span>Lowercase ASCII words separated by single hyphens.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=filename-shape"><strong>Shape a text filename</strong><code dir="ltr">report.txt</code><span>Bound a Unicode stem and exclude separators. Filesystem rules are separate.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=file-extension"><strong>Find a file extension</strong><code dir="ltr">README.md</code><span>Search txt, md or json suffixes; filename validity stays separate.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=https-url-shape"><strong>Match a simple HTTPS URL shape</strong><code dir="ltr">https://example.com</code><span>A small ASCII-host subset, not complete URL validation.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=markdown-heading"><strong>Match a Markdown heading fragment</strong><code dir="ltr"># Hello</code><span>One to six # characters and a title, not a Markdown parser.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=excluded-characters"><strong>Keep characters out</strong><code dir="ltr">text without: a, b</code><span>Choose which characters to exclude.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=line-rule"><strong>Read between lines</strong><code dir="ltr">item 123</code><span>A line ending in at least three digits.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=unicode-word"><strong>Match Unicode letters and marks</strong><code dir="ltr">العربية / اردو</code><span>Native Unicode letters and marks; no normalization or grapheme counting.</span></a></li>
-        </ul></section>
-        <section class="route line-capture" aria-labelledby="route-captures"><h3 id="route-captures">Captures, references and logs</h3><ul>
-          <li><a class="recipe-card" href="./workshop/?example=http-header"><strong>Extract a simple header field</strong><code dir="ltr">Content-Type: application/json</code><span>Named field and single-line value, not a full HTTP parser.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=log-fields"><strong>Extract named fields from a log fragment</strong><code dir="ltr">INFO code=200</code><span>Extract level and code from a searched log fragment.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=repeated-word"><strong>Match two repeated words</strong><code dir="ltr">hello hello</code><span>A named reference to the preceding ASCII word.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=duplicate-token"><strong>Detect adjacent duplicate tokens</strong><code dir="ltr">item,item</code><span>One adjacent comma-separated pair; not whole-list deduplication.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=replace-word"><strong>Search and replace a typo</strong><code dir="ltr">teh → the</code><span>Preloaded exact spans, captures and non-global replacement checks.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=artifact-manifest"><strong>Read an artifact manifest</strong><code dir="ltr">path → hash → size</code><span>19 rules, optional nightly/ directory and literal tabs. Nine examples ready to test.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=access-log"><strong>Read an access log</strong><code dir="ltr">request → status → size</code><span>43 rules, bounded fields and quoted text. Eight examples ready to test.</span></a></li>
-          <li><a class="recipe-card" href="./workshop/?example=structured-event"><strong>Read a telemetry event</strong><code dir="ltr">trace → duration → lane</code><span>38 rules and independent optional values. Nine examples ready to test.</span></a></li>
-        </ul></section>
+      <div class="section-heading"><h2 id="recipes-title">34 worked examples.</h2><p>Each one opens in the workshop with its rules, regex and test strings that must and must not match. Every note says what the pattern does not check.</p></div>
+      <div class="recipe-groups">
+        <section class="recipe-group" aria-labelledby="route-ids"><h3 id="route-ids">IDs and codes</h3><ol>
+          <li><a class="recipe-card" href="./workshop/?example=prefixed-identifier"><span class="recipe-num">(1)</span><strong>Give IDs a shape</strong><code class="recipe-regex" dir="ltr">/^ABC\d{3}$/u</code><span class="recipe-example" dir="ltr">ABC123</span><span class="recipe-note">A prefix + exactly three digits.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=invoice-number"><span class="recipe-num">(2)</span><strong>Shape an invoice ID</strong><code class="recipe-regex" dir="ltr">/^INV-\d{2,6}$/u</code><span class="recipe-example" dir="ltr">INV-1234</span><span class="recipe-note">INV- + 2–6 digits. Verify records separately.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=username-shape"><span class="recipe-num">(3)</span><strong>Shape a username</strong><code class="recipe-regex" dir="ltr">/^[A-Za-z]\w{2,15}$/u</code><span class="recipe-example" dir="ltr">Alice_7</span><span class="recipe-note">3–16 characters; ASCII letter first.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=product-code-shape"><span class="recipe-num">(4)</span><strong>Shape a product code</strong><code class="recipe-regex" dir="ltr">/^[A-Z]{2}-[a-z]{3}-\d{4}$/u</code><span class="recipe-example" dir="ltr">AB-rgb-0420</span><span class="recipe-note">2 uppercase + 3 lowercase letters + 4 digits.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=hex-color"><span class="recipe-num">(5)</span><strong>Find your color</strong><code class="recipe-regex" dir="ltr">/^#[0-9A-Fa-f]{6}$/u</code><span class="recipe-example" dir="ltr">#12aBcF</span><span class="recipe-note">Six hexadecimal digits after #.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=mac-address-shape"><span class="recipe-num">(6)</span><strong>Shape a MAC address</strong><code class="recipe-regex" dir="ltr">/^[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}$/u</code><span class="recipe-example" dir="ltr">00:1A:2B:3C:4D:5E</span><span class="recipe-note">Six colon-separated hex pairs. Check allocation separately.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=uuid-shape"><span class="recipe-num">(7)</span><strong>Shape a UUID</strong><code class="recipe-regex" dir="ltr">/^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/u</code><span class="recipe-example" dir="ltr">8–4–4–4–12 hex digits</span><span class="recipe-note">Either letter case. Check version, variant and uniqueness separately.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=git-object-hash"><span class="recipe-num">(8)</span><strong>Match a Git object hash shape</strong><code class="recipe-regex" dir="ltr">/^(?:[0-9A-Fa-f]{40}|[0-9A-Fa-f]{64})$/u</code><span class="recipe-example" dir="ltr">40 / 64 hex digits</span><span class="recipe-note">Hex shape only. Verify repository object existence separately.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=phone-shape"><span class="recipe-num">(9)</span><strong>Try an optional prefix</strong><code class="recipe-regex" dir="ltr">/^\+?\d{7,15}$/u</code><span class="recipe-example" dir="ltr">+33123456789</span><span class="recipe-note">Optional + and 7–15 digits. Check number validity separately.</span></a></li>
+        </ol></section>
+        <section class="recipe-group" aria-labelledby="route-dates"><h3 id="route-dates">Dates, times and versions</h3><ol>
+          <li><a class="recipe-card" href="./workshop/?example=date-shape"><span class="recipe-num">(10)</span><strong>Check a date shape</strong><code class="recipe-regex" dir="ltr">/^(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})-(?&lt;day&gt;\d{2})$/u</code><span class="recipe-example" dir="ltr">2026-09-30</span><span class="recipe-note">YYYY-MM-DD. Calendar checks are separate.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=calendar-date"><span class="recipe-num">(11)</span><strong>Validate a calendar date</strong><code class="recipe-regex" dir="ltr">/^(?&lt;year&gt;\d{4})-(?&lt;month&gt;0[1-9]|1[0-2])-(?&lt;day&gt;0[1-9]|[12]\d|3[01])$/u</code><span class="recipe-example" dir="ltr">2026-09-30</span><span class="recipe-note">Month 01–12, day 01–31. Month lengths are not checked.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=time-shape"><span class="recipe-num">(12)</span><strong>Check a time shape</strong><code class="recipe-regex" dir="ltr">/^\d{2}:\d{2}$/u</code><span class="recipe-example" dir="ltr">09:30</span><span class="recipe-note">HH:MM. Check hour and minute ranges separately.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=clock-time"><span class="recipe-num">(13)</span><strong>Validate a 24-hour time</strong><code class="recipe-regex" dir="ltr">/^(?:[01]\d|2[0-3]):[0-5]\d$/u</code><span class="recipe-example" dir="ltr">23:59</span><span class="recipe-note">00:00 to 23:59. Rejects 24:00.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=iso8601-shape"><span class="recipe-num">(14)</span><strong>Match a UTC timestamp shape</strong><code class="recipe-regex" dir="ltr">/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z$/u</code><span class="recipe-example" dir="ltr">2026-10-11T09:30:00Z</span><span class="recipe-note">Optional fractions and Z. Calendar and range checks stay separate.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=version-shape"><span class="recipe-num">(15)</span><strong>Spot a version shape</strong><code class="recipe-regex" dir="ltr">/^\d+\.\d+\.\d+$/u</code><span class="recipe-example" dir="ltr">1.2.3</span><span class="recipe-note">Three numeric parts. Not full SemVer.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=semantic-version"><span class="recipe-num">(16)</span><strong>Validate SemVer 2.0 syntax</strong><code class="recipe-regex" dir="ltr">/^(?&lt;major&gt;0|[1-9]\d*)\.(?&lt;minor&gt;0|[1-9]\d*)\.(?&lt;patch&gt;0|[1-9]\d*)(?:-(?&lt;prerelease&gt;(?:0|[1-9]\d*|\d*[A-Za-z\-][A-Za-z\d\-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z\-][A-Za-z\d\-]*))*))?(?:\+(?&lt;build&gt;[A-Za-z\d\-]+(?:\.[A-Za-z\d\-]+)*))?$/u</code><span class="recipe-example" dir="ltr">1.2.3-alpha.1+001</span><span class="recipe-note">Core, prerelease and build syntax; no precedence comparison.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=ipv4-shape"><span class="recipe-num">(17)</span><strong>Shape an IPv4 address</strong><code class="recipe-regex" dir="ltr">/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/u</code><span class="recipe-example" dir="ltr">192.0.2.42</span><span class="recipe-note">Four 1–3 digit groups. Not a 0–255 range check.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=ipv4-address"><span class="recipe-num">(18)</span><strong>Validate an IPv4 address</strong><code class="recipe-regex" dir="ltr">/^(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/u</code><span class="recipe-example" dir="ltr">192.168.1.1</span><span class="recipe-note">Each number 0–255, no leading zeros.</span></a></li>
+        </ol></section>
+        <section class="recipe-group" aria-labelledby="route-text"><h3 id="route-text">Text, files and web</h3><ol>
+          <li><a class="recipe-card" href="./workshop/?example=slug"><span class="recipe-num">(19)</span><strong>Match a lowercase slug</strong><code class="recipe-regex" dir="ltr">/^[a-z\d]+(?:-[a-z\d]+)*$/u</code><span class="recipe-example" dir="ltr">hello-world</span><span class="recipe-note">Lowercase ASCII words separated by single hyphens.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=filename-shape"><span class="recipe-num">(20)</span><strong>Shape a text filename</strong><code class="recipe-regex" dir="ltr">/^[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,64}\.txt$/u</code><span class="recipe-example" dir="ltr">report.txt</span><span class="recipe-note">Bound a Unicode stem and exclude separators. Filesystem rules are separate.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=file-extension"><span class="recipe-num">(21)</span><strong>Find a file extension</strong><code class="recipe-regex" dir="ltr">/\.(?&lt;extension&gt;txt|md|json)$/u</code><span class="recipe-example" dir="ltr">README.md</span><span class="recipe-note">Search txt, md or json suffixes; filename validity stays separate.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=https-url-shape"><span class="recipe-num">(22)</span><strong>Match a simple HTTPS URL shape</strong><code class="recipe-regex" dir="ltr">/^https:\/\/[A-Za-z\d]+(?:[\-.][A-Za-z\d]+)*(?:\/\S*)?$/u</code><span class="recipe-example" dir="ltr">https://example.com</span><span class="recipe-note">A small ASCII-host subset, not complete URL validation.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=markdown-heading"><span class="recipe-num">(23)</span><strong>Match a Markdown heading fragment</strong><code class="recipe-regex" dir="ltr">/^#{1,6} (?&lt;heading&gt;[^\r\n\u{2028}\u{2029}]+)$/u</code><span class="recipe-example" dir="ltr"># Hello</span><span class="recipe-note">One to six # characters and a title, not a Markdown parser.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=excluded-characters"><span class="recipe-num">(24)</span><strong>Keep characters out</strong><code class="recipe-regex" dir="ltr">/^[^abcd]*$/u</code><span class="recipe-example" dir="ltr">text without: a, b</span><span class="recipe-note">Choose which characters to exclude.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=line-rule"><span class="recipe-num">(25)</span><strong>Read between lines</strong><code class="recipe-regex" dir="ltr">/^.*\d{3}$/mu</code><span class="recipe-example" dir="ltr">item 123</span><span class="recipe-note">A line ending in at least three digits.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=unicode-word"><span class="recipe-num">(26)</span><strong>Match Unicode letters and marks</strong><code class="recipe-regex" dir="ltr">/^\p{L}[\p{L}\p{M}]*$/u</code><span class="recipe-example" dir="ltr">العربية / اردو</span><span class="recipe-note">Native Unicode letters and marks; no normalization or grapheme counting.</span></a></li>
+        </ol></section>
+        <section class="recipe-group" aria-labelledby="route-captures"><h3 id="route-captures">Captures, references and logs</h3><ol>
+          <li><a class="recipe-card" href="./workshop/?example=http-header"><span class="recipe-num">(27)</span><strong>Extract a simple header field</strong><code class="recipe-regex" dir="ltr">/^(?&lt;field&gt;[A-Za-z\d!#$%&amp;'*+\-.\^_`|~]+): (?&lt;value&gt;[^\r\n\u{0}\u{2028}\u{2029}]+)$/u</code><span class="recipe-example" dir="ltr">Content-Type: application/json</span><span class="recipe-note">Named field and single-line value, not a full HTTP parser.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=log-fields"><span class="recipe-num">(28)</span><strong>Extract named fields from a log fragment</strong><code class="recipe-regex" dir="ltr">/(?&lt;level&gt;INFO|WARN|ERROR) code=(?&lt;code&gt;\d{3})/u</code><span class="recipe-example" dir="ltr">INFO code=200</span><span class="recipe-note">Extract level and code from a searched log fragment.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=repeated-word"><span class="recipe-num">(29)</span><strong>Match two repeated words</strong><code class="recipe-regex" dir="ltr">/^(?&lt;word&gt;[A-Za-z]+) \k&lt;word&gt;$/u</code><span class="recipe-example" dir="ltr">hello hello</span><span class="recipe-note">A named reference to the preceding ASCII word.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=duplicate-token"><span class="recipe-num">(30)</span><strong>Detect adjacent duplicate tokens</strong><code class="recipe-regex" dir="ltr">/^(?&lt;token&gt;\w{1,16}),\k&lt;token&gt;$/u</code><span class="recipe-example" dir="ltr">item,item</span><span class="recipe-note">One adjacent comma-separated pair; not whole-list deduplication.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=replace-word"><span class="recipe-num">(31)</span><strong>Search and replace a typo</strong><code class="recipe-regex" dir="ltr">/\b(?&lt;word&gt;teh)\b/u</code><span class="recipe-example" dir="ltr">teh → the</span><span class="recipe-note">Preloaded exact spans, captures and non-global replacement checks.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=artifact-manifest"><span class="recipe-num">(32)</span><strong>Read an artifact manifest</strong><code class="recipe-regex" dir="ltr">/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u</code><span class="recipe-example" dir="ltr">path → hash → size</span><span class="recipe-note">19 rules, optional nightly/ directory and literal tabs. Nine examples ready to test.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=access-log"><span class="recipe-num">(33)</span><strong>Read an access log</strong><code class="recipe-regex" dir="ltr">/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - [^ \n\r\u{2028}\u{2029}]{1,32} \[\d{2}\/[A-Za-z]{3}\/\d{4}:\d{2}:\d{2}:\d{2} [+\-]\d{4}\] &quot;[A-Z]{3,7} [^ &quot;\n\r\u{2028}\u{2029}]{1,200} HTTP\/\d\.\d&quot; \d{3} \d{1,10} &quot;[^&quot;\n\r\u{2028}\u{2029}]{1,200}&quot; &quot;[^&quot;\n\r\u{2028}\u{2029}]{1,200}&quot;$/u</code><span class="recipe-example" dir="ltr">request → status → size</span><span class="recipe-note">43 rules, bounded fields and quoted text. Eight examples ready to test.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=structured-event"><span class="recipe-num">(34)</span><strong>Read a telemetry event</strong><code class="recipe-regex" dir="ltr">/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z level=[A-Z]{4,5} service=\w{3,30} trace=[0-9A-Fa-f]{32} span=[0-9A-Fa-f]{16} method=[A-Z]{3,7} route=[^ \n\r\u{2028}\u{2029}]{1,200} status=\d{3} bytes=\d{1,10} duration=\d{1,7}\.\d{3}ms lane=[ABC]?(?: retry=true)?$/u</code><span class="recipe-example" dir="ltr">trace → duration → lane</span><span class="recipe-note">38 rules and independent optional values. Nine examples ready to test.</span></a></li>
+        </ol></section>
       </div>
       <p class="scope-note">Ready for bigger patterns? <a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md">Explore four complex examples ↗</a>: access logs, telemetry, artifact manifests and multiline documents, with every fragment explained.</p>
     </section>
 
     <section class="workshop-section section" aria-labelledby="workshop-title">
-      <div class="workshop-copy"><h2 id="workshop-title">The workshop</h2><p>Search 31 recipes or paste a regex to translate. Edit rules with completions, read each fragment's explanation, and keep examples that must match or must not. Everything runs in your browser; share a snapshot by link when you want to.</p><a class="button primary" href="./workshop/">Open the workshop</a></div>
+      <div class="workshop-copy"><h2 id="workshop-title">The workshop</h2><p>Search 34 recipes or paste a regex to translate. Edit rules with completions, read each fragment's meaning, and keep strings that must match or must not. Everything runs in your browser; share a snapshot by link when you want to.</p><a class="button primary" href="./workshop/">Open the workshop</a></div>
       <a class="workshop-preview" href="./workshop/" aria-label="Open the interactive workshop"><img src="./assets/workshop-preview.png?v=b96ca81cd99a" alt="Regex For Humans workshop showing its recipe list, a generated regex, explanations, and passing examples." loading="lazy" width="1280" height="2156"></a>
     </section>
 
     <section class="language-section section" id="language" aria-labelledby="language-title">
-      <div class="language-intro"><h2 id="language-title">A small vocabulary. Exact meanings.</h2><p>Every supported instruction maps to one documented regex fragment. Unknown words fail with a line, a column and a repair hint.</p><a class="text-link" href="./workshop/web/language.html">Read the full syntax guide ↗</a><p class="scope-note">Raw regex is not rule text; a supported subset translates back into rules. Groups and ordered alternatives are supported; forward/open capture references are rejected.</p></div>
+      <div class="language-intro"><h2 id="language-title">A small vocabulary with exact meanings.</h2><p>Every instruction maps to one documented regex fragment. An unknown word fails with a line, a column and a repair hint.</p><a class="text-link" href="./workshop/web/language.html">Read the syntax guide ↗</a><p class="scope-note">Raw regex is not rule text; a supported subset translates back into rules. Groups and ordered alternatives are supported; forward and open capture references are rejected.</p></div>
       <div class="syntax-list"><div class="terminus"><code>start / end</code><span aria-hidden="true">→</span><code>^ / $</code></div><div class="line-loop"><code>3 digits</code><span aria-hidden="true">→</span><code>\d{3}</code></div><div class="line-loop"><code>between 2 and 6 digits</code><span aria-hidden="true">→</span><code>\d{2,6}</code></div><div class="line-set"><code>letters</code><span aria-hidden="true">→</span><code>[A-Za-z]+</code></div><div class="line-set"><code>lowercase letters / uppercase letters</code><span aria-hidden="true">→</span><code>[a-z]+ / [A-Z]+</code></div><div class="line-set"><code>6 hex digits</code><span aria-hidden="true">→</span><code>[0-9A-Fa-f]{6}</code></div><div class="line-literal"><code>"hello"</code><span aria-hidden="true">→</span><code>hello</code></div><div class="line-set"><code>one of: a, b</code><span aria-hidden="true">→</span><code>[ab]</code></div><div class="line-set"><code>text without: a, b</code><span aria-hidden="true">→</span><code>[^ab]*</code></div><div class="line-loop"><code>any text</code><span aria-hidden="true">→</span><code>.*</code></div></div>
     </section>
 
     <section class="developer-section section" id="develop" aria-labelledby="develop-title">
-      <div class="section-heading split"><h2 id="develop-title">Use it in your own project.</h2><p>The library, CLI and workshop share the same parser, AST and compiler. No runtime dependencies, no remote AI service.</p></div>
+      <div class="section-heading"><h2 id="develop-title">Use it in your own project.</h2><p>The library, the CLI and the workshop share one parser and one compiler. No runtime dependencies.</p></div>
       <div class="developer-grid">
-        <article><h3>JavaScript + TypeScript</h3><p>Compile rules, create a native regex, and read the fragment explanations. ESM with included type declarations.</p><div class="code-block"><div class="code-label"><span>After installing the preview</span><button type="button" data-copy="library-code" disabled>Copy library example</button></div><pre><code id="library-code">import { compile, toRegExp } from 'regex-for-humans';
+        <article><h3>JavaScript and TypeScript</h3><p>Compile rules, build a native regex and read each fragment's explanation. ESM, with type declarations.</p><div class="code-block"><div class="code-label"><span>After installing the preview</span><button type="button" data-copy="library-code" disabled>Copy library example</button></div><pre><code id="library-code">import { compile, toRegExp } from 'regex-for-humans';
 
 const result = compile('start 3 digits\nend');
 toRegExp(result).test('123'); // true
 console.log(result.segments);</code></pre></div></article>
-        <article><h3>Your terminal, too.</h3><p>Read UTF-8 rules from a file or stdin. Export JSON or ask for every fragment's explanation.</p><div class="code-block"><div class="code-label"><span>Node.js 22+ · npm preview</span><button type="button" data-copy="terminal-code" disabled>Copy terminal example</button></div><pre><code id="terminal-code">printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain</code></pre></div><p class="flags"><code>--json</code> <code>--reverse</code> <code>--flags</code> <code>--ignore-case</code> <code>--dot-all</code></p></article>
+        <article><h3>In the terminal</h3><p>Read rules from a file or stdin, print the explanation of every fragment, or translate a regex back with <code>--reverse</code>.</p><div class="code-block"><div class="code-label"><span>Node.js 22+ · npm preview</span><button type="button" data-copy="terminal-code" disabled>Copy terminal example</button></div><pre><code id="terminal-code">printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain</code></pre></div><pre class="cli-output"><code>/^ABC\d{3}$/u
+1:1  ^  Input start.
+1:7  ABC  Literal text "ABC".
+2:1  \d{3}  Exactly 3 digits (0–9).
+3:1  $  Input end.</code></pre><p class="flags"><code>--json</code> <code>--reverse</code> <code>--flags</code> <code>--ignore-case</code> <code>--dot-all</code> <code>--target</code></p></article>
       </div>
     </section>
 
     <section class="reading-section section" id="read" aria-labelledby="read-title">
-      <div class="section-heading split"><h2 id="read-title">Guides in ten languages.</h2><p>Including Arabic and Urdu with right-to-left reading. The rule syntax stays in English, so every example runs through the same compiler.</p></div>
+      <div class="section-heading"><h2 id="read-title">The guide, in ten languages.</h2><p>Including Arabic and Urdu, right to left. The rule words stay English, so every example runs through the same compiler.</p></div>
       <nav class="language-links" aria-label="README languages"><a lang="en" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/README.md">English <span>EN</span></a><a lang="zh-CN" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.zh-CN.md">简体中文 <span>ZH</span></a><a lang="es" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.es.md">Español <span>ES</span></a><a lang="fr" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.fr.md">Français <span>FR</span></a><a lang="pt-BR" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.pt-BR.md">Português do Brasil <span>PT</span></a><a lang="ja" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.ja.md">日本語 <span>JA</span></a><a lang="de" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.de.md">Deutsch <span>DE</span></a><a lang="hi" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.hi.md">हिन्दी <span>HI</span></a><a lang="ar" dir="rtl" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.ar.md">العربية <span dir="ltr">AR</span></a><a lang="ur" dir="rtl" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.ur.md">اردو <span dir="ltr">UR</span></a></nav>
       <div class="reading-links"><a href="./workshop/web/language.html"><strong>Language guide ↗</strong><span>Every instruction, with its exact meaning.</span></a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md"><strong>Beyond the basics ↗</strong><span>Logs, telemetry, manifests and multiline orders.</span></a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPATIBILITY.md"><strong>Compatibility ↗</strong><span>What translates in each direction, and the verified runtimes.</span></a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/ARCHITECTURE.md"><strong>Under the hood ↗</strong><span>Deterministic parsing and native semantics.</span></a></div>
     </section>
@@ -185,12 +250,11 @@ console.log(result.segments);</code></pre></div></article>
       <details><summary>Can flags apply to just one group?</summary><p>Use <code>group with flags "i" {</code> to ignore case inside one block; closing it restores the enclosing options. Local i/m/s flags also work with nested groups, captures and reverse translation. They require a compatible native engine: verified browser Unicode modes pass, while tested Node 22/25/26 editions receive an explicit unsupported-feature error. Cached source cannot bypass that check. <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/LANGUAGE.md#scoped-flags">Read the syntax and runtime limits</a>.</p></details>
       <details><summary>Are my test strings sent anywhere?</summary><p>The workshop matches in your browser's isolated worker. Rules and examples stay local. The page and its static assets are served by the hosting provider; no application backend receives your matching inputs.</p></details>
       <details><summary>Does a passing example prove a regex is safe?</summary><p>Examples establish selected behavior. The workshop bounds input and terminates a worker after 1,200 ms. A regex copied into another application needs that application's own execution safeguards.</p></details>
-      <details><summary>Which version should I use?</summary><p>npm 0.1.0-dev.12 is the development preview. The library and CLI compile whole-line comments and support group editing, SVG structure diagrams, risk notes and nine programming-language export formats. The workshop adds rule templates, syntax colors, validated class and closed-capture-reference completion with a complete rule preview, exact span/capture/replacement expectations, fixture files and local save/restore, and reproducible Markdown reports. Reports contain intended tests without running or certifying them. Optional draft recovery and before/after group-edit previews retain the current workspace until an edit is applied. Explore 31 searchable recipes, failure explanations and beginner/intermediate/expert notes. Precise quoted/property/class diagnostic ranges, input-edge failure explanations and complete snapshot links are included alongside aggregate result limits and efficient multiline paste handling. Four interface languages and system, light and dark themes are available. Install regex-for-humans@preview or try the browser workshop. Node.js 22+ is required by the library and CLI. Engine limitations are reported explicitly. Seven foreign-engine corpora pass, including PHP 8.5.11 / PCRE2 10.44; validate other editions. Human usability and screen reader reviews remain open.</p></details>
+      <details><summary>Which version should I use?</summary><p>npm 0.1.0-dev.12 is a development preview of the library and CLI; it needs Node.js 22 or newer. The workshop on this site runs the same compiler in your browser. There is no stable release yet, so pin the exact preview version in a project.</p></details>
       </div>
     </section>
-
   </main>
-  <footer class="site-footer"><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">Regex <strong>For Humans</strong></span></a><p>Small language. Clear meaning. Made by <a href="https://github.com/OthmaneBlial">Othmane Blial</a>.</p><div><a href="https://github.com/OthmaneBlial/Regex-For-Humans">GitHub ↗</a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/LICENSE">MIT license</a></div></footer>
+  <footer class="site-footer"><a class="brand" href="#top">Regex <i>for</i> Humans</a><p>Made by <a href="https://github.com/OthmaneBlial">Othmane Blial</a>. MIT licensed.</p><div><a href="https://github.com/OthmaneBlial/Regex-For-Humans">GitHub ↗</a><a href="https://www.npmjs.com/package/regex-for-humans">npm ↗</a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/LICENSE">License</a></div></footer>
   <p id="copy-status" class="copy-status" role="status"></p>
 </body>
 </html>

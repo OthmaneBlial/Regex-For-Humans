@@ -76,7 +76,7 @@ test("homepage removes decorative motion when reduced motion is requested", asyn
   await page.goto("/");
   await expect(page.locator("#demo-input")).toBeEnabled();
   const motion = await page.evaluate(() => ({
-    animation: getComputedStyle(document.querySelector(".hero-copy")).animationName,
+    animation: getComputedStyle(document.querySelector("#demo-line td")).animationName,
     transition: getComputedStyle(document.querySelector(".recipe-card")).transitionDuration,
   }));
   expect(motion).toEqual({ animation: "none", transition: "0s" });
@@ -112,7 +112,7 @@ test("homepage exposes a working, dimensioned social preview", async ({ page }) 
   );
   await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
     "content",
-    /colorful Regex For Humans card/u,
+    /plain-English gloss/u,
   );
   await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");
   await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute("content", "630");
@@ -986,7 +986,7 @@ test("a pasted regex is drawn as rules, tested and opened in the workshop", asyn
   await expect(explain).toBeEnabled();
   await explain.fill(String.raw`^\d{3}-\d{4}$`);
   await page.getByRole("button", { name: "Explain" }).click();
-  await expect(page.locator("#explain-status")).toHaveText("Drawn as 5 stations.");
+  await expect(page.locator("#explain-status")).toHaveText("Glossed as 5 fragments.");
   await expect(page.locator("#regex-code")).toHaveText(String.raw`/^\d{3}-\d{4}$/u`);
   await expect(page.locator("#rules-code")).toHaveText('start\n3 digit\n"-"\n4 digit\nend');
   await expect(page.locator("#demo-note")).toContainText("read with the u flag");
@@ -995,7 +995,7 @@ test("a pasted regex is drawn as rules, tested and opened in the workshop", asyn
   await expect(page.locator("#demo-open")).toHaveAttribute("href", /\/workshop\/#tests=/u);
   await page.locator("#demo-input").fill("555-1234");
   await expect(page.locator("#demo-result")).toHaveText("✓ Match");
-  await expect(page.locator('#demo-line .station[data-state="taken"]')).toHaveCount(5);
+  await expect(page.locator('#demo-line .row-regex td[data-state="taken"]')).toHaveCount(5);
 
   await explain.fill(String.raw`/a\-b/`);
   await explain.press("Enter");
