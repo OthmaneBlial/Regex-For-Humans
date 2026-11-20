@@ -392,7 +392,9 @@ The generated regex starts at its left edge after recipe loading or successful r
 
 Firefox/WebKit checks run compilation/diagnostics, counts/Unicode/options, path/native-RegExp behavior and long recipes as independent flows through one worker. Each keeps Playwright's default 30-second test deadline; separating them avoids charging unrelated interactions to a single cumulative timeout. One worker reduces concurrent browser load: during a heavily loaded local run, three Firefox flows exceeded the deadline with two workers, while all ten engine checks passed when rerun with one. The product's 1,200-millisecond matching limit is unchanged.
 
-Workshop and homepage checks also use one worker locally, matching the existing CI setting. A later full run hit the 30-second deadline while creating a browser page, before that test body ran. Serial browser checks reduce concurrent contexts on a shared machine; test assertions and deadlines stay the same.
+Workshop and homepage checks use half the local CPU cores (four workers on an eight-core machine) and one worker on CI. With four workers, all 764 workshop checks passed in 11.2 minutes; one worker takes about two hours. An earlier run hit the 30-second deadline while creating a browser page under heavy machine load; if that recurs, run with `--workers=1`. Test assertions and deadlines stay the same.
+
+The CLI checks are split across `cli.test.js`, `cli-diagnostics.test.js`, `cli-rules.test.js` and `cli-reverse.test.js`, which share `test/helpers/cli.js`. Node runs test files in parallel but the tests inside one file in sequence, so the split cuts the CLI checks from about 44 to 17 seconds.
 
 The enlarged reverse-field navigation check polls the existing viewport bounds until native focus scrolling settles, using the same approach as wrapped rule selections. It still requires the selected line to fit inside the viewport, plus correct focus, source selection, preserved rules, accessibility checks and recovery.
 

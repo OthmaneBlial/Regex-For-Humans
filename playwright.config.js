@@ -6,7 +6,8 @@ const channel = process.env.CI ? "chromium" : "chrome";
 export default defineConfig({
   testDir: "./test/browser",
   fullyParallel: false,
-  workers: 1,
+  // Half the local cores: 764 workshop checks pass in about 11 minutes instead of about two hours.
+  workers: process.env.CI ? 1 : "50%",
   reporter: "list",
   use: {
     baseURL,
