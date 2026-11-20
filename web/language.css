@@ -8,7 +8,7 @@
   padding: 10px 13px;
   border: 1px solid #ffffff33;
   border-radius: 8px;
-  color: #f5f0df;
+  color: #eaf1fa;
   font-size: 13px;
   text-decoration: none;
 }
@@ -58,7 +58,7 @@
 .guide-example pre {
   overflow-x: auto;
   background: var(--ink-deep);
-  color: #fff8e5;
+  color: #f2f9ff;
   font: 14px / 1.8 var(--mono);
 }
 .guide-example > div {
@@ -69,7 +69,7 @@
   display: block;
   margin-bottom: 15px;
   color: var(--orange);
-  font: 700 10px var(--mono);
+  font: 700 11px var(--mono);
   letter-spacing: 0.12em;
 }
 .guide-example > div > code {

@@ -2706,9 +2706,10 @@ try {
     const item = current.getBoundingClientRect();
     const view = box.getBoundingClientRect();
     const { overflowX, overflowY } = getComputedStyle(box);
-    if (/auto|scroll/u.test(overflowX))
+    // Centre only an item that is not already fully visible, so the sidebar keeps its brand in view.
+    if (/auto|scroll/u.test(overflowX) && (item.left < view.left || item.right > view.right))
       box.scrollLeft += item.left - view.left - (view.width - item.width) / 2;
-    if (/auto|scroll/u.test(overflowY))
+    if (/auto|scroll/u.test(overflowY) && (item.top < view.top || item.bottom > view.bottom))
       box.scrollTop += item.top - view.top - (view.height - item.height) / 2;
     box = box.parentElement;
   }

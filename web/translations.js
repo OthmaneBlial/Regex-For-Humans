@@ -683,19 +683,8 @@ export const translations = {
     "JavaScript RegExp · Anglais contrôlé · Sans compte",
   ],
   "THE WORKSHOP": ["工作台", "EL TALLER", "L’ATELIER"],
-  "A CLEARER WAY TO COMPILE PATTERNS": [
-    "更清晰地编译匹配模式",
-    "UNA FORMA MÁS CLARA DE COMPILAR PATRONES",
-    "UNE FAÇON PLUS CLAIRE DE COMPILER DES MOTIFS",
-  ],
   "Write the rule.": ["写下规则。", "Escribe la regla.", "Écrivez la règle."],
   "Read the regex.": ["读懂正则。", "Lee la regex.", "Lisez la regex."],
-  "Write clear rules. Inspect the regex. Test real examples.": [
-    "编写清晰的规则，查看正则表达式，测试实际示例。",
-    "Escribe reglas claras. Examina la regex. Prueba ejemplos reales.",
-    "Écrivez des règles claires. Examinez la regex. Testez de vrais exemples.",
-  ],
-  "THE INPUT ✍️": ["输入 ✍️", "LA ENTRADA ✍️", "L’ENTRÉE ✍️"],
   "Write your rules": ["编写规则", "Escribe tus reglas", "Écrivez vos règles"],
   "A controlled language, not a free-form prompt.": [
     "使用受控语言，而不是任意自然语言提示。",
@@ -753,7 +742,6 @@ export const translations = {
   ],
   "Translate to rules": ["转换为规则", "Traducir a reglas", "Traduire en règles"],
   "Go to regex error": ["定位正则错误", "Ir al error de la regex", "Aller à l’erreur de la regex"],
-  "THE OUTPUT 🔎": ["输出 🔎", "LA SALIDA 🔎", "LA SORTIE 🔎"],
   "Understand the pattern": ["理解匹配模式", "Entiende el patrón", "Comprenez le motif"],
   "Generated JavaScript regex": [
     "生成的 JavaScript 正则",
@@ -897,7 +885,6 @@ export const translations = {
     "Aquí verás cada regla con su fragmento generado y su significado.",
     "Chaque règle apparaîtra ici avec son fragment généré et sa signification.",
   ],
-  "THE STRUCTURE ↝": ["结构 ↝", "LA ESTRUCTURA ↝", "LA STRUCTURE ↝"],
   "Explore the pattern": ["探索匹配模式", "Explora el patrón", "Explorez le motif"],
   "OPEN THE MAP": ["打开结构图", "ABRIR EL MAPA", "OUVRIR LA CARTE"],
   "Hover to connect the views. Select a node, or press Enter/Space, to return to its rule.": [
@@ -919,7 +906,6 @@ export const translations = {
     "Compila reglas válidas para explorar su estructura.",
     "Compilez des règles valides pour explorer leur structure.",
   ],
-  "THE PROOF 🧪": ["验证 🧪", "LA PRUEBA 🧪", "LA VÉRIFICATION 🧪"],
   "Check the edge cases": [
     "检查边界情况",
     "Comprueba los casos límite",

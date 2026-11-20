@@ -54,22 +54,21 @@
     <main id="main" class="main-content">
       <header class="topbar"><span>THE WORKSHOP <span class="topbar-slash">/</span> LANGUAGE GUIDE</span><span class="build-label">DEVELOPMENT BUILD</span></header>
       <section class="hero guide-hero" aria-labelledby="page-title">
-        <div class="hero-copy"><span class="eyebrow">A FINITE, REVIEWABLE VOCABULARY</span><h1 id="page-title">Say only<br><em>what it can mean.</em></h1><p>Use short rules. Errors show a line and column. Quoted text stays literal.</p></div>
-        <div class="hero-symbol" aria-hidden="true">[<span>a</span>]</div>
+        <div class="hero-copy"><h1 id="page-title">Say only<br><em>what it can mean.</em></h1><p>Use short rules. Errors show a line and column. Quoted text stays literal.</p></div>
       </section>
 
       <section id="start" class="panel guide-panel" aria-labelledby="start-title">
-        <div class="panel-heading"><span class="step-number">01</span><div><p class="kicker">START HERE</p><h2 id="start-title">A complete rule</h2></div></div>
+        <div class="panel-heading"><span class="step-number">01</span><div><h2 id="start-title">A complete rule</h2></div></div>
         <div class="guide-example"><pre><code>start "ABC"
 3 digits
 end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>Matches</strong> ABC123<br><strong>Rejects</strong> ABC12, ABC1234</p></div></div>
         <p>Use <code>line start</code> and <code>line end</code> for line-based matching. Unscoped line anchors add JavaScript's <code>m</code> flag. Input and line anchors can be mixed: <code>start</code> with <code>line end</code> checks the beginning of the input and the end of a line; <code>line start</code> with <code>end</code> checks the beginning of a line and the end of the input. A single anchor can also be used alone.</p>
         <p><code>start</code> and <code>end</code> always match the true input edges, including with <code>m</code>. They reject a final line break outside the pattern. <code>line start</code> and <code>line end</code> use native multiline boundaries.</p>
-        <p>🏗️ Put the atoms together: <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md" target="_blank" rel="noopener noreferrer">four complex examples with complete explanations ↗</a> cover access logs, telemetry, artifact manifests and multiline documents. The <a href="../docs/COMPLEX-EXAMPLES.md">Markdown guide</a> is included for offline reading.</p>
+        <p>Put the atoms together: <a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md" target="_blank" rel="noopener noreferrer">four complex examples with complete explanations ↗</a> cover access logs, telemetry, artifact manifests and multiline documents. The <a href="../docs/COMPLEX-EXAMPLES.md">Markdown guide</a> is included for offline reading.</p>
       </section>
 
       <section id="atoms" class="panel guide-panel" aria-labelledby="atoms-title">
-        <div class="panel-heading"><span class="step-number">02</span><div><p class="kicker">BUILDING BLOCKS</p><h2 id="atoms-title">Match one thing</h2></div></div>
+        <div class="panel-heading"><span class="step-number">02</span><div><h2 id="atoms-title">Match one thing</h2></div></div>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Instruction</th><th scope="col">Source</th><th scope="col">Meaning</th></tr></thead><tbody>
           <tr><td><code>any character</code></td><td><code>.</code></td><td>One character, except a line break unless <code>s</code> is on</td></tr>
           <tr><td><code>any text</code></td><td><code>.*</code></td><td>Longest text up to the next rule. <code>s</code> includes line breaks.</td></tr>
@@ -99,7 +98,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
       </section>
 
       <section id="repetition" class="panel guide-panel" aria-labelledby="repetition-title">
-        <div class="panel-heading"><span class="step-number">03</span><div><p class="kicker">HOW MANY</p><h2 id="repetition-title">Repeat one thing</h2></div></div>
+        <div class="panel-heading"><span class="step-number">03</span><div><h2 id="repetition-title">Repeat one thing</h2></div></div>
         <p><strong>Lazy matching:</strong> prefix a repeated item with <code>lazy</code> to try its minimum count first, expanding if following rules require more. <code>lazy digits</code> produces <code>\d+?</code>; <code>lazy any text</code> produces <code>.*?</code>. This also works with explicit counts, optional items, groups, captures, choices and references. Exact counts stay fixed. Greedy matching remains the default. Included in npm <code>0.1.0-dev.5</code>.</p>
         <p>Put a repetition modifier before one item: <code>3 digits</code> generates <code>\d{3}</code>, and <code>between 2 and 4 digits</code> generates <code>\d{2,4}</code>. <code>optional "-"</code> is the same as <code>between 0 and 1 "-"</code>. Use <code>zero or more digit</code>, <code>one or more digit</code> or <code>at least 3 digit</code> for repetition without an upper limit. <code>digits</code>, <code>hex digits</code>, <code>letters</code> and <code>spaces</code> mean one or more unless a modifier replaces that default. <code>any text</code> and <code>text without</code> already match sequences.</p>
         <p>To set their length, use countable items: <code>3 any character</code> or <code>between 2 and 4 none of: a, b</code>. Counted sequence errors suggest these replacements. <code>any character</code> excludes line breaks unless <code>s</code> is enabled; <code>none of:</code> excludes only the listed characters.</p>
@@ -120,7 +119,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
       </section>
 
       <section id="reverse" class="panel guide-panel" aria-labelledby="reverse-title">
-        <div class="panel-heading"><span class="step-number">04</span><div><p class="kicker">THE OTHER WAY 🔄</p><h2 id="reverse-title">Translate an existing regex</h2></div></div>
+        <div class="panel-heading"><span class="step-number">04</span><div><h2 id="reverse-title">Translate an existing regex</h2></div></div>
         <div class="guide-example"><div><span>TRANSLATE FROM</span><code>/^[A-Z]{2}-\d{4}$/u</code><p>Open <strong>Already have a regex?</strong> in the <a href="../">workshop</a>, paste the literal, then press <strong>Ctrl/Cmd + Enter</strong> or choose <strong>Translate to rules</strong>.</p></div><pre><code>start
 2 uppercase letter
 "-"
@@ -158,7 +157,7 @@ end</code></pre></div>
       </section>
 
       <section id="flags" class="panel guide-panel" aria-labelledby="flags-title">
-        <div class="panel-heading"><span class="step-number">05</span><div><p class="kicker">BOUNDARIES</p><h2 id="flags-title">Flags and limits</h2></div></div>
+        <div class="panel-heading"><span class="step-number">05</span><div><h2 id="flags-title">Flags and limits</h2></div></div>
         <div class="guide-facts"><div><strong><code>u</code> or <code>v</code></strong><p>Unicode matching is required. u is the default; v uses native Unicode-set class semantics.</p></div><div><strong>All eight native flags</strong><p>Choose d/g/i/m/s/y with the workshop controls or CLI <code>--flags</code>; u/v are exclusive.</p></div><div><strong>Input and line anchors</strong><p>Unscoped line anchors enable m automatically. Input anchors remain absolute when the modes are mixed.</p></div></div>
         <p>These explicit flag options are included in npm <code>0.1.0-dev.5</code>. Duplicate flags and unavailable native features receive diagnostics. Native nested sets and intersection/subtraction require v. Each workshop example starts at position 0; sticky y stops at the first gap. Copied g/y regexes use native <code>lastIndex</code> state. Search lists up to 100 matches, using internal g/d for enumeration and indices without changing copied flags.</p>
         <p><strong>Local group options:</strong> <code>group with flags "im-s" {</code> enables <code>i/m</code> and disables <code>s</code> only inside its block. Close with <code>}</code>; the enclosing options resume afterward. Put captures inside the block, and apply existing repetition prefixes to the whole group. Input anchors remain absolute; explicit line anchors retain line semantics without changing options outside their scope. Only <code>i/m/s</code> are local options. Incompatible runtimes receive a positioned error; the tested Node 22/25/26 editions cannot run this feature correctly. See the <a href="../docs/LANGUAGE.md#scoped-flags-unreleased">scoped syntax and runtime limits</a> and <a href="../docs/DISTRIBUTION.md">publication status</a>.</p>
