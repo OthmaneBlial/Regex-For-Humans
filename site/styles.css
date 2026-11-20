@@ -345,7 +345,7 @@ h1 {
   color: inherit;
   border: 1px solid currentColor;
   border-radius: 5px;
-  font: 600 10px var(--display);
+  font: 600 11px var(--display);
 }
 .code-label button:hover {
   text-decoration: underline;
@@ -1144,7 +1144,7 @@ h1 {
     padding-inline: 15px;
   }
   .syntax-list > div {
-    font-size: 10px;
+    font-size: 11px;
     gap: 8px;
     grid-template-columns: minmax(0, 1.1fr) 16px minmax(0, 1fr);
   }

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Open the homepage's architecture, compatibility, complex-example and language-guide links as rendered GitHub documents instead of raw Markdown text, and correct the scoped-flags anchor.
+
+- Raise the homepage copy buttons and the narrow-screen cheat sheet from 10 to 11 pixels for easier reading.
+
 - Verify an existing package tarball without repacking, report its SHA-256 and retain new packs only after a successful clean consumer. Refuse overwriting a retained archive, including concurrent destination creation.
 
 - Complete earlier closed capture names inside quoted references, including JSON escape prefixes, surrogate pairs and missing closing quotes. Preserve command/count spelling and following text, validate each whole candidate, retain case-sensitive name binding and omit literal/declaration/property/flag contexts. Show the complete proposed document and keep native history, exact expectations, fixtures and drafts intact.
