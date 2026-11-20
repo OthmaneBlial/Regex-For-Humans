@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { compile, regexToRules, toRegExp } from "../index.js";
 import { parse } from "../src/parser.js";
 
-const source = String.raw`[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]`;
+const source = String.raw`[^\/\\\u{0}\n\r\u{2028}\u{2029}]`;
 const explicit = 'none of: "/", "\\\\", "\\u0000", "\\n", "\\r", "\\u2028", "\\u2029"';
 const cli = fileURLToPath(new URL("../bin/regex-for-humans.js", import.meta.url));
 
@@ -15,7 +15,7 @@ test("path segment characters have singular/plural defaults and ordinary repetit
     ["PATH SEGMENT CHARACTERS", { kind: "oneOrMore" }, "+"],
     ["3 path segment characters", { kind: "exact", min: 3 }, "{3}"],
     ["between 1 and 32 path segment characters", { kind: "range", min: 1, max: 32 }, "{1,32}"],
-    ["optional path segment character", { kind: "range", min: 0, max: 1 }, "{0,1}"],
+    ["optional path segment character", { kind: "range", min: 0, max: 1 }, "?"],
     ["zero or more path segment characters", { kind: "zeroOrMore" }, "*"],
     ["at least 2 path segment characters", { kind: "atLeast", min: 2 }, "{2,}"],
   ]) {

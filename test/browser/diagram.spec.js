@@ -63,7 +63,7 @@ test("diagram hover connects four views without changing source selection; keybo
   expect(
     await editor.evaluate((field) => field.value.slice(field.selectionStart, field.selectionEnd)),
   ).toBe('capture "word" {');
-  await expect(page.locator("#regex-output mark")).toHaveText("(?<word>(?:ab|cd))");
+  await expect(page.locator("#regex-output mark")).toHaveText("(?<word>ab|cd)");
   await expect(page.locator("#regex-output")).toHaveText(`/${pattern.source}/u`);
   await expect(page.locator("#diagram-message")).toContainText("not a runtime backtracking trace");
   await editor.press("ControlOrMeta+A");

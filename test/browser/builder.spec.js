@@ -21,7 +21,7 @@ test("all six keyboard actions keep examples and flags while inserting editable 
   const examples = page.locator("#test-list textarea");
   const cases = [
     ["capture", "^(\\d)7$", "17"],
-    ["optional", "^(?:A){0,1}7$", "7"],
+    ["optional", "^(?:A)?7$", "7"],
     ["alternative", "^(?:A|B)7$", "A7"],
     ["repetition", "^\\d{1,3}7$", "1237"],
     ["class", "^[AB]7$", "B7"],

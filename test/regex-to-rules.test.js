@@ -21,7 +21,7 @@ test("every shared recipe translates back to rules with the same regex and flags
 });
 
 test("single block alternatives round-trip without accumulating redundant groups", () => {
-  for (const source of ["^(?:(?:a+)|b)$", "^(?:(?<word>a+)|b)$", "^(?:(?=a)|b)$"]) {
+  for (const source of ["^(?:a+|b)$", "^(?:(?<word>a+)|b)$", "^(?:(?=a)|b)$"]) {
     for (const flags of ["u", "iu", "gu", "du"]) {
       const original = new RegExp(source, flags);
       const translated = regexToRules(original);
@@ -251,7 +251,7 @@ test("empty non-capturing groups translate to zero-count rules with equivalent m
       ["(?:){0}", "0 any character"],
       ["(?:){3}", "0 any character"],
       ["(?:){1000}", "0 any character"],
-      ["(?:){0,1}", "0 any character"],
+      ["(?:)?", "0 any character"],
       ["(?:){0,4}", "0 any character"],
       ["(?:){2,4}", "0 any character"],
       ["(?:){2,}", "0 any character"],

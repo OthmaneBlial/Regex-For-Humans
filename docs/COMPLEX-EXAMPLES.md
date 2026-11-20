@@ -37,10 +37,10 @@ console.log(regexToRules(regex).rules);
 
 | Example | Rules | Generated source length | Main difficulty |
 | --- | --- | --- | --- |
-| [🌐 Access log: a long record with quoted fields](#access-log) | 43 | 294 UTF-16 code units | Quoted fields and many bounded slots |
-| [🛰️ Structured event: fixed and dynamic optional values](#structured-event) | 38 | 274 UTF-16 code units | Independent optional fixed and variable values |
-| [📦 Artifact manifest: path, optional channel, hash and size](#artifact-manifest) | 19 | 186 UTF-16 code units | Optional path component, TSV and checksum shape |
-| [🧾 Multiline order: Unicode, lengths and optional lines](#multiline-order) | 23 | 255 UTF-16 code units | Whole document, Unicode and optional line |
+| [🌐 Access log: a long record with quoted fields](#access-log) | 43 | 270 UTF-16 code units | Quoted fields and many bounded slots |
+| [🛰️ Structured event: fixed and dynamic optional values](#structured-event) | 38 | 260 UTF-16 code units | Independent optional fixed and variable values |
+| [📦 Artifact manifest: path, optional channel, hash and size](#artifact-manifest) | 19 | 170 UTF-16 code units | Optional path component, TSV and checksum shape |
+| [🧾 Multiline order: Unicode, lengths and optional lines](#multiline-order) | 23 | 203 UTF-16 code units | Whole document, Unicode and optional line |
 
 <a id="access-log"></a>
 
@@ -107,7 +107,7 @@ end
 ### Generated regex
 
 ```js
-/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - [^ \u{a}\u{d}\u{2028}\u{2029}]{1,32} \[\d{2}\/[A-Za-z]{3}\/\d{4}:\d{2}:\d{2}:\d{2} [+\-]\d{4}\] "[A-Z]{3,7} [^ "\u{a}\u{d}\u{2028}\u{2029}]{1,200} HTTP\/\d\.\d" \d{3} \d{1,10} "[^"\u{a}\u{d}\u{2028}\u{2029}]{1,200}" "[^"\u{a}\u{d}\u{2028}\u{2029}]{1,200}"$/u
+/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - [^ \n\r\u{2028}\u{2029}]{1,32} \[\d{2}\/[A-Za-z]{3}\/\d{4}:\d{2}:\d{2}:\d{2} [+\-]\d{4}\] "[A-Z]{3,7} [^ "\n\r\u{2028}\u{2029}]{1,200} HTTP\/\d\.\d" \d{3} \d{1,10} "[^"\n\r\u{2028}\u{2029}]{1,200}" "[^"\n\r\u{2028}\u{2029}]{1,200}"$/u
 ```
 
 Each variable field is bounded and separated by explicit punctuation. Changing the user-agent limit means editing one rule, rather than finding the right repeated class inside the dense expression.
@@ -143,7 +143,7 @@ These rows are the compiler's actual `segments` output, in order.
 | 7 | `"."` | `\.` | Literal text ".". |
 | 8 | `between 1 and 3 digits` | `\d{1,3}` | Between 1 and 3 digits (0–9), inclusive. |
 | 9 | `" - "` | ` - ` | Literal text " - ". |
-| 10 | `between 1 and 32 none of: " ", "\n", "\r", "\u2028", "\u2029"` | `[^ \u{a}\u{d}\u{2028}\u{2029}]{1,32}` | Any character except " ", "\n", "\r", "\u2028", "\u2029". Between 1 and 32 times (inclusive). |
+| 10 | `between 1 and 32 none of: " ", "\n", "\r", "\u2028", "\u2029"` | `[^ \n\r\u{2028}\u{2029}]{1,32}` | Any character except " ", "\n", "\r", "\u2028", "\u2029". Between 1 and 32 times (inclusive). |
 | 11 | `" ["` | ` \[` | Literal text " [". |
 | 12 | `2 digits` | `\d{2}` | Exactly 2 digits (0–9). |
 | 13 | `"/"` | `\/` | Literal text "/". |
@@ -162,7 +162,7 @@ These rows are the compiler's actual `segments` output, in order.
 | 26 | `"] \""` | `\] "` | Literal text "] \"". |
 | 27 | `between 3 and 7 uppercase letters` | `[A-Z]{3,7}` | Between 3 and 7 uppercase ASCII letters (A–Z), inclusive. |
 | 28 | `" "` | ` ` | Literal text " ". |
-| 29 | `between 1 and 200 none of: " ", "\"", "\n", "\r", "\u2028", "\u2029"` | `[^ "\u{a}\u{d}\u{2028}\u{2029}]{1,200}` | Any character except " ", "\"", "\n", "\r", "\u2028", "\u2029". Between 1 and 200 times (inclusive). |
+| 29 | `between 1 and 200 none of: " ", "\"", "\n", "\r", "\u2028", "\u2029"` | `[^ "\n\r\u{2028}\u{2029}]{1,200}` | Any character except " ", "\"", "\n", "\r", "\u2028", "\u2029". Between 1 and 200 times (inclusive). |
 | 30 | `" HTTP/"` | ` HTTP\/` | Literal text " HTTP/". |
 | 31 | `digit` | `\d` | One digit (0–9). |
 | 32 | `"."` | `\.` | Literal text ".". |
@@ -172,9 +172,9 @@ These rows are the compiler's actual `segments` output, in order.
 | 36 | `" "` | ` ` | Literal text " ". |
 | 37 | `between 1 and 10 digits` | `\d{1,10}` | Between 1 and 10 digits (0–9), inclusive. |
 | 38 | `" \""` | ` "` | Literal text " \"". |
-| 39 | `between 1 and 200 none of: "\"", "\n", "\r", "\u2028", "\u2029"` | `[^"\u{a}\u{d}\u{2028}\u{2029}]{1,200}` | Any character except "\"", "\n", "\r", "\u2028", "\u2029". Between 1 and 200 times (inclusive). |
+| 39 | `between 1 and 200 none of: "\"", "\n", "\r", "\u2028", "\u2029"` | `[^"\n\r\u{2028}\u{2029}]{1,200}` | Any character except "\"", "\n", "\r", "\u2028", "\u2029". Between 1 and 200 times (inclusive). |
 | 40 | `"\" \""` | `" "` | Literal text "\" \"". |
-| 41 | `between 1 and 200 none of: "\"", "\n", "\r", "\u2028", "\u2029"` | `[^"\u{a}\u{d}\u{2028}\u{2029}]{1,200}` | Any character except "\"", "\n", "\r", "\u2028", "\u2029". Between 1 and 200 times (inclusive). |
+| 41 | `between 1 and 200 none of: "\"", "\n", "\r", "\u2028", "\u2029"` | `[^"\n\r\u{2028}\u{2029}]{1,200}` | Any character except "\"", "\n", "\r", "\u2028", "\u2029". Between 1 and 200 times (inclusive). |
 | 42 | `"\""` | `"` | Literal text "\"". |
 | 43 | `end` | `$` | Input end. |
 
@@ -242,10 +242,10 @@ end
 ### Generated regex
 
 ```js
-/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z level=[A-Z]{4,5} service=\w{3,30} trace=[0-9A-Fa-f]{32} span=[0-9A-Fa-f]{16} method=[A-Z]{3,7} route=[^ \u{a}\u{d}\u{2028}\u{2029}]{1,200} status=\d{3} bytes=\d{1,10} duration=\d{1,7}\.\d{3}ms lane=[ABC]{0,1}(?: retry=true){0,1}$/u
+/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z level=[A-Z]{4,5} service=\w{3,30} trace=[0-9A-Fa-f]{32} span=[0-9A-Fa-f]{16} method=[A-Z]{3,7} route=[^ \n\r\u{2028}\u{2029}]{1,200} status=\d{3} bytes=\d{1,10} duration=\d{1,7}\.\d{3}ms lane=[ABC]?(?: retry=true)?$/u
 ```
 
-The two optional rules generate `[ABC]{0,1}` and `(?: retry=true){0,1}`. The non-capturing group keeps the entire fixed suffix together. These are independent options, not conditional fields.
+The two optional rules generate `[ABC]?` and `(?: retry=true)?`. The non-capturing group keeps the entire fixed suffix together. These are independent options, not conditional fields.
 
 ### Accepted and rejected inputs
 
@@ -295,7 +295,7 @@ These rows are the compiler's actual `segments` output, in order.
 | 23 | `" method="` | ` method=` | Literal text " method=". |
 | 24 | `between 3 and 7 uppercase letters` | `[A-Z]{3,7}` | Between 3 and 7 uppercase ASCII letters (A–Z), inclusive. |
 | 25 | `" route="` | ` route=` | Literal text " route=". |
-| 26 | `between 1 and 200 none of: " ", "\n", "\r", "\u2028", "\u2029"` | `[^ \u{a}\u{d}\u{2028}\u{2029}]{1,200}` | Any character except " ", "\n", "\r", "\u2028", "\u2029". Between 1 and 200 times (inclusive). |
+| 26 | `between 1 and 200 none of: " ", "\n", "\r", "\u2028", "\u2029"` | `[^ \n\r\u{2028}\u{2029}]{1,200}` | Any character except " ", "\n", "\r", "\u2028", "\u2029". Between 1 and 200 times (inclusive). |
 | 27 | `" status="` | ` status=` | Literal text " status=". |
 | 28 | `3 digits` | `\d{3}` | Exactly 3 digits (0–9). |
 | 29 | `" bytes="` | ` bytes=` | Literal text " bytes=". |
@@ -305,8 +305,8 @@ These rows are the compiler's actual `segments` output, in order.
 | 33 | `"."` | `\.` | Literal text ".". |
 | 34 | `3 digits` | `\d{3}` | Exactly 3 digits (0–9). |
 | 35 | `"ms lane="` | `ms lane=` | Literal text "ms lane=". |
-| 36 | `optional one of: "A", "B", "C"` | `[ABC]{0,1}` | One of "A", "B", "C". Optional. |
-| 37 | `optional " retry=true"` | `(?: retry=true){0,1}` | Literal text " retry=true". Optional. |
+| 36 | `optional one of: "A", "B", "C"` | `[ABC]?` | One of "A", "B", "C". Optional. |
+| 37 | `optional " retry=true"` | `(?: retry=true)?` | Literal text " retry=true". Optional. |
 | 38 | `end` | `$` | Input end. |
 
 </details>
@@ -362,10 +362,10 @@ Both forms compile to the same bounded character class. The workshop recipe uses
 ### Generated regex
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
-`between 1 and 32 path segment characters` keeps the component length readable. It replaces the seven escaped exclusions with one named atom; the exact generated regex stays the same. A repeated multi-character literal such as `optional "nightly/"` compiles to one optional non-capturing group. Literal tabs remain visible as `\u{9}` in the generated regex and as `\t` in the rules.
+`between 1 and 32 path segment characters` keeps the component length readable. It replaces the seven escaped exclusions with one named atom; the exact generated regex stays the same. A repeated multi-character literal such as `optional "nightly/"` compiles to one optional non-capturing group. Literal tabs remain visible as `\t` in the generated regex and as `\t` in the rules.
 
 ### Accepted and rejected inputs
 
@@ -392,8 +392,8 @@ These rows are the compiler's actual `segments` output, in order.
 | --- | --- | --- | --- |
 | 1 | `start` | `^` | Input start. |
 | 2 | `"incoming/"` | `incoming\/` | Literal text "incoming/". |
-| 3 | `optional "nightly/"` | `(?:nightly\/){0,1}` | Literal text "nightly/". Optional. |
-| 4 | `between 1 and 32 path segment characters` | `[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}` | Path segment character: excludes slash, backslash, NUL and line breaks. Between 1 and 32 times (inclusive). |
+| 3 | `optional "nightly/"` | `(?:nightly\/)?` | Literal text "nightly/". Optional. |
+| 4 | `between 1 and 32 path segment characters` | `[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}` | Path segment character: excludes slash, backslash, NUL and line breaks. Between 1 and 32 times (inclusive). |
 | 5 | `"/v"` | `\/v` | Literal text "/v". |
 | 6 | `between 1 and 3 digits` | `\d{1,3}` | Between 1 and 3 digits (0–9), inclusive. |
 | 7 | `"."` | `\.` | Literal text ".". |
@@ -404,9 +404,9 @@ These rows are the compiler's actual `segments` output, in order.
 | 12 | `8 digits` | `\d{8}` | Exactly 8 digits (0–9). |
 | 13 | `"_"` | `_` | Literal text "_". |
 | 14 | `8 hex digits` | `[0-9A-Fa-f]{8}` | Exactly 8 hexadecimal digits (0–9, A–F, a–f). |
-| 15 | `".tar.gz\t"` | `\.tar\.gz\u{9}` | Literal text ".tar.gz\t". |
+| 15 | `".tar.gz\t"` | `\.tar\.gz\t` | Literal text ".tar.gz\t". |
 | 16 | `64 hex digits` | `[0-9A-Fa-f]{64}` | Exactly 64 hexadecimal digits (0–9, A–F, a–f). |
-| 17 | `"\t"` | `\u{9}` | Literal text "\t". |
+| 17 | `"\t"` | `\t` | Literal text "\t". |
 | 18 | `between 1 and 12 digits` | `\d{1,12}` | Between 1 and 12 digits (0–9), inclusive. |
 | 19 | `end` | `$` | Input end. |
 
@@ -466,7 +466,7 @@ end
 ### Generated regex
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 Literal newlines join the document fields explicitly. The optional priority line is a fixed literal including its terminating LF, so its entire line disappears together. Making a priority line with an arbitrary variable value optional would require unsupported composite groups.
@@ -495,27 +495,27 @@ These rows are the compiler's actual `segments` output, in order.
 | Line | Rule | Regex fragment | Explanation |
 | --- | --- | --- | --- |
 | 1 | `start` | `^` | Input start. |
-| 2 | `"ORDER\nid=ORD-"` | `ORDER\u{a}id=ORD-` | Literal text "ORDER\nid=ORD-". |
+| 2 | `"ORDER\nid=ORD-"` | `ORDER\nid=ORD-` | Literal text "ORDER\nid=ORD-". |
 | 3 | `8 hex digits` | `[0-9A-Fa-f]{8}` | Exactly 8 hexadecimal digits (0–9, A–F, a–f). |
-| 4 | `"\nbuyer="` | `\u{a}buyer=` | Literal text "\nbuyer=". |
-| 5 | `between 1 and 60 none of: "\u0000", "\n", "\r", "\u2028", "\u2029"` | `[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}` | Any character except "\u0000", "\n", "\r", "\u2028", "\u2029". Between 1 and 60 times (inclusive). |
-| 6 | `"\nphone="` | `\u{a}phone=` | Literal text "\nphone=". |
-| 7 | `optional "+"` | `\+{0,1}` | Literal text "+". Optional. |
+| 4 | `"\nbuyer="` | `\nbuyer=` | Literal text "\nbuyer=". |
+| 5 | `between 1 and 60 none of: "\u0000", "\n", "\r", "\u2028", "\u2029"` | `[^\u{0}\n\r\u{2028}\u{2029}]{1,60}` | Any character except "\u0000", "\n", "\r", "\u2028", "\u2029". Between 1 and 60 times (inclusive). |
+| 6 | `"\nphone="` | `\nphone=` | Literal text "\nphone=". |
+| 7 | `optional "+"` | `\+?` | Literal text "+". Optional. |
 | 8 | `between 7 and 15 digits` | `\d{7,15}` | Between 7 and 15 digits (0–9), inclusive. |
-| 9 | `"\nitems="` | `\u{a}items=` | Literal text "\nitems=". |
+| 9 | `"\nitems="` | `\nitems=` | Literal text "\nitems=". |
 | 10 | `between 1 and 4 digits` | `\d{1,4}` | Between 1 and 4 digits (0–9), inclusive. |
-| 11 | `"\ntotal="` | `\u{a}total=` | Literal text "\ntotal=". |
+| 11 | `"\ntotal="` | `\ntotal=` | Literal text "\ntotal=". |
 | 12 | `between 1 and 6 digits` | `\d{1,6}` | Between 1 and 6 digits (0–9), inclusive. |
 | 13 | `"."` | `\.` | Literal text ".". |
 | 14 | `2 digits` | `\d{2}` | Exactly 2 digits (0–9). |
-| 15 | `" EUR\nreference="` | ` EUR\u{a}reference=` | Literal text " EUR\nreference=". |
+| 15 | `" EUR\nreference="` | ` EUR\nreference=` | Literal text " EUR\nreference=". |
 | 16 | `16 hex digits` | `[0-9A-Fa-f]{16}` | Exactly 16 hexadecimal digits (0–9, A–F, a–f). |
-| 17 | `"\napproval="` | `\u{a}approval=` | Literal text "\napproval=". |
-| 18 | `optional one of: "A", "D"` | `[AD]{0,1}` | One of "A", "D". Optional. |
-| 19 | `"\n"` | `\u{a}` | Literal text "\n". |
-| 20 | `optional "priority=HIGH\n"` | `(?:priority=HIGH\u{a}){0,1}` | Literal text "priority=HIGH\n". Optional. |
+| 17 | `"\napproval="` | `\napproval=` | Literal text "\napproval=". |
+| 18 | `optional one of: "A", "D"` | `[AD]?` | One of "A", "D". Optional. |
+| 19 | `"\n"` | `\n` | Literal text "\n". |
+| 20 | `optional "priority=HIGH\n"` | `(?:priority=HIGH\n)?` | Literal text "priority=HIGH\n". Optional. |
 | 21 | `"END"` | `END` | Literal text "END". |
-| 22 | `optional "\n"` | `\u{a}{0,1}` | Literal text "\n". Optional. |
+| 22 | `optional "\n"` | `\n?` | Literal text "\n". Optional. |
 | 23 | `end` | `$` | Input end. |
 
 </details>

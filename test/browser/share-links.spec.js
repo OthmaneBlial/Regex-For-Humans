@@ -139,7 +139,7 @@ test("shared initialization precedes delayed recipes and recipe selection remove
   await expect(page.locator(".test-row").first()).toHaveAttribute("data-result", "pass");
   await page.locator("#rules-input").fill('start\n"newer"\nend');
   release();
-  await expect(page.locator("#example-list button")).toHaveCount(31);
+  await expect(page.locator("#example-list button")).toHaveCount(34);
   await expect(page.locator("#rules-input")).toHaveValue('start\n"newer"\nend');
   await expect(page.locator(".test-row")).toHaveCount(2);
   await page.locator("#example-list button").first().click();

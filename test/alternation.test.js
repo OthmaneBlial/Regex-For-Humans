@@ -36,7 +36,7 @@ test("nested alternatives, sequence branches, captures and whole-choice repetiti
   const rules =
     'start\ncapture "outer" {\n2 either {\ncapture "first" {\n"a"\n}\ngroup {\n"b"\neither {\n"c"\n"d"\n}\n}\n}\n}\nsame as capture "first"\nend';
   const expression = toRegExp(compile(rules));
-  assert.equal(expression.source, String.raw`^(?<outer>(?:(?<first>a)|(?:b(?:c|d))){2})\k<first>$`);
+  assert.equal(expression.source, String.raw`^(?<outer>(?:(?<first>a)|b(?:c|d)){2})\k<first>$`);
   assert.deepEqual({ ...expression.exec("aaa").groups }, { outer: "aa", first: "a" });
   assert.deepEqual({ ...expression.exec("abc").groups }, { outer: "abc", first: undefined });
   assert.deepEqual({ ...expression.exec("bdbd").groups }, { outer: "bdbd", first: undefined });
@@ -45,7 +45,7 @@ test("nested alternatives, sequence branches, captures and whole-choice repetiti
 
 test("choice branches have local anchor ordering and share the input/line anchor contract", () => {
   const result = compile('either {\nstart "a"\ngroup {\n"b"\nend\n}\n}');
-  assert.equal(result.source, "(?:^a|(?:b$))");
+  assert.equal(result.source, "(?:^a|b$)");
   for (const text of ["ax", "xb", "ab"]) assert.equal(toRegExp(result).test(text), true);
   assert.equal(toRegExp(result).test("xax"), false);
   assert.equal(toRegExp(compile("either {\nend\nstart\n}")).test("x"), true);

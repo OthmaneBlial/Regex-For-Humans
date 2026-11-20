@@ -12,7 +12,7 @@ const forms = [
   ["0 word characters", { kind: "exact", min: 0 }, "{0}"],
   ["3 word characters", { kind: "exact", min: 3 }, "{3}"],
   ["between 2 and 4 word characters", { kind: "range", min: 2, max: 4 }, "{2,4}"],
-  ["optional word character", { kind: "range", min: 0, max: 1 }, "{0,1}"],
+  ["optional word character", { kind: "range", min: 0, max: 1 }, "?"],
   ["zero or more word characters", { kind: "zeroOrMore" }, "*"],
   ["at least 2 word characters", { kind: "atLeast", min: 2 }, "{2,}"],
 ];

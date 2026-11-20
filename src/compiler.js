@@ -10,6 +10,14 @@ import { applyModifiers, supportsModifiers } from "./flags.js";
 
 const locationOfOptions = { line: 1, column: 1 };
 
+const CONTROL_ESCAPES = new Map([
+  [0x9, "\\t"],
+  [0xa, "\\n"],
+  [0xb, "\\v"],
+  [0xc, "\\f"],
+  [0xd, "\\r"],
+]);
+
 /** @param {string} character @param {boolean} inClass @param {boolean} [unicodeSets] */
 function escapeCharacter(character, inClass, unicodeSets = false) {
   const codePoint = character.codePointAt(0);
@@ -21,7 +29,7 @@ function escapeCharacter(character, inClass, unicodeSets = false) {
     codePoint === 0x2029 ||
     (codePoint >= 0xd800 && codePoint <= 0xdfff)
   ) {
-    return `\\u{${codePoint.toString(16)}}`;
+    return CONTROL_ESCAPES.get(codePoint) ?? `\\u{${codePoint.toString(16)}}`;
   }
   const special = inClass
     ? unicodeSets
@@ -115,10 +123,13 @@ function repetitionSource(repetition) {
       source = `{${repetition.min}}`;
       break;
     case "range":
-      source = `{${repetition.min},${repetition.max}}`;
+      source =
+        repetition.min === 0 && repetition.max === 1
+          ? "?"
+          : `{${repetition.min},${repetition.max}}`;
       break;
     case "atLeast":
-      source = `{${repetition.min},}`;
+      source = repetition.min === 0 ? "*" : repetition.min === 1 ? "+" : `{${repetition.min},}`;
       break;
     default:
       throw new TypeError("Unknown repetition kind.");
@@ -349,8 +360,8 @@ export function compileAst(parsed, options = {}) {
       );
   }
 
-  /** @param {import('./ast.js').RuleNode[]} nodes @param {string} [effectiveFlags] @param {boolean} [scoped] */
-  function emit(nodes, effectiveFlags = flags, scoped = false) {
+  /** @param {import('./ast.js').RuleNode[]} nodes @param {string} [effectiveFlags] @param {boolean} [scoped] @param {boolean} [enclosed] */
+  function emit(nodes, effectiveFlags = flags, scoped = false, enclosed = false) {
     const firstSegment = segments.length;
     for (const [index, node] of nodes.entries()) {
       if (node.kind === "atom" && node.atomType === "unicodeProperty")
@@ -373,7 +384,7 @@ export function compileAst(parsed, options = {}) {
           explanation: explainNode(node, effectiveFlags),
           ...node.location,
         });
-        emit(node.nodes, effectiveFlags, scoped);
+        emit(node.nodes, effectiveFlags, scoped, true);
         const endStart = source.length;
         source += ")";
         segments.push({
@@ -390,8 +401,10 @@ export function compileAst(parsed, options = {}) {
         continue;
       }
       if (node.kind === "alternation") {
+        // The only child of an enclosing group or lookaround reuses its parentheses.
+        const open = enclosed && nodes.length === 1 && !node.repetition ? "" : "(?:";
         const sourceStart = source.length;
-        source += "(?:";
+        source += open;
         segments.push({
           kind: "alternation",
           edge: "start",
@@ -399,7 +412,7 @@ export function compileAst(parsed, options = {}) {
           repetition: node.repetition,
           sourceStart,
           sourceEnd: source.length,
-          source: "(?:",
+          source: open,
           text: node.text,
           explanation: explainNode(node, effectiveFlags),
           ...node.location,
@@ -425,7 +438,7 @@ export function compileAst(parsed, options = {}) {
           emit(branch, effectiveFlags, scoped);
         }
         const endStart = source.length;
-        const close = `)${repetitionSource(node.repetition)}`;
+        const close = open ? `)${repetitionSource(node.repetition)}` : "";
         source += close;
         segments.push({
           kind: "alternation",
@@ -461,13 +474,16 @@ export function compileAst(parsed, options = {}) {
             );
           }
         }
+        // A plain group without repetition changes nothing in a sequence, so it needs no parentheses.
         const fragment = node.capturing
           ? node.name === null
             ? "("
             : `(?<${node.name}>`
           : node.modifiers
             ? `(?${node.modifiers}:`
-            : "(?:";
+            : node.repetition
+              ? "(?:"
+              : "";
         source += fragment;
         const details = {
           kind: "group",
@@ -488,9 +504,9 @@ export function compileAst(parsed, options = {}) {
           explanation: explainNode(node, innerFlags),
           ...node.location,
         });
-        emit(node.nodes, innerFlags, scoped || node.modifiers !== undefined);
+        emit(node.nodes, innerFlags, scoped || node.modifiers !== undefined, fragment !== "");
         const endStart = source.length;
-        const close = `)${repetitionSource(node.repetition)}`;
+        const close = fragment ? `)${repetitionSource(node.repetition)}` : "";
         source += close;
         segments.push({
           ...details,

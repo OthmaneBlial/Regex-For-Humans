@@ -45,7 +45,7 @@ test("input anchors remain absolute under m while mixed line anchors retain nati
   for (const [rules, source] of [
     ['start "a"\nline end', "^(?<![\\s\\S])a$"],
     ['line start "a"\nend', "^a$(?![\\s\\S])"],
-    ["start\ngroup {\nline end\n}", "^(?<![\\s\\S])(?:$)"],
+    ["start\ngroup {\nline end\n}", "^(?<![\\s\\S])$"],
   ]) {
     const result = compile(rules);
     assert.equal(result.source, source);

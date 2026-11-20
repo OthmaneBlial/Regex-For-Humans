@@ -80,7 +80,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
           <tr><td><code>hex digit</code></td><td><code>[0-9A-Fa-f]</code></td><td>One ASCII hexadecimal digit, in either letter case</td></tr>
           <tr><td><code>hex digits</code></td><td><code>[0-9A-Fa-f]+</code></td><td>One or more hexadecimal digits; no prefix or separators</td></tr>
           <tr><td><code>space</code> / <code>not space</code></td><td><code>\s</code> / <code>\S</code></td><td>JavaScript whitespace / anything else</td></tr>
-          <tr><td><code>path segment character(s)</code></td><td><code>[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]</code> / same class with <code>+</code></td><td>Unicode characters excluding slash, backslash, NUL and line breaks</td></tr>
+          <tr><td><code>path segment character(s)</code></td><td><code>[^\/\\\u{0}\n\r\u{2028}\u{2029}]</code> / same class with <code>+</code></td><td>Unicode characters excluding slash, backslash, NUL and line breaks</td></tr>
           <tr><td><code>spaces</code></td><td><code>\s+</code></td><td>One or more JavaScript whitespace characters, including tabs and line breaks</td></tr>
           <tr><td><code>digits</code></td><td><code>\d+</code></td><td>One or more digits</td></tr>
           <tr><td><code>"ABC"</code></td><td><code>ABC</code></td><td>Exact quoted text; regex punctuation is escaped</td></tr>
@@ -105,7 +105,7 @@ end</code></pre><div><span>GENERATES</span><code>/^ABC\d{3}$/u</code><p><strong>
         <div class="guide-table-wrap"><table class="guide-table"><thead><tr><th scope="col">Form</th><th scope="col">Source</th><th scope="col">Count</th></tr></thead><tbody>
           <tr><td><code>3 &lt;item&gt;</code> (for example, <code>3 digits</code>)</td><td><code>{3}</code></td><td>Exactly three</td></tr>
           <tr><td><code>between 2 and 4 &lt;item&gt;</code></td><td><code>{2,4}</code></td><td>Two, three or four; both bounds included</td></tr>
-          <tr><td><code>optional &lt;item&gt;</code></td><td><code>{0,1}</code></td><td>Zero or one</td></tr>
+          <tr><td><code>optional &lt;item&gt;</code></td><td><code>?</code></td><td>Zero or one</td></tr>
           <tr><td><code>zero or more &lt;item&gt;</code></td><td><code>*</code></td><td>Zero or more, with no upper limit</td></tr>
           <tr><td><code>one or more &lt;item&gt;</code></td><td><code>+</code></td><td>One or more, with no upper limit</td></tr>
           <tr><td><code>at least 3 &lt;item&gt;</code></td><td><code>{3,}</code></td><td>Three or more, with no upper limit</td></tr>

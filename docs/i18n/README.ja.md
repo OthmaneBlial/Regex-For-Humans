@@ -167,9 +167,12 @@ end
 | [UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | `8–4–4–4–12` | 5つの16進数グループ |
 | [製品コード](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | `AB-rgb-0420` | 固定の文字数と ASCII の大文字・小文字 |
 | [日付](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | `2026-09-30` | `YYYY-MM-DD` |
+| [calendar-date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | `2026-09-30` | 0–255 / 01–12 / 00–23 |
 | [時刻](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | `09:30` | `HH:MM` |
+| [clock-time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | `23:59` | 0–255 / 01–12 / 00–23 |
 | [電話番号](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | `+33123456789` | 任意の `+` と7–15桁 |
 | [IPv4](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | `192.0.2.42` | 1–3桁の4組 |
+| [ipv4-address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | `192.168.1.1` | 0–255 / 01–12 / 00–23 |
 | [ファイル名](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | `report.txt` | 区切り文字を除いた長さ制限付き Unicode 名 |
 | [マニフェスト](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | パス、ハッシュ、サイズ | 19ルール、9例 |
 | [アクセスログ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | リクエスト、状態、サイズ | 43ルール、8例 |
@@ -191,7 +194,7 @@ end
 | [ログのフィールド](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | 検索した断片から level と code を抽出 |
 | [検索と置換](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | 位置、キャプチャ、g なしの置換を厳密に検証 |
 
-ライブラリには **31 レシピ、24 カテゴリ、3 難易度**があります。4つの UI 言語でタイトル、制限、ルールを検索し、フィルターを組み合わせられます。[ガイド](../EXAMPLE_LIBRARY.md)を参照してください。
+ライブラリには **34 レシピ、24 カテゴリ、3 難易度**があります。4つの UI 言語でタイトル、制限、ルールを検索し、フィルターを組み合わせられます。[ガイド](../EXAMPLE_LIBRARY.md)を参照してください。
 
 失敗した例には[検証可能な説明](../FAILURE_EXPLANATIONS.md)が表示されます。ネイティブの一致範囲、証明できる最小長、必須リテラルの欠落を示し、正確な失敗箇所が不明な場合はその旨を明記します。
 
@@ -230,7 +233,7 @@ end
 ```
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
 ファイルの存在や実際の整合性は検証しません。
@@ -266,7 +269,7 @@ end
 ```
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 改行はリテラルです。金額や注文の妥当性はアプリケーションが検証します。ガイドの4つの平坦な例はフィールドを抽出しません。
@@ -327,7 +330,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 | `digit` / `not digit` | `\d` / `\D` | ASCII 数字とその補集合 |
 | `3 digits` / `digits` | `\d{3}` / `\d+` | 3桁、または1桁以上 |
 | `between 2 and 4 digits` | `\d{2,4}` | 両端を含む |
-| `optional "-"` | `-{0,1}` | 任意のハイフン |
+| `optional "-"` | `-?` | 任意のハイフン |
 | `letter` / `letters` | `[A-Za-z]` / `[A-Za-z]+` | ASCII 英字 |
 | `lowercase letters` / `uppercase letters` | `[a-z]+` / `[A-Z]+` | `i` で区別を無視 |
 | `6 hex digits` | `[0-9A-Fa-f]{6}` | 16進数6桁 |

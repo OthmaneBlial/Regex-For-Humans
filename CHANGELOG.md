@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Generate the regex a person would write. `optional` now emits `?` (not `{0,1}`), `at least 0`/`1` emit `*`/`+`, tab, newline and carriage return appear as `\t`, `\n` and `\r`, a plain `group { }` adds no parentheses, and a choice that is the only content of a capture or group reuses its parentheses: `^(?<month>0[1-9]|1[0-2])$` instead of `^(?<month>(?:(?:0[1-9])|(?:1[0-2])))$`. Matching is unchanged; a round-trip check over 45 common regexes and 3,000 strings each finds no difference. The workshop trace shows `—` for a rule that adds no regex of its own.
+
+- Add three recipes that validate values instead of shapes: IPv4 addresses with each number from 0 to 255, 24-hour times from `00:00` to `23:59`, and calendar dates with month 01–12 and day 01–31. The library now has 34 recipes.
+
+- Accept every HTTP token character in the header recipe's field name, so `X-B3-TraceId` and `X_Trace` match; it previously allowed only letters and hyphens.
+
 - Explain an existing regex on the homepage: paste `/source/flags` or a bare pattern to draw it as rules on the line, test text against it and open it in the workshop. A pattern without `u` or `v` is read with `u` when it stays valid, and the page says so; captures, groups and choices appear as brackets and `or` stops. The demo now tests text without `g`/`y` state.
 
 - Remove repeated homepage sections (feature cards, the three-step journey, trust badges and the closing call to action) and slogan headings; the hero now names both directions. Compact the workshop hero, drop the decorative `{3}` and `[a]` glyphs, give every workshop hint the same 13-pixel style and keep labels at 11 pixels or more.

@@ -214,9 +214,12 @@ Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. S
 | [🪪 UUID shape](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | `f81d4fae-7dec-11d0-a765-00a0c91e6bf6` | Five ASCII hex groups of 8–4–4–4–12 characters, either letter case |
 | [🔡 Product-code shape](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | `AB-rgb-0420` | Two uppercase, three lowercase ASCII letters, and four digits |
 | [📅 Date shape](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | `2026-09-30` | The `YYYY-MM-DD` shape |
+| [Validate a calendar date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | `2026-09-30` | Month 01–12, day 01–31, captured as year, month and day |
 | [⏰ Time shape](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | `09:30` | The `HH:MM` shape with ASCII digits |
+| [Validate a 24-hour time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | `23:59` | `00:00` to `23:59`; rejects `24:00` |
 | [📞 Phone-number shape](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | `+33123456789` | Optional `+`, then 7–15 ASCII digits |
 | [🌐 IPv4 address shape](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | `192.0.2.42` | Four groups of 1–3 ASCII digits; range checks are separate |
+| [Validate an IPv4 address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | `192.168.1.1` | Four numbers from 0 to 255, without leading zeros |
 | [📄 Text filename shape](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | `report.txt` | 1–64 Unicode code points before `.txt`, excluding separators, NUL and line breaks |
 | [🗃️ Complex artifact manifest](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | Tab-separated path, checksum and size | 19 rules, an optional directory, bounded Unicode path and nine preloaded test cases |
 | [🌐 Complex access log](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | Address, timestamp, request and quoted fields | 43 rules and eight preloaded cases; shape checks, without field extraction |
@@ -238,7 +241,7 @@ Empty non-capturing groups translate too: `/(?:)/u` becomes `0 any character`. S
 | [Extract named fields from a log fragment](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | Named level and code from a searched fragment |
 | [Search and replace a typo](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | Exact spans, captures and non-global replacement expectations |
 
-The library contains **31 recipes across 24 categories and three difficulty levels**. Search titles, limitations and rules in the four interface languages, then combine category and difficulty filters. See the [library guide](docs/EXAMPLE_LIBRARY.md) for scope and limits.
+The library contains **34 recipes across 24 categories and three difficulty levels**. Search titles, limitations and rules in the four interface languages, then combine category and difficulty filters. See the [library guide](docs/EXAMPLE_LIBRARY.md) for scope and limits.
 
 Failed examples also receive [evidence-based explanations](docs/FAILURE_EXPLANATIONS.md): native match ranges, a provable minimum length or an absent required literal. When the precise failing step is unknown, the workshop says so.
 
@@ -290,7 +293,7 @@ end
 **Exact generated JavaScript regex**
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
 <!-- /complex:artifact-manifest -->
@@ -335,7 +338,7 @@ end
 **Exact generated JavaScript regex**
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 <!-- /complex:multiline-order -->
@@ -410,7 +413,7 @@ Put one instruction on each line. Quote literal text. Add anchors to check the w
 | `3 digits` · `digits` | `\d{3}` · `\d+` | Exactly three / one or more |
 | `lowercase letters` · `uppercase letters` | `[a-z]+` · `[A-Z]+` | ASCII case-specific letters; `i` ignores the distinction |
 | `between 2 and 4 digits` | `\d{2,4}` | Two to four digits, inclusive |
-| `optional "-"` | `-{0,1}` | Zero or one hyphen |
+| `optional "-"` | `-?` | Zero or one hyphen |
 | `hex digit` · `6 hex digits` | `[0-9A-Fa-f]` · `[0-9A-Fa-f]{6}` | ASCII hexadecimal digits |
 | `letter` · `letters` | `[A-Za-z]` · `[A-Za-z]+` | One ASCII letter / one or more |
 | `space` · `spaces` | `\s` · `\s+` | One whitespace character / one or more, including line breaks |

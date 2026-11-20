@@ -35,7 +35,7 @@ test("nested captures preserve numbering, names, values and every source span", 
 
 test("group repetition keeps sequences together and distinguishes absent and empty captures", () => {
   for (const [modifier, quantifier, yes, no] of [
-    ["optional", "{0,1}", "", "ABAB"],
+    ["optional", "?", "", "ABAB"],
     ["zero or more", "*", "ABAB", "A"],
     ["one or more", "+", "ABAB", ""],
     ["2", "{2}", "ABAB", "AB"],
@@ -108,7 +108,7 @@ test("CLI JSON and explanations use the same group compiler", () => {
 
 test("anchors retain local ordering and global multiline semantics inside groups", () => {
   const input = compile('group {\nstart "A"\nend\n}');
-  assert.equal(input.source, "(?:^A$)");
+  assert.equal(input.source, "^A$");
   assert.equal(toRegExp(input).test("A"), true);
   assert.equal(toRegExp(input).test("BA"), false);
   const line = compile('capture {\nline start "A"\nline end\n}');

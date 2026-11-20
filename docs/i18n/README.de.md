@@ -167,9 +167,12 @@ Unbekannte Syntax wird weder entfernt noch angenähert. **Go to regex error** ma
 | [UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | `8–4–4–4–12` | Fünf Hexgruppen |
 | [Produktcode](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | `AB-rgb-0420` | Feste ASCII-Schreibweise und Anzahl |
 | [Datum](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | `2026-09-30` | Form `YYYY-MM-DD` |
+| [calendar-date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | `2026-09-30` | 0–255 / 01–12 / 00–23 |
 | [Uhrzeit](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | `09:30` | Form `HH:MM` |
+| [clock-time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | `23:59` | 0–255 / 01–12 / 00–23 |
 | [Telefonnummer](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | `+33123456789` | Optionales `+`, 7–15 Ziffern |
 | [IPv4](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | `192.0.2.42` | Vier Gruppen mit 1–3 Ziffern |
+| [ipv4-address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | `192.168.1.1` | 0–255 / 01–12 / 00–23 |
 | [Dateiname](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | `report.txt` | Begrenzter Unicode-Stamm ohne Trennzeichen |
 | [Manifest](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | Pfad, Hash, Größe | 19 Regeln und neun Beispiele |
 | [Zugriffslog](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | Anfrage, Status, Größe | 43 Regeln und acht Beispiele |
@@ -191,7 +194,7 @@ Unbekannte Syntax wird weder entfernt noch angenähert. **Go to regex error** ma
 | [Log-Felder](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | Benannte Felder level und code aus einem Suchfragment |
 | [Suchen und Ersetzen](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | Exakte Positionen, Gruppen und Ersetzung ohne g |
 
-Die Bibliothek enthält **31 Rezepte, 24 Kategorien und drei Schwierigkeitsstufen**. Titel, Grenzen und Regeln sind in den vier Oberflächensprachen durchsuchbar; Filter sind kombinierbar. Siehe den [Bibliotheksleitfaden](../EXAMPLE_LIBRARY.md).
+Die Bibliothek enthält **34 Rezepte, 24 Kategorien und drei Schwierigkeitsstufen**. Titel, Grenzen und Regeln sind in den vier Oberflächensprachen durchsuchbar; Filter sind kombinierbar. Siehe den [Bibliotheksleitfaden](../EXAMPLE_LIBRARY.md).
 
 Fehlgeschlagene Beispiele erhalten [überprüfbare Erklärungen](../FAILURE_EXPLANATIONS.md): native Trefferbereiche, eine nachweisbare Mindestlänge oder fehlenden Pflichttext. Ist der genaue Fehlerschritt unbekannt, sagt der Workshop das ausdrücklich.
 
@@ -230,7 +233,7 @@ end
 ```
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
 Dateiexistenz und tatsächliche Integrität werden nicht geprüft.
@@ -266,7 +269,7 @@ end
 ```
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 Zeilenumbrüche sind wörtliche Zeichen. Die Anwendung validiert Beträge, Telefonnummern und Bestellungen. Die vier flachen Beispiele extrahieren keine Felder.
@@ -327,7 +330,7 @@ Eine Anweisung pro Zeile; wörtlicher Text in Anführungszeichen.
 | `digit` / `not digit` | `\d` / `\D` | ASCII-Ziffer oder Komplement |
 | `3 digits` / `digits` | `\d{3}` / `\d+` | Drei oder mindestens eine |
 | `between 2 and 4 digits` | `\d{2,4}` | Grenzen eingeschlossen |
-| `optional "-"` | `-{0,1}` | Optionaler Bindestrich |
+| `optional "-"` | `-?` | Optionaler Bindestrich |
 | `letter` / `letters` | `[A-Za-z]` / `[A-Za-z]+` | ASCII-Buchstaben |
 | `lowercase letters` / `uppercase letters` | `[a-z]+` / `[A-Z]+` | `i` ignoriert den Unterschied |
 | `6 hex digits` | `[0-9A-Fa-f]{6}` | Sechs Hexziffern |

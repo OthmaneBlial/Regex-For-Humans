@@ -8,7 +8,7 @@ test("six builder templates remain editable and reverse-convert with native matc
   const original = 'start\n"7"\nend';
   const cases = [
     ["capture", "^(\\d)7$", ["17"], ["7", "a7", "177"]],
-    ["optional", "^(?:A){0,1}7$", ["7", "A7"], ["AA7", "B7"]],
+    ["optional", "^(?:A)?7$", ["7", "A7"], ["AA7", "B7"]],
     ["alternative", "^(?:A|B)7$", ["A7", "B7"], ["7", "C7"]],
     ["repetition", "^\\d{1,3}7$", ["17", "1237"], ["7", "12347", "a7"]],
     ["class", "^[AB]7$", ["A7", "B7"], ["7", "C7"]],

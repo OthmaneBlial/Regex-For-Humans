@@ -263,9 +263,12 @@ end
 | [معرّف UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | <code dir="ltr">8–4–4–4–12</code> | خمس مجموعات ست عشرية |
 | [رمز منتج](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | <code dir="ltr">AB-rgb-0420</code> | أعداد ثابتة من الحروف والأرقام |
 | [شكل تاريخ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | <code dir="ltr">2026-09-30</code> | الصيغة <code dir="ltr">YYYY-MM-DD</code> |
+| [calendar-date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | <code dir="ltr">2026-09-30</code> | 0–255 / 01–12 / 00–23 |
 | [شكل وقت](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | <code dir="ltr">09:30</code> | الصيغة <code dir="ltr">HH:MM</code> |
+| [clock-time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | <code dir="ltr">23:59</code> | 0–255 / 01–12 / 00–23 |
 | [شكل هاتف](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | <code dir="ltr">+33123456789</code> | علامة <code dir="ltr">+</code> اختيارية و7–15 رقمًا |
 | [شكل IPv4](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | <code dir="ltr">192.0.2.42</code> | أربع مجموعات من 1–3 أرقام |
+| [ipv4-address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | <code dir="ltr">192.168.1.1</code> | 0–255 / 01–12 / 00–23 |
 | [اسم ملف](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | <code dir="ltr">report.txt</code> | اسم Unicode محدود الطول دون فواصل مسار |
 | [بيان ملفات البناء](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | مسار وبصمة وحجم | 19 قاعدة وتسعة أمثلة |
 | [سجل الوصول](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | طلب وحالة وحجم | 43 قاعدة وثمانية أمثلة |
@@ -287,7 +290,7 @@ end
 | [حقول سجل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | <code dir="ltr">INFO code=200</code> | حقلا <code dir="ltr">level</code> و<code dir="ltr">code</code> من مقطع يجري البحث فيه |
 | [البحث والاستبدال](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | <code dir="ltr">teh then teh → the then teh</code> | توقعات دقيقة للمواقع والمجموعات والاستبدال دون <code dir="ltr">g</code> |
 
-تضم المكتبة **31 وصفة و24 فئة وثلاثة مستويات للصعوبة**. ابحث في العناوين والحدود والقواعد بلغات الواجهة الأربع واجمع المرشحات. راجع [دليل المكتبة](../EXAMPLE_LIBRARY.md).
+تضم المكتبة **34 وصفة و24 فئة وثلاثة مستويات للصعوبة**. ابحث في العناوين والحدود والقواعد بلغات الواجهة الأربع واجمع المرشحات. راجع [دليل المكتبة](../EXAMPLE_LIBRARY.md).
 
 تتلقى الأمثلة الفاشلة [تفسيرات قابلة للتحقق](../FAILURE_EXPLANATIONS.md): نطاق المطابقة الفعلي أو حد أدنى مثبت للطول أو نص حرفي إلزامي مفقود. عندما تكون خطوة الفشل الدقيقة مجهولة، يوضحها المحرر بصراحة.
 
@@ -332,7 +335,7 @@ end
 <div dir="ltr" align="left">
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
 </div>
@@ -376,7 +379,7 @@ end
 <div dir="ltr" align="left">
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 </div>
@@ -447,7 +450,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 | <code dir="ltr">digit</code> / <code dir="ltr">not digit</code> | <code dir="ltr">\d</code> / <code dir="ltr">\D</code> | رقم ASCII أو ما ليس كذلك |
 | <code dir="ltr">3 digits</code> / <code dir="ltr">digits</code> | <code dir="ltr">\d{3}</code> / <code dir="ltr">\d+</code> | ثلاثة أرقام أو رقم واحد على الأقل |
 | <code dir="ltr">between 2 and 4 digits</code> | <code dir="ltr">\d{2,4}</code> | حدود شاملة |
-| <code dir="ltr">optional "-"</code> | <code dir="ltr">-{0,1}</code> | شرطة اختيارية |
+| <code dir="ltr">optional "-"</code> | <code dir="ltr">-?</code> | شرطة اختيارية |
 | <code dir="ltr">letter</code> / <code dir="ltr">letters</code> | <code dir="ltr">[A-Za-z]</code> / <code dir="ltr">[A-Za-z]+</code> | حروف ASCII |
 | <code dir="ltr">lowercase letters</code> / <code dir="ltr">uppercase letters</code> | <code dir="ltr">[a-z]+</code> / <code dir="ltr">[A-Z]+</code> | حالة ASCII؛ تتجاهل <code dir="ltr">i</code> الفرق |
 | <code dir="ltr">6 hex digits</code> | <code dir="ltr">[0-9A-Fa-f]{6}</code> | ستة أرقام ست عشرية |

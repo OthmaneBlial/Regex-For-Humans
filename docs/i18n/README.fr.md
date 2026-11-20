@@ -171,9 +171,12 @@ Les constructions inconnues sont refusées, jamais supprimées ni approximées. 
 | [UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | `8–4–4–4–12` | Cinq groupes hexadécimaux |
 | [Code produit](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | `AB-rgb-0420` | Majuscules, minuscules et chiffres aux comptes fixés |
 | [Date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | `2026-09-30` | Forme `YYYY-MM-DD` |
+| [calendar-date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | `2026-09-30` | 0–255 / 01–12 / 00–23 |
 | [Heure](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | `09:30` | Forme `HH:MM` |
+| [clock-time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | `23:59` | 0–255 / 01–12 / 00–23 |
 | [Téléphone](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | `+33123456789` | `+` facultatif et 7–15 chiffres |
 | [IPv4](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | `192.0.2.42` | Quatre groupes de 1–3 chiffres |
+| [ipv4-address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | `192.168.1.1` | 0–255 / 01–12 / 00–23 |
 | [Nom de fichier](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | `report.txt` | Radical Unicode borné, sans séparateurs |
 | [Manifeste d’artefacts](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | Chemin, hash, taille | 19 règles et neuf exemples |
 | [Journal d’accès](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | Requête, statut, taille | 43 règles et huit exemples |
@@ -195,7 +198,7 @@ Les constructions inconnues sont refusées, jamais supprimées ni approximées. 
 | [Champs de journal](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | Champs nommés level et code dans un fragment recherché |
 | [Recherche et remplacement](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | Positions, captures et remplacement sans g vérifiés précisément |
 
-La bibliothèque compte **31 recettes, 24 catégories et trois niveaux**. Recherchez titres, limites et règles dans les quatre langues de l’interface, puis combinez les filtres. Consultez le [guide de la bibliothèque](../EXAMPLE_LIBRARY.md).
+La bibliothèque compte **34 recettes, 24 catégories et trois niveaux**. Recherchez titres, limites et règles dans les quatre langues de l’interface, puis combinez les filtres. Consultez le [guide de la bibliothèque](../EXAMPLE_LIBRARY.md).
 
 Les exemples en échec reçoivent des [explications vérifiables](../FAILURE_EXPLANATIONS.md) : positions natives, longueur minimale prouvable ou texte obligatoire absent. Si l’étape précise est inconnue, l’atelier l’indique.
 
@@ -234,7 +237,7 @@ end
 ```
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
 Il vérifie la forme du chemin et du hash, pas l’existence du fichier ni l’intégrité de son contenu. Les limites Unicode et les tabulations restent explicites.
@@ -270,7 +273,7 @@ end
 ```
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 Les retours à la ligne sont des caractères littéraux. La validation des montants, numéros et commandes relève de l’application. Les quatre exemples simples du guide ne font pas d’extraction de champs.
@@ -331,7 +334,7 @@ Une instruction par ligne ; les textes littéraux sont entre guillemets.
 | `digit` / `not digit` | `\d` / `\D` | Chiffre ASCII ou son complément |
 | `3 digits` / `digits` | `\d{3}` / `\d+` | Trois ou au moins un |
 | `between 2 and 4 digits` | `\d{2,4}` | Bornes incluses |
-| `optional "-"` | `-{0,1}` | Tiret facultatif |
+| `optional "-"` | `-?` | Tiret facultatif |
 | `letter` / `letters` | `[A-Za-z]` / `[A-Za-z]+` | Lettres ASCII |
 | `lowercase letters` / `uppercase letters` | `[a-z]+` / `[A-Z]+` | Casse ASCII ; `i` ignore la distinction |
 | `6 hex digits` | `[0-9A-Fa-f]{6}` | Six chiffres hexadécimaux |

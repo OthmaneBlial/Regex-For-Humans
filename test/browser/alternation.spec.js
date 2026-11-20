@@ -10,7 +10,7 @@ test("alternatives import captures, expose absent values and navigate to each ch
   const rules = page.locator("#rules-input");
   const row = page.locator("#test-list .test-row").first();
   await rules.fill('start\ncapture "pet" {\neither {\n"cat"\n"dog"\n"bird"\n}\n}\nend');
-  await expect(page.locator("#regex-output")).toHaveText("/^(?<pet>(?:cat|dog|bird))$/u");
+  await expect(page.locator("#regex-output")).toHaveText("/^(?<pet>cat|dog|bird)$/u");
   await row.locator("textarea").fill("dog");
   await expect(row.locator(".capture-explorer > summary")).toHaveText(
     "1 match · 1 capture per match",

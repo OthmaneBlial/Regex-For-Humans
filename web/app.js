@@ -451,7 +451,8 @@ function renderTrace(segments) {
         explanation: segment.explanation,
       }),
     );
-    button.append(make("code", "trace-fragment", segment.source));
+    // A plain group or a lone alternative reuses its parent's parentheses and adds no regex.
+    button.append(make("code", "trace-fragment", segment.source || "—"));
     const detail = make("span");
     detail.append(
       make(

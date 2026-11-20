@@ -27,7 +27,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css?v=b93bc164cc3d">
   <link rel="preload" href="./assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <script type="module" src="./app.js?v=44f2bb90263b"></script>
+  <script type="module" src="./app.js?v=2126e5a43e00"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -101,7 +101,7 @@ end</code></pre></div>
 
 
     <section class="recipes-section section" id="recipes" aria-labelledby="recipes-title">
-      <div class="section-heading split"><h2 id="recipes-title">31 recipes on four lines.</h2><p>Each one opens in the workshop with its rules, regex, notes and ready-made examples. Every note says what the shape does not check.</p></div>
+      <div class="section-heading split"><h2 id="recipes-title">34 recipes on four lines.</h2><p>Each one opens in the workshop with its rules, regex, notes and ready-made examples. Every note says what the shape does not check.</p></div>
       <div class="network">
         <section class="route line-literal" aria-labelledby="route-ids"><h3 id="route-ids">IDs and codes</h3><ul>
           <li><a class="recipe-card" href="./workshop/?example=prefixed-identifier"><strong>Give IDs a shape</strong><code dir="ltr">ABC123</code><span>A prefix + exactly three digits.</span></a></li>
@@ -116,11 +116,14 @@ end</code></pre></div>
         </ul></section>
         <section class="route line-set" aria-labelledby="route-dates"><h3 id="route-dates">Dates, times and versions</h3><ul>
           <li><a class="recipe-card" href="./workshop/?example=date-shape"><strong>Check a date shape</strong><code dir="ltr">2026-09-30</code><span>YYYY-MM-DD. Calendar checks are separate.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=calendar-date"><strong>Validate a calendar date</strong><code dir="ltr">2026-09-30</code><span>Month 01–12, day 01–31. Month lengths are not checked.</span></a></li>
           <li><a class="recipe-card" href="./workshop/?example=time-shape"><strong>Check a time shape</strong><code dir="ltr">09:30</code><span>HH:MM. Check hour and minute ranges separately.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=clock-time"><strong>Validate a 24-hour time</strong><code dir="ltr">23:59</code><span>00:00 to 23:59. Rejects 24:00.</span></a></li>
           <li><a class="recipe-card" href="./workshop/?example=iso8601-shape"><strong>Match a UTC timestamp shape</strong><code dir="ltr">2026-10-11T09:30:00Z</code><span>Optional fractions and Z. Calendar and range checks stay separate.</span></a></li>
           <li><a class="recipe-card" href="./workshop/?example=version-shape"><strong>Spot a version shape</strong><code dir="ltr">1.2.3</code><span>Three numeric parts. Not full SemVer.</span></a></li>
           <li><a class="recipe-card" href="./workshop/?example=semantic-version"><strong>Validate SemVer 2.0 syntax</strong><code dir="ltr">1.2.3-alpha.1+001</code><span>Core, prerelease and build syntax; no precedence comparison.</span></a></li>
           <li><a class="recipe-card" href="./workshop/?example=ipv4-shape"><strong>Shape an IPv4 address</strong><code dir="ltr">192.0.2.42</code><span>Four 1–3 digit groups. Not a 0–255 range check.</span></a></li>
+          <li><a class="recipe-card" href="./workshop/?example=ipv4-address"><strong>Validate an IPv4 address</strong><code dir="ltr">192.168.1.1</code><span>Each number 0–255, no leading zeros.</span></a></li>
         </ul></section>
         <section class="route line-loop" aria-labelledby="route-text"><h3 id="route-text">Text, files and web</h3><ul>
           <li><a class="recipe-card" href="./workshop/?example=slug"><strong>Match a lowercase slug</strong><code dir="ltr">hello-world</code><span>Lowercase ASCII words separated by single hyphens.</span></a></li>

@@ -167,9 +167,12 @@ Sintaxe incompatível falha sem ser removida ou aproximada. **Go to regex error*
 | [UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | `8–4–4–4–12` | Cinco grupos hexadecimais |
 | [Produto](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | `AB-rgb-0420` | Quantidades e caixa ASCII fixas |
 | [Data](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | `2026-09-30` | Forma `YYYY-MM-DD` |
+| [calendar-date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | `2026-09-30` | 0–255 / 01–12 / 00–23 |
 | [Hora](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | `09:30` | Forma `HH:MM` |
+| [clock-time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | `23:59` | 0–255 / 01–12 / 00–23 |
 | [Telefone](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | `+33123456789` | `+` opcional e 7–15 dígitos |
 | [IPv4](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | `192.0.2.42` | Quatro grupos de 1–3 dígitos |
+| [ipv4-address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | `192.168.1.1` | 0–255 / 01–12 / 00–23 |
 | [Arquivo](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | `report.txt` | Nome Unicode limitado, sem separadores |
 | [Manifesto](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | Caminho, hash, tamanho | 19 regras e nove exemplos |
 | [Log de acesso](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | Requisição, status, tamanho | 43 regras e oito exemplos |
@@ -191,7 +194,7 @@ Sintaxe incompatível falha sem ser removida ou aproximada. **Go to regex error*
 | [Campos de registro](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | Campos level e code de um fragmento pesquisado |
 | [Busca e substituição](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | Expectativas exatas de posições, capturas e substituição sem g |
 
-A biblioteca reúne **31 receitas, 24 categorias e três níveis**. Pesquise títulos, limites e regras nos quatro idiomas da interface e combine filtros. Veja o [guia](../EXAMPLE_LIBRARY.md).
+A biblioteca reúne **34 receitas, 24 categorias e três níveis**. Pesquise títulos, limites e regras nos quatro idiomas da interface e combine filtros. Veja o [guia](../EXAMPLE_LIBRARY.md).
 
 Os exemplos com falha recebem [explicações verificáveis](../FAILURE_EXPLANATIONS.md): intervalos nativos, comprimento mínimo demonstrável ou texto literal obrigatório ausente. Quando a etapa exata é desconhecida, a oficina informa isso.
 
@@ -230,7 +233,7 @@ end
 ```
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
 Confere a forma, não a existência do arquivo nem a integridade de seu conteúdo.
@@ -266,7 +269,7 @@ end
 ```
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 As quebras de linha são literais. A aplicação valida valores, números e pedidos. Os quatro exemplos sem capturas não extraem campos.
@@ -327,7 +330,7 @@ Uma instrução por linha; texto literal entre aspas.
 | `digit` / `not digit` | `\d` / `\D` | Dígito ASCII ou complemento |
 | `3 digits` / `digits` | `\d{3}` / `\d+` | Três ou um ou mais |
 | `between 2 and 4 digits` | `\d{2,4}` | Limites inclusivos |
-| `optional "-"` | `-{0,1}` | Hífen opcional |
+| `optional "-"` | `-?` | Hífen opcional |
 | `letter` / `letters` | `[A-Za-z]` / `[A-Za-z]+` | Letras ASCII |
 | `lowercase letters` / `uppercase letters` | `[a-z]+` / `[A-Z]+` | `i` ignora a diferença |
 | `6 hex digits` | `[0-9A-Fa-f]{6}` | Seis dígitos hexadecimais |

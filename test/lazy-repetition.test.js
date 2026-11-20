@@ -10,7 +10,7 @@ test("lazy modifies every existing quantifier and implicit sequence without chan
     ["lazy digits", String.raw`\d+?`],
     ["lazy any text", ".*?"],
     ['lazy text without: "x", "y"', "[^xy]*?"],
-    ['lazy optional "AB"', "(?:AB){0,1}?"],
+    ['lazy optional "AB"', "(?:AB)??"],
     ["lazy zero or more digit", String.raw`\d*?`],
     ["lazy one or more letter", "[A-Za-z]+?"],
     ["lazy at least 3 space", String.raw`\s{3,}?`],
@@ -37,7 +37,7 @@ test("lazy whole blocks and references preserve numbered, absent and final captu
   const rules =
     'start\ncapture "first" {\n"a"\n}\nlazy one or more either {\ncapture "last" {\n"b"\n}\n"c"\n}\nlazy optional same as capture "first"\nend';
   const result = compile(rules);
-  assert.equal(result.source, String.raw`^(?<first>a)(?:(?<last>b)|c)+?\k<first>{0,1}?$`);
+  assert.equal(result.source, String.raw`^(?<first>a)(?:(?<last>b)|c)+?\k<first>??$`);
   const expression = toRegExp(result);
   assert.deepEqual({ ...expression.exec("abca").groups }, { first: "a", last: undefined });
   assert.deepEqual({ ...expression.exec("acbb").groups }, { first: "a", last: "b" });
@@ -60,10 +60,10 @@ const patterns = [
   "a{0}?",
   "a{2}?",
   "a{0,0}?",
-  "a{0,1}?",
+  "a??",
   "a{2,4}?",
-  "a{0,}?",
-  "a{1,}?",
+  "a*?",
+  "a+?",
   "a{2,}?",
   ".*?a",
   "[^b]*?b",

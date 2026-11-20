@@ -16,7 +16,7 @@ test("library filters preserve the workspace and selected recipe through empty r
   );
   await page.locator("#recipe-level").selectOption("beginner");
   await expect(page.locator("#example-list button")).toHaveCount(0);
-  await expect(page.locator("#recipe-results")).toHaveText("0 of 31 recipes");
+  await expect(page.locator("#recipe-results")).toHaveText("0 of 34 recipes");
   await expect(page.locator("#example-list")).toHaveText("No recipes match. Try fewer filters.");
   await page.locator("#recipe-search").fill('<img onerror="alert(1)">');
   await expect(page.locator("#example-list img")).toHaveCount(0);
@@ -25,7 +25,7 @@ test("library filters preserve the workspace and selected recipe through empty r
   await expect(page).toHaveURL(/example=unicode-word/u);
   await page.locator("#recipe-clear").click();
   await expect(page.locator("#recipe-search")).toBeFocused();
-  await expect(page.locator("#example-list button")).toHaveCount(31);
+  await expect(page.locator("#example-list button")).toHaveCount(34);
   await expect(page.locator('[data-scenario="unicode-word"]')).toHaveAttribute(
     "aria-current",
     "true",
@@ -61,7 +61,7 @@ test("translated search, keyboard selection and palette controls keep the DSL in
     await page.locator("#recipe-level").selectOption("expert");
     await page.locator("#recipe-search").fill(query);
     await expect(page.locator("#recipe-results")).toHaveText(
-      translate(locale, "{count} of {total} recipes", { count: 1, total: 31 }),
+      translate(locale, "{count} of {total} recipes", { count: 1, total: 34 }),
     );
     const recipe = page.locator('[data-scenario="semantic-version"]');
     await expect(recipe).toHaveAccessibleDescription(translate(locale, "Expert"));
@@ -136,7 +136,7 @@ test("delayed catalog keeps filters disabled and binds options in the chosen lan
       "Versions sémantiques",
     );
     await expect(page.locator("#rules-input")).toHaveValue('start "ABC"\n3 digits\nend');
-    await expect(page.locator("#recipe-results")).toHaveText("Recettes : 31 sur 31");
+    await expect(page.locator("#recipe-results")).toHaveText("Recettes : 34 sur 34");
   } finally {
     release();
   }

@@ -195,7 +195,7 @@ test("unchanged edits keep history and unavailable native editing still applies 
   await page.locator("#complete-rule").click();
   await page.locator("#completion-choice").press("Enter");
   await expect(editor).toHaveValue("group {\n  digit\n}\n");
-  await expect(page.locator("#regex-output")).toHaveText("/(?:\\d)/u");
+  await expect(page.locator("#regex-output")).toHaveText("/\\d/u");
 });
 
 test("startup and recovered drafts establish initial text without an empty undo step", async ({

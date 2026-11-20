@@ -32,7 +32,7 @@ test("whole-line comments ignore quotes and structural punctuation across every 
 test("comments do not create alternative branches or set operands and group edits retain them", () => {
   const rules =
     '# outside "\nstart\ncapture "word" {\n  either {\n    # between branches "\n    "A"\n    # another }\n    "B"\n  }\n}\n# before reference "\nsame as capture "word"\nend';
-  assert.equal(compile(rules).source, "^(?<word>(?:A|B))\\k<word>$");
+  assert.equal(compile(rules).source, "^(?<word>A|B)\\k<word>$");
   const renamed = editGroup(rules, { line: 3, column: 1 }, { capturing: true, name: "label" });
   assert.equal(renamed, rules.replaceAll('"word"', '"label"'));
   assert.equal(toRegExp(compile(renamed)).test("AA"), true);

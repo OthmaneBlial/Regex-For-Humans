@@ -47,7 +47,7 @@ test("reverse translation keeps empty negative classes and ordinary dots distinc
   );
   await expect(page.locator("#dot-all")).toBeChecked();
   await expect(page.locator("#regex-output")).toHaveText(
-    String.raw`/^[^\u{a}\u{d}\u{2028}\u{2029}].$/su`,
+    String.raw`/^[^\n\r\u{2028}\u{2029}].$/su`,
   );
   await example.fill("A\n");
   await expect(result).toContainText("✓ Matched");
@@ -444,18 +444,18 @@ test("control-letter escapes become visible rules and invalid control escapes pr
   const sample = page.locator("#test-list textarea").first();
   const result = page.locator("#test-list .test-result").first();
   for (const [literal, rules, source, positive, negative] of [
-    [String.raw`/^\cJ{2}$/isu`, 'start\n2 "\\n"\nend', String.raw`/^\u{a}{2}$/isu`, "\n\n", "JJ"],
+    [String.raw`/^\cJ{2}$/isu`, 'start\n2 "\\n"\nend', String.raw`/^\n{2}$/isu`, "\n\n", "JJ"],
     [
       String.raw`/^[\ciX]+$/u`,
       'start\none or more one of: "\\t", "X"\nend',
-      String.raw`/^[\u{9}X]+$/u`,
+      String.raw`/^[\tX]+$/u`,
       "\tX",
       "iX",
     ],
     [
       String.raw`/^(?:\cJx){2}$/u`,
       'start\n2 "\\nx"\nend',
-      String.raw`/^(?:\u{a}x){2}$/u`,
+      String.raw`/^(?:\nx){2}$/u`,
       "\nx\nx",
       "JxJx",
     ],
@@ -994,7 +994,7 @@ test("phone shape teaches the optional modifier and supports requiring its liter
   await page.locator('[data-scenario="phone-shape"]').click();
   await expect(editor).toHaveValue(rules);
   await expect(page.locator("#recipe-note")).toBeVisible();
-  await expect(page.locator("#regex-output")).toHaveText("/^\\+{0,1}\\d{7,15}$/u");
+  await expect(page.locator("#regex-output")).toHaveText("/^\\+?\\d{7,15}$/u");
   await expect(page.locator("#test-summary")).toHaveText("17 of 17 examples behave as expected");
 });
 
@@ -2032,7 +2032,7 @@ test("zero-or-more list explanations agree with direct and reverse matching", as
     [
       'zero or more one of: "\\n", "😀"',
       String.raw`/^[\n😀]*$/u`,
-      String.raw`/^[\u{a}😀]*$/u`,
+      String.raw`/^[\n😀]*$/u`,
       'One of "\\n", "😀". Zero or more times.',
       "\n😀",
       "x",
@@ -2393,7 +2393,7 @@ test("bounded counts show inclusive matches, literal grouping and positioned err
   for (const [rule, source, positive, negative] of [
     ["between 2 and 4 digits", "\\d{2,4}", "1234", "12345"],
     ["between 2 and 4 hex digits", "[0-9A-Fa-f]{2,4}", "09aF", "ag"],
-    ['between 0 and 1 "AB"', "(?:AB){0,1}", "", "ABAB"],
+    ['between 0 and 1 "AB"', "(?:AB)?", "", "ABAB"],
     ["between 2 and 3 one of: a, b", "[ab]{2,3}", "aba", "a"],
   ]) {
     await editor.fill(`start\n${rule}\nend`);

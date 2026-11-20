@@ -263,9 +263,12 @@ Literal کے دونوں طرف <code dir="ltr">/</code> اور اس میں <code
 | [UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | <code dir="ltr">8–4–4–4–12</code> | پانچ hex گروپ |
 | [پروڈکٹ کوڈ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | <code dir="ltr">AB-rgb-0420</code> | حروف اور ہندسوں کی مقررہ تعداد |
 | [تاریخ کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | <code dir="ltr">2026-09-30</code> | <code dir="ltr">YYYY-MM-DD</code> کی صورت |
+| [calendar-date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | <code dir="ltr">2026-09-30</code> | 0–255 / 01–12 / 00–23 |
 | [وقت کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | <code dir="ltr">09:30</code> | <code dir="ltr">HH:MM</code> کی صورت |
+| [clock-time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | <code dir="ltr">23:59</code> | 0–255 / 01–12 / 00–23 |
 | [فون نمبر کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | <code dir="ltr">+33123456789</code> | اختیاری <code dir="ltr">+</code> اور 7–15 ہندسے |
 | [IPv4 کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | <code dir="ltr">192.0.2.42</code> | 1–3 ہندسوں کے چار گروپ |
+| [ipv4-address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | <code dir="ltr">192.168.1.1</code> | 0–255 / 01–12 / 00–23 |
 | [فائل کا نام](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | <code dir="ltr">report.txt</code> | محدود Unicode نام، path separators کے بغیر |
 | [Artifact manifest](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | Path، hash، حجم | 19 قواعد اور نو مثالیں |
 | [رسائی کا لاگ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | Request، status، حجم | 43 قواعد اور آٹھ مثالیں |
@@ -287,7 +290,7 @@ Literal کے دونوں طرف <code dir="ltr">/</code> اور اس میں <code
 | [لاگ کے خانے](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | <code dir="ltr">INFO code=200</code> | تلاش کیے گئے حصے سے <code dir="ltr">level</code> اور <code dir="ltr">code</code> کے خانے |
 | [تلاش اور تبدیلی](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | <code dir="ltr">teh then teh → the then teh</code> | مقامات، گروپوں اور بغیر <code dir="ltr">g</code> تبدیلی کی درست توقعات |
 
-لائبریری میں **31 مثالیں، 24 زمرے اور مشکل کے تین درجے** ہیں۔ انٹرفیس کی چار زبانوں میں عنوان، حدود اور قواعد تلاش کریں اور فلٹر یکجا کریں۔ [رہنما](../EXAMPLE_LIBRARY.md) دیکھیں۔
+لائبریری میں **34 مثالیں، 24 زمرے اور مشکل کے تین درجے** ہیں۔ انٹرفیس کی چار زبانوں میں عنوان، حدود اور قواعد تلاش کریں اور فلٹر یکجا کریں۔ [رہنما](../EXAMPLE_LIBRARY.md) دیکھیں۔
 
 ناکام مثالوں کے لیے [قابلِ تصدیق وضاحتیں](../FAILURE_EXPLANATIONS.md) ملتی ہیں: اصل میچ کی حدود، ثابت شدہ کم از کم لمبائی یا غائب لازمی متن۔ اگر ناکامی کا درست مرحلہ معلوم نہ ہو تو ورکشاپ صاف بتاتی ہے۔
 
@@ -332,7 +335,7 @@ end
 <div dir="ltr" align="left">
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
 </div>
@@ -376,7 +379,7 @@ end
 <div dir="ltr" align="left">
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 </div>
@@ -447,7 +450,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 | <code dir="ltr">digit</code> / <code dir="ltr">not digit</code> | <code dir="ltr">\d</code> / <code dir="ltr">\D</code> | ASCII ہندسہ یا اس کے علاوہ |
 | <code dir="ltr">3 digits</code> / <code dir="ltr">digits</code> | <code dir="ltr">\d{3}</code> / <code dir="ltr">\d+</code> | تین یا کم از کم ایک ہندسہ |
 | <code dir="ltr">between 2 and 4 digits</code> | <code dir="ltr">\d{2,4}</code> | دونوں حدود شامل |
-| <code dir="ltr">optional "-"</code> | <code dir="ltr">-{0,1}</code> | اختیاری hyphen |
+| <code dir="ltr">optional "-"</code> | <code dir="ltr">-?</code> | اختیاری hyphen |
 | <code dir="ltr">letter</code> / <code dir="ltr">letters</code> | <code dir="ltr">[A-Za-z]</code> / <code dir="ltr">[A-Za-z]+</code> | ASCII حروف |
 | <code dir="ltr">lowercase letters</code> / <code dir="ltr">uppercase letters</code> | <code dir="ltr">[a-z]+</code> / <code dir="ltr">[A-Z]+</code> | ASCII case؛ <code dir="ltr">i</code> فرق نظرانداز کرتا ہے |
 | <code dir="ltr">6 hex digits</code> | <code dir="ltr">[0-9A-Fa-f]{6}</code> | چھ hex digits |

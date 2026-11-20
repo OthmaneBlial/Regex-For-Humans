@@ -85,7 +85,7 @@ a line whose first non-whitespace character is `#` is a comment. Quotes, braces 
 | `hex digits` | `[0-9A-Fa-f]+` | `09aF` | empty string, `0xFF` with `start` and `end` |
 | `space` | `\s` | a space, tab or newline | `A` |
 | `spaces` | `\s+` | one or more spaces, tabs or line breaks | empty string, `A` |
-| `path segment character` | `[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]` | `é`, `😀`, space, dot | slash, backslash, NUL, line break |
+| `path segment character` | `[^\/\\\u{0}\n\r\u{2028}\u{2029}]` | `é`, `😀`, space, dot | slash, backslash, NUL, line break |
 | `path segment characters` | the same class with `+` | one or more characters within a path component | empty string or a separator |
 | `not space` | `\S` | `A` | a space |
 | `digits` | `\d+` | `3`, `123` | `A` |
@@ -124,7 +124,7 @@ Matching always uses Unicode code points (`u`), including for repeated literals.
 
 Unicode direction controls (`Bidi_Control`) remain literal matching data. Generated source, quoted explanations, diagnostics, trace text and match feedback show them as visible `\uXXXX` escapes: `"A\u202eB"` emits `A\u202eB`. Ordinary Arabic and Hebrew letters and emoji stay unchanged. `segments[].text` and editable inputs retain the original source; CLI `--json` escapes these controls in transit, so decoding the JSON restores the original metadata.
 
-C0/C1 control characters, DEL and Unicode line separators are also displayed as escapes instead of raw control characters. C1 values such as U+009B emit `\u009b` in literals and character lists. Existing source escapes for C0, DEL and line separators keep their braced form, such as `\u{a}` and `\u{2028}`; quoted explanations and match feedback use visible JSON-style escapes. Matching and original source metadata remain unchanged.
+C0/C1 control characters, DEL and Unicode line separators are also displayed as escapes instead of raw control characters. C1 values such as U+009B emit `\u009b` in literals and character lists. Existing source escapes for C0, DEL and line separators keep their braced form, such as `\n` and `\u{2028}`; quoted explanations and match feedback use visible JSON-style escapes. Matching and original source metadata remain unchanged.
 
 `start` and `line start` may prefix the first atom on the same line, with or without a comma: `start 3 digits`.
 
@@ -288,13 +288,13 @@ Compilation probes native lookbehind support before emitting the first behind as
 
 ## Repetition
 
-A repetition modifier applies to the next item. Put it first: `3 digits`, `between 2 and 4 digits`, `optional "-"`, `zero or more digit`, `one or more any character`, or `at least 3 letter`. `optional <item>` is the same as `between 0 and 1 <item>` and generates `{0,1}`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters`, `lowercase letters`, `uppercase letters`, `spaces`, `word characters` and `path segment characters` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another repetition modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters.
+A repetition modifier applies to the next item. Put it first: `3 digits`, `between 2 and 4 digits`, `optional "-"`, `zero or more digit`, `one or more any character`, or `at least 3 letter`. `optional <item>` is the same as `between 0 and 1 <item>` and generates `?`. The compiler keeps a multi-character literal together. `digits`, `hex digits`, `letters`, `lowercase letters`, `uppercase letters`, `spaces`, `word characters` and `path segment characters` mean one or more of their respective characters unless a count or range replaces that default. `any text` and `text without` already match sequences and cannot take another repetition modifier. Their `DUPLICATE_REPETITION` diagnostic suggests countable items: use `3 any character` or `between 2 and 4 none of: a, b` to set a length while keeping the same character rules. `any character` still excludes line breaks unless `s` is enabled; `none of:` excludes only its listed characters.
 
 | Form | Generated source | Matches | Does not match |
 | --- | --- | --- | --- |
 | `3 <item>` (for example, `3 digits`) | `A{3}` | `AAA` | `AA` |
 | `between 2 and 4 <item>` (for example, `between 2 and 4 digits`) | `A{2,4}` | `AA`, `AAA`, `AAAA` | `A`, `AAAAA` with `start` and `end` |
-| `optional <item>` (for example, `optional "-"`) | `A{0,1}` | no item or one item | two items |
+| `optional <item>` (for example, `optional "-"`) | `A?` | no item or one item | two items |
 | `zero or more <item>` | `A*` | no item or any number of items | — |
 | `one or more <item>` | `A+` | one item or more | no item |
 | `at least 3 <item>` | `A{3,}` | three items or more | zero, one or two items |
@@ -303,7 +303,7 @@ Numeric counts are nonnegative integers no greater than 1,000, including both bo
 
 Write counts with ASCII digits `0`–`9`; leading zeros are allowed. Signs, fractions, scientific notation, hexadecimal notation, numeric separators and localized digits are unsupported count formats. Numeric-looking tokens such as `-1`, `1.5`, `1e2` or `٣` report `INVALID_REPETITION` at that token in exact, bounded and minimum counts. Every repetition modifier needs an item; `at least` also needs a minimum count. Incomplete forms report `INVALID_REPETITION` at the modifier with a complete example as a repair hint, including `at least`, `at least 3`, `zero or more` and `one or more`. Combining modifiers reports `DUPLICATE_REPETITION` at the second modifier, including an incomplete second `at least`. Quoted literals and character-list items can still contain these characters as data.
 
-Repetition is greedy by default: try the largest count first, then use a smaller count if following rules require it. Prefix a repeated item with `lazy` to try its smallest count first, then expand when following rules require more. `lazy between 2 and 4 digits` emits `\d{2,4}?`, `lazy optional "AB"` emits `(?:AB){0,1}?`, and `lazy at least 3 digit` emits `\d{3,}?`. Implicit sequence rules accept it too: `lazy digits`, `lazy any text` and `lazy text without: "x"` emit `\d+?`, `.*?` and `[^x]*?`. Keywords remain case-insensitive. Write `lazy` before the repetition, not after it.
+Repetition is greedy by default: try the largest count first, then use a smaller count if following rules require it. Prefix a repeated item with `lazy` to try its smallest count first, then expand when following rules require more. `lazy between 2 and 4 digits` emits `\d{2,4}?`, `lazy optional "AB"` emits `(?:AB)??`, and `lazy at least 3 digit` emits `\d{3,}?`. Implicit sequence rules accept it too: `lazy digits`, `lazy any text` and `lazy text without: "x"` emit `\d+?`, `.*?` and `[^x]*?`. Keywords remain case-insensitive. Write `lazy` before the repetition, not after it.
 
 The modifier also applies to repeated `group`, `capture`, `either` and `same as capture` rules. It changes the order in which counts are tried, preserving native capture participation, final repeated values, references, branch order and Unicode atom boundaries. An exact count or equal-bounded range still has the same fixed count even when marked lazy. `lazy digit` and an unquantified block report `INVALID_LAZY_REPETITION` with a repair hint; bare or duplicated `lazy` is rejected. Count, line, source and depth limits still apply.
 

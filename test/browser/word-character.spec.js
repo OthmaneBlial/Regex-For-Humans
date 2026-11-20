@@ -15,7 +15,7 @@ test("explicit word-character names simplify the username recipe and explain cla
     ["word character", String.raw`\w`, "_", "AB"],
     ["word characters", String.raw`\w+`, "A_7", ""],
     ["between 2 and 4 word characters", String.raw`\w{2,4}`, "A_7", "ABCDE"],
-    ["optional word character", String.raw`\w{0,1}`, "", "AB"],
+    ["optional word character", String.raw`\w?`, "", "AB"],
   ]) {
     await editor.fill(`start\n${rule}\nend`);
     await expect(output).toHaveText(`/^${source}$/u`);

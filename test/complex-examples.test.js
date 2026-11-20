@@ -81,7 +81,7 @@ for (const [, id, section] of examples) {
     assert.equal(result.flags, shown[2]);
     assert.equal(result.flags, "u");
     assert.ok(result.segments.length >= 19, "example composes many supported rules");
-    assert.ok(result.source.length >= 180, "example produces a substantial pattern");
+    assert.ok(result.source.length >= 160, "example produces a substantial pattern");
     assert.ok(toRegExp(result).test(input), "displayed sample matches");
     assert.ok(
       guide.includes(`| ${rules.split("\n").length} | ${result.source.length} UTF-16 code units |`),

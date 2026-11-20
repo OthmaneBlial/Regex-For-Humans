@@ -37,7 +37,7 @@ test("Unicode property rules preserve aliases, polarity, repetition and exact so
   assert.equal(compile(String.raw`unicode property "\u004c"`).source, String.raw`\p{L}`);
   for (const [prefix, suffix] of [
     ["", ""],
-    ["optional ", "{0,1}"],
+    ["optional ", "?"],
     ["zero or more ", "*"],
     ["one or more ", "+"],
     ["0 ", "{0}"],

@@ -167,9 +167,12 @@ end
 | [UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | `8–4–4–4–12` | पाँच hex समूह |
 | [Product code](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | `AB-rgb-0420` | निश्चित ASCII case और संख्या |
 | [तारीख](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | `2026-09-30` | `YYYY-MM-DD` का आकार |
+| [calendar-date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | `2026-09-30` | 0–255 / 01–12 / 00–23 |
 | [समय](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | `09:30` | `HH:MM` का आकार |
+| [clock-time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | `23:59` | 0–255 / 01–12 / 00–23 |
 | [फ़ोन संख्या](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | `+33123456789` | वैकल्पिक `+`, फिर 7–15 अंक |
 | [IPv4](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | `192.0.2.42` | 1–3 अंकों के चार समूह |
+| [ipv4-address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | `192.168.1.1` | 0–255 / 01–12 / 00–23 |
 | [फ़ाइल नाम](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | `report.txt` | बिना separators का सीमित Unicode नाम |
 | [Manifest](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | Path, hash, size | 19 नियम, नौ उदाहरण |
 | [Access log](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | Request, status, size | 43 नियम, आठ उदाहरण |
@@ -191,7 +194,7 @@ end
 | [लॉग फ़ील्ड](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | खोजे गए अंश से level और code फ़ील्ड |
 | [खोज और प्रतिस्थापन](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | स्थान, कैप्चर और बिना g प्रतिस्थापन की सटीक अपेक्षाएँ |
 
-लाइब्रेरी में **31 रेसिपी, 24 श्रेणियाँ और तीन कठिनाई स्तर** हैं। इंटरफ़ेस की चार भाषाओं में शीर्षक, सीमाएँ और नियम खोजें और फ़िल्टर मिलाएँ। [गाइड](../EXAMPLE_LIBRARY.md) देखें।
+लाइब्रेरी में **34 रेसिपी, 24 श्रेणियाँ और तीन कठिनाई स्तर** हैं। इंटरफ़ेस की चार भाषाओं में शीर्षक, सीमाएँ और नियम खोजें और फ़िल्टर मिलाएँ। [गाइड](../EXAMPLE_LIBRARY.md) देखें।
 
 विफल उदाहरणों में [सत्यापन योग्य स्पष्टीकरण](../FAILURE_EXPLANATIONS.md) मिलते हैं: वास्तविक मैच की सीमाएँ, सिद्ध न्यूनतम लंबाई या अनुपस्थित अनिवार्य पाठ। सटीक विफल चरण अज्ञात होने पर कार्यशाला यह स्पष्ट बताती है।
 
@@ -230,7 +233,7 @@ end
 ```
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
 फ़ाइल मौजूद है या उसका content सही है, यह नहीं जाँचता।
@@ -266,7 +269,7 @@ end
 ```
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 नई पंक्तियाँ literal characters हैं। Amounts, फ़ोन और orders की वैधता application जाँचती है। गाइड के चार flat उदाहरण fields extract नहीं करते।
@@ -327,7 +330,7 @@ Group बंद होने के बाद `same as capture "word"` या `s
 | `digit` / `not digit` | `\d` / `\D` | ASCII अंक या उसका पूरक |
 | `3 digits` / `digits` | `\d{3}` / `\d+` | तीन या कम से कम एक |
 | `between 2 and 4 digits` | `\d{2,4}` | दोनों सीमाएँ शामिल |
-| `optional "-"` | `-{0,1}` | वैकल्पिक hyphen |
+| `optional "-"` | `-?` | वैकल्पिक hyphen |
 | `letter` / `letters` | `[A-Za-z]` / `[A-Za-z]+` | ASCII letters |
 | `lowercase letters` / `uppercase letters` | `[a-z]+` / `[A-Z]+` | `i` अंतर को अनदेखा करता है |
 | `6 hex digits` | `[0-9A-Fa-f]{6}` | छह hex अंक |

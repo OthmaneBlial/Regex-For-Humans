@@ -106,7 +106,7 @@ test("spaces matches JavaScript whitespace with plural defaults and count overri
 test("filename-shape bounds Unicode stem length and excludes separators under every option flag", () => {
   const scenario = scenarios.find(({ id }) => id === "filename-shape");
   assert.ok(scenario);
-  const source = String.raw`^[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,64}\.txt$`;
+  const source = String.raw`^[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,64}\.txt$`;
   assert.equal(scenario.source, source);
   assert.match(scenario.note, /filesystem rules and file existence separately/i);
   for (const flags of ["", "i", "s", "is"]) {
@@ -140,7 +140,7 @@ test("phone-shape permits one optional plus and inclusive ASCII digit counts", (
   const scenario = scenarios.find(({ id }) => id === "phone-shape");
   assert.ok(scenario);
   const result = compile(scenario.rules);
-  assert.equal(result.source, "^\\+{0,1}\\d{7,15}$");
+  assert.equal(result.source, "^\\+?\\d{7,15}$");
   assert.deepEqual(result.segments[1].repetition, { kind: "range", min: 0, max: 1 });
   assert.ok(scenario.positive.includes("0000000"));
   assert.match(scenario.note, /check country rules and number validity separately/i);
@@ -287,7 +287,7 @@ test("optional modifiers preserve range output and explain zero or one match", (
     ['"AB"', "(?:AB)", ["", "AB"]],
   ]) {
     const result = compile(`start\noptional ${item}\nend`);
-    assert.equal(result.source, `^${source}{0,1}$`);
+    assert.equal(result.source, `^${source}?$`);
     assert.deepEqual(result.segments[1].repetition, { kind: "range", min: 0, max: 1 });
     assert.match(result.segments[1].explanation, /Optional|Zero or one/u);
     for (const value of values) assert.equal(toRegExp(result).test(value), true, value);
@@ -317,7 +317,7 @@ test("literal and character-class metacharacters are escaped in their contexts",
     assert.equal(regex.test(character), true, character);
   assert.equal(regex.test("z"), false);
   assert.equal(compile('2 "AB"').source, "(?:AB){2}");
-  assert.equal(compile('"\\n"').source, "\\u{a}");
+  assert.equal(compile('"\\n"').source, "\\n");
 });
 
 test("lone surrogates survive UTF-8 transport in literals and character sets", () => {
@@ -487,7 +487,7 @@ test("zero-or-more character lists explain membership and exclusion in direct an
     const note = flags.includes("i") ? ", ignoring case (i)" : "";
     for (const [items, source, quoted, positive, negative] of [
       ['"a", "b"', "ab", '"a", "b"', "abba", "c"],
-      ['"K", "\\n", "😀"', String.raw`K\u{a}😀`, '"K", "\\n", "😀"', "K\n😀", "x"],
+      ['"K", "\\n", "😀"', String.raw`K\n😀`, '"K", "\\n", "😀"', "K\n😀", "x"],
     ]) {
       for (const excluded of [false, true]) {
         const rules = `start\nzero or more ${excluded ? "none" : "one"} of: ${items}\nend`;

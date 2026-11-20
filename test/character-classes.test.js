@@ -37,7 +37,7 @@ test("class unions preserve typed members, polarity, quantifiers and UTF-16 sour
   assert.equal(compile('range "😀" to "🙏"').source, "[😀-🙏]");
   for (const [prefix, suffix] of [
     ["", ""],
-    ["optional ", "{0,1}"],
+    ["optional ", "?"],
     ["zero or more ", "*"],
     ["one or more ", "+"],
     ["0 ", "{0}"],

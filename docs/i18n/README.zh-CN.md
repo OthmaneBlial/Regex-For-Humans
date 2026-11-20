@@ -167,9 +167,12 @@ end
 | [UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | `8–4–4–4–12` | 五组十六进制数 |
 | [产品代码](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | `AB-rgb-0420` | 固定数量与 ASCII 大小写 |
 | [日期](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | `2026-09-30` | `YYYY-MM-DD` 形状 |
+| [calendar-date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | `2026-09-30` | 0–255 / 01–12 / 00–23 |
 | [时间](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | `09:30` | `HH:MM` 形状 |
+| [clock-time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | `23:59` | 0–255 / 01–12 / 00–23 |
 | [电话号码](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | `+33123456789` | 可选 `+` 与7–15位数字 |
 | [IPv4](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | `192.0.2.42` | 四组1–3位数字 |
+| [ipv4-address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | `192.168.1.1` | 0–255 / 01–12 / 00–23 |
 | [文件名](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | `report.txt` | 长度受限、排除分隔符的 Unicode 文件名 |
 | [产物清单](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | 路径、哈希、大小 | 19条规则、9个示例 |
 | [访问日志](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | 请求、状态、大小 | 43条规则、8个示例 |
@@ -191,7 +194,7 @@ end
 | [日志字段](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | `INFO code=200` | 搜索片段中的命名 level 和 code 字段 |
 | [搜索与替换](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | `teh then teh → the then teh` | 精确检查位置、捕获和非全局替换 |
 
-示例库包含 **31 个配方、24 个类别和三个难度级别**。可在四种界面语言中搜索标题、限制和规则，并组合筛选条件。请参阅[配方库指南](../EXAMPLE_LIBRARY.md)。
+示例库包含 **34 个配方、24 个类别和三个难度级别**。可在四种界面语言中搜索标题、限制和规则，并组合筛选条件。请参阅[配方库指南](../EXAMPLE_LIBRARY.md)。
 
 失败示例还提供[可验证的说明](../FAILURE_EXPLANATIONS.md)：原生匹配范围、可证明的最小长度或缺失的必需字面文本。若无法确定具体失败步骤，工作坊会明确说明。
 
@@ -230,7 +233,7 @@ end
 ```
 
 ```js
-/^incoming\/(?:nightly\/){0,1}[^\/\\\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\u{9}[0-9A-Fa-f]{64}\u{9}\d{1,12}$/u
+/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
 ```
 
 仅检查格式，不检查文件是否存在或内容是否完整。
@@ -266,7 +269,7 @@ end
 ```
 
 ```js
-/^ORDER\u{a}id=ORD-[0-9A-Fa-f]{8}\u{a}buyer=[^\u{0}\u{a}\u{d}\u{2028}\u{2029}]{1,60}\u{a}phone=\+{0,1}\d{7,15}\u{a}items=\d{1,4}\u{a}total=\d{1,6}\.\d{2} EUR\u{a}reference=[0-9A-Fa-f]{16}\u{a}approval=[AD]{0,1}\u{a}(?:priority=HIGH\u{a}){0,1}END\u{a}{0,1}$/u
+/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
 ```
 
 换行是字面字符。金额、号码和订单有效性由应用验证。指南的四个平坦示例不提取字段。
@@ -327,7 +330,7 @@ console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
 | `digit` / `not digit` | `\d` / `\D` | ASCII 数字及其补集 |
 | `3 digits` / `digits` | `\d{3}` / `\d+` | 三位或至少一位 |
 | `between 2 and 4 digits` | `\d{2,4}` | 包含两端 |
-| `optional "-"` | `-{0,1}` | 可选连字符 |
+| `optional "-"` | `-?` | 可选连字符 |
 | `letter` / `letters` | `[A-Za-z]` / `[A-Za-z]+` | ASCII 字母 |
 | `lowercase letters` / `uppercase letters` | `[a-z]+` / `[A-Z]+` | `i` 忽略区别 |
 | `6 hex digits` | `[0-9A-Fa-f]{6}` | 六位十六进制数 |

@@ -9,7 +9,7 @@ test("nested capture blocks compile and retain keyboard-accessible source traces
     .locator("#rules-input")
     .fill('start\ncapture "year" {\n4 digits\n}\noptional group {\n"-"\n2 digits\n}\nend');
   await expect(page.locator("#regex-output")).toContainText(
-    String.raw`/^(?<year>\d{4})(?:-\d{2}){0,1}$/u`,
+    String.raw`/^(?<year>\d{4})(?:-\d{2})?$/u`,
   );
   const trace = page.locator("#trace-list button");
   await expect(trace).toHaveCount(9);

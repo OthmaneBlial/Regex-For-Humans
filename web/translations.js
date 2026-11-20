@@ -1431,11 +1431,43 @@ export const translations = {
     "Extraer un campo de cabecera sencillo",
     "Extraire un champ d’en-tête simple",
   ],
-  "One ASCII letter/hyphen field name, colon, one space and a nonempty single-line value. A small header fragment, not the complete HTTP field grammar or a message parser.":
+  "Field name made of HTTP token characters (letters, digits and !#$%&'*+-.^_`|~), colon, one space and a nonempty single-line value. A header fragment, not a message parser.":
     [
-      "字段名由 ASCII 字母或连字符组成，后接冒号、一个空格和非空单行值。仅是标头片段，不是完整 HTTP 字段语法或消息解析器。",
-      "Nombre con letras ASCII o guiones, dos puntos, un espacio y valor no vacío en una línea. Es un fragmento, no la gramática completa de campos HTTP ni un analizador de mensajes.",
-      "Nom en lettres ASCII ou tirets, deux-points, un espace et valeur non vide sur une ligne. Fragment d’en-tête, sans grammaire HTTP complète ni analyse des messages.",
+      "字段名由 HTTP 令牌字符组成（字母、数字及 !#$%&'*+-.^_`|~），后接冒号、一个空格和非空单行值。仅是标头片段，不是消息解析器。",
+      "Nombre de campo con caracteres de token HTTP (letras, dígitos y !#$%&'*+-.^_`|~), dos puntos, un espacio y un valor no vacío en una línea. Es un fragmento de cabecera, no un analizador de mensajes.",
+      "Nom de champ en caractères de jeton HTTP (lettres, chiffres et !#$%&'*+-.^_`|~), deux-points, un espace et une valeur non vide sur une ligne. Fragment d’en-tête, pas un analyseur de messages.",
+    ],
+  "Validate a calendar date": [
+    "验证日历日期",
+    "Validar una fecha de calendario",
+    "Valider une date du calendrier",
+  ],
+  "YYYY-MM-DD with month 01–12 and day 01–31, captured as year, month and day. It does not know month lengths or leap years, so 2026-02-30 still matches.":
+    [
+      "YYYY-MM-DD，月份 01–12，日期 01–31，分别捕获为 year、month 和 day。不检查每月天数或闰年，因此 2026-02-30 仍会匹配。",
+      "AAAA-MM-DD con mes 01–12 y día 01–31, capturados como year, month y day. No conoce la duración de los meses ni los años bisiestos: 2026-02-30 también coincide.",
+      "AAAA-MM-JJ avec mois 01–12 et jour 01–31, capturés en year, month et day. Ne connaît ni la longueur des mois ni les années bissextiles : 2026-02-30 correspond encore.",
+    ],
+  "Validate a 24-hour time": [
+    "验证 24 小时制时间",
+    "Validar una hora de 24 horas",
+    "Valider une heure sur 24 heures",
+  ],
+  "HH:MM from 00:00 to 23:59. Rejects 24:00, single-digit hours and seconds.": [
+    "HH:MM，从 00:00 到 23:59。拒绝 24:00、一位数小时和秒。",
+    "HH:MM de 00:00 a 23:59. Rechaza 24:00, horas de una cifra y segundos.",
+    "HH:MM de 00:00 à 23:59. Refuse 24:00, les heures à un chiffre et les secondes.",
+  ],
+  "Validate an IPv4 address": [
+    "验证 IPv4 地址",
+    "Validar una dirección IPv4",
+    "Valider une adresse IPv4",
+  ],
+  "Four dot-separated numbers from 0 to 255, without leading zeros. Does not accept CIDR suffixes, ports or IPv6.":
+    [
+      "四个以点分隔的 0 到 255 之间的数字，不含前导零。不接受 CIDR 后缀、端口或 IPv6。",
+      "Cuatro números de 0 a 255 separados por puntos, sin ceros a la izquierda. No acepta sufijos CIDR, puertos ni IPv6.",
+      "Quatre nombres de 0 à 255 séparés par des points, sans zéros initiaux. N’accepte ni suffixe CIDR, ni port, ni IPv6.",
     ],
   "Match a Markdown heading fragment": [
     "匹配 Markdown 标题片段",
