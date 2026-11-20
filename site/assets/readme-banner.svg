@@ -1,36 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="460" viewBox="0 0 1200 460" role="img" aria-labelledby="title desc">
-  <title id="title">Regex For Humans</title>
-  <desc id="desc">The rules start, "#", 6 hex digits and end drawn as stations on one transit line, each above its regex fragment, with the compiled JavaScript regex for a hex color.</desc>
-  <clipPath id="plate"><rect width="1200" height="460" rx="24" /></clipPath>
-  <rect width="1200" height="460" rx="24" fill="#ffffff" />
-  <rect x="2" y="2" width="1196" height="456" rx="23" fill="none" stroke="#121820" stroke-width="4" />
-  <g font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" fill="#121820">
-    <text x="64" y="104" font-size="58" font-weight="800" letter-spacing="-2">Regex you can read like a map.</text>
-    <text x="64" y="148" font-size="24" font-weight="500" fill="#48505d">Plain English rules in, native JavaScript regex out. And back.</text>
-    <text x="126" y="228" font-size="24" font-weight="700" text-anchor="middle">start</text>
-    <text x="400" y="228" font-size="24" font-weight="700" text-anchor="middle">"#"</text>
-    <text x="740" y="228" font-size="24" font-weight="700" text-anchor="middle">6 hex digits</text>
-    <text x="1074" y="228" font-size="24" font-weight="700" text-anchor="middle">end</text>
-  </g>
-  <rect x="126" y="258" width="444" height="12" fill="#d0291c" />
-  <rect x="570" y="258" width="504" height="12" fill="#0a5bb5" />
-  <path d="M704 264v18a18 18 0 0 0 18 18h36a18 18 0 0 0 18-18v-18" fill="none" stroke="#18803f" stroke-width="7" />
-  <rect x="118" y="240" width="16" height="48" rx="6" fill="#121820" />
-  <rect x="1066" y="240" width="16" height="48" rx="6" fill="#121820" />
-  <circle cx="400" cy="264" r="15" fill="#d0291c" stroke="#121820" stroke-width="6" />
-  <circle cx="740" cy="264" r="15" fill="#0a5bb5" stroke="#121820" stroke-width="6" />
-  <g font-family="Menlo, Consolas, monospace" font-size="22" font-weight="700" text-anchor="middle">
-    <text x="126" y="336" fill="#121820">^</text>
-    <text x="400" y="336" fill="#d0291c">#</text>
-    <text x="740" y="340" fill="#0a5bb5">[0-9A-Fa-f]{6}</text>
-    <text x="1074" y="336" fill="#121820">$</text>
-  </g>
-  <rect x="64" y="370" width="440" height="56" rx="10" fill="#121820" />
-  <text x="86" y="406" fill="#ffc23d" font-family="Menlo, Consolas, monospace" font-size="24" font-weight="700">/^#[0-9A-Fa-f]{6}$/u</text>
-  <g clip-path="url(#plate)">
-    <rect x="0" y="448" width="300" height="12" fill="#d0291c" />
-    <rect x="300" y="448" width="300" height="12" fill="#0a5bb5" />
-    <rect x="600" y="448" width="300" height="12" fill="#18803f" />
-    <rect x="900" y="448" width="300" height="12" fill="#f0a500" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="title desc">
+<title id="title">Regex For Humans</title>
+<desc id="desc">The rules start, "#", 6 hex digits, end compile to the JavaScript regex ^#[0-9A-Fa-f]{6}$. Under each fragment is its meaning in plain English and the part of #ff6b6b it matches.</desc>
+<style>
+.paper{fill:#fff}.edge{fill:none;stroke:#15171c;stroke-width:2}.ink{fill:#15171c}.ink2{fill:#4b505b}.ink3{fill:#6b707b}
+.blue{fill:#2337c6}.wash{fill:#eceffd}.brace{fill:none;stroke:#2337c6;stroke-width:1.5}.span{fill:none;stroke:#6b707b;stroke-width:1}
+.sc{letter-spacing:.08em}
+@media (prefers-color-scheme:dark){.paper{fill:#111317}.edge{stroke:#eceef2}.ink{fill:#eceef2}.ink2{fill:#b4b9c4}.ink3{fill:#9096a2}
+.blue{fill:#93a3ff}.wash{fill:#1c2142}.brace{stroke:#93a3ff}.span{stroke:#9096a2}}
+</style>
+<rect class="paper" width="1200" height="470" rx="20"/>
+<rect class="edge" x="1" y="1" width="1198" height="468" rx="19"/>
+<text x="64" y="92" font-size="50" font-weight="600" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">Regex <tspan font-style="italic" font-weight="400">for</tspan> Humans</text>
+<text x="64" y="129.4" font-size="22" class="ink2" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">Write regex in plain English. <tspan font-style="italic">Read any regex the same way.</tspan></text>
+<text x="64" y="196" font-size="18" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">start &quot;#&quot;   ·   6 hex digits   ·   end</text>
+<text x="1136" y="196" font-size="16.2" text-anchor="end" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">compile() ↓   ↑ regexToRules()</text>
+<line x1="64" x2="1136" y1="218" y2="218" class="span"/>
+<g transform="translate(264.9 236) scale(1.000)">
+<text x="19.4" y="54.0" font-size="54.0" textLength="32.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">^</text>
+<path class="brace" d="M19.4 64.2 V70.2 H51.8 V64.2"/>
+<text x="35.6" y="109.3" font-size="17.94" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">START</text>
+<text x="95.0" y="54.0" font-size="54.0" textLength="32.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">#</text>
+<path class="brace" d="M95.0 64.2 V70.2 H127.4 V64.2"/>
+<text x="111.2" y="109.3" font-size="23" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;#&quot;</text>
+<rect class="wash" x="93.7" y="139.7" width="35.0" height="35.6" rx="3"/>
+<text x="111.2" y="165.0" font-size="23" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">#</text>
+<text x="151.2" y="54.0" font-size="54.0" textLength="453.6" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">[0-9A-Fa-f]{6}</text>
+<path class="brace" d="M151.2 64.2 V70.2 H604.8 V64.2"/>
+<text x="378.0" y="109.3" font-size="23" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">6 hex digits</text>
+<rect class="wash" x="324.8" y="139.7" width="106.3" height="35.6" rx="3"/>
+<text x="378.0" y="165.0" font-size="23" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">ff6b6b</text>
+<text x="632.6" y="54.0" font-size="54.0" textLength="32.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">$</text>
+<path class="brace" d="M632.6 64.2 V70.2 H665.0 V64.2"/>
+<text x="648.8" y="109.3" font-size="17.94" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">END</text>
+</g>
 </svg>

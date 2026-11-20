@@ -9,6 +9,8 @@ import workshop from "../playwright.config.js";
 import homepage from "../playwright.site.config.js";
 
 const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+const recipeGuide = readFileSync(new URL("../docs/RECIPES.md", import.meta.url), "utf8");
+const cliGuide = readFileSync(new URL("../docs/CLI.md", import.meta.url), "utf8");
 const cli = fileURLToPath(new URL("../bin/regex-for-humans.js", import.meta.url));
 const recipes = JSON.parse(
   readFileSync(new URL("./fixtures/product-scenarios.json", import.meta.url), "utf8"),
@@ -25,16 +27,16 @@ test("security policy distinguishes the published preview from stable support", 
   assert.doesNotMatch(policy, /no published npm|there are no released versions/u);
 });
 
-test("README links every shared recipe exactly once", () => {
+test("the recipe guide links every shared recipe exactly once", () => {
   const ids = [
-    ...readme.matchAll(
+    ...recipeGuide.matchAll(
       /^\| \[[^\]]+\]\(https:\/\/othmaneblial\.github\.io\/Regex-For-Humans\/workshop\/\?example=([a-z0-9-]+)\) \|/gmu,
     ),
   ].map(([, id]) => id);
   assert.deepEqual(ids.sort(), recipes.map(({ id }) => id).sort());
 });
 
-test("README documents every CLI option shown by --help", () => {
+test("the CLI guide documents every option shown by --help", () => {
   const help = spawnSync(process.execPath, [cli, "--help"], { encoding: "utf8" });
   assert.equal(help.status, 0, help.stderr);
   const options = [...help.stdout.matchAll(/^ {2}(--[a-z-]*)(?=\s)/gmu)].map(
@@ -42,7 +44,7 @@ test("README documents every CLI option shown by --help", () => {
   );
   assert.ok(options.length > 0, "CLI help lists its options");
   for (const option of options) {
-    assert.ok(readme.includes(`\`${option}\``), `README omits ${option}`);
+    assert.ok(cliGuide.includes(`\`${option}\``), `CLI guide omits ${option}`);
   }
 });
 
@@ -54,7 +56,7 @@ test("local verification instructions install every configured browser before ru
       ...compatibility.projects.map(({ use }) => use.browserName),
     ]),
   ].sort();
-  for (const file of ["README.md", "CONTRIBUTING.md", "docs/TESTING.md"]) {
+  for (const file of ["CONTRIBUTING.md", "docs/TESTING.md"]) {
     const content = readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
     const blocks = [...content.matchAll(/```sh\n([\s\S]*?)\n```/gu)].map(([, code]) => code);
     for (const [command, required] of [
@@ -120,4 +122,21 @@ test("README's lead demo and optional shortcut match the compiler", () => {
   assert.equal(wholeInput.test(""), true);
   assert.equal(wholeInput.test("-"), true);
   assert.equal(wholeInput.test("--"), false);
+});
+
+test("every row of the README vocabulary table compiles to the regex it shows", () => {
+  const table = readme.slice(readme.indexOf("| Say this | Get this |"));
+  const rows = [...table.matchAll(/^\| `(.+)` \| `(.+)` \|$/gmu)];
+  assert.ok(rows.length >= 8, "README vocabulary table is present");
+  // Inline blocks such as `either { "a" "b" }` stand for one rule per line.
+  const block = (rule) =>
+    rule.replace(/\{ (.+) \}/u, (_, inner) => `{\n${inner.match(/"[^"]*"|\S+/gu).join("\n")}\n}`);
+  for (const [, said, got] of rows) {
+    if (said.includes("…")) continue;
+    const rules = said.split("` · `");
+    const sources = got.replaceAll("\\|", "|").split("` · `");
+    assert.equal(rules.length, sources.length, said);
+    for (const [index, rule] of rules.entries())
+      assert.equal(compile(block(rule)).source, sources[index], rule);
+  }
 });

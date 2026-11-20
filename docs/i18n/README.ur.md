@@ -2,17 +2,13 @@
 
 <div align="center">
 
-# 🧠 Regex For Humans
+[![Regex For Humans: ریگولر ایکسپریشن ^#[0-9A-Fa-f]{6}$ اور ہر ٹکڑے کے نیچے اس کا سادہ انگریزی مطلب](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/site/assets/readme-banner.svg)](https://othmaneblial.github.io/Regex-For-Humans/)
 
-[![Regex For Humans: واضح قواعد سے سمجھ آنے والے ریگولر ایکسپریشن](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/site/assets/readme-banner.svg)](https://othmaneblial.github.io/Regex-For-Humans/)
+**ریگیکس سادہ انگریزی میں لکھیں۔ کسی بھی ریگیکس کو اسی طرح پڑھیں۔**
 
-**قواعد لکھیں۔ نتیجہ سمجھیں۔ اسے آزمائیں۔**
+مختصر انگریزی اصول مقامی JavaScript <code dir="ltr">RegExp</code> میں کمپائل ہوتے ہیں، ہر اصول کا ایک نظر آنے والا ٹکڑا۔ کوئی ریگیکس چسپاں کریں اور اصول واپس پائیں۔
 
-چند واضح انگریزی ہدایات کو JavaScript کے ایسے ریگولر ایکسپریشن میں بدلیں جس کے ہر حصے کو آپ سمجھ سکیں۔
-
-[🚀 ورکشاپ کھولیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [🎨 ویب سائٹ](https://othmaneblial.github.io/Regex-For-Humans/) · [📖 قواعد کا طریقہ](../LANGUAGE.md) · [📦 npm کا آزمائشی نسخہ](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12)
-
-🔒 مقامی طور پر چلتا ہے · 🧩 رن ٹائم کی کوئی اضافی dependency نہیں · ⚡ ایک کمپائلر، تین انٹرفیس
+**[ورکشاپ آزمائیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/) · [ویب سائٹ](https://othmaneblial.github.io/Regex-For-Humans/) · [npm پیش نظارہ](https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12) · [نحو](../LANGUAGE.md)**
 
 <div dir="ltr" align="center">
 
@@ -22,15 +18,11 @@
 
 </div>
 
-## علامتیں سلجھانے کے بجائے قواعد پڑھیں
+## اصول لکھیں، ریگیکس پائیں
 
-ریگولر ایکسپریشن کو پڑھنا اس وقت آسان ہو جاتا ہے جب آپ اس کے پیچھے موجود قواعد دیکھ سکیں۔
-
-<p dir="rtl"><strong>صرف سورس کوڈ میں سیٹ کے سانچے:</strong> یونیکوڈ <code dir="ltr">v</code> منتخب کرکے اتحاد، اشتراک اور تفریق کے بلاکس اور ان کی منفی صورتیں مکمل کریں۔ اندرونی operands کی تصدیق پورے دستاویز کے ساتھ ہوتی ہے؛ captures اور ان کے references برقرار رہتے ہیں۔ یہ اضافہ بھی ورکشاپ کی اگلی تصدیق شدہ اشاعت کے ساتھ شائع ہوگا۔ <a href="../EDITOR_COMPLETIONS.md">طریقہ اور حدود</a> دیکھیں۔</p>
-
-| آپ کے قواعد | JavaScript کا نتیجہ |
-| ---: | ---: |
-| <code dir="ltr">start "#"</code><br><code dir="ltr">6 hex digits</code><br><code dir="ltr">end</code> | <code dir="ltr">/^#[0-9A-Fa-f]{6}$/u</code> |
+<table>
+<tr><th>اصول</th><th>JavaScript ریگیکس</th></tr>
+<tr><td>
 
 <div dir="ltr" align="left">
 
@@ -42,6 +34,8 @@ end
 
 </div>
 
+</td><td>
+
 <div dir="ltr" align="left">
 
 ```js
@@ -50,123 +44,79 @@ end
 
 </div>
 
-✅ <code dir="ltr">#12aBcF</code>, <code dir="ltr">#000000</code> · ❌ <code dir="ltr">#123</code>, <code dir="ltr">#G00000</code>
+✅ <code dir="ltr">#12aBcF</code> · <code dir="ltr">#000000</code><br>
+❌ <code dir="ltr">#123</code> · <code dir="ltr">#G00000</code>
 
-الفاظ کا مجموعہ **مقرر ہے**: ہر ہدایت کا ایک واضح مطلب ہے۔ لائبریری، کمانڈ لائن اور ورکشاپ ایک ہی deterministic کمپائلر استعمال کرتے ہیں۔ نامعلوم ہدایت پر سطر، کالم اور اصلاح کی تجویز ملتی ہے۔ تمام ترجموں میں قواعد لکھنے کی زبان انگریزی ہی رہتی ہے۔
+</td></tr>
+</table>
 
-<blockquote>
-<p dir="rtl">🌱 <strong>آزمائشی نسخہ:</strong></p>
-<p dir="ltr" align="left"><code dir="ltr">0.1.0-dev.12</code></p>
-<p dir="rtl">لائبریری اور کمانڈ لائن کے لیے <strong>Node.js 22 یا جدید تر</strong> درکار ہے۔ آن لائن ورکشاپ بغیر انسٹال کیے چلتی ہے۔ استعمال میں آسانی اور اسکرین ریڈر کے انسانی جائزے ابھی باقی ہیں۔</p>
-</blockquote>
+ہر سطر کا ایک دستاویزی مطلب ہے اور وہ ترتیب سے ریگیکس میں ایک ٹکڑا جوڑتی ہے۔ نتیجہ وہی ریگیکس ہے جو آپ ہاتھ سے لکھتے: <code dir="ltr">{0,1}</code> کے بجائے <code dir="ltr">?</code>، اور کوئی فالتو گروپ نہیں۔ نامعلوم جملہ اپنی سطر، کالم اور تجویز کردہ درستی کے ساتھ رک جاتا ہے۔
 
-## آج کیا بنایا جا سکتا ہے؟
+[![چھ تراکیب باری باری: اصول، کمپائل شدہ ریگیکس، ہر ٹکڑے کا مطلب اور مثال میں اس کی مطابقت](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/site/assets/readme-reel.svg)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
 
-<p dir="rtl"><strong>ورکشاپ کی رپورٹیں:</strong> <a href="../MARKDOWN_REPORTS.md"><code dir="ltr">Markdown</code> رپورٹ</a> ڈاؤن لوڈ کریں جس میں بلڈ کی معلومات، قواعد، درست ریگولر ایکسپریشن، اختیارات، متوقع ٹیسٹ اور دوبارہ درآمد کیا جا سکنے والا <code dir="ltr">JSON</code> شامل ہو۔ برآمد ٹیسٹ نہیں چلاتی اور ان کی کامیابی ثابت نہیں کرتی۔</p>
+## ریگیکس کو واپس پڑھیں
 
-<p dir="rtl"><strong>قواعد کی تکمیل:</strong> تکمیل کا بٹن یا درج ذیل شارٹ کٹ استعمال کریں:</p>
-<p dir="ltr" align="left"><code dir="ltr">Ctrl + Space</code></p>
-<p dir="rtl">پہلے سے موجود حروف کی اقسام مکمل کریں، تعداد کے بعد بھی۔ مثال:</p>
-<p dir="ltr" align="left"><code dir="ltr">between 2 and 5 di</code></p>
-<p dir="rtl">پہلے سے بند ہو چکے کیپچر گروپس کے حوالے بھی نمبر اور نام سے مکمل کیے جا سکتے ہیں۔ مثال:</p>
-<p dir="ltr" align="left"><code dir="ltr">same as ca</code></p>
-<p dir="rtl">پیش منظر منتخب قاعدے کا پورا متن دکھاتا ہے۔</p>
-<p dir="rtl">ہر تجویز کا پوری دستاویز کے ساتھ کمپائل ہونا ضروری ہے۔ اقتباس میں موجود متن، تبصرے اور منتخب متن محفوظ رہتے ہیں۔ <a href="../EDITOR_COMPLETIONS.md">طریقۂ استعمال اور حدود</a> دیکھیں۔</p>
-
-<p dir="rtl"><strong>موجودہ اشاعت کے بعد ماخذ کوڈ میں اضافہ:</strong> تکمیل کی سہولت گروپس اور جانچ کی شرائط کے آٹھ سانچے بھی دیتی ہے، جن میں اختتامی قوسیں شامل ہیں۔ پیش منظر پوری مجوزہ دستاویز دکھاتا ہے، بشمول ان حوالوں کی تبدیلی جو نیا کیپچر گروپ شامل کرنے سے نمبر بدلنے پر ضروری ہوتی ہے؛ کرسر بلاک کے پہلے قاعدے پر پہنچتا ہے۔ یہ اضافہ ورکشاپ کی اگلی تصدیق شدہ اشاعت کے ساتھ شائع ہوگا۔</p>
-
-| صلاحیت | <code dir="ltr">npm</code> / میزبان ورکشاپ |
-| ---: | ---: |
-| قابلِ مطالعہ قواعد → JavaScript regex | ✅ |
-| معاونت یافتہ regex → قابلِ ترمیم قواعد | ✅ |
-| حصوں کی وضاحت اور متعلقہ قاعدے تک رسائی | ✅ |
-| CLI، ESM API اور TypeScript کی تعریفیں | ✅ |
-| نام والے، نمبر والے اور اندرونی capture گروپ | ✅ |
-| پورے بلاک کی تکرار اور پچھلے capture کا حوالہ | ✅ |
-| ترتیب وار متبادل بذریعہ <code dir="ltr">either { … }</code> | ✅ |
-| کم سے کم تکرار کو پہلے آزمانا، بذریعہ <code dir="ltr">lazy</code> | ✅ |
-| آگے یا پیچھے دیکھنے کی assertions | ✅ |
-| لفظ کی حدود | ✅ |
-| [Unicode properties](../LANGUAGE.md#unicode-properties) | ✅ |
-| [مرکب character classes](../LANGUAGE.md#composable-character-classes) | ✅ |
-| [Unicode strings اور nested sets](../LANGUAGE.md#nested-unicode-set-operations) | ✅ |
-| تمام آٹھ JavaScript flags | ✅ |
-| [گروپ کی تدوین اور capture کی جگہ نمایاں کرنا](../LANGUAGE.md#editing-groups) | ✅ |
-| [ساخت کا تعاملی خاکہ اور <code dir="ltr">SVG</code> ایکسپورٹ](../LANGUAGE.md#structural-diagrams) | ✅ |
-| [ساختی خطرات کا جائزہ](../LANGUAGE.md#structural-risk-review) | ✅ |
-| [ہدف انجن کے مطابق کوڈ ایکسپورٹ](../LANGUAGE.md#engine-exports) | ✅ |
-| آزاد انگریزی | — |
-
-مقامی ورکشاپ میں capture کا نام یا گروپ کی قسم بدلیں اور اس کے references تک جائیں۔ یہ پینل کھولیں:
-
-<p dir="ltr" align="left"><code dir="ltr">Edit groups and references</code></p>
-
-نمبر بدلنے کے بعد بھی عددی references اپنے اصل capture کی طرف اشارہ کرتے ہیں۔ جس capture کا reference موجود ہو، اسے noncapturing بنانے کی کوشش مسترد ہوتی ہے اور اصل قواعد برقرار رہتے ہیں۔ <code dir="ltr">Highlight</code> بٹن اصل native indices سے capture کی جگہ دکھاتا ہے، خواہ capture خالی ہو یا consumed match سے باہر ہو۔ <code dir="ltr">editGroup</code> API تصدیق شدہ قواعد واپس کرتی ہے۔ یہ اضافے npm پیکیج اور میزبان ورکشاپ میں دستیاب ہیں۔ ورژن <code dir="ltr">0.1.0-dev.12</code>۔
-
-[گروپ کی تدوین](../LANGUAGE.md#editing-groups) دیکھیں۔
-
-موجودہ سورس میں <code dir="ltr">lazy digits</code> سے <code dir="ltr">\d+?</code> بنتا ہے: پہلے ایک ہندسہ آزمائیں، پھر اگلے قواعد کی ضرورت کے مطابق تکرار بڑھائیں۔npm <code dir="ltr">0.1.0-dev.12</code> میں دستیاب ہے۔ [تکرار کے قواعد](../LANGUAGE.md#repetition) دیکھیں۔
-
-سورس میں یہ چار صورتیں بھی دستیاب ہیں:
+کوئی ایسا پیٹرن ملا جسے کوئی پڑھ نہیں سکتا؟ <code dir="ltr">regexToRules</code> معاون ریگیکس کو قابلِ ترمیم اصولوں میں بدلتا ہے، اور یہ اصول دوبارہ اسی ریگیکس میں کمپائل ہوتے ہیں۔
 
 <div dir="ltr" align="left">
 
-- <code dir="ltr">followed by { … }</code>
-- <code dir="ltr">not followed by { … }</code>
-- <code dir="ltr">preceded by { … }</code>
-- <code dir="ltr">not preceded by { … }</code>
+```js
+import { regexToRules } from 'regex-for-humans';
+
+regexToRules(/^[A-Z]{2}-\d{4}$/u).rules;
+```
 
 </div>
-
-یہ اردگرد کے متن کو جانچتے ہیں، اسے match میں شامل نہیں کرتے۔ Captures کی اصل values اور positions برقرار رہتی ہیں، چاہے وہ match کے باہر ہوں؛ lookbehind کے لیے انجن کی معاونت ضروری ہے۔npm <code dir="ltr">0.1.0-dev.12</code> میں دستیاب ہے۔ [Lookaround assertions](../LANGUAGE.md#lookaround-assertions) دیکھیں۔
-
-سورس میں لفظ کی حدود کے لیے یہ صورتیں بھی دستیاب ہیں:
 
 <div dir="ltr" align="left">
 
-- <code dir="ltr">word boundary</code> → <code dir="ltr">\b</code>
-- <code dir="ltr">not word boundary</code> → <code dir="ltr">\B</code>
+```text
+start
+2 uppercase letter
+"-"
+4 digit
+end
+```
 
 </div>
 
-یہ assertions کوئی حرف consume نہیں کرتیں۔ JavaScript میں word characters سے مراد ASCII حروف، ہندسے اور underscore ہیں؛ <code dir="ltr">i</code> کے ساتھ case folding کے مساوی حروف بھی شامل ہوتے ہیں۔ یہ قدرتی زبان کے الفاظ کی تقسیم نہیں ہے۔npm <code dir="ltr">0.1.0-dev.12</code> میں دستیاب ہے۔ [لفظ کی حدود](../LANGUAGE.md#word-boundaries) دیکھیں۔
+[ویب سائٹ](https://othmaneblial.github.io/Regex-For-Humans/) چسپاں کیے گئے ہر ریگیکس کی وہیں وضاحت کرتی ہے۔ غیر معاون نحو اپنی جگہ کے ساتھ رد ہوتی ہے، خاموشی سے حذف نہیں ہوتی۔
 
-سورس میں یہ دو قواعد بھی دستیاب ہیں:
+## جو پکڑیں اسے نام دیں
 
-- <code dir="ltr">unicode property "L"</code>
-- <code dir="ltr">not unicode property "L"</code>
+<!-- captures:date -->
+<div dir="ltr" align="left">
 
-پہلے سے <code dir="ltr">\p{L}</code> اور دوسرے سے <code dir="ltr">\P{L}</code> بنتا ہے۔ نام <code dir="ltr">L</code> حروف کی category ہے۔ Aliases میں بڑے اور چھوٹے حروف کا فرق اہم ہے؛ classification انجن کے Unicode data پر منحصر ہے۔ Counts اور <code dir="ltr">lazy</code> معمول کے مطابق کام کرتے ہیں۔ فلیگ <code dir="ltr">i</code> کے ساتھ native <code dir="ltr">u</code> complement میں case folding کے مساوی حروف بھی آ سکتے ہیں۔npm <code dir="ltr">0.1.0-dev.12</code> میں دستیاب ہے۔ [Unicode properties](../LANGUAGE.md#unicode-properties) دیکھیں۔
+```text
+start
+capture "year" {
+  4 digits
+}
+"-"
+capture "month" {
+  2 digits
+}
+"-"
+capture "day" {
+  2 digits
+}
+end
+```
 
-سورس میں یہ صورتیں بھی دستیاب ہیں:
+</div>
 
-<p dir="ltr" align="left"><code dir="ltr">range "α" to "ω"</code></p>
-<p dir="ltr" align="left"><code dir="ltr">character class: digit, "_"</code></p>
-<p dir="ltr" align="left"><code dir="ltr">not character class: digit</code></p>
+<div dir="ltr" align="left">
 
-ایک class میں ایک Unicode code point کے literals، ranges، singular shorthands اور Unicode properties جمع کیے جا سکتے ہیں۔ تیسری صورت پوری union کو negate کرتی ہے۔ Counts اور <code dir="ltr">lazy</code> پوری class پر لاگو ہوتے ہیں؛ property complements کا native <code dir="ltr">u</code>/<code dir="ltr">i</code> رویہ برقرار رہتا ہے۔npm <code dir="ltr">0.1.0-dev.12</code> میں دستیاب ہے؛ [character classes](../LANGUAGE.md#composable-character-classes) دیکھیں۔
+```js
+toRegExp(compile(rules)).exec('2026-10-10').groups;
+// { year: '2026', month: '10', day: '10' }
+```
 
-لائبریری اور CLI کے npm نسخے <code dir="ltr">0.1.0-dev.12</code> میں گروپس، captures، پہلے کے references اور ترتیب وار alternatives شامل ہیں۔ ورکشاپ میں captures کی جانچ اور متعدد search matches بھی دستیاب ہیں۔ تفصیل [مطابقت](../COMPATIBILITY.md) اور [اشاعت کے ریکارڈ](../DISTRIBUTION.md) میں ہے۔
+</div>
 
-## اپنی پروگرامنگ زبان میں ایکسپورٹ کریں
+کیپچر مقامی JavaScript گروپ ہیں۔ وہی متن دوبارہ مانگنے کے لیے <code dir="ltr">same as capture "year"</code> لکھیں۔
 
-مقامی ورکشاپ میں ایکسپورٹ پینل کھولیں، یا درج ذیل API کال اور ٹرمینل کمانڈ استعمال کریں:
-
-<p dir="ltr" align="left"><code dir="ltr">Export to a programming language</code></p>
-<p dir="ltr" align="left"><code dir="ltr">exportRegex(rules, { target: "python" })</code></p>
-<p dir="ltr" align="left"><code dir="ltr">node bin/regex-for-humans.js --target python --json rules.txt</code></p>
-
-ان نو زبانوں کے لیے فارمیٹس دستیاب ہیں:
-
-<p dir="ltr" align="left">JavaScript · TypeScript · Python · Rust · Go · Java · C# · PHP · Ruby</p>
-
-جاوا اسکرپٹ اور ٹائپ اسکرپٹ اصل پیٹرن برقرار رکھتے ہیں۔ دوسرے اہداف پہلے ساختی درخت سے معاون regex رویہ تبدیل کرتے ہیں، پھر درست escaping کے ساتھ سورس کوڈ بناتے ہیں۔ سات اصل انجنوں پر تیار شدہ کوڈ کے تقابلی ٹیسٹ کامیاب ہیں؛ export profile کو <code dir="ltr">PHP 8.5.11 / PCRE2 10.44</code> پر جانچا گیا ہے۔ آزمائے گئے نسخے اور ٹیسٹ مجموعے کی حدود [مطابقت کی رہنمائی](../COMPATIBILITY.md#engine-exports) میں درج ہیں۔
-
-شرائط اور capture mapping ساتھ رکھیں: دوسرے انجن <code dir="ltr">gN</code> نام استعمال کرتے ہیں اور غیر شریک capture کا نام موجود نہ بھی ہو سکتا ہے۔ ان پٹ درست Unicode ہونا چاہیے۔ غیر معاون flags <code dir="ltr">d/g/i/y</code>، Unicode properties اور assertion، capture یا repetition کے غیر موافق رویے پر مقام سمیت diagnostic ملتا ہے۔ کوڈ یا مکمل <code dir="ltr">JSON</code> ڈاؤن لوڈ کریں؛ براؤزر کی مثالیں اب بھی جاوا اسکرپٹ میں چلتی ہیں۔ یہ اضافے npm پیکیج اور میزبان ورکشاپ میں دستیاب ہیں۔ ورژن <code dir="ltr">0.1.0-dev.12</code>۔
-
-تفصیل [انجن پروفائلز اور حدود](../LANGUAGE.md#engine-exports) میں ہے۔
-
-## آزمائشی نسخہ انسٹال کریں
+## انسٹال
 
 <div dir="ltr" align="left">
 
@@ -176,535 +126,57 @@ npm install regex-for-humans@preview
 
 </div>
 
-کمانڈ لائن کو global installation کے بغیر چلائیں:
-
 <div dir="ltr" align="left">
 
 ```sh
-printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans
+printf 'start "ABC"\n3 digits\nend\n' | npx --yes --package=regex-for-humans@preview regex-for-humans --explain
 ```
 
 </div>
 
-نتیجہ: <code dir="ltr">/^ABC\d{3}$/u</code>۔ کسی خاص ورژن کے لیے <code dir="ltr">regex-for-humans@0.1.0-dev.12</code> استعمال کریں۔ رن ٹائم کی اضافی dependencies یا ہر نظام کے لیے الگ executable فراہم نہیں کیا گیا۔
+Node.js 22+، رن ٹائم انحصار کوئی نہیں، TypeScript اعلانات کے ساتھ ESM۔ لائبریری، [کمانڈ لائن](../CLI.md) اور ورکشاپ ایک ہی کمپائلر استعمال کرتے ہیں۔ یہ پیش نظارہ ہے (<code dir="ltr">0.1.0-dev.12</code>)؛ [ورکشاپ](https://othmaneblial.github.io/Regex-For-Humans/workshop/) کو انسٹال کی ضرورت نہیں۔
 
-## کوئی pattern آزمائیں
+## ذخیرۂ الفاظ ایک نظر میں
 
-انٹرفیس کی زبان کے انتخاب سے انگریزی، آسان چینی، ہسپانوی یا فرانسیسی منتخب کریں۔ لیبل، مثالوں کی وضاحتیں، ٹیسٹ کے نتائج اور نیویگیشن بدلتے ہیں، لیکن قواعد، ان پٹ، منتخب حصے، کھلے پینل اور تیار شدہ کوڈ برقرار رہتے ہیں۔ اسٹوریج دستیاب ہو تو انتخاب مقامی طور پر محفوظ ہوتا ہے۔ قواعد کنٹرول شدہ انگریزی میں رہتے ہیں؛ کمپائلر کی وضاحتیں، خاکے کے لیبل اور برآمد کی تکنیکی شرائط بھی انگریزی میں رہتی ہیں۔ [ورکشاپ کی مقامی زبانوں](../ARCHITECTURE.md#workshop-localization) کی تفصیل دیکھیں۔
+| یہ لکھیں | یہ پائیں |
+| --- | --- |
+| <code dir="ltr">start</code> · <code dir="ltr">end</code> | <code dir="ltr">^</code> · <code dir="ltr">$</code> |
+| <code dir="ltr">3 digits</code> · <code dir="ltr">digits</code> | <code dir="ltr">\d{3}</code> · <code dir="ltr">\d+</code> |
+| <code dir="ltr">between 2 and 4 letters</code> | <code dir="ltr">[A-Za-z]{2,4}</code> |
+| <code dir="ltr">optional "-"</code> | <code dir="ltr">-?</code> |
+| <code dir="ltr">one of: a, b</code> | <code dir="ltr">[ab]</code> |
+| <code dir="ltr">either { "INFO" "WARN" }</code> | <code dir="ltr">(?:INFO&#124;WARN)</code> |
+| <code dir="ltr">capture "id" { … }</code> | <code dir="ltr">(?&lt;id&gt;…)</code> |
+| <code dir="ltr">not followed by { "x" }</code> | <code dir="ltr">(?!x)</code> |
 
-ورکشاپ کے لیے ہلکی یا گہری تھیم منتخب کریں، یا سسٹم کی ظاہری ترتیب کی پیروی کریں۔ اسٹوریج دستیاب ہو تو انتخاب مقامی طور پر محفوظ ہوتا ہے؛ تھیم بدلنے سے قواعد، مثالیں، منتخب حصے اور کھلے پینل برقرار رہتے ہیں۔ [تھیم کی ترجیح](../ARCHITECTURE.md#theme-preference) دیکھیں۔
+<code dir="ltr">either { … }</code> جیسے بلاکس میں قوسین کے اندر ہر سطر پر ایک اصول ہوتا ہے۔ [زبان کی رہنمائی](../LANGUAGE.md) ہر اصول، فلیگ، Unicode کلاس، lookaround اور حد بیان کرتی ہے۔
 
-<p dir="ltr" align="left" lang="en"><strong>Theme</strong> · System · Light · Dark</p>
+## کھولنے کو تیار 34 تراکیب
 
-قواعد کا ایڈیٹر کلیدی الفاظ، متنی سلسلوں، کیپچر گروپس، تکرار کی تعداد، شرطوں، متبادل راستوں اور تبصروں کو الگ رنگوں میں دکھاتا ہے۔ کمپائلر جس لفظ میں خرابی بتاتا ہے، اس کے نیچے لکیر آتی ہے؛ لکھنے، منتخب کرنے، نقل کرنے اور اسکرول کرنے کا معمول کا طریقہ برقرار رہتا ہے۔ نظام کے مقرر کردہ رنگوں یا حد سے بڑے ان پٹ کے لیے عام متن دکھایا جاتا ہے۔ <code dir="ltr">#</code> سے شروع ہونے والی تبصرے کی سطریں اپنی اصل جگہ برقرار رکھتی ہیں اور حجم اور سطروں کی معمول کی حدوں میں شمار ہوتی ہیں۔ [تبصروں](../LANGUAGE.md#comments) اور [ایڈیٹر میں رنگوں](../ARCHITECTURE.md#editor-highlighting) کی تفصیل دیکھیں۔
+| ترکیب | کیا جانچتی ہے |
+| --- | --- |
+| [کیلنڈر تاریخ کی تصدیق](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | مہینہ 01–12، دن 01–31، سال، مہینہ اور دن کے طور پر کیپچر |
+| [IPv4 پتے کی تصدیق](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | 0 سے 255 تک چار اعداد، شروع میں صفر نہیں |
+| [24 گھنٹے کے وقت کی تصدیق](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | <code dir="ltr">00:00</code> سے <code dir="ltr">23:59</code> تک |
+| [SemVer 2.0 نحو کی تصدیق](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | بنیادی، پری ریلیز اور بلڈ حصے |
+| [لاگ کے ٹکڑے سے نام والے فیلڈ نکالیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | سطح اور کوڈ، نام سے |
+| [دہرایا گیا لفظ پکڑیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | ایک لفظ، پھر وہی لفظ |
 
-قواعد بنانے کا پینل موجودہ سطر یا منتخب حصے سے پہلے، پیٹرن کی بیرونی حدود کے اندر کیپچر، اختیاری حصے، متبادل، تکرار، حروف کی جماعت اور شرطی جانچ کے قابلِ ترمیم نمونے شامل کرتا ہے۔ نیا کیپچر شامل کرنے پر پہلے سے موجود عددی حوالوں کا تعلق انہی گروپس سے برقرار رہتا ہے۔ غلط یا حد سے بڑا نمونہ مسترد ہونے پر اصل قواعد اور منتخب حصہ محفوظ رہتے ہیں؛ فلیگ اور مثالیں بھی برقرار رہتی ہیں۔ [قواعد بنانے](../ARCHITECTURE.md#rule-construction) کی تفصیل دیکھیں۔
+ہر ترکیب کے ساتھ ایسی مثالیں ہیں جنہیں ملنا چاہیے اور جنہیں نہیں ملنا چاہیے، اور ایک نوٹ کہ وہ کیا نہیں جانچتی۔ [تمام 34 تراکیب](../RECIPES.md) اور **35 قبول یا رد شدہ کیسز** والی چار [پیچیدہ مثالیں](../COMPLEX-EXAMPLES.md) دیکھیں۔
 
-درست توقعات پوری <code dir="ltr">UTF-16</code> حدود کی فہرست، گروپ نمبر کے مطابق کیپچر کی قدریں اور اصل فلیگ کے ساتھ جاوا اسکرپٹ کے متبادل نتائج جانچتی ہیں۔ <code dir="ltr">null</code> کا مطلب غیر شریک کیپچر ہے اور <code dir="ltr">""</code> کا مطلب خالی متن پکڑنے والا کیپچر ہے۔ ٹیسٹ فائلیں ورژن والے <code dir="ltr">JSON</code> کی درآمد/برآمد اور دستی مقامی محفوظ کرنے/بحال کرنے کی سہولت دیتی ہیں۔ غلط مسودے یا فائلیں موجودہ کام محفوظ رکھتی ہیں؛ درآمد شدہ <code dir="ltr">CR/CRLF</code> مثال کا خانہ تبدیل کرنے تک بعینہٖ برقرار رہتے ہیں۔ [ٹیسٹ فائلوں کی ساخت، مثالیں اور حدود](../TEST_FIXTURES.md) دیکھیں۔
+## نتیجے پر بھروسا کیوں کریں
 
-**پوری ورکشاپ کا اسنیپ شاٹ شیئر کریں** بذریعہ <code dir="ltr">Copy share link</code>: قواعد، فلیگ، میچ موڈ، مثالیں اور درست توقعات ایک <code dir="ltr">URL</code> میں محفوظ رہتی ہیں۔ نیا صفحہ ترکیبیں لوڈ ہونے سے پہلے انہیں بحال کرتا ہے؛ <code dir="ltr">Load shared link</code> موجودہ کام کو صرف واضح کارروائی کے بعد بدلتا ہے۔ کلپ بورڈ کی اجازت نہ ملے تو دستی نقل کے لیے خانہ دستیاب رہتا ہے۔ لنک کی حد <code dir="ltr">32 KiB</code> ہے؛ بڑے ٹیسٹ مجموعے <code dir="ltr">JSON</code> برآمد استعمال کرتے ہیں۔ لنک رکھنے والا کوئی بھی شخص مواد پڑھ سکتا ہے: یہ رمز بند نہیں ہے۔ [شیئر کرنے کا طریقہ اور حدود](../TEST_FIXTURES.md#share-a-workshop-snapshot) دیکھیں۔
+- **متعین۔** پارسر، ماڈل نہیں: ایک جیسے اصول ہمیشہ ایک جیسا ریگیکس دیتے ہیں۔ نہ AI، نہ نیٹ ورک، نہ ٹیلی میٹری۔
+- **مقامی۔** نتیجہ ایک عام <code dir="ltr">RegExp</code> ہے؛ مطابقت کے وقت صرف انجن چلتا ہے۔ Python، Rust، Go، Java، C#، PHP اور Ruby کے [ایکسپورٹ](../LANGUAGE.md#engine-exports) انہی انجنوں سے ملائے جاتے ہیں۔
+- **حدود کے بارے میں دیانت دار۔** تراکیب بتاتی ہیں کہ وہ کیا نہیں جانچتیں۔ ورکشاپ آپ کی مثالیں وقت کی حد والے worker میں چلاتی ہے؛ نقل کیے گئے ریگیکس کو اپنے حفاظتی انتظامات چاہییں ([سیکیورٹی ماڈل](../SECURITY_MODEL.md))۔
+- **جانچا ہوا۔** ہر ترکیب اور اس README کی ہر مثال ٹیسٹ سوٹ میں دوبارہ کمپائل ہوتی ہے ([ٹیسٹنگ](../TESTING.md))۔
 
-**مسودے کی بحالی۔** دوبارہ لوڈ کرنے پر قواعد، فلیگ، مثالیں، چسپاں کیا گیا ریجیکس اور نامکمل <code dir="ltr">JSON</code> توقعات بھی بحال کرنے کے لیے <code dir="ltr">Keep a draft in this browser</code> فعال کریں۔ یہ پہلے سے بند ہے اور دستی محفوظ ٹیسٹوں سے الگ رہتا ہے؛ بند کرنے پر مسودہ حذف ہو جاتا ہے۔ [بحالی اور ذخیرے کی حدود](../TEST_FIXTURES.md#draft-recovery-on-unreleased-main) دیکھیں۔
+[آرکیٹیکچر](../ARCHITECTURE.md) · [مطابقت](../COMPATIBILITY.md) · [تعاون](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) · [تبدیلیاں](../../CHANGELOG.md) · [سیکیورٹی](../../SECURITY.md) · [MIT](../../LICENSE)
 
-**گروپ کی تبدیلی کا پیش منظر۔** موجودہ اور مجوزہ قواعد اور ریجیکس کا موازنہ کرنے کے لیے <code dir="ltr">Preview group edit</code> منتخب کریں؛ بدلے ہوئے نام یا نمبر والے حوالہ جات بھی دکھائی دیتے ہیں۔ پیش منظر ٹیسٹ اور محفوظ مسودے کو برقرار رکھتا ہے؛ قواعد، فلیگ یا گروپ کے خانے بدلنے پر وہ ہٹ جاتا ہے۔ نتیجہ جانچنے کے لیے تبدیلی لاگو کریں۔ [تبدیلی سے پہلے اور بعد کا موازنہ اور حدود](../GROUP_PREVIEWS.md) دیکھیں۔
+<div align="center">
 
-اصل میچ کی حدود یا کم از کم لمبائی، غائب لازمی متن اور ان پٹ کے غلط مطلق کنارے پر موجود متن کی ثابت شدہ شرطوں سے **ناکام مثال کی وجہ سمجھیں**۔ سابقے اور لاحقے کی جانچ بڑے اور چھوٹے حروف میں فرق کرنے والے ان پٹ اینکرز پر لاگو ہوتی ہے؛ سطر کے اینکرز اور غیر یقینی صورتوں میں محتاط وضاحت برقرار رہتی ہے۔ درست ناکام مرحلہ معلوم نہ ہو تو ورکشاپ صاف بتاتی ہے۔ یہ بیک ٹریکنگ کا اجرائی ریکارڈ نہیں ہے۔ [ناکامی کی وضاحتیں](../FAILURE_EXPLANATIONS.md) دیکھیں۔
-
-غلط اقتباسی <code dir="ltr">escape</code>، کلاس یا فہرست کے غلط جز، حد کے سرے یا <code dir="ltr">Unicode</code> <code dir="ltr">property alias</code> کے **درست تشخیصی حصے پر جائیں**۔ نمایاں حصہ اصل <code dir="ltr">escape</code> لکھائی اور مکمل <code dir="ltr">Unicode</code> جوڑوں کو برقرار رکھتا ہے؛ حدود معلوم نہ ہونے پر ابتدائی مقام تک جانے کی سہولت باقی رہتی ہے۔ لائبریری اور <code dir="ltr">CLI</code> اختیاری <code dir="ltr">endColumn</code> دیتے ہیں، جو <code dir="ltr">UTF-16</code> اکائیوں میں آخری کالم ہے اور آخری حد کو خود شامل نہیں کرتا۔ [تشخیصی حدود](../LANGUAGE.md#errors-and-future-syntax) دیکھیں۔
-
-<p dir="ltr" align="left" lang="en"><strong>Build a rule</strong></p>
-
-<p dir="ltr" align="left"><strong>Interface language</strong> · English · 简体中文 · Español · Français</p>
-
-1. ایک تیار مثال منتخب کریں یا ہر سطر پر ایک ہدایت لکھیں۔
-2. بننے والے حصوں اور ان کی وضاحت کو دیکھیں۔
-3. اپنی مثالیں شامل کریں اور بتائیں کہ کن کا match ہونا چاہیے۔
-4. جب نتیجہ مناسب ہو تو regex کاپی کر لیں۔
-
-جزوی match کے ساتھ مختصر escaped سیاق اور نمایاں کیا ہوا متن دکھتا ہے؛ خالی match کے لیے مقام کا نشان آتا ہے۔ قواعد اور مثالیں براؤزر میں رہتی ہیں۔ اکاؤنٹ، AI سے تشریح یا application backend کی ضرورت نہیں۔
-
-موجودہ ورکشاپ میں match کھول کر capture کی قدریں اور مقامات دیکھیں۔ **Capture نہیں ہوا** اور **خالی متن capture ہوا** الگ دکھائے جاتے ہیں؛ بار بار آنے والا گروپ اپنی آخری capture دکھاتا ہے۔ **Search anywhere** زیادہ سے زیادہ 100 غیر متداخل matches دکھاتا ہے اور خالی match کے بعد مکمل Unicode code point آگے بڑھتا ہے۔ مقامات UTF-16 units میں ہیں؛ آخری حد شامل نہیں۔ اگر انجن capture indices نہ دے تو قدریں دکھائی جاتی ہیں، مقامات اندازے سے نہیں بنائے جاتے۔
-
-[![ڈیسک ٹاپ ورکشاپ کی حقیقی تصویر](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/media/screenshots/workshop-desktop-dev.png?v=c3ae9d3d6e2d)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
-
-[موبائل منظر اور checksums](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/media/screenshots/README.md)۔
-
-## پہلے سے regex موجود ہے؟
-
-ورکشاپ کے **Already have a regex?** حصے میں معاونت یافتہ JavaScript regex literal پیسٹ کریں۔ **Translate to rules** دبائیں یا Ctrl/Cmd + Enter استعمال کریں۔ <code dir="ltr">/^[A-Z]{2}-\d{4}$/u</code> اس طرح بدلتا ہے:
-
-<div dir="ltr" align="left">
-
-```text
-start
-2 uppercase letter
-"-"
-4 digit
-end
-```
+اگر یہاں کے کسی اصول نے آپ کو آنکھیں سکیڑنے سے بچایا تو ایک ⭐ دوسرے ڈویلپرز کو اسے ڈھونڈنے میں مدد دیتا ہے۔
 
 </div>
-
-Literal کے دونوں طرف <code dir="ltr">/</code> اور اس میں <code dir="ltr">u</code> یا <code dir="ltr">v</code> ہونا ضروری ہے۔ نئی سطر کو <code dir="ltr">\n</code> جیسے escape سے لکھیں۔ ترجمہ معاونت یافتہ <code dir="ltr">i</code>، <code dir="ltr">s</code>، <code dir="ltr">m</code> اور <code dir="ltr">u</code> کا رویہ برقرار رکھتا ہے۔ موجودہ سورس نام والے، نمبر والے، nested capture گروپ اور پچھلے references بھی درآمد کرتا ہے، ان کے نمبر اور قدریں بدلے بغیر۔
-
-فہرست <code dir="ltr">[^]</code> کسی بھی محرف کے قاعدے اور <code dir="ltr">s</code> میں بدلتی ہے۔ ساتھ موجود عام dots سے line terminators واضح طور پر خارج کیے جاتے ہیں تاکہ معنی نہ بدلیں۔ حروف، word characters اور hex digits کی مکمل classes کے مساوی ترتیب والے انداز بھی قبول ہوتے ہیں۔ Path exclusions اور control escapes محفوظ رہتے ہیں؛ فہرست کے کنارے والا hyphen عام محرف رہتا ہے۔
-
-غیر معاونت یافتہ ساخت مسترد ہوتی ہے؛ اسے حذف یا تقریباً تبدیل نہیں کیا جاتا۔ **Go to regex error** مسئلے کا مقام منتخب کرتا ہے، اور ناکامی پر موجودہ قواعد اور options محفوظ رہتے ہیں۔ آگے آنے والے یا ابھی کھلے capture کے references مسترد ہوتے ہیں۔ خالی noncapturing گروپ <code dir="ltr">0 any character</code> بنتا ہے: search میں خالی match ملتا ہے، مگر پوری string کے mode میں خالی input درکار ہے۔
-
-## شروع کرنے کے لیے تیار مثالیں
-
-| مثال | نمونہ | کیا جانچتی ہے |
-| ---: | ---: | ---: |
-| [Prefix والا identifier](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=prefixed-identifier) | <code dir="ltr">ABC123</code> | Prefix اور تین ہندسے |
-| [انوائس نمبر](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=invoice-number) | <code dir="ltr">INV-1234</code> | <code dir="ltr">INV-</code> اور 2–6 ہندسے |
-| [صارف نام](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=username-shape) | <code dir="ltr">Alice_7</code> | 3–16 محارف؛ پہلا ASCII حرف |
-| [Hex رنگ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=hex-color) | <code dir="ltr">#12aBcF</code> | <code dir="ltr">#</code> کے بعد چھ hex digits |
-| [MAC address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=mac-address-shape) | <code dir="ltr">00:1A:2B:3C:4D:5E</code> | <code dir="ltr">:</code> سے الگ چھ جوڑے |
-| [UUID](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=uuid-shape) | <code dir="ltr">8–4–4–4–12</code> | پانچ hex گروپ |
-| [پروڈکٹ کوڈ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=product-code-shape) | <code dir="ltr">AB-rgb-0420</code> | حروف اور ہندسوں کی مقررہ تعداد |
-| [تاریخ کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=date-shape) | <code dir="ltr">2026-09-30</code> | <code dir="ltr">YYYY-MM-DD</code> کی صورت |
-| [calendar-date](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=calendar-date) | <code dir="ltr">2026-09-30</code> | 0–255 / 01–12 / 00–23 |
-| [وقت کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=time-shape) | <code dir="ltr">09:30</code> | <code dir="ltr">HH:MM</code> کی صورت |
-| [clock-time](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=clock-time) | <code dir="ltr">23:59</code> | 0–255 / 01–12 / 00–23 |
-| [فون نمبر کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=phone-shape) | <code dir="ltr">+33123456789</code> | اختیاری <code dir="ltr">+</code> اور 7–15 ہندسے |
-| [IPv4 کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-shape) | <code dir="ltr">192.0.2.42</code> | 1–3 ہندسوں کے چار گروپ |
-| [ipv4-address](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=ipv4-address) | <code dir="ltr">192.168.1.1</code> | 0–255 / 01–12 / 00–23 |
-| [فائل کا نام](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=filename-shape) | <code dir="ltr">report.txt</code> | محدود Unicode نام، path separators کے بغیر |
-| [Artifact manifest](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=artifact-manifest) | Path، hash، حجم | 19 قواعد اور نو مثالیں |
-| [رسائی کا لاگ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=access-log) | Request، status، حجم | 43 قواعد اور آٹھ مثالیں |
-| [منظم telemetry event](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=structured-event) | IDs اور اختیاری قدریں | 38 قواعد اور نو مثالیں |
-| [ورژن کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=version-shape) | <code dir="ltr">1.2.3</code> | تین عددی حصے |
-| [خارج کیے گئے محارف](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=excluded-characters) | <code dir="ltr">xyz</code> | منتخب محارف کے بغیر متن |
-| [سطر کا قاعدہ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=line-rule) | <code dir="ltr">item 123</code> | کم از کم تین ہندسوں پر ختم ہونے والی سطر |
-| [چھوٹے حروف کا سلگ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=slug) | <code dir="ltr">hello-world</code> | <code dir="ltr">ASCII</code> حروف اور ہندسے ایک ہائفن سے جڑے ہوتے ہیں |
-| [فائل ایکسٹینشن](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=file-extension) | <code dir="ltr">README.md</code> | حروف کی جسامت سے حساس <code dir="ltr">txt</code>، <code dir="ltr">md</code> یا <code dir="ltr">json</code> لاحقہ |
-| [UTC وقت کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=iso8601-shape) | <code dir="ltr">2026-10-11T09:30:00Z</code> | اعشاری سیکنڈ اختیاری؛ کیلنڈر الگ جانچیں |
-| [HTTPS رابطے کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=https-url-shape) | <code dir="ltr">https://example.com</code> | <code dir="ltr">ASCII</code> میزبانوں کی محدود شکل؛ مکمل URL توثیق نہیں |
-| [ہیڈر کا خانہ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=http-header) | <code dir="ltr">Content-Type: application/json</code> | نام والا خانہ اور ایک سطر کی قدر |
-| [Markdown عنوان](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=markdown-heading) | <code dir="ltr"># Hello</code> | ایک سے چھ <code dir="ltr">#</code> اور عنوان |
-| [SemVer 2.0 نحو](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=semantic-version) | <code dir="ltr">1.2.3-alpha.1+001</code> | بنیادی، پری ریلیز اور بلڈ نحو؛ ترجیح کا موازنہ نہیں |
-| [Git ہیش کی شکل](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=git-object-hash) | <code dir="ltr">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</code> | <code dir="ltr">40</code> یا <code dir="ltr">64</code> <code dir="ltr">ASCII</code> ہیکس حروف؛ موجودگی الگ جانچیں |
-| [دہرائے گئے الفاظ](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=repeated-word) | <code dir="ltr">hello hello</code> | <code dir="ltr">ASCII</code> لفظ کا نام والا پچھلا حوالہ |
-| [متصل نقلیں](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=duplicate-token) | <code dir="ltr">item,item</code> | کوما سے جدا ایک جوڑا؛ ہر ٹوکن میں <code dir="ltr">1–16</code> ورڈ حروف |
-| [Unicode حروف](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=unicode-word) | <code dir="ltr">العربية / اردو</code> | اصل <code dir="ltr">L/M</code> خصوصیات؛ عربی اور اردو بھی |
-| [لاگ کے خانے](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=log-fields) | <code dir="ltr">INFO code=200</code> | تلاش کیے گئے حصے سے <code dir="ltr">level</code> اور <code dir="ltr">code</code> کے خانے |
-| [تلاش اور تبدیلی](https://othmaneblial.github.io/Regex-For-Humans/workshop/?example=replace-word) | <code dir="ltr">teh then teh → the then teh</code> | مقامات، گروپوں اور بغیر <code dir="ltr">g</code> تبدیلی کی درست توقعات |
-
-لائبریری میں **34 مثالیں، 24 زمرے اور مشکل کے تین درجے** ہیں۔ انٹرفیس کی چار زبانوں میں عنوان، حدود اور قواعد تلاش کریں اور فلٹر یکجا کریں۔ [رہنما](../EXAMPLE_LIBRARY.md) دیکھیں۔
-
-ناکام مثالوں کے لیے [قابلِ تصدیق وضاحتیں](../FAILURE_EXPLANATIONS.md) ملتی ہیں: اصل میچ کی حدود، ثابت شدہ کم از کم لمبائی یا غائب لازمی متن۔ اگر ناکامی کا درست مرحلہ معلوم نہ ہو تو ورکشاپ صاف بتاتی ہے۔
-
-[ابتدائی، درمیانی یا ماہر وضاحتیں](../EXPLANATION_LEVELS.md) منتخب کریں۔ نوٹس regex کی اصطلاحیں سمجھاتے ہیں یا سورس کی حدود، کیپچر، حل شدہ حوالوں اور اختیارات کی تفصیل دکھاتے ہیں۔ سطح بدلنے سے کام محفوظ رہتا ہے اور میچنگ دوبارہ نہیں چلتی۔
-
-یہ مثالیں **شکل** جانچتی ہیں۔ ناممکن تاریخ یا <code dir="ltr">25:99</code> بھی match ہو سکتا ہے؛ کیلنڈر اور عددی حدود الگ جانچیں۔ IPv4 ہر حصے کو 255 تک محدود نہیں کرتا۔ UUID ورژن، variant یا یکتا ہونے کی ضمانت نہیں۔ فون اور انوائس کا کوئی رجسٹر نہیں دیکھا جاتا، اور صارف نام کی دستیابی بھی نہیں جانچی جاتی۔ سادہ ورژن کی شکل والی مثال <code dir="ltr">SemVer</code> کی مکمل توثیق نہیں کرتی۔ رنگ کے لیے <code dir="ltr">#RRGGBB</code> درکار ہے؛ فائل سسٹم کے قواعد الگ ہیں۔
-
-## بڑے patterns بھی واضح رہیں
-
-[پیچیدہ مثالوں کی رہنمائی](../COMPLEX-EXAMPLES.md) میں چار formats، 35 قبول یا رد ہونے والے cases، اور ہر قاعدے کی وضاحت ہے: access log، telemetry event، artifact manifest اور کئی سطروں کا order۔
-
-### Artifact manifest
-
-اختیاری <code dir="ltr">nightly/</code> directory، محدود Unicode path، ورژن، archive کا نام، checksum اور حجم؛ سب tabs سے الگ:
-
-<div dir="ltr" align="left">
-
-```text
-start
-"incoming/"
-optional "nightly/"
-between 1 and 32 path segment characters
-"/v"
-between 1 and 3 digits
-"."
-between 1 and 3 digits
-"."
-between 1 and 3 digits
-"/linux-arm64/widget_"
-8 digits
-"_"
-8 hex digits
-".tar.gz\t"
-64 hex digits
-"\t"
-between 1 and 12 digits
-end
-```
-
-</div>
-
-<div dir="ltr" align="left">
-
-```js
-/^incoming\/(?:nightly\/)?[^\/\\\u{0}\n\r\u{2028}\u{2029}]{1,32}\/v\d{1,3}\.\d{1,3}\.\d{1,3}\/linux-arm64\/widget_\d{8}_[0-9A-Fa-f]{8}\.tar\.gz\t[0-9A-Fa-f]{64}\t\d{1,12}$/u
-```
-
-</div>
-
-یہ path اور hash کی شکل جانچتا ہے؛ فائل کے موجود ہونے یا مواد کی صحت کی ضمانت نہیں۔ Unicode کی حدود اور tabs واضح ہیں۔
-
-### کئی سطروں کا order
-
-اس میں identifier، Unicode خریدار، فون، تعداد، رقم، reference، اختیاری approval اور اختیاری مکمل priority سطر:
-
-<div dir="ltr" align="left">
-
-```text
-start
-"ORDER\nid=ORD-"
-8 hex digits
-"\nbuyer="
-between 1 and 60 none of: "\u0000", "\n", "\r", "\u2028", "\u2029"
-"\nphone="
-optional "+"
-between 7 and 15 digits
-"\nitems="
-between 1 and 4 digits
-"\ntotal="
-between 1 and 6 digits
-"."
-2 digits
-" EUR\nreference="
-16 hex digits
-"\napproval="
-optional one of: "A", "D"
-"\n"
-optional "priority=HIGH\n"
-"END"
-optional "\n"
-end
-```
-
-</div>
-
-<div dir="ltr" align="left">
-
-```js
-/^ORDER\nid=ORD-[0-9A-Fa-f]{8}\nbuyer=[^\u{0}\n\r\u{2028}\u{2029}]{1,60}\nphone=\+?\d{7,15}\nitems=\d{1,4}\ntotal=\d{1,6}\.\d{2} EUR\nreference=[0-9A-Fa-f]{16}\napproval=[AD]?\n(?:priority=HIGH\n)?END\n?$/u
-```
-
-</div>
-
-نئی سطر کے محارف literal ہیں۔ رقم، نمبر اور order کی کاروباری جانچ application کی ذمہ داری ہے۔ رہنمائی کی چار سادہ مثالیں fields extract نہیں کرتیں۔
-
-## نام والے captures سے fields نکالیں
-
-یہ مثال npm نسخے <code dir="ltr">0.1.0-dev.12</code> اور شائع شدہ ورکشاپ میں کام کرتی ہے۔
-
-<div dir="ltr" align="left">
-
-```text
-start
-capture "year" {
-  4 digits
-}
-"-"
-capture "month" {
-  2 digits
-}
-"-"
-capture "day" {
-  2 digits
-}
-end
-```
-
-</div>
-
-<div dir="ltr" align="left">
-
-```js
-import { compile, toRegExp } from './index.js';
-
-const rules = `start
-capture "year" {
-  4 digits
-}
-"-"
-capture "month" {
-  2 digits
-}
-"-"
-capture "day" {
-  2 digits
-}
-end`;
-
-const match = toRegExp(compile(rules)).exec('2026-10-10');
-console.log(match?.groups); // { year: '2026', month: '10', day: '10' }
-```
-
-</div>
-
-قاعدہ <code dir="ltr">capture {</code> نمبر والا گروپ بناتا ہے؛ <code dir="ltr">group {</code> بغیر capture کیے قواعد اکٹھے کرتا ہے۔ نام منفرد JavaScript identifiers ہوتے ہیں۔ نمبر گروپ کھلنے کی ترتیب سے ملتے ہیں، nested گروپوں میں بھی۔ غیر موجود اختیاری capture کی قدر <code dir="ltr">undefined</code>، حصہ لینے والے خالی capture کی قدر <code dir="ltr">""</code> ہوتی ہے، اور repeated capture آخری قدر رکھتا ہے۔
-
-گروپ بند ہونے کے بعد <code dir="ltr">same as capture "word"</code> یا <code dir="ltr">same as capture 1</code> اسی متن کو دوبارہ لازم کرتا ہے۔ [مثال](../LANGUAGE.md#capture-references) <code dir="ltr">cat cat</code> قبول اور <code dir="ltr">cat dog</code> مسترد کرتی ہے۔ مستقبل کے capture یا اپنے کھلے گروپ کا reference واضح error دیتا ہے۔ Reverse translation معاونت یافتہ نام، نمبر اور قدریں محفوظ رکھتی ہے۔ نکالی گئی تاریخ کی calendar validation پھر بھی ضروری ہے۔
-
-## مختصر حوالہ
-
-ہر سطر پر ایک ہدایت؛ literal متن quotation marks کے اندر۔
-
-| قاعدہ | نتیجہ | مطلب |
-| ---: | ---: | ---: |
-| <code dir="ltr">start</code> / <code dir="ltr">end</code> | <code dir="ltr">^</code> / <code dir="ltr">$</code> | Input کی حدود |
-| <code dir="ltr">line start</code> / <code dir="ltr">line end</code> | <code dir="ltr">^</code> / <code dir="ltr">$</code> اور <code dir="ltr">m</code> | سطروں کی حدود |
-| <code dir="ltr">digit</code> / <code dir="ltr">not digit</code> | <code dir="ltr">\d</code> / <code dir="ltr">\D</code> | ASCII ہندسہ یا اس کے علاوہ |
-| <code dir="ltr">3 digits</code> / <code dir="ltr">digits</code> | <code dir="ltr">\d{3}</code> / <code dir="ltr">\d+</code> | تین یا کم از کم ایک ہندسہ |
-| <code dir="ltr">between 2 and 4 digits</code> | <code dir="ltr">\d{2,4}</code> | دونوں حدود شامل |
-| <code dir="ltr">optional "-"</code> | <code dir="ltr">-?</code> | اختیاری hyphen |
-| <code dir="ltr">letter</code> / <code dir="ltr">letters</code> | <code dir="ltr">[A-Za-z]</code> / <code dir="ltr">[A-Za-z]+</code> | ASCII حروف |
-| <code dir="ltr">lowercase letters</code> / <code dir="ltr">uppercase letters</code> | <code dir="ltr">[a-z]+</code> / <code dir="ltr">[A-Z]+</code> | ASCII case؛ <code dir="ltr">i</code> فرق نظرانداز کرتا ہے |
-| <code dir="ltr">6 hex digits</code> | <code dir="ltr">[0-9A-Fa-f]{6}</code> | چھ hex digits |
-| <code dir="ltr">space</code> / <code dir="ltr">spaces</code> | <code dir="ltr">\s</code> / <code dir="ltr">\s+</code> | Whitespace، نئی سطر سمیت |
-| <code dir="ltr">between 1 and 32 path segment characters</code> | 1–32 code points | Separators، NUL اور نئی سطروں کے بغیر |
-| <code dir="ltr">"hello"</code> | <code dir="ltr">hello</code> | بعینہٖ متن، ضروری escapes کے ساتھ |
-| <code dir="ltr">one of: a, b</code> | <code dir="ltr">[ab]</code> | فہرست کا ایک محرف |
-| <code dir="ltr">text without: a, b</code> | <code dir="ltr">[^ab]*</code> | فہرست سے باہر صفر یا زیادہ محارف |
-| <code dir="ltr">any text</code> | <code dir="ltr">.*</code> | <code dir="ltr">s</code> کے ساتھ نئی سطریں بھی |
-
-قواعد <code dir="ltr">word character</code>، <code dir="ltr">word characters</code>، <code dir="ltr">word</code> اور <code dir="ltr">not word</code> میں <code dir="ltr">\w</code> اور <code dir="ltr">\W</code> کا مطلب استعمال ہوتا ہے۔ فہرست <code dir="ltr">\w</code> میں <code dir="ltr">_</code> ہے، مگر <code dir="ltr">é</code> نہیں۔ <code dir="ltr">letter</code> ہندسے اور underscore شامل نہیں کرتا۔ JavaScript کی native case matching میں <code dir="ltr">i</code> کے ساتھ <code dir="ltr">K</code> اور <code dir="ltr">ſ</code> بھی آ سکتے ہیں۔ فلیگ <code dir="ltr">u</code> ڈیفالٹ ہے اور سورس میں <code dir="ltr">v</code> بھی دستیاب ہے؛ دونوں ASCII classes کو تمام Unicode categories نہیں بناتے۔
-
-## ٹرمینل میں استعمال
-
-<div dir="ltr" align="left">
-
-```sh
-npm install --global regex-for-humans@preview
-printf 'start "ABC"\n3 digits\nend\n' | regex-for-humans
-```
-
-</div>
-
-یا cloned repository سے:
-
-<div dir="ltr" align="left">
-
-```sh
-git clone https://github.com/OthmaneBlial/Regex-For-Humans.git
-cd Regex-For-Humans
-printf 'start "ABC"\n3 digits\nend\n' | node bin/regex-for-humans.js
-```
-
-</div>
-
-<div dir="ltr" align="left">
-
-```text
-/^ABC\d{3}$/u
-```
-
-</div>
-
-✅ <code dir="ltr">ABC123</code> · ❌ <code dir="ltr">ABC12</code>, <code dir="ltr">ABC1234</code>, <code dir="ltr">abc123</code>
-
-| Option | کام |
-| ---: | ---: |
-| <code dir="ltr">--explain</code> | حصے اور ان کی وضاحت |
-| <code dir="ltr">--json</code> | stdout پر منظم نتیجہ، stderr پر errors |
-| <code dir="ltr">--ignore-case</code> | <code dir="ltr">i</code> فعال کرتا ہے |
-| <code dir="ltr">--dot-all</code> | <code dir="ltr">s</code> فعال کرتا ہے |
-| <code dir="ltr">--flags</code> | Native JavaScript flags منتخب کریں؛ u/v ساتھ نہیں دیے جا سکتے |
-| <code dir="ltr">--help</code> | مدد |
-| <code dir="ltr">--target</code> | منتخب زبان میں ایکسپورٹ؛ [پروفائلز](../LANGUAGE.md#engine-exports) دیکھیں |
-| <code dir="ltr">--version</code> | پیکیج کا ورژن |
-
-ان پٹ کے لیے UTF-8 فائل یا stdin پڑھیں۔ <code dir="ltr">-</code> سے شروع ہونے والے فائل نام سے پہلے <code dir="ltr">--</code> لگائیں۔ Exit codes: کامیابی، مدد اور ورژن کے لیے <code dir="ltr">0</code>؛ غلط قواعد یا input/output error کے لیے <code dir="ltr">1</code>؛ غلط arguments کے لیے <code dir="ltr">2</code>۔
-
-خراب UTF-8 مسترد ہوتا ہے، خاموشی سے تبدیل نہیں کیا جاتا۔ JSON diagnostics اپنے codes برقرار رکھتے ہیں: استعمال کی غلطی کے لیے <code dir="ltr">CLI_USAGE</code>، فائل یا runtime error کے لیے <code dir="ltr">CLI_ERROR</code>۔ Control characters کو escape کر کے دکھایا جاتا ہے؛ decoded JSON اصل data واپس دیتا ہے۔ stderr لکھنے میں ناکامی پر nonzero exit ہوتا ہے۔
-
-تشخیصی <code dir="ltr">JSON</code> میں <code dir="ltr">endColumn</code> شامل ہو سکتا ہے: اسی سطر کا آخری کالم، جس کی گنتی <code dir="ltr">UTF-16</code> units میں <code dir="ltr">1</code> سے شروع ہوتی ہے اور آخری حد خود شامل نہیں ہوتی۔ ورکشاپ معلوم دائرے کو مکمل نمایاں اور منتخب کرتی ہے؛ دائرہ معلوم نہ ہو تو غلطی کے ابتدائی مقام پر جانے کی سہولت برقرار رہتی ہے۔
-
-ریورس ترجمے میں regex کے اندر <code dir="ltr">u</code> درکار ہے؛ forward translation کے CLI flags خاموشی سے نظرانداز ہونے کے بجائے مسترد ہوتے ہیں:
-
-<div dir="ltr" align="left">
-
-```sh
-printf '%s\n' '/^[A-Z]{2}-[0-9]{4}$/u' | npx --yes --package=regex-for-humans@preview regex-for-humans --reverse
-```
-
-</div>
-
-<div dir="ltr" align="left">
-
-```text
-start
-2 uppercase letter
-"-"
-4 digit
-end
-```
-
-</div>
-
-منظم نتیجے کے لیے <code dir="ltr">--reverse --json</code> بھی ہے۔ خالی یا غیر معاونت یافتہ input پر مقام کے ساتھ diagnostic آتا ہے، جزوی ترجمہ نہیں۔
-
-## جاوا اسکرپٹ اور ٹائپ اسکرپٹ میں استعمال
-
-<div dir="ltr" align="left">
-
-```js
-import { compile, regexToRules, toRegExp } from 'regex-for-humans';
-
-const result = compile('start 3 digits\nend');
-console.log(result.source);                // ^\d{3}$
-console.log(toRegExp(result).test('123'));  // true
-console.log(result.segments);              // Each fragment + explanation
-
-const reverse = regexToRules(/^[A-Z]{2}-\d{4}$/u);
-console.log(reverse.rules);                 // start\n2 uppercase letter\n"-"\n4 digit\nend
-console.log(reverse.flags);                 // Flags to pass back to compile()
-```
-
-</div>
-
-فنکشن <code dir="ltr">toRegExp({ source, flags })</code> cached metadata قبول کرتا ہے۔ دونوں fields strings ہونے چاہییں؛ segments نہیں پڑھے جاتے۔ <code dir="ltr">compile("digit", { flags: undefined })</code> فلیگ <code dir="ltr">u</code> استعمال کرتا ہے، <code dir="ltr">exactOptionalPropertyTypes</code> کے ساتھ بھی۔
-
-فنکشن <code dir="ltr">regexToRules()</code> دوسرے JavaScript contexts کے حقیقی regex قبول کرتا ہے، <code dir="ltr">lastIndex</code> محفوظ رکھتا ہے، اور matching methods یا instance کے overridden methods چلائے بغیر native metadata پڑھتا ہے۔ <code dir="ltr">\u{00000041}</code> جیسے escapes source limit کے اندر معاونت یافتہ ہیں۔
-
-## واضح اثر والے flags
-
-| Flag | کیسے فعال ہوتا ہے | اثر |
-| ---: | ---: | ---: |
-| <code dir="ltr">u</code> | بطور ڈیفالٹ | Unicode code points کے مطابق match |
-| <code dir="ltr">i</code> | <code dir="ltr">{ flags: 'i' }</code> یا <code dir="ltr">--ignore-case</code> | JavaScript کے مطابق case کے فرق کے بغیر موازنہ |
-| <code dir="ltr">s</code> | <code dir="ltr">{ flags: 's' }</code> یا <code dir="ltr">--dot-all</code> | Dot نئی سطر بھی match کر سکتا ہے |
-| <code dir="ltr">m</code> | <code dir="ltr">line start</code> / <code dir="ltr">line end</code> | ہر سطر کے anchors |
-| <code dir="ltr">d</code> | <code dir="ltr">{ flags: 'd' }</code> | Native match اور capture indices |
-| <code dir="ltr">g</code> | <code dir="ltr">{ flags: 'g' }</code> | بار بار کال سے <code dir="ltr">lastIndex</code> آگے بڑھتا ہے |
-| <code dir="ltr">y</code> | <code dir="ltr">{ flags: 'y' }</code> | <code dir="ltr">lastIndex</code> پر match، پہلی رکاوٹ پر رکنا |
-| <code dir="ltr">v</code> | <code dir="ltr">{ flags: 'v' }</code> | Native v-mode Unicode classes اور complements |
-
-**npm preview میں:** آٹھوں flags <code dir="ltr">d</code>، <code dir="ltr">g</code>، <code dir="ltr">i</code>، <code dir="ltr">m</code>، <code dir="ltr">s</code>، <code dir="ltr">u</code>، <code dir="ltr">v</code>، <code dir="ltr">y</code> دستیاب ہیں۔ نتیجے کی ترتیب <code dir="ltr">dgimsuvy</code> ہے؛ duplicates اور u/v ساتھ دینے پر خرابی آتی ہے، u ڈیفالٹ ہے۔ m الگ option یا line anchors سے فعال ہوتا ہے؛ دونوں انداز ملانے پر input anchors مکمل حدود برقرار رکھتے ہیں۔ Reverse translation options محفوظ رکھتی ہے اور <code dir="ltr">lastIndex</code> نہیں بدلتی۔ Workshop ہر مثال 0 سے شروع کرتا ہے اور زیادہ سے زیادہ 100 matches دکھاتا ہے؛ copied g/y regex کی state برقرار رہتی ہے۔ غیر موجود native صلاحیتوں کے واضح diagnostics ملتے ہیں۔npm <code dir="ltr">0.1.0-dev.12</code> میں دستیاب ہے۔
-
-<p dir="rtl"><strong>npm preview میں:</strong> strings کے sets اور Unicode string properties کے لیے <code dir="ltr">v</code> منتخب کریں۔ Native انجن فہرست کی ترتیب سے قطع نظر لمبے ارکان پہلے آزماتا ہے؛ بعد کے قواعد چھوٹے رکن پر واپس جانے کا تقاضا کر سکتے ہیں۔ خالی strings بھی درست ہیں۔ تیسری صورت class کے اندر استعمال کریں۔ String property یا ایسی class کا complement نہیں بنایا جا سکتا جس میں خالی string یا کئی Unicode code points والا رکن ہو۔ یہ سہولتیں npm <code dir="ltr">0.1.0-dev.12</code> میں دستیاب ہیں۔</p>
-
-<p dir="ltr" align="left"><code dir="ltr">one of strings: "a", "ab", ""</code></p>
-<p dir="ltr" align="left"><code dir="ltr">unicode property "RGI_Emoji"</code></p>
-<p dir="ltr" align="left"><code dir="ltr">string "ab"</code></p>
-
-<p dir="rtl"><strong>npm preview میں:</strong> نیچے دی گئی صورتیں nested sets بناتی ہیں؛ block کو <code dir="ltr">}</code> سے بند کریں۔ ہر سطر ایک حرف، range، class، property، strings کا set یا nested set ہے۔ Intersection مشترک ارکان رکھتا ہے؛ subtraction پہلے operand سے دائیں طرف کے ارکان ہٹاتا ہے۔ تکرار کی تعداد اور <code dir="ltr">lazy</code> پورے block پر لاگو ہوتے ہیں۔ <code dir="ltr">not</code> strings کے native ساختی اصولوں کی پابندی کرتا ہے؛ خالی union کسی متن سے match نہیں کرتا۔ <code dir="ltr">v</code> منتخب کریں؛ یہ سہولتیں اوپر درج npm ورژن میں دستیاب ہیں۔ <a href="../LANGUAGE.md#nested-unicode-set-operations">Syntax اور مثالیں</a> دیکھیں۔</p>
-
-<p dir="ltr" align="left"><code dir="ltr">character set union {</code></p>
-<p dir="ltr" align="left"><code dir="ltr">character set intersection {</code></p>
-<p dir="ltr" align="left"><code dir="ltr">character set subtraction {</code></p>
-
-<p dir="ltr" align="left"><code dir="ltr">{ flags: 'dgiv' }</code></p>
-
-<p dir="ltr" align="left"><code dir="ltr">--flags dgiv</code></p>
-
-**گروپ کے مقامی اختیارات۔** <code dir="ltr">group with flags "i" {</code> کھولیں، اندر <code dir="ltr">"hello"</code> رکھیں اور <code dir="ltr">}</code> سے بند کریں۔ اس سے <code dir="ltr">(?i:hello)</code> بنتا ہے۔ یہ گروپ <code dir="ltr">HELLO</code> قبول کرتا ہے، جبکہ اگلے قواعد میں بڑے اور چھوٹے حروف کا اصل رویہ برقرار رہتا ہے۔ <code dir="ltr">"im-s"</code> گروپ کے اندر حروف کی صورت سے آزاد موازنہ اور سطر کے anchors فعال کرتا ہے اور <code dir="ltr">dot-all</code> بند کرتا ہے۔ اندرونی گروپ سے باہر آنے پر بیرونی اختیارات بحال ہوتے ہیں؛ بلاک کے اندر captures بھی رکھ سکتے ہیں۔ [نحو اور مثالیں](../LANGUAGE.md#scoped-flags-unreleased)۔
-
-**اصل اجرا کی runtime جانچیں۔** صرف نحو قبول کرنا کافی نہیں۔ Chrome، Firefox اور WebKit کے جانچے گئے Unicode modes ٹیسٹ پاس کرتے ہیں۔ <code dir="ltr">Node 22</code> اس نحو کو نہیں سمجھتا، اور جانچے گئے <code dir="ltr">Node 25/26</code> میں native matching کی خرابیاں ہیں، اس لیے compilation <code dir="ltr">UNSUPPORTED_TARGET_FEATURE</code> بتاتی ہے۔ Cached metadata کے ساتھ <code dir="ltr">toRegExp({ source, flags })</code> بھی native construction کے بعد دیے گئے mode میں مقامی رویہ جانچتا ہے؛ غلط native نحو پر <code dir="ltr">SyntaxError</code> برقرار رہتا ہے۔ غیر معاون گروپس کا تخمینی بدل نہیں بنایا جاتا۔ شائع شدہ version کے لیے [تقسیم کا ریکارڈ](../DISTRIBUTION.md) دیکھیں۔
-
-## مقامی development
-
-<div dir="ltr" align="left">
-
-```sh
-npm ci
-npm run build
-npm run serve
-```
-
-</div>
-
-پتہ <a dir="ltr" href="http://127.0.0.1:4174/"><strong>http://127.0.0.1:4174/</strong></a> کھولیں۔ <code dir="ltr">npm run serve -- 0</code> دستیاب port منتخب کر کے URL دکھاتا ہے۔ Directory URLs کے آخر میں slash شامل ہوتا ہے؛ query parameters برقرار رہتے ہیں۔
-
-اگر Chrome انسٹال ہو تو تمام checks چلائیں:
-
-<div dir="ltr" align="left">
-
-```sh
-npm ci
-npm exec -- playwright install firefox webkit
-npm run verify
-```
-
-</div>
-
-اگر Chrome موجود نہیں تو Playwright کا bundled Chromium استعمال کریں:
-
-<div dir="ltr" align="left">
-
-```sh
-npm exec -- playwright install chromium firefox webkit
-CI=1 npm run verify
-```
-
-</div>
-
-تصدیق میں formatting، lint، types، links، Node tests، Pages build، صاف consumer project میں package installation، browsers اور audit شامل ہیں۔ <code dir="ltr">CI=1</code> مقامی browser منتخب کرتا ہے؛ یہ GitHub Actions فعال نہیں کرتا، جو بند رہتا ہے۔
-
-## حدود کو سمجھیں
-
-متبادل قابلِ تدوین <code dir="ltr">either { … }</code> بلاک بنتے ہیں؛ ہر براہِ راست entry ایک انتخاب ہے جو ترتیب سے آزمایا جاتا ہے۔ کئی قواعد والے یا خالی انتخاب کے لیے <code dir="ltr">group { … }</code> استعمال کریں۔
-
-ہدف **JavaScript <code dir="ltr">RegExp</code>** ہے۔ قواعد کی زبان raw regex یا آزاد انگریزی قبول نہیں کرتی۔ Reverse translation صرف دستاویز میں درج subset پر کام کرتی ہے۔ آزاد انگریزی، <code dir="ltr">u</code> موڈ کی خالی character classes اور future/open references ابھی مسترد ہوتے ہیں۔ ورکشاپ میں worker کے لیے deadline ہے؛ کاپی کیا ہوا regex اپنی application میں execution safeguards مانگتا ہے۔ [حفاظتی ماڈل](../SECURITY_MODEL.md) دیکھیں۔
-
-## عام سوالات
-
-**کیا یہ AI استعمال کرتا ہے؟** نہیں۔ ایک deterministic parser، AST، compiler اور structured explanations ہیں۔
-
-**کیا ہر regex تبدیل ہو سکتا ہے؟** نہیں۔ نامعلوم ساخت error دیتی ہے؛ conversion کروانے کے لیے capture یا assertion حذف نہیں ہوتا۔
-
-**کیا ایک مثال کا کامیاب ہونا حفاظت ثابت کرتا ہے؟** نہیں۔ یہ منتخب رویہ جانچتا ہے، ہر execution path یا اس کی لاگت نہیں۔
-
-**کیا classes پورا Unicode شامل کرتی ہیں؟** نہیں۔ <code dir="ltr">digit</code> ASCII ہے، <code dir="ltr">letter</code> کا مطلب <code dir="ltr">[A-Za-z]</code> ہے، اور <code dir="ltr">word</code> میں <code dir="ltr">\w</code> کا رویہ ہے۔
-
-**کیا limits ہیں؟** 16,384 UTF-16 units، 200 سطریں، bounded repetition زیادہ سے زیادہ 1,000، اور nesting depth 64۔ زیادہ سے زیادہ 100 مثالیں، ہر ایک 2,048 units تک، اور worker deadline 1,200 milliseconds۔ Emoji عموماً دو UTF-16 units لیتا ہے۔
-
-نتائج کے ہر بیچ کی حدود بھی مقرر ہیں: <code dir="ltr">1,000</code> matches، <code dir="ltr">20,000</code> capture entries اور نتیجے کے متن کی <code dir="ltr">1,048,576</code> <code dir="ltr">UTF-16</code> units۔ نتیجہ بہت بڑا ہو تو پوری جانچ رک جاتی ہے؛ قواعد اور مثالیں قابلِ ترمیم رہتی ہیں۔
-
-**کیا offline چلتا ہے؟** لائبریری اور CLI مقامی طور پر چلتے ہیں۔ Dependencies نصب کرنے کے بعد ورکشاپ locally build اور serve کی جا سکتی ہے۔ PWA یا offline cache فراہم ہونے کا دعویٰ نہیں کیا گیا۔
-
-**مسئلہ کیسے رپورٹ کریں؟** [GitHub Issues](https://github.com/OthmaneBlial/Regex-For-Humans/issues) میں قواعد، flags، input، مطلوبہ نتیجہ اور engine version دیں۔ Security مسئلے کے لیے [SECURITY.md](../../SECURITY.md) کی نجی رپورٹنگ ہدایات استعمال کریں۔
-
-## منصوبہ مزید سمجھیں
-
-| رہنمائی | موضوع |
-| ---: | ---: |
-| [زبان](../LANGUAGE.md) | Grammar، captures، references اور diagnostics |
-| [پیچیدہ مثالیں](../COMPLEX-EXAMPLES.md) | چار formats اور ہر قاعدے کی وضاحت |
-| [Architecture](../ARCHITECTURE.md) | Parser → AST → compiler → interfaces |
-| [مطابقت](../COMPATIBILITY.md) | جانچی گئی ساختیں اور engines |
-| [Testing](../TESTING.md) | دوبارہ چلانے کے قابل commands اور شواہد |
-| [حفاظت](../SECURITY_MODEL.md) | Trust boundaries اور limits |
-| [Distribution](../DISTRIBUTION.md) | npm، versions اور شائع شدہ site |
-| [روڈ میپ](../AUTONOMOUS_ROADMAP.md) | مکمل مراحل اور اگلے کام |
-| [موازنہ](../COMPETITOR_GAPS.md) | Sources اور باقی صلاحیتیں |
-| [حصہ ڈالیں](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) | Setup اور conventions |
-
-**ریلیز کی جانچ:** [تصدیق کا ریکارڈ](../TESTING.md) کمپائلر اور <code dir="ltr">CLI</code> کے ٹیسٹ، کمپیوٹر اور موبائل پر <code dir="ltr">Chromium</code> کے استعمال، <code dir="ltr">Firefox/WebKit</code> اور ویب سائٹ کی جانچ، الگ <code dir="ltr">JavaScript/TypeScript</code> منصوبوں میں پیکیج کے استعمال اور انحصار کی جانچ کو الگ درج کرتا ہے۔ <code dir="ltr">Node 22</code> پر پیکیج استعمال کرنے والے منصوبوں کی جانچ الگ ہوتی ہے۔ استعمال، ترجمے اور اسکرین ریڈر کے انسانی جائزے ابھی باقی ہیں۔
-
-## ساختی خطرات کا جائزہ
-
-مقامی ورکشاپ میں جائزے کا پینل کھول کر متغیر تکرار کی اندرونی یا ملحقہ تہیں، ایک دوسرے سے ملتے متبادل، وسیع وائلڈ کارڈز، سطر کے اینکرز اور بڑے پیٹرن دیکھیں۔ انٹرفیس میں پینل کا نام یہ ہے:
-
-<p dir="ltr" align="left"><code dir="ltr">Review the pattern</code></p>
-
-پوائنٹر رکھنے سے قاعدہ، ریجیکس کا حصہ، وضاحت اور خاکہ جڑتے ہیں، مگر تحریر کا کرسر نہیں بدلتا۔ نوٹ منتخب کرنے سے متعلقہ سورس سطر کھلتی ہے۔ قواعد، فلیگز، مثالوں کے نسخوں یا گروپس کی تبدیلی جائزہ تازہ کرتی ہے۔ مشترکہ انٹرفیس معیاری ترتیب کے فلیگز، سورس کے مقامات اور حدود والے ٹائپ شدہ نوٹس، اور تجزیے کی حدود واپس دیتا ہے:
-
-<p dir="ltr" align="left"><code dir="ltr">analyze(rules, { flags })</code></p>
-
-مثبت کریکٹر کلاسز اور رینجز کے معلوم حروف بعض اشتراک دکھاتے ہیں؛ نامعلوم مجموعے کو ثابت شدہ طور پر غیر مشترک نہیں سمجھا جاتا۔ یہ اندازوں پر مبنی تجزیہ مہنگے پیٹرن چھوڑ سکتا ہے یا غلط تنبیہ دے سکتا ہے؛ **نوٹس نہ ملنا کارکردگی کے محفوظ ہونے کا ثبوت نہیں**۔ تجزیہ میچنگ نہیں چلاتا اور بیک ٹریکنگ نہیں ناپتا۔ مثالوں کی میچنگ الگ ورکر میں وقت کی حد کے ساتھ رہتی ہے۔
-
-[ساختی جائزے کا معاہدہ](../LANGUAGE.md#structural-risk-review) دیکھیں۔
-
-## ساخت کا خاکہ
-
-مقامی ورکشاپ میں نحوی ساخت کے درخت سے تیار کردہ خاکہ دیکھیں۔ اس میں اندرونی گروپ، ترتیب وار متبادل راستے، تکرار کے چکر اور متن کو استعمال کیے بغیر جانچنے والی شرائط دکھائی جاتی ہیں۔ یہ پینل کھولیں:
-
-<p dir="ltr" align="left"><code dir="ltr">Explore the pattern</code></p>
-
-کسی نوڈ پر پوائنٹر رکھیں یا اسے منتخب کریں تو قاعدہ، regex کا متعلقہ حصہ اور وضاحت ایک ساتھ نمایاں ہوتے ہیں۔ پوائنٹر رکھنے سے لکھنے کا کرسر نہیں بدلتا۔ Enter یا Space دبانے سے متعلقہ سورس لائن پر واپس آتے ہیں۔ سورس کرسر اور بنائی گئی regex میں متن کا انتخاب بھی خاکے سے جڑتا ہے۔ اصل حجم میں labels پڑھے جا سکتے ہیں اور scroll کیا جا سکتا ہے؛ مکمل خاکہ دیکھنے کے لیے چھوٹا منظر چنیں:
-
-<p dir="ltr" align="left"><code dir="ltr">Actual size</code> · <code dir="ltr">Fit overview</code></p>
-
-ایکسپورٹ بٹن ایک الگ SVG فائل محفوظ کرتا ہے۔ <code dir="ltr">toSVG</code> API بھی منتخب flags کے ساتھ یہی فائل دیتی ہے:
-
-<p dir="ltr" align="left"><code dir="ltr">Export SVG</code></p>
-
-لمبے labels کی مکمل وضاحت tooltip میں رہتی ہے۔ یہ ساخت کا خاکہ ہے، انجن کے execution یا backtracking کی ریکارڈنگ نہیں۔ [ساخت کے خاکے](../LANGUAGE.md#structural-diagrams) دیکھیں۔
-
-لائسنس [MIT](../../LICENSE) · [تبدیلیوں کا ریکارڈ](../../CHANGELOG.md) · [انگریزی میں واپس جائیں](../../README.md)۔
 
 </div>

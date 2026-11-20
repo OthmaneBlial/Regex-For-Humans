@@ -1,0 +1,279 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+<title id="title">Six recipes, glossed</title>
+<desc id="desc">An animation cycling through six recipes: 24-hour time, log fields, a repeated word, a date, a file extension and a version. Each shows its rules, the compiled regex, the meaning of every fragment and what it matches in a sample.</desc>
+<style>
+.paper{fill:#fff}.edge{fill:none;stroke:#15171c;stroke-width:2}.ink{fill:#15171c}.ink2{fill:#4b505b}.ink3{fill:#6b707b}
+.blue{fill:#2337c6}.wash{fill:#eceffd}.brace{fill:none;stroke:#2337c6;stroke-width:1.5}.span{fill:none;stroke:#6b707b;stroke-width:1}
+.sc{letter-spacing:.08em}
+@media (prefers-color-scheme:dark){.paper{fill:#111317}.edge{stroke:#eceef2}.ink{fill:#eceef2}.ink2{fill:#b4b9c4}.ink3{fill:#9096a2}
+.blue{fill:#93a3ff}.wash{fill:#1c2142}.brace{stroke:#93a3ff}.span{stroke:#9096a2}}
+.frame{animation:cycle 24s infinite both}
+.frame:not(:first-of-type){opacity:0}
+@keyframes cycle{0%{opacity:0}2%{opacity:1}14.7%{opacity:1}16.7%{opacity:0}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.frame{animation:none}.frame:first-of-type{opacity:1}}
+</style>
+<rect class="paper" width="1200" height="420" rx="20"/>
+<rect class="edge" x="1" y="1" width="1198" height="418" rx="19"/>
+<g class="frame" style="animation-delay:0s">
+<text x="64" y="64" font-size="15" class="ink3 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">(1) RULES</text>
+<text x="1136" y="64" font-size="22" text-anchor="end" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">Validate a 24-hour time</text>
+<text x="64" y="112" font-size="17" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">start   either {   group {   one of: &quot;0&quot;, &quot;1&quot;   digit   }   group {   &quot;2&quot;   range &quot;0&quot; to &quot;3&quot;</text>
+<text x="64" y="138" font-size="17" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">}   }   &quot;:&quot;   range &quot;0&quot; to &quot;5&quot;   digit   end</text>
+<text x="64" y="186" font-size="15" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">↓ compile()   /^(?:[01]\d|2[0-3]):[0-5]\d$/u</text>
+<g transform="translate(155.0 210) scale(0.950)">
+<text x="14.7" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">^</text>
+<path class="brace" d="M14.7 51.2 V57.2 H41.1 V51.2"/>
+<text x="27.9" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">START</text>
+<text x="74.3" y="38.7" font-size="18.5" textLength="33.3" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">(?:</text>
+<text x="136.0" y="44.0" font-size="44.0" textLength="105.6" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">[01]</text>
+<path class="brace" d="M136.0 51.2 V57.2 H241.6 V51.2"/>
+<text x="188.8" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">one of: &quot;0&quot;, &quot;1&quot;</text>
+<text x="279.3" y="44.0" font-size="44.0" textLength="52.8" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\d</text>
+<path class="brace" d="M279.3 51.2 V57.2 H332.1 V51.2"/>
+<text x="305.7" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">digit</text>
+<text x="350.5" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">|</text>
+<path class="brace" d="M350.5 51.2 V57.2 H376.9 V51.2"/>
+<text x="363.7" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">OR</text>
+<text x="395.7" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">2</text>
+<path class="brace" d="M395.7 51.2 V57.2 H422.1 V51.2"/>
+<text x="408.9" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;2&quot;</text>
+<rect class="wash" x="395.2" y="159.0" width="27.4" height="27.9" rx="3"/>
+<text x="408.9" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">2</text>
+<text x="446.9" y="44.0" font-size="44.0" textLength="132.0" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">[0-3]</text>
+<path class="brace" d="M446.9 51.2 V57.2 H578.9 V51.2"/>
+<text x="512.9" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">range &quot;0&quot; to &quot;3&quot;</text>
+<rect class="wash" x="499.2" y="159.0" width="27.4" height="27.9" rx="3"/>
+<text x="512.9" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">3</text>
+<text x="603.4" y="38.7" font-size="18.5" textLength="11.1" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">)</text>
+<text x="624.0" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">:</text>
+<path class="brace" d="M624.0 51.2 V57.2 H650.4 V51.2"/>
+<text x="637.2" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;:&quot;</text>
+<rect class="wash" x="623.5" y="159.0" width="27.4" height="27.9" rx="3"/>
+<text x="637.2" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">:</text>
+<text x="675.2" y="44.0" font-size="44.0" textLength="132.0" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">[0-5]</text>
+<path class="brace" d="M675.2 51.2 V57.2 H807.2 V51.2"/>
+<text x="741.2" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">range &quot;0&quot; to &quot;5&quot;</text>
+<rect class="wash" x="727.5" y="159.0" width="27.4" height="27.9" rx="3"/>
+<text x="741.2" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">5</text>
+<text x="831.7" y="44.0" font-size="44.0" textLength="52.8" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\d</text>
+<path class="brace" d="M831.7 51.2 V57.2 H884.5 V51.2"/>
+<text x="858.1" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">digit</text>
+<rect class="wash" x="844.4" y="159.0" width="27.4" height="27.9" rx="3"/>
+<text x="858.1" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">9</text>
+<text x="906.5" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">$</text>
+<path class="brace" d="M906.5 51.2 V57.2 H932.9 V51.2"/>
+<text x="919.7" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">END</text>
+<path class="span" d="M116.8 110.6 V116.6 H584.9 V110.6"/>
+<text x="350.8" y="136.4" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">ONE OF</text>
+</g>
+</g>
+<g class="frame" style="animation-delay:4s" opacity="0">
+<text x="64" y="64" font-size="15" class="ink3 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">(2) RULES</text>
+<text x="1136" y="64" font-size="22" text-anchor="end" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">Extract named fields from a log fragment</text>
+<text x="64" y="112" font-size="17" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">capture &quot;level&quot; {   either {   &quot;INFO&quot;   &quot;WARN&quot;   &quot;ERROR&quot;   }   }   &quot; code=&quot;</text>
+<text x="64" y="138" font-size="17" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">capture &quot;code&quot; {   3 digits   }</text>
+<text x="64" y="186" font-size="15" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">↓ compile()   /(?&lt;level&gt;INFO|WARN|ERROR) code=(?&lt;code&gt;\d{3})/u</text>
+<g transform="translate(200.1 210) scale(0.765)">
+<text x="0.0" y="38.7" font-size="18.5" textLength="99.8" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">(?&lt;level&gt;</text>
+<text x="109.0" y="44.0" font-size="44.0" textLength="105.6" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">INFO</text>
+<path class="brace" d="M109.0 51.2 V57.2 H214.6 V51.2"/>
+<text x="161.8" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;INFO&quot;</text>
+<text x="233.1" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">|</text>
+<path class="brace" d="M233.1 51.2 V57.2 H259.5 V51.2"/>
+<text x="246.3" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">OR</text>
+<text x="278.0" y="44.0" font-size="44.0" textLength="105.6" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">WARN</text>
+<path class="brace" d="M278.0 51.2 V57.2 H383.6 V51.2"/>
+<text x="330.8" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;WARN&quot;</text>
+<rect class="wash" x="300.4" y="205.8" width="60.8" height="27.9" rx="3"/>
+<text x="330.8" y="225.6" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">WARN</text>
+<text x="402.1" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">|</text>
+<path class="brace" d="M402.1 51.2 V57.2 H428.5 V51.2"/>
+<text x="415.3" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">OR</text>
+<text x="447.0" y="44.0" font-size="44.0" textLength="132.0" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">ERROR</text>
+<path class="brace" d="M447.0 51.2 V57.2 H579.0 V51.2"/>
+<text x="513.0" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;ERROR&quot;</text>
+<text x="597.4" y="38.7" font-size="18.5" textLength="11.1" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">)</text>
+<text x="617.8" y="44.0" font-size="44.0" textLength="158.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace"> code=</text>
+<path class="brace" d="M617.8 51.2 V57.2 H776.2 V51.2"/>
+<text x="697.0" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot; code=&quot;</text>
+<rect class="wash" x="655.4" y="205.8" width="83.2" height="27.9" rx="3"/>
+<text x="697.0" y="225.6" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">␣code=</text>
+<text x="794.6" y="38.7" font-size="18.5" textLength="88.7" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">(?&lt;code&gt;</text>
+<text x="892.6" y="44.0" font-size="44.0" textLength="132.0" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\d{3}</text>
+<path class="brace" d="M892.6 51.2 V57.2 H1024.6 V51.2"/>
+<text x="958.6" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">3 digits</text>
+<rect class="wash" x="933.7" y="205.8" width="49.7" height="27.9" rx="3"/>
+<text x="958.6" y="225.6" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">404</text>
+<text x="1043.1" y="38.7" font-size="18.5" textLength="11.1" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">)</text>
+<path class="span" d="M109.0 110.6 V116.6 H579.0 V110.6"/>
+<text x="344.0" y="136.4" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">ONE OF</text>
+<path class="span" d="M109.0 157.4 V163.4 H579.0 V157.4"/>
+<text x="344.0" y="183.2" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">CAPTURE level</text>
+<path class="span" d="M892.6 157.4 V163.4 H1024.6 V157.4"/>
+<text x="958.6" y="183.2" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">CAPTURE code</text>
+</g>
+</g>
+<g class="frame" style="animation-delay:8s" opacity="0">
+<text x="64" y="64" font-size="15" class="ink3 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">(3) RULES</text>
+<text x="1136" y="64" font-size="22" text-anchor="end" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">Match two repeated words</text>
+<text x="64" y="112" font-size="17" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">start   capture &quot;word&quot; {   letters   }   &quot; &quot;   same as capture &quot;word&quot;   end</text>
+<text x="64" y="186" font-size="15" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">↓ compile()   /^(?&lt;word&gt;[A-Za-z]+) \k&lt;word&gt;$/u</text>
+<g transform="translate(240.1 210) scale(0.950)">
+<text x="14.7" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">^</text>
+<path class="brace" d="M14.7 51.2 V57.2 H41.1 V51.2"/>
+<text x="27.9" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">START</text>
+<text x="74.3" y="38.7" font-size="18.5" textLength="88.7" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">(?&lt;word&gt;</text>
+<text x="172.2" y="44.0" font-size="44.0" textLength="237.6" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">[A-Za-z]+</text>
+<path class="brace" d="M172.2 51.2 V57.2 H409.8 V51.2"/>
+<text x="291.0" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">letters</text>
+<rect class="wash" x="255.0" y="159.0" width="72.0" height="27.9" rx="3"/>
+<text x="291.0" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">hello</text>
+<text x="428.3" y="38.7" font-size="18.5" textLength="11.1" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">)</text>
+<text x="448.9" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace"> </text>
+<path class="brace" d="M448.9 51.2 V57.2 H475.3 V51.2"/>
+<text x="462.1" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot; &quot;</text>
+<rect class="wash" x="448.5" y="159.0" width="27.4" height="27.9" rx="3"/>
+<text x="462.1" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">␣</text>
+<text x="494.1" y="44.0" font-size="44.0" textLength="211.2" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\k&lt;word&gt;</text>
+<path class="brace" d="M494.1 51.2 V57.2 H705.3 V51.2"/>
+<text x="599.7" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">same as capture &quot;word&quot;</text>
+<rect class="wash" x="563.7" y="159.0" width="72.0" height="27.9" rx="3"/>
+<text x="599.7" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">hello</text>
+<text x="727.3" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">$</text>
+<path class="brace" d="M727.3 51.2 V57.2 H753.7 V51.2"/>
+<text x="740.5" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">END</text>
+<path class="span" d="M172.2 110.6 V116.6 H409.8 V110.6"/>
+<text x="291.0" y="136.4" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">CAPTURE word</text>
+</g>
+</g>
+<g class="frame" style="animation-delay:12s" opacity="0">
+<text x="64" y="64" font-size="15" class="ink3 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">(4) RULES</text>
+<text x="1136" y="64" font-size="22" text-anchor="end" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">Match a date shape</text>
+<text x="64" y="112" font-size="17" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">start   capture &quot;year&quot; {   4 digits   }   &quot;-&quot;   capture &quot;month&quot; {   2 digits   }   &quot;-&quot;</text>
+<text x="64" y="138" font-size="17" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">capture &quot;day&quot; {   2 digits   }   end</text>
+<text x="64" y="186" font-size="15" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">↓ compile()   /^(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})-(?&lt;day&gt;\d{2})$/u</text>
+<g transform="translate(122.4 210) scale(0.950)">
+<text x="14.7" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">^</text>
+<path class="brace" d="M14.7 51.2 V57.2 H41.1 V51.2"/>
+<text x="27.9" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">START</text>
+<text x="74.3" y="38.7" font-size="18.5" textLength="88.7" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">(?&lt;year&gt;</text>
+<text x="172.2" y="44.0" font-size="44.0" textLength="132.0" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\d{4}</text>
+<path class="brace" d="M172.2 51.2 V57.2 H304.2 V51.2"/>
+<text x="238.2" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">4 digits</text>
+<rect class="wash" x="207.8" y="159.0" width="60.8" height="27.9" rx="3"/>
+<text x="238.2" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">2026</text>
+<text x="322.7" y="38.7" font-size="18.5" textLength="11.1" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">)</text>
+<text x="343.3" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">-</text>
+<path class="brace" d="M343.3 51.2 V57.2 H369.7 V51.2"/>
+<text x="356.5" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;-&quot;</text>
+<rect class="wash" x="342.9" y="159.0" width="27.4" height="27.9" rx="3"/>
+<text x="356.5" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">-</text>
+<text x="388.5" y="38.7" font-size="18.5" textLength="99.8" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">(?&lt;month&gt;</text>
+<text x="497.5" y="44.0" font-size="44.0" textLength="132.0" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\d{2}</text>
+<path class="brace" d="M497.5 51.2 V57.2 H629.5 V51.2"/>
+<text x="563.5" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">2 digits</text>
+<rect class="wash" x="544.3" y="159.0" width="38.5" height="27.9" rx="3"/>
+<text x="563.5" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">09</text>
+<text x="648.0" y="38.7" font-size="18.5" textLength="11.1" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">)</text>
+<text x="668.7" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">-</text>
+<path class="brace" d="M668.7 51.2 V57.2 H695.1 V51.2"/>
+<text x="681.9" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;-&quot;</text>
+<rect class="wash" x="668.2" y="159.0" width="27.4" height="27.9" rx="3"/>
+<text x="681.9" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">-</text>
+<text x="713.8" y="38.7" font-size="18.5" textLength="77.6" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">(?&lt;day&gt;</text>
+<text x="800.7" y="44.0" font-size="44.0" textLength="132.0" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\d{2}</text>
+<path class="brace" d="M800.7 51.2 V57.2 H932.7 V51.2"/>
+<text x="866.7" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">2 digits</text>
+<rect class="wash" x="847.4" y="159.0" width="38.5" height="27.9" rx="3"/>
+<text x="866.7" y="178.8" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">30</text>
+<text x="951.2" y="38.7" font-size="18.5" textLength="11.1" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">)</text>
+<text x="975.0" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">$</text>
+<path class="brace" d="M975.0 51.2 V57.2 H1001.4 V51.2"/>
+<text x="988.2" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">END</text>
+<path class="span" d="M172.2 110.6 V116.6 H304.2 V110.6"/>
+<text x="238.2" y="136.4" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">CAPTURE year</text>
+<path class="span" d="M497.5 110.6 V116.6 H629.5 V110.6"/>
+<text x="563.5" y="136.4" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">CAPTURE month</text>
+<path class="span" d="M800.7 110.6 V116.6 H932.7 V110.6"/>
+<text x="866.7" y="136.4" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">CAPTURE day</text>
+</g>
+</g>
+<g class="frame" style="animation-delay:16s" opacity="0">
+<text x="64" y="64" font-size="15" class="ink3 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">(5) RULES</text>
+<text x="1136" y="64" font-size="22" text-anchor="end" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">Find a file extension</text>
+<text x="64" y="112" font-size="17" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">&quot;.&quot;   capture &quot;extension&quot; {   either {   &quot;txt&quot;   &quot;md&quot;   &quot;json&quot;   }   }   end</text>
+<text x="64" y="186" font-size="15" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">↓ compile()   /\.(?&lt;extension&gt;txt|md|json)$/u</text>
+<g transform="translate(346.9 210) scale(0.765)">
+<text x="0.0" y="44.0" font-size="44.0" textLength="52.8" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\.</text>
+<path class="brace" d="M0.0 51.2 V57.2 H52.8 V51.2"/>
+<text x="26.4" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;.&quot;</text>
+<rect class="wash" x="12.7" y="205.8" width="27.4" height="27.9" rx="3"/>
+<text x="26.4" y="225.6" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">.</text>
+<text x="71.3" y="38.7" font-size="18.5" textLength="144.1" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">(?&lt;extension&gt;</text>
+<text x="224.7" y="44.0" font-size="44.0" textLength="79.2" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">txt</text>
+<path class="brace" d="M224.7 51.2 V57.2 H303.9 V51.2"/>
+<text x="264.3" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;txt&quot;</text>
+<text x="322.3" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">|</text>
+<path class="brace" d="M322.3 51.2 V57.2 H348.7 V51.2"/>
+<text x="335.5" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">OR</text>
+<text x="367.2" y="44.0" font-size="44.0" textLength="52.8" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">md</text>
+<path class="brace" d="M367.2 51.2 V57.2 H420.0 V51.2"/>
+<text x="393.6" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;md&quot;</text>
+<rect class="wash" x="374.4" y="205.8" width="38.5" height="27.9" rx="3"/>
+<text x="393.6" y="225.6" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">md</text>
+<text x="438.5" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">|</text>
+<path class="brace" d="M438.5 51.2 V57.2 H464.9 V51.2"/>
+<text x="451.7" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">OR</text>
+<text x="483.4" y="44.0" font-size="44.0" textLength="105.6" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">json</text>
+<path class="brace" d="M483.4 51.2 V57.2 H589.0 V51.2"/>
+<text x="536.2" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;json&quot;</text>
+<text x="607.5" y="38.7" font-size="18.5" textLength="11.1" lengthAdjust="spacingAndGlyphs" class="ink3" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">)</text>
+<text x="631.3" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">$</text>
+<path class="brace" d="M631.3 51.2 V57.2 H657.7 V51.2"/>
+<text x="644.5" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">END</text>
+<path class="span" d="M224.7 110.6 V116.6 H589.0 V110.6"/>
+<text x="406.8" y="136.4" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">ONE OF</text>
+<path class="span" d="M224.7 157.4 V163.4 H589.0 V157.4"/>
+<text x="406.8" y="183.2" font-size="13.3" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">CAPTURE extension</text>
+</g>
+</g>
+<g class="frame" style="animation-delay:20s" opacity="0">
+<text x="64" y="64" font-size="15" class="ink3 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">(6) RULES</text>
+<text x="1136" y="64" font-size="22" text-anchor="end" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">Match a version shape</text>
+<text x="64" y="112" font-size="17" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">start   digits   &quot;.&quot;   digits   &quot;.&quot;   digits   end</text>
+<text x="64" y="186" font-size="15" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">↓ compile()   /^\d+\.\d+\.\d+$/u</text>
+<g transform="translate(328.3 210) scale(1.000)">
+<text x="14.7" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">^</text>
+<path class="brace" d="M14.7 51.2 V57.2 H41.1 V51.2"/>
+<text x="27.9" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">START</text>
+<text x="74.3" y="44.0" font-size="44.0" textLength="79.2" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\d+</text>
+<path class="brace" d="M74.3 51.2 V57.2 H153.5 V51.2"/>
+<text x="113.9" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">digits</text>
+<rect class="wash" x="100.2" y="112.2" width="27.4" height="27.9" rx="3"/>
+<text x="113.9" y="132.0" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">1</text>
+<text x="172.0" y="44.0" font-size="44.0" textLength="52.8" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\.</text>
+<path class="brace" d="M172.0 51.2 V57.2 H224.8 V51.2"/>
+<text x="198.4" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;.&quot;</text>
+<rect class="wash" x="184.7" y="112.2" width="27.4" height="27.9" rx="3"/>
+<text x="198.4" y="132.0" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">.</text>
+<text x="243.2" y="44.0" font-size="44.0" textLength="79.2" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\d+</text>
+<path class="brace" d="M243.2 51.2 V57.2 H322.4 V51.2"/>
+<text x="282.8" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">digits</text>
+<rect class="wash" x="263.6" y="112.2" width="38.5" height="27.9" rx="3"/>
+<text x="282.8" y="132.0" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">12</text>
+<text x="340.9" y="44.0" font-size="44.0" textLength="52.8" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\.</text>
+<path class="brace" d="M340.9 51.2 V57.2 H393.7 V51.2"/>
+<text x="367.3" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">&quot;.&quot;</text>
+<rect class="wash" x="353.6" y="112.2" width="27.4" height="27.9" rx="3"/>
+<text x="367.3" y="132.0" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">.</text>
+<text x="412.2" y="44.0" font-size="44.0" textLength="79.2" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">\d+</text>
+<path class="brace" d="M412.2 51.2 V57.2 H491.4 V51.2"/>
+<text x="451.8" y="87.8" font-size="18" text-anchor="middle" class="ink" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">digits</text>
+<rect class="wash" x="438.1" y="112.2" width="27.4" height="27.9" rx="3"/>
+<text x="451.8" y="132.0" font-size="18" text-anchor="middle" class="blue" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">0</text>
+<text x="513.4" y="44.0" font-size="44.0" textLength="26.4" lengthAdjust="spacingAndGlyphs" class="ink" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">$</text>
+<path class="brace" d="M513.4 51.2 V57.2 H539.8 V51.2"/>
+<text x="526.6" y="87.8" font-size="14.040000000000001" text-anchor="middle" class="ink2 sc" font-family="Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif">END</text>
+</g>
+</g>
+</svg>
