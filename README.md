@@ -132,11 +132,13 @@ This prints `/^ABC\d{3}$/u`. To pin the exact preview, use `regex-for-humans@0.1
 
 ## 🎮 Play with a pattern
 
+[![The Regex For Humans workshop: recipes, readable rules, the generated JavaScript regex with a rule-by-rule explanation, and four examples that behave as expected](https://raw.githubusercontent.com/OthmaneBlial/Regex-For-Humans/main/site/assets/workshop-preview.png)](https://othmaneblial.github.io/Regex-For-Humans/workshop/)
+
 Choose **Interface language** for English, Simplified Chinese, Spanish or French. Labels, recipes, match feedback and navigation controls update without changing your rules, examples, selections, open panels or generated code. The choice is remembered locally when storage is available. Rules still use controlled English; compiler explanations, diagram labels and exported technical requirements stay in English. See [workshop localization](docs/ARCHITECTURE.md#workshop-localization).
 
 Use **Theme** to follow your system appearance or choose a light or dark workshop. The preference is saved locally when storage is available; changing appearance retains your rules, examples, selections and open panels. See [theme preference](docs/ARCHITECTURE.md#theme-preference).
 
-the native rule editor colors keywords, quoted strings, captures, quantifiers, assertions, alternatives and comments. It underlines the compiler's diagnosed token while retaining normal typing, selection, copy and scrolling; forced colors and inputs beyond the budgets use plain native text. Whole-line `#` comments keep their source locations and consume the usual budgets. See [comments](docs/LANGUAGE.md#comments) and [editor highlighting](docs/ARCHITECTURE.md#editor-highlighting).
+The native rule editor colors keywords, quoted strings, captures, quantifiers, assertions, alternatives and comments. It underlines the compiler's diagnosed token while retaining normal typing, selection, copy and scrolling; forced colors and inputs beyond the budgets use plain native text. Whole-line `#` comments keep their source locations and consume the usual budgets. See [comments](docs/LANGUAGE.md#comments) and [editor highlighting](docs/ARCHITECTURE.md#editor-highlighting).
 
 **Build a rule** inserts editable capture, optional-section, alternative, repetition, character-class and assertion templates before the current line or selection, inside outer anchors. Adding a capture keeps existing numbered references aimed at the same groups. Invalid or oversized insertions retain the original rules and selection; flags and examples stay in place. See [rule construction](docs/ARCHITECTURE.md#rule-construction).
 
@@ -641,6 +643,8 @@ Move the source cursor or select generated regex to follow the structure; hover 
 <div align="center">
 
 **Small language. Clear meaning. Happy matching.** 🥳
+
+If a rule here saved you some squinting, a ⭐ on [GitHub](https://github.com/OthmaneBlial/Regex-For-Humans) helps other developers find it.
 
 [📖 Language](docs/LANGUAGE.md) · [🧪 Testing](docs/TESTING.md) · [🤝 Contributing](https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/CONTRIBUTING.md) · [📝 Changelog](CHANGELOG.md) · [⚖️ MIT](LICENSE)
 
