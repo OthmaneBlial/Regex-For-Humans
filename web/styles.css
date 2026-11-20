@@ -22,7 +22,7 @@
   --panel-edge: #202735;
   --input-paper: #fffae8;
   --input-line: #b8c8c4;
-  --placeholder: #728785;
+  --placeholder: #5b7072;
   --rule-mark: #f5dfa1;
   --editor-hint: #5b7072;
   --divider: #d8dfd8;
@@ -145,6 +145,10 @@ a {
   gap: 8px;
   min-width: 0;
   max-width: 100%;
+}
+.topbar-setting label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
 }
 .interface-language-help {
   margin: 12px 0 0;
