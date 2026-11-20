@@ -8,7 +8,7 @@
   <link rel="canonical" href="https://othmaneblial.github.io/Regex-For-Humans/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Regex For Humans">
-  <meta property="og:title" content="Regex For Humans — Less squinting. More matching.">
+  <meta property="og:title" content="Regex For Humans — write and explain JavaScript regex in plain English">
   <meta property="og:description" content="Write clear English rules or translate a supported JavaScript regex back into editable rules. Then inspect and test it.">
   <meta property="og:url" content="https://othmaneblial.github.io/Regex-For-Humans/">
   <meta property="og:image" content="https://othmaneblial.github.io/Regex-For-Humans/assets/social-card.png">
@@ -18,16 +18,16 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="A colorful Regex For Humans card showing clear English rules turning into an explained JavaScript regex.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Regex For Humans — Less squinting. More matching.">
+  <meta name="twitter:title" content="Regex For Humans — write and explain JavaScript regex in plain English">
   <meta name="twitter:description" content="Write clear English rules or translate a supported JavaScript regex back into editable rules. Then inspect and test it.">
   <meta name="twitter:image" content="https://othmaneblial.github.io/Regex-For-Humans/assets/social-card.png">
   <meta name="twitter:image:alt" content="A colorful Regex For Humans card showing clear English rules turning into an explained JavaScript regex.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
-  <title>Regex For Humans — Less squinting. More matching.</title>
+  <title>Regex For Humans — write and explain JavaScript regex in plain English</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./styles.css?v=4ff9cea7a33e">
+  <link rel="stylesheet" href="./styles.css?v=b93bc164cc3d">
   <link rel="preload" href="./assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <script type="module" src="./app.js?v=de95ab248191"></script>
+  <script type="module" src="./app.js?v=44f2bb90263b"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -39,20 +39,20 @@
     <section class="hero" aria-labelledby="page-title">
       <div class="hero-copy">
         <h1 id="page-title">Regex you can read like a&nbsp;map.</h1>
-        <p class="hero-summary">Write a few plain English rules. Each one becomes a station on the line, with the exact JavaScript regex fragment it adds. Type a test string and watch which station takes which characters.</p>
-        <div class="hero-actions"><a class="button primary" href="./workshop/">Open the playground</a><a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans">Meet the code ↗</a></div>
+        <p class="hero-summary">Write plain English rules and get a native JavaScript regex, or paste a regex and read it back as rules. Every rule shows the exact fragment it adds and the characters it takes.</p>
+        <div class="hero-actions"><a class="button primary" href="./workshop/">Open the workshop</a><a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans">Source on GitHub ↗</a></div>
         <p class="npm-install"><a class="text-link" href="https://www.npmjs.com/package/regex-for-humans/v/0.1.0-dev.12">Get the npm preview ↗</a><code>npm install regex-for-humans@preview</code><span>Library + CLI · Node.js 22+</span></p>
-        <ul class="hero-notes" aria-label="How it works"><li>Deterministic compiler, no AI</li><li>Runs locally in your browser</li><li>No account</li></ul>
       </div>
       <section class="demo" aria-labelledby="demo-title">
         <div class="demo-heading"><h2 id="demo-title">Words in. Regex out.</h2><fieldset class="demo-recipes"><legend class="sr-only">Demo recipes</legend><button type="button" data-recipe="hex-color" aria-pressed="true" disabled>Hex color</button><button type="button" data-recipe="prefixed-identifier" aria-pressed="false" disabled>ID</button><button type="button" data-recipe="version-shape" aria-pressed="false" disabled>Version</button></fieldset></div>
+        <form id="explain-form" class="explain-form"><label for="explain-input">Have a regex already? Paste it to read it as rules.</label><div class="try-row"><input id="explain-input" type="text" placeholder="/^\d{3}-\d{4}$/" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" dir="ltr" aria-invalid="false" aria-describedby="explain-status" disabled><button type="submit" class="button" disabled>Explain</button></div><p id="explain-status" class="explain-status" role="status"></p></form>
         <ol id="demo-line" class="line" aria-label="Each rule as a station, with its regex fragment and the characters it takes">
           <li class="station terminus"><span class="station-rule">start</span><span class="station-stop" aria-hidden="true"></span><span class="station-fragment"><span class="sr-only">regex </span><code>^</code></span><span class="station-take" hidden></span></li>
           <li class="station line-literal"><span class="station-rule">"#"</span><span class="station-stop" aria-hidden="true"></span><span class="station-fragment"><span class="sr-only">regex </span><code>#</code></span><span class="station-take" hidden></span></li>
           <li class="station line-set loop"><span class="station-rule">6 hex digits</span><span class="station-stop" aria-hidden="true"></span><span class="station-fragment"><span class="sr-only">regex </span><code>[0-9A-Fa-f]{6}</code></span><span class="station-take" hidden></span></li>
           <li class="station terminus"><span class="station-rule">end</span><span class="station-stop" aria-hidden="true"></span><span class="station-fragment"><span class="sr-only">regex </span><code>$</code></span><span class="station-take" hidden></span></li>
         </ol>
-        <div class="try-sample"><label for="demo-input">Ride the line with your own text</label><div class="try-row"><input id="demo-input" type="text" value="#ff6b6b" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-invalid="false" aria-describedby="demo-limits demo-result demo-trace" disabled><output id="demo-result" for="demo-input" aria-live="polite">Not checked</output></div><p id="demo-trace" class="demo-trace"></p><p id="demo-limits">Demo limit: 80 UTF-16 code units. Longer input is kept but cannot be tested. The workshop accepts up to 2,048.</p></div>
+        <div class="try-sample"><label for="demo-input">Test it with your own text</label><div class="try-row"><input id="demo-input" type="text" value="#ff6b6b" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-invalid="false" aria-describedby="demo-limits demo-result demo-trace" disabled><output id="demo-result" for="demo-input" aria-live="polite">Not checked</output></div><p id="demo-trace" class="demo-trace"></p><p id="demo-limits">Demo limit: 80 UTF-16 code units. Longer input is kept but cannot be tested. The workshop accepts up to 2,048.</p></div>
         <div class="boards">
           <div class="code-block rules-block"><div class="code-label"><span>Rules</span><button type="button" data-copy="rules-code" disabled>Copy rules</button></div><pre><code id="rules-code">start "#"
 6 hex digits
@@ -71,14 +71,9 @@ end</code></pre></div>
       <ul class="legend"><li class="line-literal">Literal text</li><li class="line-set">Character sets</li><li class="line-loop">Repetition</li><li class="line-capture">Captures</li><li class="line-choice">Choices</li><li class="terminus">Anchors</li></ul>
     </section>
 
-    <section class="capability-board section" aria-label="What you can do">
-      <article class="line-literal"><h2>Start with intent.</h2><p>One instruction per line. Literals, sets, counts, anchors, nested groups, captures and ordered choices. Every rule has a precise meaning.</p><a class="text-link" href="./workshop/web/language.html">Learn the vocabulary ↗</a></article>
-      <article class="line-set"><h2>Unpack a pattern.</h2><p>Translate the supported JavaScript subset into editable rules, preserving capture numbering, names and values.</p><a class="text-link" href="./workshop/">Try reverse translation ↗</a></article>
-      <article class="line-loop"><h2>Keep the evidence.</h2><p>Inspect the generated fragments and source locations. Test positive and negative examples in an isolated worker.</p><a class="text-link" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPATIBILITY.md">Check compatibility ↗</a></article>
-    </section>
 
     <section class="capture-section section" id="captures" aria-labelledby="captures-title">
-      <div class="section-heading split"><h2 id="captures-title">Don't just find a date. Give its parts names.</h2><p>Named captures are native JavaScript groups, written as readable rules you can edit.</p></div>
+      <div class="section-heading split"><h2 id="captures-title">Name the parts you capture.</h2><p>Named captures are native JavaScript groups, written as readable rules you can edit.</p></div>
       <div class="capture-layout">
         <div class="code-block rules-block"><div class="code-label"><span>Rules</span><button type="button" data-copy="capture-rules" disabled>Copy capture rules</button></div><pre><code id="capture-rules">start
 capture "year" {
@@ -104,14 +99,6 @@ end</code></pre></div>
       </div>
     </section>
 
-    <section class="how-section section" id="how" aria-labelledby="how-title">
-      <h2 id="how-title">Write. Understand. Test.</h2>
-      <ol class="journey">
-        <li><h3>Say what you need.</h3><p>Start with <code>3 digits</code>, a literal like <code>"ABC"</code>, a recipe, or translate a supported regex.</p></li>
-        <li><h3>See every fragment.</h3><p>Follow each rule to its regex fragment and explanation. No mystery pattern to trust blindly.</p></li>
-        <li><h3>Give it a reality check.</h3><p>Try strings that should match and strings that shouldn't. Change a rule and see what happens.</p></li>
-      </ol>
-    </section>
 
     <section class="recipes-section section" id="recipes" aria-labelledby="recipes-title">
       <div class="section-heading split"><h2 id="recipes-title">31 recipes on four lines.</h2><p>Each one opens in the workshop with its rules, regex, notes and ready-made examples. Every note says what the shape does not check.</p></div>
@@ -160,8 +147,8 @@ end</code></pre></div>
     </section>
 
     <section class="workshop-section section" aria-labelledby="workshop-title">
-      <div class="workshop-copy"><h2 id="workshop-title">Poke it. Break it. Understand it.</h2><p>Start from 31 searchable recipes or translate a supported regex. Preview group edits before applying them, choose an explanation level and save exact capture and replacement expectations. Keep an optional local draft across reloads or share a complete workshop snapshot by link.</p><a class="button primary" href="./workshop/">Take it for a spin</a><p class="local-note">Compile locally. Share snapshots when you choose.</p></div>
-      <a class="workshop-preview" href="./workshop/" aria-label="Open the interactive workshop"><img src="./assets/workshop-preview.png?v=c2ea4f331912" alt="Regex For Humans workshop showing its recipe list, a generated regex, explanations, and passing examples." loading="lazy" width="1280" height="2314"></a>
+      <div class="workshop-copy"><h2 id="workshop-title">The workshop</h2><p>Search 31 recipes or paste a regex to translate. Edit rules with completions, read each fragment's explanation, and keep examples that must match or must not. Everything runs in your browser; share a snapshot by link when you want to.</p><a class="button primary" href="./workshop/">Open the workshop</a></div>
+      <a class="workshop-preview" href="./workshop/" aria-label="Open the interactive workshop"><img src="./assets/workshop-preview.png?v=b96ca81cd99a" alt="Regex For Humans workshop showing its recipe list, a generated regex, explanations, and passing examples." loading="lazy" width="1280" height="2156"></a>
     </section>
 
     <section class="language-section section" id="language" aria-labelledby="language-title">
@@ -170,7 +157,7 @@ end</code></pre></div>
     </section>
 
     <section class="developer-section section" id="develop" aria-labelledby="develop-title">
-      <div class="section-heading split"><h2 id="develop-title">From playground to your own project.</h2><p>The library, CLI and workshop share the same parser, AST and compiler. No runtime dependencies, no remote AI service.</p></div>
+      <div class="section-heading split"><h2 id="develop-title">Use it in your own project.</h2><p>The library, CLI and workshop share the same parser, AST and compiler. No runtime dependencies, no remote AI service.</p></div>
       <div class="developer-grid">
         <article><h3>JavaScript + TypeScript</h3><p>Compile rules, create a native regex, and read the fragment explanations. ESM with included type declarations.</p><div class="code-block"><div class="code-label"><span>After installing the preview</span><button type="button" data-copy="library-code" disabled>Copy library example</button></div><pre><code id="library-code">import { compile, toRegExp } from 'regex-for-humans';
 
@@ -184,11 +171,11 @@ console.log(result.segments);</code></pre></div></article>
     <section class="reading-section section" id="read" aria-labelledby="read-title">
       <div class="section-heading split"><h2 id="read-title">Guides in ten languages.</h2><p>Including Arabic and Urdu with right-to-left reading. The rule syntax stays in English, so every example runs through the same compiler.</p></div>
       <nav class="language-links" aria-label="README languages"><a lang="en" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/README.md">English <span>EN</span></a><a lang="zh-CN" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.zh-CN.md">简体中文 <span>ZH</span></a><a lang="es" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.es.md">Español <span>ES</span></a><a lang="fr" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.fr.md">Français <span>FR</span></a><a lang="pt-BR" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.pt-BR.md">Português do Brasil <span>PT</span></a><a lang="ja" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.ja.md">日本語 <span>JA</span></a><a lang="de" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.de.md">Deutsch <span>DE</span></a><a lang="hi" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.hi.md">हिन्दी <span>HI</span></a><a lang="ar" dir="rtl" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.ar.md">العربية <span dir="ltr">AR</span></a><a lang="ur" dir="rtl" href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/i18n/README.ur.md">اردو <span dir="ltr">UR</span></a></nav>
-      <div class="reading-links"><a href="./workshop/web/language.html"><strong>Language guide ↗</strong><span>Every instruction, with its exact meaning.</span></a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md"><strong>Beyond the basics ↗</strong><span>Logs, telemetry, manifests and multiline orders.</span></a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/ARCHITECTURE.md"><strong>Under the hood ↗</strong><span>Deterministic parsing and native semantics.</span></a></div>
+      <div class="reading-links"><a href="./workshop/web/language.html"><strong>Language guide ↗</strong><span>Every instruction, with its exact meaning.</span></a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPLEX-EXAMPLES.md"><strong>Beyond the basics ↗</strong><span>Logs, telemetry, manifests and multiline orders.</span></a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/COMPATIBILITY.md"><strong>Compatibility ↗</strong><span>What translates in each direction, and the verified runtimes.</span></a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/docs/ARCHITECTURE.md"><strong>Under the hood ↗</strong><span>Deterministic parsing and native semantics.</span></a></div>
     </section>
 
     <section class="faq-section section" id="questions" aria-labelledby="questions-title">
-      <h2 id="questions-title">Clear rules, honest limits.</h2>
+      <h2 id="questions-title">Questions</h2>
       <div class="faq-list">
       <details><summary>Does it understand any English sentence?</summary><p>It uses a fixed, documented vocabulary. Unknown instructions receive a line, column and repair hint. There is no AI interpretation or remote prompt.</p></details>
       <details><summary>Can I import every regex?</summary><p>The translator accepts the documented native JavaScript subset: groups, captures, ordered alternatives, backward references, lazy repetition, lookahead/lookbehind, word boundaries, Unicode properties/classes and v-mode strings and nested sets. Empty sets require v mode. Forward/open references, empty u-mode classes and other-engine constructs receive diagnostics. Unsupported syntax is never silently removed.</p></details>
@@ -199,7 +186,6 @@ console.log(result.segments);</code></pre></div></article>
       </div>
     </section>
 
-    <section class="closing" aria-labelledby="closing-title"><h2 id="closing-title">Make your next regex a little more human.</h2><a class="button primary" href="./workshop/">Let's make a match</a></section>
   </main>
   <footer class="site-footer"><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">Regex <strong>For Humans</strong></span></a><p>Small language. Clear meaning. Made by <a href="https://github.com/OthmaneBlial">Othmane Blial</a>.</p><div><a href="https://github.com/OthmaneBlial/Regex-For-Humans">GitHub ↗</a><a href="https://github.com/OthmaneBlial/Regex-For-Humans/blob/main/LICENSE">MIT license</a></div></footer>
   <p id="copy-status" class="copy-status" role="status"></p>

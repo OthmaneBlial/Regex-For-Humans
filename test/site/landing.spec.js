@@ -194,7 +194,9 @@ test("homepage waits for its app before enabling controls or claiming a match", 
     await expect(page.locator("#demo-result")).toHaveText("Not checked");
     for (const button of await page.locator("[data-copy]").all())
       await expect(button).toBeDisabled();
-    await expect(page.getByRole("link", { name: /Open the playground/ })).toBeVisible();
+    await expect(
+      page.locator(".hero-actions").getByRole("link", { name: "Open the workshop" }),
+    ).toBeVisible();
     release();
     await expect(page.locator("#demo-input")).toBeEnabled();
     await expect(page.locator("#demo-result")).toHaveText("✓ Match");
@@ -326,7 +328,9 @@ test("homepage without JavaScript keeps readable patterns and explains the inact
     await expect(page.locator("#regex-code")).toHaveText("/^#[0-9A-Fa-f]{6}$/u");
     for (const button of await page.locator("[data-copy]").all())
       await expect(button).toBeDisabled();
-    await expect(page.getByRole("link", { name: /Open the playground/ })).toBeVisible();
+    await expect(
+      page.locator(".hero-actions").getByRole("link", { name: "Open the workshop" }),
+    ).toBeVisible();
   } finally {
     await context.close();
   }
@@ -974,4 +978,28 @@ test("the static workshop serves its README and each linked root document intact
       readFileSync(new URL(`../../${name}`, import.meta.url), "utf8"),
     );
   }
+});
+
+test("a pasted regex is drawn as rules, tested and opened in the workshop", async ({ page }) => {
+  await page.goto("/");
+  const explain = page.locator("#explain-input");
+  await expect(explain).toBeEnabled();
+  await explain.fill(String.raw`^\d{3}-\d{4}$`);
+  await page.getByRole("button", { name: "Explain" }).click();
+  await expect(page.locator("#explain-status")).toHaveText("Drawn as 5 stations.");
+  await expect(page.locator("#regex-code")).toHaveText(String.raw`/^\d{3}-\d{4}$/u`);
+  await expect(page.locator("#rules-code")).toHaveText('start\n3 digit\n"-"\n4 digit\nend');
+  await expect(page.locator("#demo-note")).toContainText("read with the u flag");
+  await expect(page.locator("#demo-samples")).toBeHidden();
+  await expect(page.locator("[data-recipe][aria-pressed='true']")).toHaveCount(0);
+  await expect(page.locator("#demo-open")).toHaveAttribute("href", /\/workshop\/#tests=/u);
+  await page.locator("#demo-input").fill("555-1234");
+  await expect(page.locator("#demo-result")).toHaveText("✓ Match");
+  await expect(page.locator('#demo-line .station[data-state="taken"]')).toHaveCount(5);
+
+  await explain.fill(String.raw`/a\-b/`);
+  await explain.press("Enter");
+  await expect(explain).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#explain-status")).toContainText(String.raw`\- outside [ ]`);
+  await expect(page.locator("#regex-code")).toHaveText(String.raw`/^\d{3}-\d{4}$/u`);
 });

@@ -78,18 +78,40 @@ function part(className, text) {
   return element;
 }
 
+const lineKinds = { anchor: "terminus", group: "line-capture", alternation: "line-choice" };
+
+/** Group and choice brackets open and close a stretch of the line; "|" switches branch. */
+const isBracket = (segment) =>
+  (segment.kind === "group" || segment.kind === "alternation") && segment.source !== "|";
+
+/** Name brackets and alternatives in words: "capture … end", "or". */
+function stationLabel(segment) {
+  if (segment.kind === "alternation" && segment.source === "|") return "or";
+  if (!isBracket(segment)) return segment.text;
+  return segment.text === "}" ? "end" : segment.text.replace(/\s*\{$/u, "");
+}
+
+/** A long line scrolls sideways; only then does it need to take keyboard focus. */
+function keyboardScroll() {
+  if (line.scrollWidth > line.clientWidth) line.tabIndex = 0;
+  else line.removeAttribute("tabindex");
+}
+window.addEventListener("resize", keyboardScroll);
+
 /** Draw one station per compiled rule segment. */
 function drawLine(compiled) {
   line.replaceChildren();
+  line.style.setProperty(
+    "--columns",
+    compiled.segments
+      .map((segment) => (isBracket(segment) ? "minmax(64px, 0.6fr)" : "minmax(96px, 1fr)"))
+      .join(" "),
+  );
   stations = compiled.segments.map((segment, index) => {
     const item = document.createElement("li");
     const kind =
-      segment.kind === "anchor"
-        ? "terminus"
-        : segment.atomType === "literal"
-          ? "line-literal"
-          : "line-set";
-    item.className = `station ${kind}${segment.repetition ? " loop" : ""}`;
+      lineKinds[segment.kind] ?? (segment.atomType === "literal" ? "line-literal" : "line-set");
+    item.className = `station ${kind}${isBracket(segment) ? " bracket" : ""}${segment.repetition ? " loop" : ""}`;
     item.style.setProperty("--i", String(index));
     const stop = part("station-stop");
     stop.setAttribute("aria-hidden", "true");
@@ -99,10 +121,11 @@ function drawLine(compiled) {
     fragment.append(part("sr-only", "regex "), code);
     const take = part("station-take");
     take.hidden = true;
-    item.append(part("station-rule", segment.text), stop, fragment, take);
+    item.append(part("station-rule", stationLabel(segment)), stop, fragment, take);
     line.append(item);
     return { item, take, segment };
   });
+  keyboardScroll();
   line.classList.remove("drawing");
   void line.offsetWidth;
   line.classList.add("drawing");
@@ -122,9 +145,10 @@ function drawLine(compiled) {
 }
 
 /** Show which characters each station takes, or where an anchored line stops. */
-function ride(text) {
+function ride(text, matched) {
   for (const { item, take } of stations) {
-    item.dataset.state = "idle";
+    // Without per-station spans, a full match still lights the whole line.
+    item.dataset.state = !probe && matched ? "taken" : "idle";
     take.hidden = true;
     take.replaceChildren();
   }
@@ -165,9 +189,14 @@ function ride(text) {
 }
 
 try {
-  const { compile, toRegExp } = await import(`./workshop/index.js${assetSearch}`);
+  const { compile, toRegExp, regexToRules } = await import(`./workshop/index.js${assetSearch}`);
   const initial = compile(document.getElementById("rules-code").textContent);
-  pattern = toRegExp(initial);
+  // g and y make test() stateful; the demo checks each text from the start.
+  const testable = (compiled) => {
+    const regex = toRegExp(compiled);
+    return new RegExp(regex.source, regex.flags.replace(/[gy]/gu, ""));
+  };
+  pattern = testable(initial);
   drawLine(initial);
   function testSample() {
     const tooLong = input.value.length > 80;
@@ -183,11 +212,120 @@ try {
     result.textContent = matches ? "✓ Match" : "× No match";
     result.setAttribute("aria-label", result.textContent);
     result.dataset.match = String(matches);
-    ride(input.value);
+    ride(input.value, matches);
   }
   input.addEventListener("input", testSample);
   input.disabled = false;
   testSample();
+
+  /** Show a compiled pattern on the line, the boards and the workshop link; `samples` is [match, no match] or empty. */
+  function showPattern(compiled, rules, note, href, samples) {
+    pattern = testable(compiled);
+    drawLine(compiled);
+    copySequence += 1;
+    window.clearTimeout(statusResetTimer);
+    copyStatus.textContent = "";
+    for (const control of copyControls) {
+      window.clearTimeout(control.resetTimer);
+      control.button.textContent = control.label;
+    }
+    document.getElementById("rules-code").textContent = rules;
+    document.getElementById("regex-code").textContent = `/${compiled.source}/${compiled.flags}`;
+    document.getElementById("demo-note").textContent = note;
+    document.getElementById("demo-open").href = href;
+    for (const button of document.querySelectorAll("[data-recipe]")) {
+      button.setAttribute(
+        "aria-pressed",
+        String(href === `./workshop/?example=${button.dataset.recipe}`),
+      );
+    }
+    const chips = document.getElementById("demo-samples");
+    chips.replaceChildren();
+    samples.forEach((value, index) => {
+      const chip = document.createElement("span");
+      const code = document.createElement("code");
+      chip.className = index === 0 ? "" : "no-match";
+      chip.append(index === 0 ? "✓ " : "× ");
+      code.textContent = value;
+      chip.append(code);
+      chips.append(chip);
+    });
+    chips.hidden = samples.length === 0;
+  }
+
+  const explainForm = document.getElementById("explain-form");
+  const explainInput = document.getElementById("explain-input");
+  const explainStatus = document.getElementById("explain-status");
+  const { parseRegexLiteral, validateRegexLiteralLength } = await import(
+    `./workshop/src/regex-literal.js${assetSearch}`
+  );
+  const { createFixtureLink } = await import(`./workshop/web/fixtures.js${assetSearch}`);
+
+  /** Accept `/source/flags` or a bare pattern; the rules always match in Unicode mode. */
+  function readRegex(text) {
+    validateRegexLiteralLength(text);
+    const value = text.trim();
+    if (!value) throw new Error("Paste a regex first, such as /^\\d{3}-\\d{4}$/.");
+    let regex;
+    if (value.startsWith("/")) regex = parseRegexLiteral(value);
+    else {
+      try {
+        regex = new RegExp(value);
+      } catch {
+        throw new Error("That is not a valid JavaScript regex.");
+      }
+    }
+    if (regex.unicode || regex.unicodeSets) return { regex, unicodeAdded: false };
+    try {
+      return { regex: new RegExp(regex.source, `${regex.flags}u`), unicodeAdded: true };
+    } catch {
+      throw new Error(
+        "This regex is only valid without the u flag, which the rules always use. Look for escapes that Unicode mode rejects, such as \\- outside [ ]; write - instead.",
+      );
+    }
+  }
+
+  explainForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    try {
+      const { regex, unicodeAdded } = readRegex(explainInput.value);
+      const { rules, flags } = regexToRules(regex);
+      const compiled = compile(rules, { flags });
+      const count = rules.split("\n").filter((rule) => rule.trim()).length;
+      const fixture = JSON.stringify({
+        format: "regex-for-humans-tests",
+        version: 1,
+        rules,
+        flags: compiled.flags,
+        mode: "search",
+        cases: [],
+      });
+      let href = "./workshop/";
+      try {
+        href = createFixtureLink(fixture, new URL("./workshop/", window.location.href).href);
+      } catch {
+        // shortcut: a pattern too long for a share link opens the empty workshop.
+      }
+      showPattern(
+        compiled,
+        rules,
+        `Your regex, read as ${count} ${count === 1 ? "rule" : "rules"}.${
+          unicodeAdded
+            ? " It was read with the u flag, which the rules always use; for plain ASCII text the meaning is the same."
+            : ""
+        }`,
+        href,
+        [],
+      );
+      explainInput.setAttribute("aria-invalid", "false");
+      explainStatus.textContent = `Drawn as ${compiled.segments.length} stations.`;
+      testSample();
+    } catch (error) {
+      explainInput.setAttribute("aria-invalid", "true");
+      explainStatus.textContent = error instanceof Error ? error.message : String(error);
+    }
+  });
+  for (const control of explainForm.elements) control.disabled = false;
 
   try {
     const recipeUrl = new URL("./workshop/test/fixtures/product-scenarios.json", import.meta.url);
@@ -211,36 +349,12 @@ try {
     for (const { button, recipe, compiled } of demos) {
       button.disabled = false;
       button.addEventListener("click", () => {
-        pattern = toRegExp(compiled);
-        drawLine(compiled);
-        copySequence += 1;
-        window.clearTimeout(statusResetTimer);
-        copyStatus.textContent = "";
-        for (const control of copyControls) {
-          window.clearTimeout(control.resetTimer);
-          control.button.textContent = control.label;
-        }
-        document.getElementById("rules-code").textContent = recipe.rules;
-        document.getElementById("regex-code").textContent = `/${compiled.source}/${compiled.flags}`;
-        document.getElementById("demo-note").textContent = recipe.note;
-        document.getElementById("demo-open").href = `./workshop/?example=${recipe.id}`;
-        for (const other of document.querySelectorAll("[data-recipe]")) {
-          other.setAttribute("aria-pressed", String(other === button));
-        }
-        const samples = document.getElementById("demo-samples");
-        samples.replaceChildren();
-        for (const [matches, value] of [
-          [true, recipe.positive[0]],
-          [false, recipe.negative[0]],
-        ]) {
-          const chip = document.createElement("span");
-          const code = document.createElement("code");
-          chip.className = matches ? "" : "no-match";
-          chip.append(matches ? "✓ " : "× ");
-          code.textContent = value;
-          chip.append(code);
-          samples.append(chip);
-        }
+        showPattern(compiled, recipe.rules, recipe.note, `./workshop/?example=${recipe.id}`, [
+          recipe.positive[0],
+          recipe.negative[0],
+        ]);
+        explainInput.setAttribute("aria-invalid", "false");
+        explainStatus.textContent = "";
         input.value = sampleInputs[recipe.id];
         testSample();
       });
